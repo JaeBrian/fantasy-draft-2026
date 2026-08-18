@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from "react";
+import { CLIFF_MAP } from "../data";
 import { Card, Eyebrow, Intro, KV, Noob } from "../components/ui";
 
 type SlotKey = "s13" | "s46" | "s79" | "s1012";
@@ -61,6 +62,69 @@ const PLANS: Record<SlotKey, ReactNode> = {
   ),
 };
 
+
+const SLOT_TO_PICK: Record<SlotKey, number | null> = { s13: 1, s46: 6, s79: null, s1012: 10 };
+
+/** Where each position falls off a cliff — for this exact seat. */
+function CliffMap({ slot }: { slot: SlotKey }) {
+  const pick = SLOT_TO_PICK[slot];
+  const rows = pick ? CLIFF_MAP[pick] : undefined;
+  if (!rows) return null;
+  const cell = (v: number, prev?: number) => {
+    const drop = prev === undefined ? 0 : prev - v;
+    const heavy = drop >= 2.5;
+    return (
+      <td className={`px-2 py-1 text-right font-mono tabular-nums ${heavy ? "font-bold text-avoid" : "text-ink-2"}`}>
+        {v.toFixed(1)}
+        {heavy && <span className="ml-1 text-[0.7rem]">▼</span>}
+      </td>
+    );
+  };
+  return (
+    <div className="mt-4 border-t border-line-soft pt-3">
+      <div className="display text-[0.95rem] font-semibold uppercase tracking-wide text-clock">
+        Where the cliffs are — pick {pick}
+      </div>
+      <p className="m-0 mt-1 mb-2 text-[0.85rem] text-ink-2">
+        Best player still available at each of your picks (projected pts/wk), from 500 simulated drafts. Red
+        ▼ marks a drop of 2.5+ points — that position fell off a cliff since your last turn, so take it{" "}
+        <i>before</i> the drop, not after.
+      </p>
+      <div className="overflow-x-auto">
+        <table className="w-full max-w-[420px] text-[0.85rem]">
+          <thead>
+            <tr className="text-ink-3">
+              <th className="px-2 py-1 text-left font-semibold">your pick</th>
+              <th className="px-2 py-1 text-right font-semibold">RB</th>
+              <th className="px-2 py-1 text-right font-semibold">WR</th>
+              <th className="px-2 py-1 text-right font-semibold">TE</th>
+              <th className="px-2 py-1 text-right font-semibold">QB</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r, i) => {
+              const prev = i > 0 ? rows[i - 1] : undefined;
+              return (
+                <tr key={r.pick} className="border-t border-line-soft">
+                  <td className="px-2 py-1 font-mono text-ink">#{r.pick}</td>
+                  {cell(r.rb, prev?.rb)}
+                  {cell(r.wr, prev?.wr)}
+                  {cell(r.te, prev?.te)}
+                  {cell(r.qb, prev?.qb)}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p className="m-0 mt-2 text-[0.82rem] text-ink-3">
+        Notice QB barely moves — about 2 points across 60 picks. That is the whole argument for waiting on
+        quarterback: the position you can get late costs you almost nothing, while RB costs you six.
+      </p>
+    </div>
+  );
+}
+
 export function PlanPanel({ noob }: { noob: boolean }) {
   const [slot, setSlot] = useState<SlotKey>("s13");
   return (
@@ -97,6 +161,7 @@ export function PlanPanel({ noob }: { noob: boolean }) {
           ))}
         </div>
         <div>{PLANS[slot]}</div>
+        <CliffMap slot={slot} />
       </Card>
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
