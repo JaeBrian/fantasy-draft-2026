@@ -118,6 +118,26 @@ export default function App() {
     applyMark(h.n, h.prev);
   }, [applyMark]);
 
+  /* Practice draft: apply a run of AI picks in a single write. Looping `mark` would read a
+   * stale DS from its own closure and drop all but the last pick. */
+  const applyRun = useCallback(
+    (names: string[]) => {
+      if (!names.length) return;
+      names.forEach((n) => {
+        hist.current.push({ n, prev: DS[n] ?? "" });
+      });
+      if (hist.current.length > 200) hist.current = hist.current.slice(-200);
+      setHistSize(hist.current.length);
+      const next = { ...DS };
+      names.forEach((n) => {
+        next[n] = "gone";
+      });
+      setOrd((o) => [...o, ...names.filter((n) => !DS[n])]);
+      setDS(next);
+    },
+    [DS, setDS],
+  );
+
   const reset = useCallback(() => {
     hist.current = [];
     setHistSize(0);
@@ -189,6 +209,7 @@ export default function App() {
             mark={mark}
             undo={undo}
             reset={reset}
+            applyRun={applyRun}
             canUndo={histSize > 0}
             mySlot={mySlot}
             setMySlot={setMySlot}

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { P, OT, BYE, DRAFT_ORDER, SIM_PLANS, TOOL_USERS, type Pos } from "../data";
 import { snapTeam } from "../lib/advisor";
 import { advise, mktADP, needText, rosterSlots, PLAINPOS, type DraftState } from "../lib/advisor";
+import { fillToMyTurn, gradeDraft } from "../lib/mock";
 import { usePersistent } from "../lib/store";
 import { SLP } from "../sleeper";
 
@@ -19,6 +20,7 @@ interface BoardProps {
   mark: (name: string, want: "gone" | "mine") => void;
   undo: () => void;
   reset: () => void;
+  applyRun: (names: string[]) => void;
   canUndo: boolean;
   mySlot: number;
   setMySlot: (n: number) => void;
@@ -322,7 +324,7 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked }: { DS: DraftState; mySl
   );
 }
 
-export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, setMySlot }: BoardProps) {
+export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo, mySlot, setMySlot }: BoardProps) {
   const [pos, setPos] = useState<"ALL" | Pos>("ALL");
   const [q, setQ] = useState("");
   const [hideDrafted, setHideDrafted] = useState(false);
@@ -342,6 +344,25 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
     },
     JSON.stringify
   );
+  /* ---- practice draft ----------------------------------------------------------------
+   * The other eleven seats pick with the same model the simulations use, straight into the
+   * real draft state, so the advisor and the board behave exactly as they will on the night. */
+  const [practice, setPractice] = usePersistent("fd26-practice", false, (r) => r === "1", (v) => (v ? "1" : "0"));
+  const myPickCount = Object.values(DS).filter((v) => v === "mine").length;
+  const picksMade = Object.keys(DS).length;
+  const practiceOver = myPickCount >= 14;
+  const myTurn = mySlot > 0 && snapTeam(picksMade + 1) === mySlot;
+
+  useEffect(() => {
+    if (!practice || !mySlot || practiceOver || myTurn) return;
+    const run = fillToMyTurn(DS, ord, mySlot);
+    if (!run.length) return;
+    const t = setTimeout(() => applyRun(run), 260);
+    return () => clearTimeout(t);
+  }, [practice, mySlot, DS, ord, myTurn, practiceOver, applyRun]);
+
+  const grade = practiceOver && practice && mySlot ? gradeDraft(ord, mySlot) : null;
+
   const toggleBlock = (name: string) =>
     setBlocked(blocked.includes(name) ? blocked.filter((x) => x !== name) : [...blocked, name]);
   const HATED = "Justin Jefferson";
@@ -659,6 +680,17 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
           </button>
           <button
             type="button"
+            className={`btn ${practice ? "on" : ""}`}
+            title="Draft against eleven simulated rooms using real Sleeper ADP"
+            onClick={() => {
+              reset();
+              setPractice(!practice);
+            }}
+          >
+            {practice ? "End practice" : "Practice draft"}
+          </button>
+          <button
+            type="button"
             className={`btn ${resetArmed ? "danger" : ""}`}
             onClick={() => {
               if (resetArmed) {
@@ -723,6 +755,28 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
 
       <div className="flex flex-col gap-5 min-[1200px]:flex-row-reverse min-[1200px]:items-start">
         <div className="contents min-[1200px]:z-30 min-[1200px]:flex min-[1200px]:flex-col min-[1200px]:gap-3 min-[1200px]:sticky min-[1200px]:top-[calc(var(--hdr,86px)+6px)] min-[1200px]:w-[360px] min-[1200px]:shrink-0 min-[1200px]:max-h-[calc(100vh-var(--hdr,86px)-24px)] min-[1200px]:overflow-y-auto min-[1200px]:overscroll-contain">
+      {grade && (
+        <div className="mb-4 rounded-lg border border-clock/40 bg-raised px-4 py-3">
+          <div className="display mb-1 text-[0.8rem] uppercase tracking-wide text-clock">Practice draft complete</div>
+          <h3 className="display m-0 mb-1 text-[1.25rem] text-ink">
+            Your starters project {grade.mine.toFixed(1)} pts/wk — {grade.rank === 1 ? "best" : `${grade.rank}${grade.rank === 2 ? "nd" : grade.rank === 3 ? "rd" : "th"}`} of the twelve teams
+          </h3>
+          <p className="m-0 mb-2 text-[0.85rem] leading-relaxed text-ink-2">
+            The best room in this draft managed {grade.best.toFixed(1)} and the median team {grade.median.toFixed(1)}.
+            Scored on Sleeper's own 2026 projections, best legal lineup — the same model every study on the Simulations
+            tab uses. The eleven other seats drafted off real Sleeper ADP, so this is the room you will actually face.
+          </p>
+          {grade.gaps.length > 0 && (
+            <p className="m-0 mb-2 text-[0.85rem] leading-relaxed text-avoid">
+              Holes worth fixing next time: {grade.gaps.join(" · ")}.
+            </p>
+          )}
+          <button type="button" className="btn" onClick={() => reset()}>
+            Draft again
+          </button>
+        </div>
+      )}
+
       <AdvisorStrip DS={DS} mySlot={mySlot} ord={ord} noob={noob} blocked={blocked} />
 
       <div className="flex flex-wrap items-center gap-2">
