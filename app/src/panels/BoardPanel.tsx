@@ -3,6 +3,16 @@ import { P, OT, BYE, type Pos } from "../data";
 import { advise, mktADP, needText, rosterSlots, PLAINPOS, type DraftState } from "../lib/advisor";
 import { usePersistent } from "../lib/store";
 import { SLP } from "../sleeper";
+import { SLEEPER_ICON } from "../brand";
+
+function SleeperMark({ size = 14, label }: { size?: number; label?: string }) {
+  return (
+    <span className="inline-flex items-center gap-1 align-middle" title="Data: Sleeper (read-only public API)">
+      <img src={SLEEPER_ICON} width={size} height={size} alt="Sleeper" className="inline-block rounded-[3px]" />
+      {label && <span className="text-[0.72rem] text-ink-3">{label}</span>}
+    </span>
+  );
+}
 
 function InjChip({ name, className = "" }: { name: string; className?: string }) {
   const inj = SLP[name]?.inj;
@@ -10,9 +20,10 @@ function InjChip({ name, className = "" }: { name: string; className?: string })
   const soft = inj === "Q" || inj === "D";
   return (
     <span
-      className={`rounded-sm border px-1 font-mono text-[0.62rem] font-bold ${soft ? "border-risky/60 text-risky" : "border-avoid/60 text-avoid"} ${className}`}
+      className={`inline-flex items-center gap-1 rounded-sm border px-1 font-mono text-[0.62rem] font-bold ${soft ? "border-risky/60 text-risky" : "border-avoid/60 text-avoid"} ${className}`}
       title={`Sleeper live injury designation: ${inj === "Q" ? "Questionable" : inj === "D" ? "Doubtful" : inj === "O" ? "Out" : inj}`}
     >
+      <img src={SLEEPER_ICON} width={10} height={10} alt="" className="rounded-[2px] opacity-80" />
       {inj}
     </span>
   );
@@ -543,6 +554,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
       <AdvisorStrip DS={DS} mySlot={mySlot} ord={ord} noob={noob} />
 
       <div className="flex flex-wrap items-center gap-2">
+        <SleeperMark size={18} />
         <input
           type="text"
           value={sleeperId}
@@ -558,6 +570,11 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
         {!syncMsg && (
           <Info tip={<>Works for any Sleeper draft (read-only, no login). Set <b className="text-ink">My slot</b> first so your own picks land as <b className="text-ink">Pick</b>, everyone else's as <b className="text-ink">Taken</b>. Refreshes every 8 seconds.</>} />
         )}
+      </div>
+
+      <div className="flex items-center gap-1.5 text-[0.75rem] text-ink-3">
+        <SleeperMark size={13} />
+        Injury tags, 🔥/🧊 trending, and the board ranks behind pick predictions come live from Sleeper's public API — refreshed daily.
       </div>
 
       <div className="card overflow-x-auto">

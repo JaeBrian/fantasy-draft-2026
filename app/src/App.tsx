@@ -183,7 +183,7 @@ export default function App() {
         {tab === "vegas" && <VegasPanel noob={noob} />}
 
         <footer className="mt-10 border-t border-line pt-6 text-[0.8rem] leading-relaxed text-ink-3">
-          Sources: FantasyPros (live half-PPR expert consensus + tiers, pulled Aug 17), Justin Boone's Yahoo top-300
+          Sources: Sleeper public API (live injury designations, 24h trending, board ranks — refreshed daily), FantasyPros (live half-PPR expert consensus + tiers, pulled Aug 17), Justin Boone's Yahoo top-300
           (updated Aug 17), ESPN (Field Yates, xTD models, 10-analyst panel), CBS Sports, NBC/Rotoworld, PFF, 4for4
           (Underdog ADP tool, 713 players, Aug 17 pull), Establish The Run, RotoWire, Sharp Football Analysis (implied
           totals &amp; O-line ranks), DraftKings lines via Action-market aggregators, Footballguys, PlayerProfiler,
