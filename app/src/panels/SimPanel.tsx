@@ -1,30 +1,7 @@
 import { useState } from "react";
-import { CLIFF_MAP, SIM_PLANS, TOOL_USERS } from "../data";
+import { CLIFF_MAP, PAIRED_SIM, SIM_PLANS, TOOL_USERS } from "../data";
 import { Card, Eyebrow, Intro, Noob } from "../components/ui";
 
-/** Expanded strategy study, 900 drafts each, risk-adjusted. */
-const STRATEGIES: Record<number, { label: string; pts: number; note?: string }[]> = {
-  6: [
-    { label: "RB-RB-WR-WR", pts: 108.99, note: "wins outright" },
-    { label: "WR-RB-RB-WR", pts: 108.6 },
-    { label: "WR-RB-WR-RB", pts: 108.5 },
-    { label: "RB-WR-RB-WR", pts: 108.25 },
-    { label: "RB-RB-QB-WR", pts: 107.79, note: "QB in round 3 costs you" },
-    { label: "WR-WR-RB-RB", pts: 107.66 },
-    { label: "RB-RB-RB-WR", pts: 107.39 },
-    { label: "RB-TE-RB-WR", pts: 105.95, note: "worst — never take TE early" },
-  ],
-  10: [
-    { label: "RB-WR-WR-RB", pts: 108.01, note: "best, but barely" },
-    { label: "RB-WR-RB-WR", pts: 107.91 },
-    { label: "WR-RB-WR-RB", pts: 107.81 },
-    { label: "WR-RB-RB-WR", pts: 107.76 },
-    { label: "RB-RB-WR-WR", pts: 107.74, note: "top five are a tie" },
-    { label: "WR-WR-RB-RB", pts: 107.12 },
-    { label: "RB-RB-QB-WR", pts: 106.75 },
-    { label: "RB-TE-RB-WR", pts: 105.24, note: "worst" },
-  ],
-};
 
 /** Forced-first-pick study: final roster strength, and how often he's actually there. */
 const FIRST_PICK: Record<number, { name: string; pos: string; pts: number; avail: number }[]> = {
@@ -59,7 +36,7 @@ export function SimPanel({ noob }: { noob: boolean }) {
   const [seat, setSeat] = useState<number>(6);
   const plan = SIM_PLANS[seat];
   const cliff = CLIFF_MAP[seat];
-  const strat = STRATEGIES[seat];
+  const paired = PAIRED_SIM[seat];
   const firsts = FIRST_PICK[seat];
 
   return (
@@ -145,28 +122,54 @@ export function SimPanel({ noob }: { noob: boolean }) {
         </Card>
       )}
 
-      {strat && (
+      {paired && (
         <Card>
-          <Eyebrow>Every structure we tested</Eyebrow>
-          <h3 className="display m-0 mb-2 text-[1.2rem] text-ink">900 drafts per strategy</h3>
-          <ul className="m-0 flex list-none flex-col gap-1 p-0 text-[0.88rem]">
-            {strat.map((s, i) => {
-              const width = Math.max(4, ((s.pts - (strat[strat.length - 1].pts - 0.6)) / (strat[0].pts - strat[strat.length - 1].pts + 0.8)) * 100);
-              return (
-                <li key={s.label} className="flex items-center gap-2">
-                  <span className="w-32 shrink-0 font-mono text-[0.8rem] text-ink-2">{s.label}</span>
-                  <span className="h-2.5 flex-1 overflow-hidden rounded-full bg-raised">
-                    <span
-                      className={`block h-full rounded-full ${i === 0 ? "bg-value" : i >= strat.length - 1 ? "bg-avoid/70" : "bg-ink-3/60"}`}
-                      style={{ width: `${width}%` }}
-                    />
-                  </span>
-                  <span className="w-14 shrink-0 text-right font-mono tabular-nums text-ink">{s.pts.toFixed(2)}</span>
-                  {s.note && <span className="hidden w-44 shrink-0 text-[0.78rem] text-ink-3 sm:block">{s.note}</span>}
-                </li>
-              );
-            })}
-          </ul>
+          <Eyebrow>Every structure, same draft</Eyebrow>
+          <h3 className="display m-0 mb-1 text-[1.2rem] text-ink">
+            {paired.worlds.toLocaleString()} paired worlds — each strategy faced identical opponents
+          </h3>
+          <p className="m-0 mb-3 text-[0.85rem] text-ink-2">
+            Running every strategy through the <i>same</i> draft removes luck from the comparison, so even small edges
+            become measurable. "Beats the field" is how often this strategy finished ahead of the other four in the very
+            same draft.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-[0.86rem]">
+              <thead>
+                <tr className="text-ink-3">
+                  <th className="px-2 py-1 text-left font-semibold">strategy</th>
+                  <th className="px-2 py-1 text-right font-semibold">mean</th>
+                  <th className="px-2 py-1 text-right font-semibold">floor</th>
+                  <th className="px-2 py-1 text-right font-semibold">ceiling</th>
+                  <th className="px-2 py-1 text-right font-semibold">your RB1</th>
+                  <th className="px-2 py-1 text-right font-semibold">your WR1</th>
+                  <th className="px-2 py-1 text-right font-semibold">beats the field</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paired.rows.map((r, i) => {
+                  const others = r.beats.filter((_, j) => j !== i);
+                  const avgBeat = others.reduce((a, b) => a + b, 0) / others.length;
+                  return (
+                    <tr key={r.label} className="border-t border-line-soft align-top">
+                      <td className="px-2 py-1.5">
+                        <span className={i === 0 ? "font-mono font-bold text-value" : "font-mono text-ink-2"}>{r.label}</span>
+                        {r.note && <span className="block max-w-[34ch] text-[0.76rem] leading-snug text-ink-3">{r.note}</span>}
+                      </td>
+                      <td className="px-2 py-1.5 text-right font-mono tabular-nums text-ink">{r.mean.toFixed(2)}</td>
+                      <td className="px-2 py-1.5 text-right font-mono tabular-nums text-ink-3">{r.floor.toFixed(1)}</td>
+                      <td className="px-2 py-1.5 text-right font-mono tabular-nums text-ink-3">{r.ceiling.toFixed(1)}</td>
+                      <td className="px-2 py-1.5 text-right font-mono tabular-nums text-ink-2">{r.rb1.toFixed(1)}</td>
+                      <td className="px-2 py-1.5 text-right font-mono tabular-nums text-ink-2">{r.wr1.toFixed(1)}</td>
+                      <td className={`px-2 py-1.5 text-right font-mono tabular-nums ${avgBeat >= 60 ? "font-bold text-value" : avgBeat < 35 ? "text-avoid" : "text-ink-2"}`}>
+                        {avgBeat.toFixed(0)}%
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </Card>
       )}
 

@@ -453,3 +453,44 @@ export const TD_MODEL: TdRow[] = [
   { name: "Justin Jefferson", pos: "WR", team: "MIN", rank: 8, td: 2, xtd: 7, delta: -5, rz: 17 },
   { name: "Christian McCaffrey", pos: "RB", team: "SF", rank: 6, td: 17, xtd: 24.1, delta: -7.1, rz: 96 },
 ];
+
+/** Paired-world strategy study: 2,500 simulated drafts per seat in which every finalist
+ *  strategy faced the IDENTICAL opponents, so the comparison measures strategy rather than
+ *  luck. `beats` is the % of identical drafts this strategy finished ahead of each other
+ *  finalist. Regenerate with app/scripts/sim-paired.mjs */
+export type PairedRow = {
+  label: string; mean: number; floor: number; ceiling: number;
+  rb1: number; wr1: number; beats: number[]; note?: string;
+};
+export const PAIRED_SIM: Record<number, { worlds: number; rows: PairedRow[] }> = {
+  1: {
+    worlds: 2500,
+    rows: [
+      { label: "RB-RB-WR-WR", mean: 110.51, floor: 108.5, ceiling: 113.1, rb1: 18.3, wr1: 15.0, beats: [0, 0, 47, 96, 100], note: "identical to RB-WR-RB-WR — your picks 24/25 are back-to-back" },
+      { label: "RB-WR-RB-WR", mean: 110.51, floor: 108.5, ceiling: 113.1, rb1: 18.3, wr1: 15.0, beats: [0, 0, 47, 96, 100] },
+      { label: "RB-WR-WR-RB", mean: 110.13, floor: 108.0, ceiling: 111.9, rb1: 18.3, wr1: 15.0, beats: [53, 53, 0, 71, 91] },
+      { label: "RB-RB-WR-RB", mean: 108.99, floor: 107.2, ceiling: 111.4, rb1: 18.3, wr1: 15.0, beats: [4, 4, 29, 0, 97] },
+      { label: "WR-RB-RB-WR", mean: 106.64, floor: 104.5, ceiling: 109.3, rb1: 12.9, wr1: 17.7, beats: [0, 0, 9, 3, 0], note: "opening Chase instead of Gibbs costs 5.4 pts of RB1 quality" },
+    ],
+  },
+  6: {
+    worlds: 2500,
+    rows: [
+      { label: "RB-RB-WR-WR", mean: 108.98, floor: 107.7, ceiling: 110.3, rb1: 16.0, wr1: 13.7, beats: [0, 57, 69, 78, 81], note: "wins 57-81% of identical drafts" },
+      { label: "WR-RB-RB-WR", mean: 108.59, floor: 107.5, ceiling: 109.7, rb1: 14.9, wr1: 17.2, beats: [43, 0, 53, 73, 75] },
+      { label: "WR-RB-WR-RB", mean: 108.50, floor: 107.2, ceiling: 109.8, rb1: 14.9, wr1: 17.2, beats: [31, 47, 0, 56, 67] },
+      { label: "RB-WR-RB-WR", mean: 108.24, floor: 107.0, ceiling: 109.3, rb1: 16.0, wr1: 15.6, beats: [22, 27, 44, 0, 64] },
+      { label: "RB-RB-QB-WR", mean: 107.84, floor: 106.4, ceiling: 109.1, rb1: 16.0, wr1: 13.3, beats: [19, 25, 33, 36, 0], note: "taking a QB in round 3 is the costliest common mistake" },
+    ],
+  },
+  10: {
+    worlds: 2500,
+    rows: [
+      { label: "RB-WR-WR-RB", mean: 108.04, floor: 106.8, ceiling: 109.2, rb1: 15.5, wr1: 16.0, beats: [0, 48, 56, 57, 66], note: "best, but only barely" },
+      { label: "RB-WR-RB-WR", mean: 107.95, floor: 106.6, ceiling: 109.3, rb1: 15.5, wr1: 16.0, beats: [44, 0, 54, 53, 63] },
+      { label: "WR-RB-WR-RB", mean: 107.84, floor: 106.8, ceiling: 108.8, rb1: 15.0, wr1: 16.6, beats: [44, 46, 0, 48, 59] },
+      { label: "WR-RB-RB-WR", mean: 107.80, floor: 106.7, ceiling: 108.8, rb1: 15.0, wr1: 16.6, beats: [43, 47, 43, 0, 53] },
+      { label: "RB-RB-WR-WR", mean: 107.69, floor: 106.6, ceiling: 108.8, rb1: 15.5, wr1: 13.9, beats: [34, 37, 41, 47, 0], note: "even the worst finalist wins ~40% — this seat has real freedom" },
+    ],
+  },
+};
