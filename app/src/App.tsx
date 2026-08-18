@@ -33,7 +33,13 @@ const parseDS = (raw: string): DraftState => {
 };
 
 export default function App() {
-  const [tab, setTab] = useState<TabKey>("start");
+  /* remember the tab you were on across refreshes */
+  const [tab, setTab] = usePersistent<TabKey>(
+    "fd26-tab",
+    "start",
+    (raw) => (TABS.some(([k]) => k === raw) ? (raw as TabKey) : "start"),
+    (v) => v
+  );
   const [noob, setNoob] = usePersistent("fd26-noob", true, (r) => r === "1", (v) => (v ? "1" : "0"));
   const [mySlot, setMySlot] = usePersistent("fd26-slot", 0, (r) => parseInt(r) || 0, String);
   const [DS, setDS] = usePersistent<DraftState>("fd26-draft", {}, parseDS, JSON.stringify);
