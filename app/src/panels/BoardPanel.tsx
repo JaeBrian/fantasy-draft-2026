@@ -1,6 +1,40 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { P, OT, BYE, type Pos } from "../data";
 import { advise, mktADP, needText, rosterSlots, PLAINPOS, type DraftState } from "../lib/advisor";
+import { usePersistent } from "../lib/store";
+import { SLP } from "../sleeper";
+
+function InjChip({ name, className = "" }: { name: string; className?: string }) {
+  const inj = SLP[name]?.inj;
+  if (!inj) return null;
+  const soft = inj === "Q" || inj === "D";
+  return (
+    <span
+      className={`rounded-sm border px-1 font-mono text-[0.62rem] font-bold ${soft ? "border-risky/60 text-risky" : "border-avoid/60 text-avoid"} ${className}`}
+      title={`Sleeper live injury designation: ${inj === "Q" ? "Questionable" : inj === "D" ? "Doubtful" : inj === "O" ? "Out" : inj}`}
+    >
+      {inj}
+    </span>
+  );
+}
+
+function TrendChip({ name }: { name: string }) {
+  const t = SLP[name]?.trend;
+  if (t === undefined) return null;
+  const k = Math.max(1, Math.round(Math.abs(t) / 1000));
+  return (
+    <span
+      className="font-mono text-[0.65rem] text-ink-3"
+      title={`${Math.abs(t).toLocaleString()} Sleeper leagues ${t > 0 ? "added" : "dropped"} him in the last 24 hours`}
+    >
+      {t > 0 ? `🔥${k}k` : `🧊${k}k`}
+    </span>
+  );
+}
+
+type SleeperPick = { pick_no: number; draft_slot: number; metadata?: { first_name?: string; last_name?: string } };
+const normName = (s: string) =>
+  s.toLowerCase().replace(/[.'-]/g, " ").replace(/\b(jr|sr|ii|iii|iv|v)\b/g, "").replace(/\s+/g, " ").trim();
 import { Call, Info, Intro, Noob, Sticker, TagChips, TeamIcon } from "../components/ui";
 
 const POS_FILTERS: ("ALL" | Pos)[] = ["ALL", "QB", "RB", "WR", "TE"];
@@ -20,6 +54,14 @@ interface BoardProps {
 function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: number; ord: string[]; noob: boolean }) {
   const a = advise(DS, mySlot, ord);
   const made = Object.keys(DS).length;
+  const [compact, setCompact] = usePersistent<boolean>(
+    "fd26-adv-compact",
+    false,
+    (raw) => raw === "1",
+    (v) => (v ? "1" : "0")
+  );
+  /* on the clock the full detail always shows — compact is for the waiting stretches */
+  const showFull = !compact || a.onClock;
 
   const next: Partial<Record<Pos, { n: string; i: number }>> = {};
   P.forEach((r, i) => {
@@ -142,11 +184,33 @@ function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: numbe
             </span>
           ))}
         </span>
+        <button
+          type="button"
+          className="btn !px-2.5 !py-0.5 !text-[0.72rem]"
+          onClick={() => setCompact(!compact)}
+          title={compact ? "Show the full advisor detail" : "Shrink the advisor to one line while you wait"}
+        >
+          {compact ? "Full view" : "Compact"}
+        </button>
       </div>
 
       <div className="px-4 py-3">
         {special && <div className="text-[0.95rem] text-ink"><b>Take:</b> {special}</div>}
-        {suggestion && (
+        {suggestion && !showFull && (
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[0.95rem]">
+            {suggestion.list.map((c, idx) => (
+              <span key={c.now.r[0]}>
+                <span className="font-mono text-[0.8rem] text-ink-3">{idx + 1}</span>{" "}
+                <b className={idx === 0 ? "text-ink" : "text-ink-2"}>{c.now.r[0]}</b>{" "}
+                <span className="text-[0.8rem] text-ink-3">
+                  {c.p}
+                  {waiting && c.pReach < 0.995 ? ` · ${Math.round(c.pReach * 100)}%` : ""}
+                </span>
+              </span>
+            ))}
+          </div>
+        )}
+        {suggestion && showFull && (
           <div className="flex flex-col gap-1.5">
             <div className="flex flex-wrap items-baseline gap-x-2">
               <span className="display text-[0.92rem] uppercase tracking-[0.14em] text-clock">
@@ -170,6 +234,7 @@ function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: numbe
                 </span>
                 <Sticker pos={c.p} />
                 <span className="font-mono text-[0.75rem] text-ink-3">#{c.now.i + 1}</span>
+                <InjChip name={c.now.r[0]} />
                 {waiting && c.pReach < 0.995 && (
                   <span className={reachCls(Math.round(c.pReach * 100))}>~{Math.round(c.pReach * 100)}% there</span>
                 )}
@@ -202,11 +267,12 @@ function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: numbe
             <b className="text-risky">Roster radar:</b> {a.warnings.join("  ·  ")}
           </div>
         )}
-        {plain && (
+        {plain && showFull && (
           <Noob show={noob}>
             <b>Plain English:</b> {plain}
           </Noob>
         )}
+        {showFull && (
         <div className="mt-2.5 flex flex-wrap gap-1.5">
           {slots.map((s, i) => (
             <span
@@ -220,6 +286,7 @@ function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: numbe
             </span>
           ))}
         </div>
+        )}
       </div>
     </div>
   );
@@ -231,6 +298,71 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
   const [hideDrafted, setHideDrafted] = useState(false);
   const [resetArmed, setResetArmed] = useState(false);
   const [openTiers, setOpenTiers] = useState<number[]>([]);
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  /* ---- Sleeper live draft sync: read-only API, no token; ~1 call per 8s while on ---- */
+  const [sleeperId, setSleeperId] = usePersistent<string>("fd26-sleeper", "", (r) => r, (v) => v);
+  const [syncOn, setSyncOn] = useState(false);
+  const [syncMsg, setSyncMsg] = useState("");
+  const DSRef = useRef(DS);
+  DSRef.current = DS;
+  const slotRef = useRef(mySlot);
+  slotRef.current = mySlot;
+  useEffect(() => {
+    if (!syncOn) return;
+    const idMatch = sleeperId.match(/(\d{15,20})/);
+    if (!idMatch) {
+      setSyncMsg("Paste your Sleeper draft URL or ID first.");
+      return;
+    }
+    const id = idMatch[1];
+    const lookup = new Map(P.map((r) => [normName(r[0]), r[0]]));
+    let stop = false;
+    const tick = async () => {
+      try {
+        const res = await fetch(`https://api.sleeper.app/v1/draft/${id}/picks`);
+        if (!res.ok) throw new Error(String(res.status));
+        const picks = (await res.json()) as SleeperPick[];
+        let offBoard = 0;
+        picks
+          .sort((x, y) => x.pick_no - y.pick_no)
+          .forEach((pk) => {
+            const nm = lookup.get(normName(`${pk.metadata?.first_name ?? ""} ${pk.metadata?.last_name ?? ""}`));
+            if (!nm) {
+              offBoard++;
+              return;
+            }
+            if (!DSRef.current[nm]) mark(nm, pk.draft_slot === slotRef.current ? "mine" : "gone");
+          });
+        if (!stop)
+          setSyncMsg(
+            `Live: ${picks.length} picks synced${offBoard ? ` (${offBoard} off-board)` : ""} · ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" })}`
+          );
+      } catch {
+        if (!stop) setSyncMsg("Sync error — check the draft URL/ID (drafts must have started).");
+      }
+    };
+    tick();
+    const iv = setInterval(tick, 8000);
+    return () => {
+      stop = true;
+      clearInterval(iv);
+    };
+  }, [syncOn, sleeperId, mark]);
+
+  /* "/" from anywhere focuses the search box for rapid-fire pick marking */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const el = document.activeElement;
+      const typing = el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement;
+      if (e.key === "/" && !typing) {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const query = q.trim().toLowerCase();
   const showTiers = pos === "ALL" && !query && !hideDrafted;
@@ -244,12 +376,14 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
   const rows: ReactNode[] = [];
   let lastTier = 0;
   let shown = 0;
+  let firstUnmarked: string | null = null;
   P.forEach((r, i) => {
     const [n, p, t, adp, v, ot, , note, tags] = r;
     const st = DS[n] ?? "";
     if (pos !== "ALL" && p !== pos) return;
     if (query && !(n.toLowerCase().includes(query) || t.toLowerCase().includes(query))) return;
     if (hideDrafted && st) return;
+    if (!firstUnmarked && !st) firstUnmarked = n;
     const collapsed = showTiers && tierDone[ot] && !openTiers.includes(ot);
     if (showTiers && ot !== lastTier) {
       lastTier = ot;
@@ -295,6 +429,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
           <span className="pteam">
             {t} · bye {BYE[t] ?? "—"}
           </span>
+          <InjChip name={n} className="ml-1.5" /> <TrendChip name={n} />
           <br />
           <span className="mt-0.5 inline-flex flex-wrap gap-1"><TagChips tags={tags} max={3} /></span>
         </td>
@@ -340,12 +475,23 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
           ))}
         </div>
         <input
+          ref={searchRef}
           type="search"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search player or team…"
-          aria-label="Search players"
-          className="min-w-[220px] rounded-[5px] border border-line bg-surface px-3.5 py-1.5 text-[0.9rem] text-ink placeholder:text-ink-3"
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              setQ("");
+              return;
+            }
+            if (e.key === "Enter" && query && firstUnmarked) {
+              mark(firstUnmarked, e.shiftKey ? "mine" : "gone");
+              setQ("");
+            }
+          }}
+          placeholder="Type name → Enter = Taken · Shift+Enter = Pick"
+          aria-label="Search players — Enter marks the top match as taken, Shift+Enter as your pick"
+          className="min-w-[300px] rounded-[5px] border border-line bg-surface px-3.5 py-1.5 text-[0.9rem] text-ink placeholder:text-ink-3"
         />
         <div className="flex gap-1.5">
           <button
@@ -394,7 +540,25 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
 
       <AdvisorStrip DS={DS} mySlot={mySlot} ord={ord} noob={noob} />
 
-      <div className="card max-h-[76vh] overflow-y-auto overflow-x-auto">
+      <div className="flex flex-wrap items-center gap-2">
+        <input
+          type="text"
+          value={sleeperId}
+          onChange={(e) => setSleeperId(e.target.value)}
+          placeholder="Drafting on Sleeper? Paste the draft URL — picks mark themselves"
+          aria-label="Sleeper draft URL or ID for live sync"
+          className="min-w-[360px] rounded-[5px] border border-line bg-surface px-3.5 py-1.5 text-[0.85rem] text-ink placeholder:text-ink-3"
+        />
+        <button type="button" className={`btn ${syncOn ? "on" : ""}`} onClick={() => setSyncOn(!syncOn)}>
+          {syncOn ? "● Live sync on" : "Start live sync"}
+        </button>
+        {syncMsg && <span className="text-[0.8rem] text-ink-3">{syncMsg}</span>}
+        {!syncMsg && (
+          <Info tip={<>Works for any Sleeper draft (read-only, no login). Set <b className="text-ink">My slot</b> first so your own picks land as <b className="text-ink">Pick</b>, everyone else's as <b className="text-ink">Taken</b>. Refreshes every 8 seconds.</>} />
+        )}
+      </div>
+
+      <div className="card overflow-x-auto">
         <table className="tbl">
           <thead>
             <tr>
