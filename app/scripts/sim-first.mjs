@@ -1,11 +1,14 @@
-/* Run: npx esbuild src/data.ts src/sleeper.ts --format=cjs --outdir=<TSOUT>
- * then point the two requires below at <TSOUT> and `node` this file.
+/* Run from app/:  node scripts/sim-build.mjs && node scripts/sim-first.mjs
+ * sim-build.mjs transpiles src/data.ts and src/sleeper.ts into .simcache/.
  * Opponents are priced off Sleeper's real half-PPR ADP (SLP[name].adp). */
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 /* Which first pick, on the corrected model? Force each candidate, best-available after,
    play the season out with paired per-player seasons. */
 const fs = require('fs');
-const { P, MKT, BYE } = require('/Users/brianlee/.claude/jobs/142115c6/tmp/tsout/data.js');
-const { SLP } = require('/Users/brianlee/.claude/jobs/142115c6/tmp/tsout/sleeper.js');
+const { P, MKT, BYE } = require(CACHE + 'data.cjs');
+const { SLP } = require(CACHE + 'sleeper.cjs');
 const PPG = { QB: r=>Math.max(14,23.5-0.32*r), RB: r=>12.5*Math.exp(-(r-1)/20)+5.8,
   WR: r=>11.5*Math.exp(-(r-1)/26)+6.2, TE: r=>8.5*Math.exp(-(r-1)/7)+5 };
 const RISK={buy:1.02,solid:1,risk:0.93,avoid:0.86};
@@ -72,4 +75,4 @@ for (const slot of [1,6,10]) {
   console.log(`\nslot ${slot}:`);
   out[slot].forEach(r=>console.log(`   ${r.name.padEnd(24)} ${r.pos}  ${r.pts.toFixed(2)}  there ${r.avail}%`));
 }
-fs.writeFileSync('/Users/brianlee/.claude/jobs/142115c6/tmp/first_pick.json', JSON.stringify(out,null,2));
+fs.writeFileSync(CACHE + 'first_pick.json', JSON.stringify(out,null,2));

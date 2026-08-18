@@ -1,6 +1,9 @@
-/* Run: npx esbuild src/data.ts src/sleeper.ts --format=cjs --outdir=<TSOUT>
- * then point the two requires below at <TSOUT> and `node` this file.
+/* Run from app/:  node scripts/sim-build.mjs && node scripts/sim-risk.mjs
+ * sim-build.mjs transpiles src/data.ts and src/sleeper.ts into .simcache/.
  * Opponents are priced off Sleeper's real half-PPR ADP (SLP[name].adp). */
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 /* RISK SIMULATION on the corrected model.
  *
  * Two sources of randomness, not one:
@@ -11,8 +14,8 @@
  * (108.0 to 109.2). Real fantasy outcomes are dominated by (2). Reporting a mean without it
  * makes a 0.3-point strategy edge look decisive when it is noise.
  */
-const { P, MKT, BYE } = require('/Users/brianlee/.claude/jobs/142115c6/tmp/tsout/data.js');
-const { SLP } = require('/Users/brianlee/.claude/jobs/142115c6/tmp/tsout/sleeper.js');
+const { P, MKT, BYE } = require(CACHE + 'data.cjs');
+const { SLP } = require(CACHE + 'sleeper.cjs');
 
 const PPG = {
   QB: r => Math.max(14, 23.5 - 0.32 * r),

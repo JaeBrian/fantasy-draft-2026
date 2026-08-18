@@ -1,8 +1,11 @@
-/* The league starts K and DEF; my sims drafted 16 skill players and started 8.
-   Does modelling the two wasted picks change the strategy ranking? Same paired design,
-   but every team spends rounds 15 and 16 on a kicker and a defense. */
-const { P, MKT, BYE } = require('/Users/brianlee/.claude/jobs/142115c6/tmp/tsout/data.js');
-const { SLP } = require('/Users/brianlee/.claude/jobs/142115c6/tmp/tsout/sleeper.js');
+/* Run from app/:  node scripts/sim-build.mjs && node scripts/sim-kdef-check.mjs
+ * sim-build.mjs transpiles src/data.ts and src/sleeper.ts into .simcache/.
+ * Opponents are priced off Sleeper's real half-PPR ADP (SLP[name].adp). */
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const CACHE = new URL('../.simcache/', import.meta.url).pathname;
+const { P, MKT, BYE } = require(CACHE + 'data.cjs');
+const { SLP } = require(CACHE + 'sleeper.cjs');
 const PPG={QB:r=>Math.max(14,23.5-0.32*r),RB:r=>12.5*Math.exp(-(r-1)/20)+5.8,
   WR:r=>11.5*Math.exp(-(r-1)/26)+6.2,TE:r=>8.5*Math.exp(-(r-1)/7)+5};
 const RISK={buy:1.02,solid:1,risk:0.93,avoid:0.86};

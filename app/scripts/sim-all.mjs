@@ -1,13 +1,12 @@
-/* Regenerate every simulation table in the app on the corrected model (real Sleeper half-PPR
-   ADP), and add the analyses that only become possible once ADP is real:
-     A. SIM_PLANS   — the winning line, with the names actually available at each pick
-     B. CLIFF_MAP   — best remaining player by position at each of your picks
-     C. HEAD_TO_HEAD— which seat is actually best, all three drafting the same way
-     D. ARBITRAGE   — who Sleeper's room lets fall past their worth, and who it overpays
-     E. RUN_TIMING  — when each position actually comes off the board on Sleeper */
+/* Run from app/:  node scripts/sim-build.mjs && node scripts/sim-all.mjs
+ * sim-build.mjs transpiles src/data.ts and src/sleeper.ts into .simcache/.
+ * Opponents are priced off Sleeper's real half-PPR ADP (SLP[name].adp). */
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 const fs = require('fs');
-const { P, MKT, BYE } = require('/Users/brianlee/.claude/jobs/142115c6/tmp/tsout/data.js');
-const { SLP } = require('/Users/brianlee/.claude/jobs/142115c6/tmp/tsout/sleeper.js');
+const { P, MKT, BYE } = require(CACHE + 'data.cjs');
+const { SLP } = require(CACHE + 'sleeper.cjs');
 
 const PPG = { QB: r=>Math.max(14,23.5-0.32*r), RB: r=>12.5*Math.exp(-(r-1)/20)+5.8,
   WR: r=>11.5*Math.exp(-(r-1)/26)+6.2, TE: r=>8.5*Math.exp(-(r-1)/7)+5 };
@@ -143,5 +142,5 @@ for (const slot of [1,6,10]) {
   out.runTiming.forEach(r=>console.log(`   ${String(r.round).padStart(5)} ${String(r.RB).padStart(4)} ${String(r.WR).padStart(4)} ${String(r.TE).padStart(4)} ${String(r.QB).padStart(4)}`));
 }
 
-fs.writeFileSync('/Users/brianlee/.claude/jobs/142115c6/tmp/sim_all.json', JSON.stringify(out,null,2));
+fs.writeFileSync(CACHE + 'sim_all.json', JSON.stringify(out,null,2));
 console.log('\nwrote sim_all.json');

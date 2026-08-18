@@ -1,2 +1,5 @@
 .claude/
 _check.js
+
+# simulation transpile cache (scripts/sim-build.mjs)
+.simcache/
