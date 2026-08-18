@@ -94,3 +94,12 @@ writeFileSync(new URL("../src/sleeper.ts", import.meta.url), ts);
 console.log(
   `wrote src/sleeper.ts — ${injN} injury flags, ${trendN} trending, ${adpN} real ADP, ${Object.keys(out).length} entries`,
 );
+
+/* Player projections live on the same Sleeper feed and are just as perishable as ADP. Refresh
+ * them here so any scheduled job that pulls Sleeper data cannot leave the value model stale
+ * while the market data around it moves. */
+const { execFileSync } = await import("node:child_process");
+execFileSync("node", [new URL("./fetch-projections.mjs", import.meta.url).pathname], {
+  stdio: "inherit",
+  cwd: new URL("../", import.meta.url).pathname,
+});
