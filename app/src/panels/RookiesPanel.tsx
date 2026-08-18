@@ -56,7 +56,7 @@ export function RookiesPanel({ noob }: { noob: boolean }) {
 
       <Noob show={noob} title="Rookie vs. sophomore:">
         "rookies" are 2026 draftees playing their first NFL season. The hyped young guys you've heard all summer (Jeanty,
-        Egbuka, Tyler Warren, Loveland) are mostly <i>second-year</i> players — they're on the Big Board, and the best of
+        Egbuka, Tyler Warren, Loveland) are mostly <i>second-year</i> players — they're on the Draft board, and the best of
         them are in the second card below.
       </Noob>
 
