@@ -10,8 +10,8 @@
 
   /* ink */
   --color-ink: #e9edf3;
-  --color-ink-2: #a6b0bf;
-  --color-ink-3: #6c7789;
+  --color-ink-2: #b6bfcd;
+  --color-ink-3: #8391a3;
 
   /* the draft clock — the one loud color */
   --color-clock: #f0b429;
@@ -258,7 +258,8 @@ body {
   color: var(--color-ink-2);
   min-width: 260px;
   max-width: 470px;
-  font-size: 0.88rem;
+  font-size: 0.91rem;
+  line-height: 1.55;
 }
 .tbl .pname {
   font-weight: 600;
