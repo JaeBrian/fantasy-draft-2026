@@ -95,6 +95,8 @@ function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: numbe
     /* one readable sentence: what he fills, plus at most two supporting reasons */
     const clauses: string[] = [];
     clauses.push(t.cuffOf ? `he's the handcuff to your ${t.cuffOf} — season insurance` : needText(t.p, a));
+    const liveInj = SLP[t.now.r[0]]?.inj;
+    if (liveInj && liveInj !== "Q") clauses.push(`heads-up: Sleeper lists him ${liveInj === "O" ? "OUT" : liveInj} right now`);
     if (!waiting && t.pGone >= 0.5)
       clauses.push(`pass now and there's only a ~${Math.max(1, Math.round((1 - t.pGone) * 100))}% chance he's back at your next turn`);
     else if (t.cliff) clauses.push(`he's the last of ${t.p} Tier ${t.tier} likely to survive`);
