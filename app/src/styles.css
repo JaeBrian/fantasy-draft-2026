@@ -66,24 +66,14 @@ body {
 }
 
 @layer components {
-  /* section label: amber tick + condensed caps */
+  /* section label: quiet condensed caps */
   .eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 8px;
     font-family: var(--font-display);
     font-weight: 600;
     font-size: 0.86rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--color-ink-3);
-  }
-  .eyebrow::before {
-    content: "";
-    width: 14px;
-    height: 3px;
-    background: var(--color-clock);
-    flex: none;
   }
 
   .display {
@@ -310,12 +300,8 @@ tr.gone .pname, li.gone .nm {
 tr.mine td {
   background: rgba(240, 180, 41, 0.07);
 }
-tr.mine td:first-child {
-  box-shadow: inset 3px 0 0 var(--color-clock);
-}
 li.mine {
   background: rgba(240, 180, 41, 0.07);
-  box-shadow: inset 3px 0 0 var(--color-clock);
 }
 
 /* row mark buttons */
@@ -328,12 +314,15 @@ li.mine {
   background: transparent;
   color: var(--color-ink-3);
   border-radius: 4px;
-  min-width: 26px;
-  height: 24px;
-  font-size: 0.76rem;
+  height: 22px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   cursor: pointer;
   line-height: 1;
-  padding: 0 4px;
+  padding: 0 8px;
   transition: border-color 120ms, color 120ms;
 }
 .rowact button:hover {

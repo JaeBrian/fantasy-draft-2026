@@ -54,7 +54,7 @@ export function TeamIcon({ team, size = 18 }: { team: string; size?: number }) {
       alt=""
       width={size}
       height={size}
-      className="inline-block shrink-0 self-center"
+      className="inline-block shrink-0 align-[-0.18em]"
       style={{ filter: "drop-shadow(0 0 1px rgba(233,237,243,0.35))" }}
     />
   );

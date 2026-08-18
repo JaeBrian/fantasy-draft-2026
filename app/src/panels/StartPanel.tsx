@@ -116,7 +116,7 @@ export function StartPanel({ noob }: { noob: boolean }) {
         </div>
       </div>
 
-      <div className="card border-l-[3px] border-l-clock p-4.5">
+      <div className="card p-4.5">
         <b>How to actually use this at the table:</b> keep the <b>Big Board</b> tab open and cross names off as they're
         drafted. When you're on the clock, take the highest-ranked player left — unless a rule on the{" "}
         <b>Draft Plan</b> tab tells you otherwise (roster needs, tier cliffs, landmines). The chips tell you the story at
