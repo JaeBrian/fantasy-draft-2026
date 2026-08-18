@@ -4,6 +4,8 @@ import { usePersistent } from "./lib/store";
 import type { DraftState, Mark } from "./lib/advisor";
 import { StartPanel } from "./panels/StartPanel";
 import { NewsPanel } from "./panels/NewsPanel";
+import { SimPanel } from "./panels/SimPanel";
+import { ModelPanel } from "./panels/ModelPanel";
 import { PlanPanel } from "./panels/PlanPanel";
 import { RookiesPanel } from "./panels/RookiesPanel";
 import { AvoidPanel } from "./panels/AvoidPanel";
@@ -15,6 +17,8 @@ const TABS = [
   ["start", "Start Here"],
   ["board", "Draft"],
   ["news", "News"],
+  ["sims", "Simulations"],
+  ["model", "TD Model"],
   ["tiers", "Position Tiers"],
   ["plan", "Draft Plan"],
   ["rookies", "Rookies"],
@@ -172,6 +176,8 @@ export default function App() {
       <main className={`mx-auto px-5 pt-7 pb-16 ${tab === "board" ? "max-w-[1560px]" : "max-w-[1100px]"}`}>
         {tab === "start" && <StartPanel noob={noob} />}
         {tab === "news" && <NewsPanel noob={noob} />}
+        {tab === "sims" && <SimPanel noob={noob} />}
+        {tab === "model" && <ModelPanel noob={noob} />}
         {tab === "board" && (
           <BoardPanel
             noob={noob}
