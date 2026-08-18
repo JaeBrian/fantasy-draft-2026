@@ -421,7 +421,14 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
     QB: qb === 0 ? (myCount >= 5 ? 1 : 0.55) : qb === 1 && myCount >= 10 ? 0.5 : 0.05,
     RB: rb < 2 ? 1.05 : wrt < 7 ? 0.8 : rb >= 6 ? 0.08 : 0.45,
     WR: wr < 2 ? 1.05 : wrt < 7 ? 0.8 : wr >= 6 ? 0.08 : 0.45,
-    TE: te === 0 ? (myCount >= 3 ? 0.85 : 0.6) : te === 1 && myCount >= 10 ? 0.6 : 0.07,
+    /* No early-round penalty on your first tight end. This used to be 0.6 until you held three
+     * players, which predates having real projections: value over replacement already decides
+     * whether a TE is worth the pick, and the extra gate double-charged for it. With Sleeper's
+     * numbers the position is genuinely top-heavy — TE3 projects 12.3 against a TE13
+     * replacement of 7.4 — and the old gate had the advisor passing an elite tight end for a
+     * back with less value over replacement. It does not risk a round-1 TE: at pick 1 Gibbs
+     * carries 11.5 of VORP against Bowers's 5.5, and the weights cannot close that. */
+    TE: te === 0 ? 0.85 : te === 1 && myCount >= 10 ? 0.6 : 0.07,
     K: 0,
     DST: 0,
   };

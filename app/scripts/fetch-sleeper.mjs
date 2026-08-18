@@ -77,6 +77,14 @@ for (const name of boardNames) {
   // Sleeper's board-sort rank. NOTE: this is superflex-flavoured — it places QBs ~37 picks
   // earlier than a 1-QB league does — so it is kept for display only, never for pricing.
   if (typeof p.search_rank === "number" && p.search_rank <= 400) entry.rk = p.search_rank;
+  // Real inputs to the risk model, in place of assumed constants:
+  //   dc  depth chart order — 1 is the starter, 2+ is behind someone. A back listed second is
+  //       a different proposition from a bellcow no matter what his projection says.
+  //   age RBs fall off a cliff around 28 in a way receivers do not.
+  //   exp rookies carry far more spread than their projection alone suggests.
+  if (typeof p.depth_chart_order === "number") entry.dc = p.depth_chart_order;
+  if (typeof p.age === "number") entry.age = p.age;
+  if (typeof p.years_exp === "number") entry.exp = p.years_exp;
   if (Object.keys(entry).length) out[name] = entry;
 }
 
@@ -89,7 +97,7 @@ const ts =
   ` *        model prices players with, because it is the pick our league actually drafts at.\n` +
   ` *  rk  — Sleeper's in-app board-sort rank. Superflex-flavoured: it lists QBs roughly 37 picks\n` +
   ` *        earlier than a 1-QB league drafts them, so it is displayed but never priced on. */\n` +
-  `export const SLP: Record<string, { inj?: string; trend?: number; rk?: number; adp?: number }> = ${JSON.stringify(out, null, 0)};\n`;
+  `export const SLP: Record<string, { inj?: string; trend?: number; rk?: number; adp?: number; dc?: number; age?: number; exp?: number }> = ${JSON.stringify(out, null, 0)};\n`;
 writeFileSync(new URL("../src/sleeper.ts", import.meta.url), ts);
 console.log(
   `wrote src/sleeper.ts — ${injN} injury flags, ${trendN} trending, ${adpN} real ADP, ${Object.keys(out).length} entries`,
