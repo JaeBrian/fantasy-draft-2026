@@ -535,3 +535,316 @@ export const RISK_DIAL: Record<number, { structure: string; rows: RiskRow[] }> =
     ],
   },
 };
+
+/** Conditional draft tree: 700 paired seasons per branch. For each realistic first pick we
+ *  force it, then force each candidate second pick, let the rest run on best-available, and
+ *  play the season out. Each player draws the SAME season in every branch, so differences are
+ *  caused by the picks and nothing else. `avail` is how often he is still on the board.
+ *  Regenerate with app/scripts/sim-tree.mjs */
+export type TreePick = { name: string; pos: string; pts: number; avail: number };
+export type TreeBranch = { first: TreePick; second: TreePick[]; third: TreePick[] };
+export const DRAFT_TREE: Record<number, { picks: number[]; worlds: number; branches: TreeBranch[] }> = {
+  1: {
+    picks: [1, 24, 25],
+    worlds: 700,
+    branches: [
+      {
+        first: { name: "Jahmyr Gibbs", pos: "RB", pts: 0, avail: 100 },
+        second: [
+          { name: "Nico Collins", pos: "WR", pts: 110.00, avail: 50 },
+          { name: "George Pickens", pos: "WR", pts: 109.24, avail: 77 },
+          { name: "Kyren Williams", pos: "RB", pts: 108.98, avail: 95 },
+          { name: "Chris Olave", pos: "WR", pts: 108.95, avail: 98 },
+          { name: "DeVonta Smith", pos: "WR", pts: 108.95, avail: 100 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 108.56, avail: 100 },
+        ],
+        third: [
+          { name: "George Pickens", pos: "WR", pts: 110.75, avail: 35 },
+          { name: "Chris Olave", pos: "WR", pts: 109.13, avail: 49 },
+          { name: "Kyren Williams", pos: "RB", pts: 109.02, avail: 46 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 108.86, avail: 50 },
+          { name: "DeVonta Smith", pos: "WR", pts: 108.70, avail: 50 },
+          { name: "Ladd McConkey", pos: "WR", pts: 108.43, avail: 50 },
+        ],
+      },
+      {
+        first: { name: "Bijan Robinson", pos: "RB", pts: 0, avail: 100 },
+        second: [
+          { name: "Nico Collins", pos: "WR", pts: 109.25, avail: 50 },
+          { name: "Chris Olave", pos: "WR", pts: 107.57, avail: 98 },
+          { name: "DeVonta Smith", pos: "WR", pts: 107.48, avail: 100 },
+          { name: "Trey McBride", pos: "TE", pts: 107.44, avail: 58 },
+          { name: "Kyren Williams", pos: "RB", pts: 107.38, avail: 95 },
+          { name: "George Pickens", pos: "WR", pts: 107.32, avail: 77 },
+        ],
+        third: [
+          { name: "George Pickens", pos: "WR", pts: 109.14, avail: 35 },
+          { name: "Chris Olave", pos: "WR", pts: 108.37, avail: 48 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 108.02, avail: 50 },
+          { name: "DeVonta Smith", pos: "WR", pts: 107.97, avail: 50 },
+          { name: "Kyren Williams", pos: "RB", pts: 107.80, avail: 46 },
+          { name: "Malik Nabers", pos: "WR", pts: 107.62, avail: 49 },
+        ],
+      },
+      {
+        first: { name: "Ja'Marr Chase", pos: "WR", pts: 0, avail: 100 },
+        second: [
+          { name: "Nico Collins", pos: "WR", pts: 107.59, avail: 50 },
+          { name: "Kyren Williams", pos: "RB", pts: 107.20, avail: 95 },
+          { name: "George Pickens", pos: "WR", pts: 106.46, avail: 76 },
+          { name: "DeVonta Smith", pos: "WR", pts: 106.45, avail: 100 },
+          { name: "Chris Olave", pos: "WR", pts: 106.31, avail: 98 },
+          { name: "Breece Hall", pos: "RB", pts: 105.83, avail: 98 },
+        ],
+        third: [
+          { name: "George Pickens", pos: "WR", pts: 107.72, avail: 35 },
+          { name: "Kyren Williams", pos: "RB", pts: 107.38, avail: 46 },
+          { name: "Chris Olave", pos: "WR", pts: 106.62, avail: 49 },
+          { name: "DeVonta Smith", pos: "WR", pts: 106.36, avail: 50 },
+          { name: "Breece Hall", pos: "RB", pts: 106.33, avail: 49 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 106.13, avail: 50 },
+        ],
+      },
+      {
+        first: { name: "Jaxon Smith-Njigba", pos: "WR", pts: 0, avail: 100 },
+        second: [
+          { name: "Nico Collins", pos: "WR", pts: 106.58, avail: 49 },
+          { name: "Kyren Williams", pos: "RB", pts: 106.43, avail: 95 },
+          { name: "George Pickens", pos: "WR", pts: 106.04, avail: 77 },
+          { name: "DeVonta Smith", pos: "WR", pts: 105.80, avail: 100 },
+          { name: "Chris Olave", pos: "WR", pts: 105.70, avail: 98 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 105.27, avail: 100 },
+        ],
+        third: [
+          { name: "George Pickens", pos: "WR", pts: 106.90, avail: 34 },
+          { name: "Kyren Williams", pos: "RB", pts: 106.28, avail: 45 },
+          { name: "Chris Olave", pos: "WR", pts: 105.82, avail: 48 },
+          { name: "Breece Hall", pos: "RB", pts: 105.46, avail: 48 },
+          { name: "DeVonta Smith", pos: "WR", pts: 105.44, avail: 49 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 105.43, avail: 49 },
+        ],
+      },
+      {
+        first: { name: "Amon-Ra St. Brown", pos: "WR", pts: 0, avail: 100 },
+        second: [
+          { name: "Nico Collins", pos: "WR", pts: 106.56, avail: 49 },
+          { name: "Kyren Williams", pos: "RB", pts: 106.49, avail: 95 },
+          { name: "George Pickens", pos: "WR", pts: 105.82, avail: 76 },
+          { name: "DeVonta Smith", pos: "WR", pts: 105.66, avail: 100 },
+          { name: "Chris Olave", pos: "WR", pts: 105.54, avail: 98 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 105.19, avail: 100 },
+        ],
+        third: [
+          { name: "George Pickens", pos: "WR", pts: 107.14, avail: 34 },
+          { name: "Kyren Williams", pos: "RB", pts: 106.56, avail: 46 },
+          { name: "Chris Olave", pos: "WR", pts: 105.89, avail: 48 },
+          { name: "Breece Hall", pos: "RB", pts: 105.55, avail: 49 },
+          { name: "DeVonta Smith", pos: "WR", pts: 105.52, avail: 49 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 105.48, avail: 49 },
+        ],
+      },
+    ],
+  },
+  6: {
+    picks: [6, 19, 30],
+    worlds: 700,
+    branches: [
+      {
+        first: { name: "Jaxon Smith-Njigba", pos: "WR", pts: 0, avail: 82 },
+        second: [
+          { name: "Kenneth Walker III", pos: "RB", pts: 107.22, avail: 54 },
+          { name: "A.J. Brown", pos: "WR", pts: 106.54, avail: 64 },
+          { name: "Brock Bowers", pos: "TE", pts: 105.36, avail: 55 },
+          { name: "Nico Collins", pos: "WR", pts: 105.35, avail: 82 },
+          { name: "George Pickens", pos: "WR", pts: 105.32, avail: 82 },
+          { name: "Drake London", pos: "WR", pts: 104.97, avail: 62 },
+        ],
+        third: [
+          { name: "Chris Olave", pos: "WR", pts: 107.45, avail: 33 },
+          { name: "DeVonta Smith", pos: "WR", pts: 107.17, avail: 51 },
+          { name: "Zay Flowers", pos: "WR", pts: 107.13, avail: 53 },
+          { name: "Breece Hall", pos: "RB", pts: 107.08, avail: 37 },
+          { name: "Ladd McConkey", pos: "WR", pts: 107.06, avail: 53 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 106.68, avail: 53 },
+        ],
+      },
+      {
+        first: { name: "Amon-Ra St. Brown", pos: "WR", pts: 0, avail: 88 },
+        second: [
+          { name: "Kenneth Walker III", pos: "RB", pts: 107.07, avail: 58 },
+          { name: "A.J. Brown", pos: "WR", pts: 107.06, avail: 69 },
+          { name: "Brock Bowers", pos: "TE", pts: 106.04, avail: 59 },
+          { name: "Drake London", pos: "WR", pts: 105.83, avail: 64 },
+          { name: "George Pickens", pos: "WR", pts: 105.78, avail: 88 },
+          { name: "Nico Collins", pos: "WR", pts: 105.63, avail: 87 },
+        ],
+        third: [
+          { name: "Chris Olave", pos: "WR", pts: 108.00, avail: 35 },
+          { name: "Breece Hall", pos: "RB", pts: 107.52, avail: 39 },
+          { name: "DeVonta Smith", pos: "WR", pts: 107.40, avail: 56 },
+          { name: "Ladd McConkey", pos: "WR", pts: 107.29, avail: 58 },
+          { name: "Zay Flowers", pos: "WR", pts: 106.95, avail: 58 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 106.82, avail: 58 },
+        ],
+      },
+      {
+        first: { name: "Christian McCaffrey", pos: "RB", pts: 0, avail: 49 },
+        second: [
+          { name: "Kenneth Walker III", pos: "RB", pts: 105.45, avail: 33 },
+          { name: "A.J. Brown", pos: "WR", pts: 104.78, avail: 37 },
+          { name: "Brock Bowers", pos: "TE", pts: 104.35, avail: 34 },
+          { name: "George Pickens", pos: "WR", pts: 104.16, avail: 49 },
+          { name: "Nico Collins", pos: "WR", pts: 103.99, avail: 49 },
+          { name: "Chris Olave", pos: "WR", pts: 103.42, avail: 49 },
+        ],
+        third: [
+          { name: "DeVonta Smith", pos: "WR", pts: 105.47, avail: 31 },
+          { name: "Jaylen Waddle", pos: "WR", pts: 105.44, avail: 33 },
+          { name: "Ladd McConkey", pos: "WR", pts: 105.12, avail: 33 },
+          { name: "Cam Skattebo", pos: "RB", pts: 104.97, avail: 33 },
+          { name: "Zay Flowers", pos: "WR", pts: 104.89, avail: 33 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 104.84, avail: 32 },
+        ],
+      },
+      {
+        first: { name: "Justin Jefferson", pos: "WR", pts: 0, avail: 100 },
+        second: [
+          { name: "Kenneth Walker III", pos: "RB", pts: 106.44, avail: 67 },
+          { name: "A.J. Brown", pos: "WR", pts: 106.10, avail: 79 },
+          { name: "Drake London", pos: "WR", pts: 105.40, avail: 73 },
+          { name: "Brock Bowers", pos: "TE", pts: 105.05, avail: 67 },
+          { name: "George Pickens", pos: "WR", pts: 104.92, avail: 100 },
+          { name: "Nico Collins", pos: "WR", pts: 104.90, avail: 100 },
+        ],
+        third: [
+          { name: "Chris Olave", pos: "WR", pts: 107.22, avail: 40 },
+          { name: "DeVonta Smith", pos: "WR", pts: 106.81, avail: 64 },
+          { name: "Breece Hall", pos: "RB", pts: 106.62, avail: 44 },
+          { name: "Zay Flowers", pos: "WR", pts: 106.56, avail: 66 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 106.30, avail: 66 },
+          { name: "Javonte Williams", pos: "RB", pts: 106.13, avail: 64 },
+        ],
+      },
+      {
+        first: { name: "Jonathan Taylor", pos: "RB", pts: 0, avail: 73 },
+        second: [
+          { name: "A.J. Brown", pos: "WR", pts: 107.68, avail: 58 },
+          { name: "Brock Bowers", pos: "TE", pts: 107.31, avail: 49 },
+          { name: "Kenneth Walker III", pos: "RB", pts: 107.21, avail: 48 },
+          { name: "Drake London", pos: "WR", pts: 106.94, avail: 53 },
+          { name: "Nico Collins", pos: "WR", pts: 106.76, avail: 73 },
+          { name: "George Pickens", pos: "WR", pts: 106.47, avail: 73 },
+        ],
+        third: [
+          { name: "Chris Olave", pos: "WR", pts: 108.64, avail: 36 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 107.88, avail: 57 },
+          { name: "Breece Hall", pos: "RB", pts: 107.81, avail: 38 },
+          { name: "DeVonta Smith", pos: "WR", pts: 107.77, avail: 55 },
+          { name: "Javonte Williams", pos: "RB", pts: 107.72, avail: 55 },
+          { name: "Malik Nabers", pos: "WR", pts: 107.63, avail: 42 },
+        ],
+      },
+    ],
+  },
+  10: {
+    picks: [10, 15, 34],
+    worlds: 700,
+    branches: [
+      {
+        first: { name: "Justin Jefferson", pos: "WR", pts: 0, avail: 97 },
+        second: [
+          { name: "Derrick Henry", pos: "RB", pts: 107.79, avail: 79 },
+          { name: "Chase Brown", pos: "RB", pts: 107.44, avail: 69 },
+          { name: "Kenneth Walker III", pos: "RB", pts: 107.34, avail: 92 },
+          { name: "Saquon Barkley", pos: "RB", pts: 107.02, avail: 43 },
+          { name: "Omarion Hampton", pos: "RB", pts: 106.52, avail: 75 },
+          { name: "A.J. Brown", pos: "WR", pts: 106.49, avail: 96 },
+        ],
+        third: [
+          { name: "DeVonta Smith", pos: "WR", pts: 108.27, avail: 47 },
+          { name: "Zay Flowers", pos: "WR", pts: 107.55, avail: 73 },
+          { name: "Cam Skattebo", pos: "RB", pts: 107.54, avail: 72 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 107.23, avail: 75 },
+          { name: "Tetairoa McMillan", pos: "WR", pts: 107.23, avail: 66 },
+          { name: "Jaylen Waddle", pos: "WR", pts: 107.10, avail: 79 },
+        ],
+      },
+      {
+        first: { name: "CeeDee Lamb", pos: "WR", pts: 0, avail: 88 },
+        second: [
+          { name: "Saquon Barkley", pos: "RB", pts: 106.99, avail: 38 },
+          { name: "Derrick Henry", pos: "RB", pts: 106.91, avail: 70 },
+          { name: "Kenneth Walker III", pos: "RB", pts: 106.26, avail: 83 },
+          { name: "Chase Brown", pos: "RB", pts: 106.25, avail: 62 },
+          { name: "Brock Bowers", pos: "TE", pts: 105.76, avail: 78 },
+          { name: "A.J. Brown", pos: "WR", pts: 105.70, avail: 87 },
+        ],
+        third: [
+          { name: "Zay Flowers", pos: "WR", pts: 106.92, avail: 36 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 106.81, avail: 36 },
+          { name: "Cam Skattebo", pos: "RB", pts: 106.41, avail: 36 },
+          { name: "Ladd McConkey", pos: "WR", pts: 106.32, avail: 37 },
+          { name: "Colston Loveland", pos: "TE", pts: 106.09, avail: 38 },
+          { name: "Terry McLaurin", pos: "WR", pts: 105.86, avail: 38 },
+        ],
+      },
+      {
+        first: { name: "Derrick Henry", pos: "RB", pts: 0, avail: 100 },
+        second: [
+          { name: "Saquon Barkley", pos: "RB", pts: 106.51, avail: 53 },
+          { name: "Kenneth Walker III", pos: "RB", pts: 106.42, avail: 96 },
+          { name: "A.J. Brown", pos: "WR", pts: 106.40, avail: 100 },
+          { name: "Brock Bowers", pos: "TE", pts: 106.30, avail: 90 },
+          { name: "George Pickens", pos: "WR", pts: 106.03, avail: 100 },
+          { name: "Nico Collins", pos: "WR", pts: 105.73, avail: 100 },
+        ],
+        third: [
+          { name: "DeVonta Smith", pos: "WR", pts: 106.31, avail: 32 },
+          { name: "Zay Flowers", pos: "WR", pts: 105.62, avail: 50 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 105.35, avail: 50 },
+          { name: "Tetairoa McMillan", pos: "WR", pts: 105.23, avail: 45 },
+          { name: "Jaylen Waddle", pos: "WR", pts: 105.00, avail: 53 },
+          { name: "Ladd McConkey", pos: "WR", pts: 104.98, avail: 52 },
+        ],
+      },
+      {
+        first: { name: "Saquon Barkley", pos: "RB", pts: 0, avail: 98 },
+        second: [
+          { name: "Derrick Henry", pos: "RB", pts: 106.34, avail: 84 },
+          { name: "A.J. Brown", pos: "WR", pts: 106.25, avail: 97 },
+          { name: "Kenneth Walker III", pos: "RB", pts: 106.15, avail: 93 },
+          { name: "Brock Bowers", pos: "TE", pts: 106.04, avail: 87 },
+          { name: "Chase Brown", pos: "RB", pts: 105.83, avail: 75 },
+          { name: "George Pickens", pos: "WR", pts: 105.82, avail: 98 },
+        ],
+        third: [
+          { name: "DeVonta Smith", pos: "WR", pts: 106.47, avail: 51 },
+          { name: "Jaylen Waddle", pos: "WR", pts: 105.71, avail: 84 },
+          { name: "Zay Flowers", pos: "WR", pts: 105.68, avail: 78 },
+          { name: "Tetairoa McMillan", pos: "WR", pts: 105.46, avail: 71 },
+          { name: "Ladd McConkey", pos: "WR", pts: 105.39, avail: 81 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 105.34, avail: 79 },
+        ],
+      },
+      {
+        first: { name: "Kenneth Walker III", pos: "RB", pts: 0, avail: 100 },
+        second: [
+          { name: "Saquon Barkley", pos: "RB", pts: 106.59, avail: 58 },
+          { name: "Derrick Henry", pos: "RB", pts: 106.59, avail: 90 },
+          { name: "Brock Bowers", pos: "TE", pts: 106.05, avail: 90 },
+          { name: "A.J. Brown", pos: "WR", pts: 106.03, avail: 100 },
+          { name: "George Pickens", pos: "WR", pts: 105.61, avail: 100 },
+          { name: "Drake London", pos: "WR", pts: 105.42, avail: 100 },
+        ],
+        third: [
+          { name: "DeVonta Smith", pos: "WR", pts: 106.43, avail: 33 },
+          { name: "Tetairoa McMillan", pos: "WR", pts: 105.98, avail: 50 },
+          { name: "Zay Flowers", pos: "WR", pts: 105.96, avail: 54 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 105.79, avail: 55 },
+          { name: "Jaylen Waddle", pos: "WR", pts: 105.55, avail: 58 },
+          { name: "Tee Higgins", pos: "WR", pts: 105.45, avail: 54 },
+        ],
+      },
+    ],
+  },
+};

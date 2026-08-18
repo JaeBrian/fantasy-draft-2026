@@ -1,28 +1,44 @@
 import { useState } from "react";
-import { CLIFF_MAP, PAIRED_SIM, RISK_DIAL, SIM_PLANS, TOOL_USERS } from "../data";
+import { CLIFF_MAP, DRAFT_TREE, PAIRED_SIM, RISK_DIAL, SIM_PLANS, TOOL_USERS } from "../data";
 import { Card, Eyebrow, Intro, Noob } from "../components/ui";
 
 
-/** Forced-first-pick study: final roster strength, and how often he's actually there. */
+/** Forced-first-pick study on the corrected model: 2,500 paired seasons per candidate.
+ *  We force the pick, run best-available after it, and play the season out. `avail` is how
+ *  often he was still on the board at that seat. Regenerate with app/scripts/sim-first.mjs */
 const FIRST_PICK: Record<number, { name: string; pos: string; pts: number; avail: number }[]> = {
+  1: [
+    { name: "Jahmyr Gibbs", pos: "RB", pts: 108.60, avail: 100 },
+    { name: "Bijan Robinson", pos: "RB", pts: 107.94, avail: 100 },
+    { name: "Jonathan Taylor", pos: "RB", pts: 107.03, avail: 100 },
+    { name: "James Cook", pos: "RB", pts: 106.65, avail: 100 },
+    { name: "Derrick Henry", pos: "RB", pts: 106.43, avail: 100 },
+    { name: "Ja'Marr Chase", pos: "WR", pts: 106.24, avail: 100 },
+    { name: "Jaxon Smith-Njigba", pos: "WR", pts: 105.87, avail: 100 },
+    { name: "Saquon Barkley", pos: "RB", pts: 105.86, avail: 100 },
+    { name: "Amon-Ra St. Brown", pos: "WR", pts: 105.73, avail: 100 },
+  ],
   6: [
-    { name: "Jonathan Taylor", pos: "RB", pts: 109.15, avail: 48 },
-    { name: "Christian McCaffrey", pos: "RB", pts: 109.01, avail: 73 },
-    { name: "Ja'Marr Chase", pos: "WR", pts: 109.0, avail: 12 },
-    { name: "James Cook", pos: "RB", pts: 108.91, avail: 90 },
-    { name: "Jaxon Smith-Njigba", pos: "WR", pts: 108.88, avail: 74 },
-    { name: "Derrick Henry", pos: "RB", pts: 108.47, avail: 98 },
-    { name: "Amon-Ra St. Brown", pos: "WR", pts: 108.35, avail: 97 },
-    { name: "Justin Jefferson", pos: "WR", pts: 107.9, avail: 100 },
-    { name: "CeeDee Lamb", pos: "WR", pts: 107.52, avail: 100 },
+    { name: "Jonathan Taylor", pos: "RB", pts: 107.26, avail: 74 },
+    { name: "Amon-Ra St. Brown", pos: "WR", pts: 106.89, avail: 88 },
+    { name: "James Cook", pos: "RB", pts: 106.85, avail: 98 },
+    { name: "Jaxon Smith-Njigba", pos: "WR", pts: 106.80, avail: 83 },
+    { name: "Derrick Henry", pos: "RB", pts: 106.43, avail: 100 },
+    { name: "Justin Jefferson", pos: "WR", pts: 106.28, avail: 100 },
+    { name: "Saquon Barkley", pos: "RB", pts: 106.12, avail: 100 },
+    { name: "A.J. Brown", pos: "WR", pts: 106.09, avail: 100 },
+    { name: "Kenneth Walker III", pos: "RB", pts: 105.92, avail: 100 },
   ],
   10: [
-    { name: "Amon-Ra St. Brown", pos: "WR", pts: 108.06, avail: 41 },
-    { name: "Derrick Henry", pos: "RB", pts: 108.03, avail: 67 },
-    { name: "Jaxon Smith-Njigba", pos: "WR", pts: 108.01, avail: 2 },
-    { name: "James Cook", pos: "RB", pts: 107.96, avail: 15 },
-    { name: "Justin Jefferson", pos: "WR", pts: 107.29, avail: 100 },
-    { name: "CeeDee Lamb", pos: "WR", pts: 107.17, avail: 96 },
+    { name: "Justin Jefferson", pos: "WR", pts: 107.84, avail: 97 },
+    { name: "Derrick Henry", pos: "RB", pts: 107.36, avail: 100 },
+    { name: "Saquon Barkley", pos: "RB", pts: 107.21, avail: 98 },
+    { name: "James Cook", pos: "RB", pts: 107.16, avail: 25 },
+    { name: "CeeDee Lamb", pos: "WR", pts: 107.16, avail: 87 },
+    { name: "Kenneth Walker III", pos: "RB", pts: 106.84, avail: 100 },
+    { name: "A.J. Brown", pos: "WR", pts: 106.33, avail: 100 },
+    { name: "Brock Bowers", pos: "TE", pts: 106.21, avail: 97 },
+    { name: "Chase Brown", pos: "RB", pts: 106.20, avail: 100 },
   ],
 };
 
@@ -34,10 +50,12 @@ const HEAD_TO_HEAD = [
 
 export function SimPanel({ noob }: { noob: boolean }) {
   const [seat, setSeat] = useState<number>(6);
+  const [branch, setBranch] = useState<string>("");
   const plan = SIM_PLANS[seat];
   const cliff = CLIFF_MAP[seat];
   const paired = PAIRED_SIM[seat];
   const risk = RISK_DIAL[seat];
+  const tree = DRAFT_TREE[seat];
   const firsts = FIRST_PICK[seat];
 
   return (
@@ -121,8 +139,9 @@ export function SimPanel({ noob }: { noob: boolean }) {
             </table>
           </div>
           <p className="m-0 mt-2 text-[0.82rem] leading-relaxed text-ink-3">
-            The counter-intuitive result: the players who are <i>always</i> there (Jefferson, Lamb at 100%) are the
-            worst use of an early pick — they come back to you anyway. Spend the pick on someone who won't.
+            Read both columns together. The top name is only the right answer if he's actually there — Jonathan Taylor
+            grades best at pick 6 but is gone a quarter of the time, so know your second choice before you're on the
+            clock. Anyone sitting at 100% will keep, which is a reason to spend the pick on someone who won't.
           </p>
         </Card>
       )}
@@ -183,6 +202,70 @@ export function SimPanel({ noob }: { noob: boolean }) {
               </tbody>
             </table>
           </div>
+        </Card>
+      )}
+
+      {tree && (
+        <Card>
+          <Eyebrow>If this, then that</Eyebrow>
+          <h3 className="display m-0 mb-1 text-[1.2rem] text-ink">
+            Whoever you land at {tree.picks[0]}, here's your pick {tree.picks[1]} — then {tree.picks[2]}
+          </h3>
+          <p className="m-0 mb-3 text-[0.85rem] text-ink-2">
+            Pick the card matching who you actually got, then read straight down. Options are ranked best to worst by
+            the team you finish with, and <b className="text-ink">there %</b> is how often that player is still on the
+            board when the pick arrives — a great option at 30% is worth less than a good one at 90%, so have two in mind.
+          </p>
+          <div className="flex flex-col gap-3">
+            {tree.branches.map((b) => {
+              const open = branch === b.first.name;
+              return (
+                <div key={b.first.name} className="rounded-lg border border-line-soft">
+                  <button
+                    type="button"
+                    onClick={() => setBranch(open ? "" : b.first.name)}
+                    className="flex w-full items-baseline justify-between gap-2 px-3 py-2 text-left"
+                  >
+                    <span className="text-[0.92rem] text-ink">
+                      <span className="text-ink-3">if you get </span>
+                      <b>{b.first.name}</b>
+                      <span className="ml-1.5 font-mono text-[0.72rem] text-ink-3">{b.first.pos}</span>
+                    </span>
+                    <span className="shrink-0 font-mono text-[0.76rem] text-ink-3">
+                      there {b.first.avail}% {open ? "−" : "+"}
+                    </span>
+                  </button>
+                  {open && (
+                    <div className="grid gap-4 border-t border-line-soft px-3 py-2.5 sm:grid-cols-2">
+                      {([["then take at pick " + tree.picks[1], b.second], ["and at pick " + tree.picks[2], b.third]] as const).map(
+                        ([title, list]) => (
+                          <div key={title}>
+                            <div className="mb-1 text-[0.75rem] uppercase tracking-wide text-ink-3">{title}</div>
+                            <ol className="m-0 list-none space-y-0.5 p-0 text-[0.85rem]">
+                              {list.map((x, i) => (
+                                <li key={x.name} className="flex items-baseline gap-1.5">
+                                  <span className="w-4 shrink-0 font-mono text-[0.72rem] text-ink-3">{i + 1}.</span>
+                                  <span className={i === 0 ? "font-semibold text-ink" : "text-ink-2"}>{x.name}</span>
+                                  <span className="font-mono text-[0.68rem] text-ink-3">{x.pos}</span>
+                                  <span className="ml-auto shrink-0 font-mono text-[0.72rem] tabular-nums text-ink-3">
+                                    {x.pts.toFixed(1)} · {x.avail}%
+                                  </span>
+                                </li>
+                              ))}
+                            </ol>
+                          </div>
+                        ),
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <p className="m-0 mt-3 text-[0.8rem] leading-snug text-ink-3">
+            The pick {tree.picks[2]} column assumes you took the top option at {tree.picks[1]}. If you took a different
+            one, the names shift but the shape rarely does — keep taking the best player your roster still has room for.
+          </p>
         </Card>
       )}
 
