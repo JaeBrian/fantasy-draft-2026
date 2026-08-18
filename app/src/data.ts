@@ -266,3 +266,8 @@ export const LATEST_UPDATE = {
     "Board grown to 170 players; Edge (ADP+) column, ordered pick board, and collapsible tiers added",
   ],
 };
+
+/** League draft order — "charmin ultra strong", confirmed by the owner. */
+export const DRAFT_ORDER = ["Ashley","Zach","Jeff","Brandon","Duy","Brian JK","Michelle","Aaron","Matt","Emily","Josh","Brian V"];
+/** The slots of the people who use this tool, for one-tap identity. */
+export const TOOL_USERS: [string, number][] = [["Ashley", 1], ["Brian JK", 6], ["Emily", 10]];

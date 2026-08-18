@@ -161,7 +161,7 @@ export default function App() {
         </div>
       </div>
 
-      <main className="mx-auto max-w-[1100px] px-5 pt-7 pb-16">
+      <main className={`mx-auto px-5 pt-7 pb-16 ${tab === "board" ? "max-w-[1560px]" : "max-w-[1100px]"}`}>
         {tab === "start" && <StartPanel noob={noob} />}
         {tab === "board" && (
           <BoardPanel
