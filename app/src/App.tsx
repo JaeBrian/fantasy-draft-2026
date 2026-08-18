@@ -11,11 +11,13 @@ import { RookiesPanel } from "./panels/RookiesPanel";
 import { AvoidPanel } from "./panels/AvoidPanel";
 import { VegasPanel } from "./panels/VegasPanel";
 import { BoardPanel } from "./panels/BoardPanel";
+import { AdpPanel } from "./panels/AdpPanel";
 import { TiersPanel } from "./panels/TiersPanel";
 
 const TABS = [
   ["start", "Start Here"],
   ["board", "Draft"],
+  ["adp", "Sleeper ADP"],
   ["news", "News"],
   ["sims", "Simulations"],
   ["model", "TD Model"],
@@ -175,6 +177,7 @@ export default function App() {
 
       <main className={`mx-auto px-5 pt-7 pb-16 ${tab === "board" ? "max-w-[1560px]" : "max-w-[1100px]"}`}>
         {tab === "start" && <StartPanel noob={noob} />}
+        {tab === "adp" && <AdpPanel noob={noob} />}
         {tab === "news" && <NewsPanel noob={noob} />}
         {tab === "sims" && <SimPanel noob={noob} />}
         {tab === "model" && <ModelPanel noob={noob} />}

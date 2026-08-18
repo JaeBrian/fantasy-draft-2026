@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CLIFF_MAP, DRAFT_TREE, PAIRED_SIM, RISK_DIAL, SIM_PLANS, TOOL_USERS } from "../data";
+import { ARBITRAGE, CLIFF_MAP, DRAFT_TREE, PAIRED_SIM, RISK_DIAL, SIM_PLANS, TOOL_USERS } from "../data";
 import { Card, Eyebrow, Intro, Noob } from "../components/ui";
 
 
@@ -42,10 +42,13 @@ const FIRST_PICK: Record<number, { name: string; pos: string; pts: number; avail
   ],
 };
 
+/** All three tool seats drafting the same way in the same league, 4,000 paired seasons.
+ *  Note this is a harder test than the per-seat studies: there, only one seat used our board.
+ *  Here all three do, so they compete for the same players. */
 const HEAD_TO_HEAD = [
-  { who: "Ashley", slot: 1, avg: 108.7, best: 70 },
-  { who: "Brian JK", slot: 6, avg: 107.8, best: 27 },
-  { who: "Emily", slot: 10, avg: 106.9, best: 4 },
+  { who: "Ashley", slot: 1, avg: 108.9, best: 40 },
+  { who: "Emily", slot: 10, avg: 106.3, best: 32 },
+  { who: "Brian JK", slot: 6, avg: 105.4, best: 29 },
 ];
 
 export function SimPanel({ noob }: { noob: boolean }) {
@@ -204,6 +207,45 @@ export function SimPanel({ noob }: { noob: boolean }) {
           </div>
         </Card>
       )}
+
+      <Card>
+        <Eyebrow>Where Sleeper's room misprices</Eyebrow>
+        <h3 className="display m-0 mb-1 text-[1.2rem] text-ink">Who falls to you, and who you must not pay for</h3>
+        <p className="m-0 mb-3 text-[0.85rem] text-ink-2">
+          Our rank against the pick Sleeper's rooms actually take him at. This is the same list for everyone — it's a
+          property of the market, not of your seat.
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {([["Let them fall", ARBITRAGE.falls, true], ["Never reach", ARBITRAGE.traps, false]] as const).map(
+            ([title, list, good]) => (
+              <div key={title}>
+                <div className={`mb-1.5 text-[0.78rem] font-semibold ${good ? "text-value" : "text-avoid"}`}>{title}</div>
+                <ul className="m-0 list-none space-y-1 p-0 text-[0.83rem]">
+                  {list.slice(0, 9).map((r) => (
+                    <li key={r.name} className="flex items-baseline gap-1.5">
+                      <span className="text-ink-2">{r.name}</span>
+                      <span className="font-mono text-[0.68rem] text-ink-3">{r.pos}</span>
+                      <span className="ml-auto shrink-0 font-mono text-[0.72rem] tabular-nums text-ink-3">
+                        #{r.ourRank} → {r.sadp.toFixed(0)}
+                      </span>
+                      <span className={`w-11 shrink-0 text-right font-mono text-[0.72rem] tabular-nums ${good ? "text-value" : "text-avoid"}`}>
+                        {r.gap > 0 ? `+${r.gap.toFixed(0)}` : r.gap.toFixed(0)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ),
+          )}
+        </div>
+        <p className="m-0 mt-3 rounded-md bg-line-soft/40 px-2.5 py-2 text-[0.8rem] leading-snug text-ink-2">
+          <b className="text-ink">The pattern is tight ends.</b> Seven of the fourteen biggest overpays we found are
+          TEs — Kelce, Pitts, LaPorta, Kincaid, Fannin, Ferguson, Kittle. Sleeper's rooms reach for the middle TE tier
+          by two to four rounds. Take Bowers or McBride early if the price is right, otherwise wait it out; the TE you get in
+          round 10 will not be meaningfully worse than the one the room paid round 6 for. The falls run the other
+          way — quarterbacks and depth receivers keep, so let them.
+        </p>
+      </Card>
 
       {tree && (
         <Card>
@@ -372,12 +414,15 @@ export function SimPanel({ noob }: { noob: boolean }) {
           ))}
           <li className="mt-1 border-t border-line-soft pt-1.5 text-ink-3">
             <span className="w-24 inline-block">The other nine</span>
-            <span className="font-mono tabular-nums">99.6 pts/wk</span>
+            <span className="font-mono tabular-nums">99.3 pts/wk</span>
           </li>
         </ul>
         <p className="m-0 mt-2 text-[0.82rem] leading-relaxed text-ink-3">
-          The three of you project 7–9 points a week clear of the rest of the league. Ashley's edge is the seat, not the
-          strategy — the 1.01 is simply the best chair in a year this top-heavy.
+          All three of you project 6–10 points a week clear of the rest of the league, which is the whole point of the
+          tool. Ashley's edge is the seat, not the plan — the 1.01 is simply the best chair in a year this top-heavy.
+          Worth knowing: because the three of you draft off the <i>same</i> board, you compete for the same players, so
+          each of you scores a little lower here than in the single-seat studies above. Pick 6 gives up the most to
+          that, since Ashley clears the board ahead of him every round.
         </p>
       </Card>
     </div>
