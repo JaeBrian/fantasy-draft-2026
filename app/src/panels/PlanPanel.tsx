@@ -51,11 +51,12 @@ const PLANS: Record<SlotKey, ReactNode> = {
   ),
   s1012: (
     <>
-      <Round rn="Rounds 1–2 (back-to-back)"><b>The turn is a superpower:</b> catch the fallers. Jefferson + Cook, Lamb + Henry, or Achane-at-a-discount + Chase Brown. One elite WR + one RB is the ideal shape; RB-RB fine if two bellcows fall.</Round>
-      <Round rn="Round 3"><b>Let Josh Allen come to you</b> — he routinely slides to picks 26–31. If he's gone: best WR standing (Nabers if you can absorb the risk, DeVonta, Pickens).</Round>
-      <Round rn="Rounds 4–7">You pick in pairs — plan two at a time. WR + RB each turn beats doubling one position. Loveland/Warren for TE in this window.</Round>
+      <Round rn="Rounds 1–2 (back-to-back)"><b>The turn is a superpower:</b> catch the fallers. Jefferson + Cook, Lamb + Henry, or two bellcows if they fall (Cook + Henry is a dream start). Order between your two turn picks doesn't matter — you're getting both. One RB minimum leaves this turn with you.</Round>
+      <Round rn="Round 3"><b>RB2 first</b> — Skattebo, Etienne, or a healthy-checked Breece keeps you on the two-RBs-in-three-rounds plan. The one exception worth breaking it: <b>Josh Allen sliding to 26–31</b> — take him and push RB2 to round 4; his edge over QB12 is bigger than the RB you're deferring.</Round>
+      <Round rn="Rounds 4–7">You pick in pairs — plan two at a time. WR + RB each turn beats doubling one position. Loveland/Warren for TE in this window; Odunze, Waddle, Egbuka are the WR targets.</Round>
       <Round rn="Rounds 8–16">This seat wins late: Diggs, Mason, Croskey-Merritt, Murray, Likely all live here. K/DST last two.</Round>
-      <Round rn="Example">Jefferson + James Cook → Allen → Kyren → Egbuka + Waddle → Tyler Warren + Mason…</Round>
+      <Round rn="Example (base)">Jefferson + Cook → Skattebo → Waddle → Egbuka + Warren → Lamar + Mason…</Round>
+      <Round rn="Example (Allen slides)">Jefferson + Cook → Allen → Skattebo/Etienne → Odunze + Warren → Diggs + Croskey-Merritt…</Round>
     </>
   ),
 };

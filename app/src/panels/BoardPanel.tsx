@@ -148,8 +148,15 @@ function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: numbe
         {special && <div className="text-[0.95rem] text-ink"><b>Take:</b> {special}</div>}
         {suggestion && (
           <div className="flex flex-col gap-1.5">
-            <div className="display text-[0.92rem] uppercase tracking-[0.14em] text-clock">
-              {waiting ? `Your board for pick #${a.nextPick} — in order` : "Take — in order"}
+            <div className="flex flex-wrap items-baseline gap-x-2">
+              <span className="display text-[0.92rem] uppercase tracking-[0.14em] text-clock">
+                {waiting ? `Your board for pick #${a.nextPick} — in order` : "Take — in order"}
+              </span>
+              {waiting && (
+                <span className="text-[0.78rem] normal-case tracking-normal text-ink-3">
+                  value × odds he's still there — when you're on the clock this re-ranks with what's actually left
+                </span>
+              )}
             </div>
             {suggestion.list.map((c, idx) => (
               <div key={c.now.r[0]} className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5">
