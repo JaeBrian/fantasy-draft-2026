@@ -34,6 +34,8 @@ export interface Candidate {
   antiStack: boolean;
   /** picks he has slid past his market ADP (positive = value fall) */
   fell: number;
+  /** within 2% of the top score — the model cannot honestly separate these; take your pick */
+  tied?: boolean;
 }
 
 export interface Lookahead {
@@ -482,6 +484,26 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
     seen.add(c.now.r[0]);
     return true;
   });
+
+  /* Flag near-ties. The score is not precise enough to rank players this close, and
+   * presenting a coin flip as an ordered instruction is how the panel ends up telling you to
+   * pass the better player. At pick 3 with Gibbs and Bijan gone, Jonathan Taylor outscored
+   * Ja'Marr Chase by 0.024 on a 14.3 scale — 0.17%.
+   *
+   * We deliberately do NOT reorder them. Chase leads on projection, VORP, our board rank and
+   * market ADP; Taylor leads on the two-pick lookahead, which is the more principled test
+   * (Taylor now plus the best WR left at your next turn beats Chase now plus the best RB, by
+   * 0.15, because WR is the deeper position). A 5,000-season simulation put Chase ahead by
+   * 0.25. Both edges are far inside the noise, so the honest answer is that it is the
+   * drafter's call — the UI says so rather than the model pretending to know. */
+  const TIE_BAND = 0.02;
+  if (deduped.length > 1) {
+    const lead = Math.max(deduped[0].score, deduped[1].score);
+    deduped.slice(0, 3).forEach((c) => {
+      if (c.score >= lead * (1 - TIE_BAND)) c.tied = true;
+    });
+    if (deduped.filter((c) => c.tied).length < 2) deduped.forEach((c) => { c.tied = false; });
+  }
   /* two-pick sequencing: A now + expected best of B's position later, vs the reverse */
   let look: Lookahead | null = null;
   const t0 = deduped[0];
@@ -492,11 +514,19 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
     if (AB >= BA) look = { first: t0, second: t1, edge: AB - BA };
     else look = { first: t1, second: t0, edge: BA - AB, flipped: true };
   }
+  /* The sequencing check compares raw projections and ignores whether the player will still
+   * be there, so it must not overturn a decisive score. At Emily's pick 10 it promoted James
+   * Cook (score 6.55, on the board ~25% of the time) over Justin Jefferson (7.90) — and a
+   * 5,000-season run has Jefferson as her single best first pick. Only let it reorder when
+   * the two are genuinely close; the score already carries availability and risk. */
+  const FLIP_BAND = 0.06;
   if (look?.flipped) {
     const i = deduped.indexOf(look.first);
-    if (i > 0) {
+    if (i > 0 && look.first.score >= deduped[0].score * (1 - FLIP_BAND)) {
       deduped.splice(i, 1);
       deduped.unshift(look.first);
+    } else if (i > 0) {
+      look = { first: deduped[0], second: look.first, edge: look.edge };
     }
   }
   /* players to write off: gone before the pick you're actually planning for,

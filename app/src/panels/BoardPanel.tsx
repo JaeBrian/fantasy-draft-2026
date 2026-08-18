@@ -105,6 +105,17 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked }: { DS: DraftState; mySl
       <>
         {t.cuffOf ? (
           <>Take <b>{t.now.r[0]}</b>. He's the backup to your star {t.cuffOf} — if {t.cuffOf} gets hurt, this pick takes over his job. Think of it as insurance.</>
+        ) : t.tied && a.cands[1]?.tied ? (
+          <>
+            This one's <b>too close to call</b>: <b>{t.now.r[0]}</b> ({PLAINPOS[t.p]}) and{" "}
+            <b>{a.cands[1].now.r[0]}</b> ({PLAINPOS[a.cands[1].p]}) score within a fraction of a point of each other, which
+            is well inside what this model can actually tell apart. Take whichever you'd rather own — there is no wrong
+            answer here, and anyone who says otherwise is guessing.
+            {a.cands[1].proj > t.proj + 0.4 && (
+              <> If you want a tiebreaker: {a.cands[1].now.r[0]} is projected for slightly more points, while{" "}
+              {t.now.r[0]} is the scarcer position.</>
+            )}
+          </>
         ) : (
           <>
             Take <b>{t.now.r[0]}</b>. He's the best {PLAINPOS[t.p]} still available
@@ -213,6 +224,14 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked }: { DS: DraftState; mySl
                 <Sticker pos={c.p} />
                 <span className="font-mono text-[0.75rem] text-ink-3">#{c.now.i + 1}</span>
                 <InjChip name={c.now.r[0]} />
+                {c.tied && (
+                  <span
+                    className="rounded-sm border border-clock/40 px-1 py-px font-mono text-[0.66rem] uppercase tracking-wide text-clock"
+                    title="Too close for the model to call — pick whichever you prefer"
+                  >
+                    too close to call
+                  </span>
+                )}
                 {waiting && c.pReach < 0.995 && (
                   <span className={reachCls(Math.round(c.pReach * 100))}>~{Math.round(c.pReach * 100)}% there</span>
                 )}

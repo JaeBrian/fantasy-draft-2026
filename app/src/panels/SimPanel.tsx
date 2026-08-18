@@ -262,8 +262,9 @@ export function SimPanel({ noob }: { noob: boolean }) {
         <p className="m-0 mt-3 rounded-md bg-line-soft/40 px-2.5 py-2 text-[0.8rem] leading-snug text-ink-2">
           <b className="text-ink">The pattern is tight ends.</b> Seven of the fourteen biggest overpays we found are
           TEs — Kelce, Pitts, LaPorta, Kincaid, Fannin, Ferguson, Kittle. Sleeper's rooms reach for the middle TE tier
-          by two to four rounds. Take Bowers or McBride early if the price is right, otherwise wait it out; the TE you get in
-          round 10 will not be meaningfully worse than the one the room paid round 6 for. The falls run the other
+          by two to four rounds. But punting the position is not the answer either: forcing the pick round by round, the best round
+          for a tight end is <b className="text-ink">round 5</b> at all three seats. Paying up in round 2 costs 1.8–2.4
+          pts/wk, and waiting until round 10 still costs 1.0–1.3. Round 5 is the whole window. The falls run the other
           way — quarterbacks and depth receivers keep, so let them.
         </p>
       </Card>
