@@ -323,6 +323,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
   const [sleeperId, setSleeperId] = usePersistent<string>("fd26-sleeper", DEFAULT_SLEEPER, (r) => r || DEFAULT_SLEEPER, (v) => v);
   const [syncOn, setSyncOn] = usePersistent<boolean>("fd26-sync-on", true, (r) => r === "1", (v) => (v ? "1" : "0"));
   const [syncMsg, setSyncMsg] = useState("");
+  const [staleMarks, setStaleMarks] = useState(0);
   const DSRef = useRef(DS);
   DSRef.current = DS;
   const slotRef = useRef(mySlot);
@@ -343,9 +344,18 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
         if (!res.ok) throw new Error(String(res.status));
         const picks = (await res.json()) as SleeperPick[];
         if (picks.length === 0) {
-          if (!stop) setSyncMsg('Connected to "charmin ultra strong" — waiting for the draft (checking once a minute). Set who you are before it starts!');
+          if (!stop) {
+            const localMarks = Object.keys(DSRef.current).length;
+            setStaleMarks(localMarks);
+            setSyncMsg(
+              localMarks > 0
+                ? `The live draft hasn't started, but this board has ${localMarks} mark${localMarks === 1 ? "" : "s"} from practice.`
+                : 'Connected to "charmin ultra strong" — waiting for the draft to start. Pick who you are before it does!'
+            );
+          }
           return 60000;
         }
+        if (!stop) setStaleMarks(0);
         let offBoard = 0;
         picks
           .sort((x, y) => x.pick_no - y.pick_no)
@@ -355,7 +365,9 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
               offBoard++;
               return;
             }
-            if (!DSRef.current[nm]) mark(nm, pk.draft_slot === slotRef.current ? "mine" : "gone");
+            const want = pk.draft_slot === slotRef.current ? "mine" : "gone";
+            /* also self-heal: if you picked your identity after picks were synced, re-attribute them */
+            if (!DSRef.current[nm] || DSRef.current[nm] !== want) mark(nm, want);
           });
         if (!stop)
           setSyncMsg(
@@ -607,6 +619,18 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
           {syncOn ? "● Live sync on" : "Start live sync"}
         </button>
         {syncMsg && <span className="text-[0.8rem] text-ink-3">{syncMsg}</span>}
+        {staleMarks > 0 && (
+          <button
+            type="button"
+            className="btn danger !py-1 !text-[0.8rem]"
+            onClick={() => {
+              reset();
+              setStaleMarks(0);
+            }}
+          >
+            Clear practice picks
+          </button>
+        )}
         {!syncMsg && (
           <Info tip={<>Works for any Sleeper draft (read-only, no login). Set <b className="text-ink">My slot</b> first so your own picks land as <b className="text-ink">Pick</b>, everyone else's as <b className="text-ink">Taken</b>. Checks once a minute before the draft, every 10 seconds once picks are flowing.</>} />
         )}
