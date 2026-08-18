@@ -350,12 +350,6 @@ export function advise(DS: DraftState, mySlot: number, ord: string[]): Advice {
   const myPCteams = new Set(mine.filter((r) => r[1] === "WR" || r[1] === "TE").map((r) => r[2]));
   const myRBteams = new Set(mine.filter((r) => r[1] === "RB").map((r) => r[2]));
 
-  const goneSoon = avail
-    .slice(0, 24)
-    .map((o) => ({ n: o.r[0], pg: pGoneBy(o.r, back, cur, shift[o.r[1]]) }))
-    .filter((x) => x.pg >= 0.6)
-    .slice(0, 4);
-
   const cands: Candidate[] = [];
   (["RB", "WR", "QB", "TE"] as Pos[]).forEach((ps) => {
     const pool = avail.filter((o) => o.r[1] === ps);
@@ -440,6 +434,16 @@ export function advise(DS: DraftState, mySlot: number, ord: string[]): Advice {
       deduped.unshift(look.first);
     }
   }
+  /* players to write off: gone before the pick you're actually planning for,
+     never including the players we're recommending */
+  const recommended = new Set(deduped.slice(0, 4).map((c) => c.now.r[0]));
+  const gsPick = onClock ? back : takeAt;
+  const goneSoon = avail
+    .slice(0, 24)
+    .filter((o) => !recommended.has(o.r[0]))
+    .map((o) => ({ n: o.r[0], pg: pGoneBy(o.r, gsPick, cur, shift[o.r[1]]) }))
+    .filter((x) => x.pg >= 0.6)
+    .slice(0, 4);
   return {
     qb, rb, wr, te, wrt, myCount, cur, onClock, nextPick, byeCount,
     run, look, cands: deduped, warnings, plainWarn, goneSoon, dream,
