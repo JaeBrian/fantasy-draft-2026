@@ -1,5 +1,8 @@
 # Update log
 
+## 2026-08-17 (night) — full-league division audit + React port
+All 32 teams audited by division (depth charts, preseason usage, beat reports through 8/17 evening). Board grown 158 → 170 players (adds incl. Adonai Mitchell, Braelon Allen, Alec Pierce, Ray Davis, Chris Rodriguez Jr., David Njoku, Ja'Kobi Lane, Malachi Fields, Jaydon Blue, Brian Robinson Jr., Malik Benson, Elic Ayomanor). Time-sensitive flags added: Breece Hall non-contact groin (8/17), Egbuka toe / Wk 1 "not sure" (8/17), Nacua groin on top of the open conduct case, Carnell Tate practice-hit evaluation, NE officially a 50-50 committee, Washington's six-back battle reopened. Verified: Seattle are the defending champs and Kenneth Walker was SB LX MVP; John Harbaugh is the Giants' HC. Stacking research wired into the advisor (QB stack bonus kept small per r≈0.43 evidence; NEW anti-stack penalties for same-team pass-catchers outside elite offenses and RB+WR pairs). Advisor v4 + all data ported into the React app (`app/src`), root index.html regenerated from the build.
+
 ## 2026-08-17 (evening) — deep research pass + advisor v4
 Data: 16 research streams re-verified the whole board — injuries/legal, all 32 team backfields & depth charts (division-by-division sweep), strategy base rates (xTD, age cliffs, dead zone, Konami code, playoff schedules), ADP movement + platform gaps, rookies/breakouts, QB/TE/Vegas markets, stacking & coaching-scheme research, plus a quantitative cross-format ADP analysis (FFC half/full/standard × league sizes, Sleeper 24h trending).
 
