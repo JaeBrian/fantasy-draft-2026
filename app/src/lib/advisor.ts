@@ -331,6 +331,15 @@ export function advise(DS: DraftState, mySlot: number, ord: string[]): Advice {
     warnings.push("Rounds 15–16: kicker and defense — don't leave without them.");
     plainWarn.push("use your last two picks on a kicker and a defense — every team needs one of each");
   }
+  /* a pick at YOUR slot marked "Taken" means your own turn was recorded as someone else's */
+  if (mySlot >= 1) {
+    ord.forEach((n, i) => {
+      if (snapTeam(i + 1) === mySlot && DS[n] === "gone") {
+        warnings.push(`Pick #${i + 1} was YOUR turn but ${n} is marked Taken — if he's actually your player, hit Pick on him.`);
+        plainWarn.push(`pick #${i + 1} was your turn, but ${n} is marked as another team's — press Pick on him if he's yours`);
+      }
+    });
+  }
 
   const w: Record<Pos, number> = {
     QB: qb === 0 ? (myCount >= 5 ? 1 : 0.55) : myCount >= 13 ? 0.15 : 0.05,

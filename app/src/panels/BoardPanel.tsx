@@ -355,7 +355,9 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
               offBoard++;
               return;
             }
-            if (!DSRef.current[nm]) mark(nm, pk.draft_slot === slotRef.current ? "mine" : "gone");
+            const want = pk.draft_slot === slotRef.current ? "mine" : "gone";
+            /* also self-heal: if you picked your identity after picks were synced, re-attribute them */
+            if (!DSRef.current[nm] || DSRef.current[nm] !== want) mark(nm, want);
           });
         if (!stop)
           setSyncMsg(
