@@ -100,11 +100,8 @@ function AdvisorStrip({ DS, mySlot, ord }: { DS: DraftState; mySlot: number; ord
         {special && <div className="text-[0.95rem] text-ink"><b>Take:</b> {special}</div>}
         {suggestion && (
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <span className="inline-flex items-center gap-2">
-              <span className="display text-[1.5rem] leading-none text-ink">
-                <span className="text-clock">TAKE →</span> {suggestion.take}
-              </span>
-              <TeamIcon team={suggestion.team} size={22} />
+            <span className="display text-[1.5rem] leading-none text-ink">
+              <span className="text-clock">TAKE →</span> {suggestion.take} <TeamIcon team={suggestion.team} size={21} />
             </span>
             <Sticker pos={suggestion.pos} />
             <span className="font-mono text-[0.8rem] text-ink-3">#{suggestion.rank}</span>
@@ -172,11 +169,11 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
       <tr key={n} className={st}>
         <td>
           <span className="rowact">
-            <button type="button" className="bx" title="Mark drafted by another team" onClick={() => mark(n, "gone")}>
-              ✕
+            <button type="button" className="bx" title="Drafted by another team (click again to undo)" onClick={() => mark(n, "gone")}>
+              Taken
             </button>
-            <button type="button" className="bs" title="My pick" onClick={() => mark(n, "mine")}>
-              ★
+            <button type="button" className="bs" title="My pick (click again to undo)" onClick={() => mark(n, "mine")}>
+              Pick
             </button>
           </span>
         </td>
@@ -212,7 +209,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
         <ul className="mt-1.5 mb-0.5 list-disc space-y-1 pl-5">
           <li>When it's your pick, take the highest-ranked player left (position needs permitting). If his <b>ADP</b> is much higher than his rank here, he'll likely still be there next round — don't reach.</li>
           <li>Chips: <Call v="buy" /> better than his price · <Call v="solid" /> fairly priced · <Call v="risk" /> only at a discount · <Call v="avoid" /> the price ignores a real problem. Hover any small tag for its meaning.</li>
-          <li>Press <b>✕</b> when anyone drafts a player, <b>★</b> when the pick is yours. "Hide drafted" shows only who's left.</li>
+          <li>Hit <b>Taken</b> when anyone drafts a player, <b>Pick</b> when the pick is yours. "Hide drafted" shows only who's left.</li>
           <li>Set <b>My slot</b> and the status bar will suggest who to take next. Mark picks <b>in draft order</b> — the advisor rebuilds every team's roster from your marks and predicts what the teams ahead of you will take. Marks are saved on this device.</li>
         </ul>
       </Noob>
@@ -287,7 +284,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
               <th>
                 <span className="inline-flex items-center gap-1.5">
                   Track
-                  <Info tip={<>Mark every pick here, in draft order: <b className="text-ink">✕</b> = drafted by another team, <b className="text-ink">★</b> = your pick. The advisor rebuilds all 12 rosters from these marks. Click again to un-mark.</>} />
+                  <Info tip={<>Mark every pick here, in draft order: <b className="text-ink">Taken</b> = drafted by another team, <b className="text-ink">Pick</b> = your pick. The advisor rebuilds all 12 rosters from these marks. Click again to un-mark.</>} />
                 </span>
               </th>
               <th>

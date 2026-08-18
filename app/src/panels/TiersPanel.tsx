@@ -46,7 +46,7 @@ export function TiersPanel({ noob, DS }: { noob: boolean; DS: DraftState }) {
                       return (
                         <li
                           key={n}
-                          className={`flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5 border-b border-line-soft px-4 py-2 last:border-0 hover:bg-raised ${DS[n] ?? ""}`}
+                          className={`flex flex-wrap items-center gap-x-2.5 gap-y-0.5 border-b border-line-soft px-4 py-2 last:border-0 hover:bg-raised ${DS[n] ?? ""}`}
                         >
                           <span className="min-w-[2.4ch] font-mono text-[0.78rem] text-ink-3 tabular-nums">{o.i + 1}</span>
                           <TeamIcon team={t} size={16} />
