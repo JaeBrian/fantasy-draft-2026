@@ -193,7 +193,7 @@ function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: numbe
             your next pick: #{a.nextPick} ({a.nextPick - a.cur} away)
           </span>
         )}
-        <span className="ml-auto hidden gap-3 text-[0.8rem] text-ink-3 md:flex min-[1440px]:hidden">
+        <span className="ml-auto hidden gap-3 text-[0.8rem] text-ink-3 md:flex min-[1500px]:hidden">
           {(["RB", "WR", "QB", "TE"] as Pos[]).map((p) => (
             <span key={p}>
               {p}: {next[p] ? <b className="font-medium text-ink-2">{next[p]!.n}</b> : "—"}
@@ -430,7 +430,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
       lastTier = ot;
       const done = tierDone[ot];
       rows.push(
-        <tr key={`tier-${ot}`} className="tier-band">
+        <tr key={`tier-${ot}-${i}`} className="tier-band">
           <td
             colSpan={9}
             className={done ? "cursor-pointer select-none" : undefined}
@@ -510,11 +510,11 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
 
       <Noob show={noob} title="Using the board:">
         <ul className="mt-1.5 mb-0.5 list-disc space-y-1 pl-5">
-          <li>When it's your pick, take the highest-ranked player left (position needs permitting). If his <b>ADP</b> is much higher than his rank here, he'll likely still be there next round — don't reach.</li>
+          <li><b>Do this one thing:</b> tap your name under <b>I am</b> (Ashley / Brian JK / Emily). That's it — our league's Sleeper draft is already connected, so every pick marks itself as it happens. You never touch <b>Taken</b> or <b>Pick</b> unless the sync is off.</li>
+          <li>Then just read the panel: it shows your <b>next three targets in order</b>, each with the odds he's still there when your turn comes. Take #1 if he's there, else #2, else #3.</li>
           <li>Chips: <Call v="buy" /> better than his price · <Call v="solid" /> fairly priced · <Call v="risk" /> only at a discount · <Call v="avoid" /> the price ignores a real problem. Hover any small tag for its meaning.</li>
-          <li><b>Edge</b> is a price tag: <b>Rank</b> is what a player is worth, <b>ADP</b> is what your league-mates will pay, and Edge is the difference. <b className="text-value">Green +49</b> (Malik Willis) = on sale — the room waits ~49 picks past his real value, so never reach for him; he comes to you. <b className="text-avoid">Red −103</b> (Alec Pierce) = badly marked up — the room pays round 5 for a player our research puts in the last rounds. <b>Green means wait, red means don't pay.</b></li>
-          <li>Hit <b>Taken</b> when anyone drafts a player, <b>Pick</b> when the pick is yours. "Hide drafted" shows only who's left.</li>
-          <li>Set <b>My slot</b> and the status bar will suggest who to take next. Mark picks <b>in draft order</b> — the advisor rebuilds every team's roster from your marks and predicts what the teams ahead of you will take. Marks are saved on this device.</li>
+          <li><b>Edge</b> is a price tag: <b>Rank</b> is what a player is worth, <b>ADP</b> is what the room will pay. <b className="text-value">Green</b> = on sale, he'll come back to you — don't reach. <b className="text-avoid">Red</b> = marked up, let someone else pay. <b>SLP</b> is Sleeper's own board rank.</li>
+          <li>Drafting somewhere other than Sleeper? Turn sync off and mark picks yourself: type a name in the search box and press <b>Enter</b> (someone else took him) or <b>Shift+Enter</b> (you took him). Press <b>/</b> to jump to the search box.</li>
         </ul>
       </Noob>
 
@@ -601,8 +601,8 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
         </span>
       </div>
 
-      <div className="flex flex-col gap-5 min-[1440px]:flex-row min-[1440px]:items-start">
-        <div className="contents min-[1440px]:z-30 min-[1440px]:flex min-[1440px]:flex-col min-[1440px]:gap-3 min-[1440px]:sticky min-[1440px]:top-[calc(var(--hdr,86px)+6px)] min-[1440px]:w-[410px] min-[1440px]:shrink-0">
+      <div className="flex flex-col gap-5 min-[1500px]:flex-row-reverse min-[1500px]:items-start">
+        <div className="contents min-[1500px]:z-30 min-[1500px]:flex min-[1500px]:flex-col min-[1500px]:gap-3 min-[1500px]:sticky min-[1500px]:top-[calc(var(--hdr,86px)+6px)] min-[1500px]:w-[360px] min-[1500px]:shrink-0">
       <AdvisorStrip DS={DS} mySlot={mySlot} ord={ord} noob={noob} />
 
       <div className="flex flex-wrap items-center gap-2">
