@@ -538,7 +538,14 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
           </button>
         </td>
         <td><Sticker pos={p} /></td>
-        <td className="num">{adp.toFixed(1)}</td>
+        <td className="num">
+          {adp.toFixed(1)}
+          {SLP[n]?.rk !== undefined && (
+            <span className="block text-[0.66rem] leading-tight text-ink-3 min-[1400px]:hidden" title="Sleeper's own board rank">
+              slp {SLP[n].rk}
+            </span>
+          )}
+        </td>
         <td className="num hidden min-[1400px]:table-cell">{SLP[n]?.rk !== undefined ? SLP[n].rk : <span className="text-ink-3">—</span>}</td>
         <td className="num">
           {(() => {
@@ -761,7 +768,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
               <th className="!text-right">
                 <span className="inline-flex items-center gap-1.5">
                   ADP
-                  <Info tip={<><b className="text-ink">Average Draft Position</b> — the pick where the market usually takes him (live draft data, Aug 17). Rank far better than ADP = he'll likely still be there next round, so don't reach. ADP far better than rank = overpriced, let someone else pay.</>} />
+                  <Info tip={<><b className="text-ink">Average Draft Position</b> — the pick where the market usually takes him (live draft data). The small <b className="text-ink">slp</b> number underneath is Sleeper's own board rank, which is what your league-mates actually see in their draft room (it gets its own column on wider screens). Rank far better than ADP = he'll likely still be there next round, so don't reach. ADP far better than rank = overpriced, let someone else pay.</>} />
                 </span>
               </th>
               <th className="hidden !text-right min-[1400px]:table-cell">
