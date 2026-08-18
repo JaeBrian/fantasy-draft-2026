@@ -51,7 +51,7 @@ const PLANS: Record<SlotKey, ReactNode> = {
   ),
   s1012: (
     <>
-      <Round rn="Rounds 1–2 (back-to-back)"><b>The turn is a superpower:</b> catch the fallers. Jefferson + Cook, Lamb + Henry, or two bellcows if they fall (Cook + Henry is a dream start). Order between your two turn picks doesn't matter — you're getting both. One RB minimum leaves this turn with you.</Round>
+      <Round rn="Rounds 1–2 (back-to-back)"><b>Double-RB is the slight favorite here.</b> Our own sim of the turn (10 + 15) has RB-RB edging WR-RB by ~0.5 pts/wk: the WR shelf at picks 34-39 stays strong, the RB shelf doesn't. So Saquon/Walker/Henry-type pairs beat taking the best WR first — by a hair. Jefferson + an RB is the defensible alternative if he's the value you believe in; order between your two turn picks doesn't matter, you get both.</Round>
       <Round rn="Round 3"><b>RB2 first</b> — Skattebo, Etienne, or a healthy-checked Breece keeps you on the two-RBs-in-three-rounds plan. The one exception worth breaking it: <b>Josh Allen sliding to 26–31</b> — take him and push RB2 to round 4; his edge over QB12 is bigger than the RB you're deferring.</Round>
       <Round rn="Rounds 4–7">You pick in pairs — plan two at a time. WR + RB each turn beats doubling one position. Loveland/Warren for TE in this window; Odunze, Waddle, Egbuka are the WR targets.</Round>
       <Round rn="Rounds 8–16">This seat wins late: Diggs, Mason, Croskey-Merritt, Murray, Likely all live here. K/DST last two.</Round>

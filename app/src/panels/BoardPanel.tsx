@@ -130,7 +130,7 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked }: { DS: DraftState; mySl
 
   return (
     <div
-      className={`card sticky top-[calc(var(--hdr,86px)+6px)] z-30 max-h-[calc(100vh-var(--hdr,86px)-20px)] overflow-y-auto overscroll-contain transition-shadow min-[1200px]:max-h-none min-[1200px]:overflow-visible ${
+      className={`card sticky top-[calc(var(--hdr,86px)+6px)] z-30 max-h-[calc(100vh-var(--hdr,86px)-20px)] overflow-y-auto overscroll-contain transition-shadow min-[1200px]:static min-[1200px]:max-h-none min-[1200px]:overflow-visible ${
         a.onClock ? "border-clock/60 shadow-[0_0_0_1px_var(--color-clock),0_0_24px_-6px_rgba(240,180,41,0.45)]" : "shadow-[0_10px_30px_-12px_rgba(0,0,0,0.7)]"
       }`}
     >
