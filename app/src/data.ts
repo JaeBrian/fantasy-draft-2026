@@ -454,43 +454,84 @@ export const TD_MODEL: TdRow[] = [
   { name: "Christian McCaffrey", pos: "RB", team: "SF", rank: 6, td: 17, xtd: 24.1, delta: -7.1, rz: 96 },
 ];
 
-/** Paired-world strategy study: 2,500 simulated drafts per seat in which every finalist
- *  strategy faced the IDENTICAL opponents, so the comparison measures strategy rather than
- *  luck. `beats` is the % of identical drafts this strategy finished ahead of each other
- *  finalist. Regenerate with app/scripts/sim-paired.mjs */
+/** Paired-world strategy study: 8,000 simulated SEASONS per seat. Every finalist strategy
+ *  faces the identical draft and the identical season luck, so the comparison isolates
+ *  strategy. Two corrections make these numbers differ sharply from the earlier study:
+ *
+ *  1. Opponents are priced off Sleeper's REAL half-PPR ADP. The old run leaned on Sleeper's
+ *     board-sort rank, which is superflex-flavoured and had the room taking three QBs inside
+ *     three rounds instead of two. Fixing it reordered the best structure at every seat.
+ *  2. Each player's season is now drawn, not assumed — a lognormal on his projection plus a
+ *     chance of missing time. The old floor/ceiling only captured who fell to you on draft
+ *     day, which is why they sat a point apart. Real spread is nearly 40 points a week.
+ *
+ *  floor/ceiling are the 10th and 90th percentile weeks. `beats` is the % of identical
+ *  seasons this strategy finished ahead of each other finalist. Regenerate: scripts/sim-paired.mjs */
 export type PairedRow = {
   label: string; mean: number; floor: number; ceiling: number;
   rb1: number; wr1: number; beats: number[]; note?: string;
 };
 export const PAIRED_SIM: Record<number, { worlds: number; rows: PairedRow[] }> = {
   1: {
-    worlds: 2500,
+    worlds: 8000,
     rows: [
-      { label: "RB-RB-WR-WR", mean: 110.51, floor: 108.5, ceiling: 113.1, rb1: 18.3, wr1: 15.0, beats: [0, 0, 47, 96, 100], note: "identical to RB-WR-RB-WR — your picks 24/25 are back-to-back" },
-      { label: "RB-WR-RB-WR", mean: 110.51, floor: 108.5, ceiling: 113.1, rb1: 18.3, wr1: 15.0, beats: [0, 0, 47, 96, 100] },
-      { label: "RB-WR-WR-RB", mean: 110.13, floor: 108.0, ceiling: 111.9, rb1: 18.3, wr1: 15.0, beats: [53, 53, 0, 71, 91] },
-      { label: "RB-RB-WR-RB", mean: 108.99, floor: 107.2, ceiling: 111.4, rb1: 18.3, wr1: 15.0, beats: [4, 4, 29, 0, 97] },
-      { label: "WR-RB-RB-WR", mean: 106.64, floor: 104.5, ceiling: 109.3, rb1: 12.9, wr1: 17.7, beats: [0, 0, 9, 3, 0], note: "opening Chase instead of Gibbs costs 5.4 pts of RB1 quality" },
+      { label: "RB-WR-WR-RB", mean: 109.86, floor: 91.2, ceiling: 130.3, rb1: 18.3, wr1: 14.8, beats: [0, 59, 61, 57, 73], note: "best here — the round-2/3 turn lands two WRs while RB value holds" },
+      { label: "RB-RB-WR-RB", mean: 108.57, floor: 89.7, ceiling: 128.8, rb1: 18.3, wr1: 14.7, beats: [43, 46, 50, 0, 78] },
+      { label: "RB-WR-RB-WR", mean: 108.53, floor: 89.8, ceiling: 128.8, rb1: 18.3, wr1: 14.7, beats: [38, 50, 0, 50, 69] },
+      { label: "RB-RB-WR-WR", mean: 108.46, floor: 89.8, ceiling: 128.7, rb1: 18.3, wr1: 14.7, beats: [41, 0, 48, 48, 80] },
+      { label: "WR-RB-RB-WR", mean: 106.12, floor: 88.1, ceiling: 125.8, rb1: 12.6, wr1: 17.7, beats: [27, 20, 31, 22, 0], note: "opening a WR instead of Gibbs costs 3.7 pts/wk — the one real mistake at this seat" },
     ],
   },
   6: {
-    worlds: 2500,
+    worlds: 8000,
     rows: [
-      { label: "RB-RB-WR-WR", mean: 108.98, floor: 107.7, ceiling: 110.3, rb1: 16.0, wr1: 13.7, beats: [0, 57, 69, 78, 81], note: "wins 57-81% of identical drafts" },
-      { label: "WR-RB-RB-WR", mean: 108.59, floor: 107.5, ceiling: 109.7, rb1: 14.9, wr1: 17.2, beats: [43, 0, 53, 73, 75] },
-      { label: "WR-RB-WR-RB", mean: 108.50, floor: 107.2, ceiling: 109.8, rb1: 14.9, wr1: 17.2, beats: [31, 47, 0, 56, 67] },
-      { label: "RB-WR-RB-WR", mean: 108.24, floor: 107.0, ceiling: 109.3, rb1: 16.0, wr1: 15.6, beats: [22, 27, 44, 0, 64] },
-      { label: "RB-RB-QB-WR", mean: 107.84, floor: 106.4, ceiling: 109.1, rb1: 16.0, wr1: 13.3, beats: [19, 25, 33, 36, 0], note: "taking a QB in round 3 is the costliest common mistake" },
+      { label: "WR-RB-WR-RB", mean: 107.29, floor: 89.0, ceiling: 127.3, rb1: 14.2, wr1: 17.2, beats: [0, 51, 48, 52, 62], note: "best here, and it flipped: on real Sleeper ADP the WR open now edges the RB open" },
+      { label: "WR-RB-RB-WR", mean: 106.94, floor: 88.9, ceiling: 126.9, rb1: 14.3, wr1: 17.2, beats: [48, 0, 47, 53, 61] },
+      { label: "RB-RB-WR-WR", mean: 106.50, floor: 87.5, ceiling: 127.1, rb1: 16.2, wr1: 13.4, beats: [52, 53, 0, 55, 65] },
+      { label: "RB-WR-RB-WR", mean: 106.47, floor: 88.4, ceiling: 127.0, rb1: 16.2, wr1: 15.5, beats: [48, 47, 45, 0, 61] },
+      { label: "RB-RB-QB-WR", mean: 104.72, floor: 86.3, ceiling: 124.7, rb1: 16.2, wr1: 12.4, beats: [38, 39, 35, 39, 0], note: "taking a QB in round 3 is still the costliest common mistake" },
     ],
   },
   10: {
-    worlds: 2500,
+    worlds: 8000,
     rows: [
-      { label: "RB-WR-WR-RB", mean: 108.04, floor: 106.8, ceiling: 109.2, rb1: 15.5, wr1: 16.0, beats: [0, 48, 56, 57, 66], note: "best, but only barely" },
-      { label: "RB-WR-RB-WR", mean: 107.95, floor: 106.6, ceiling: 109.3, rb1: 15.5, wr1: 16.0, beats: [44, 0, 54, 53, 63] },
-      { label: "WR-RB-WR-RB", mean: 107.84, floor: 106.8, ceiling: 108.8, rb1: 15.0, wr1: 16.6, beats: [44, 46, 0, 48, 59] },
-      { label: "WR-RB-RB-WR", mean: 107.80, floor: 106.7, ceiling: 108.8, rb1: 15.0, wr1: 16.6, beats: [43, 47, 43, 0, 53] },
-      { label: "RB-RB-WR-WR", mean: 107.69, floor: 106.6, ceiling: 108.8, rb1: 15.5, wr1: 13.9, beats: [34, 37, 41, 47, 0], note: "even the worst finalist wins ~40% — this seat has real freedom" },
+      { label: "RB-RB-WR-WR", mean: 107.99, floor: 89.5, ceiling: 128.1, rb1: 15.7, wr1: 13.7, beats: [0, 58, 60, 65, 64], note: "best here, but the whole seat spans 0.65 pts/wk — you have real freedom" },
+      { label: "WR-RB-WR-RB", mean: 107.70, floor: 89.4, ceiling: 127.3, rb1: 15.4, wr1: 16.4, beats: [42, 0, 52, 58, 55] },
+      { label: "WR-RB-RB-WR", mean: 107.66, floor: 89.6, ceiling: 127.3, rb1: 15.4, wr1: 16.4, beats: [40, 47, 0, 52, 58] },
+      { label: "RB-WR-WR-RB", mean: 107.38, floor: 89.3, ceiling: 126.9, rb1: 15.7, wr1: 15.8, beats: [35, 42, 48, 0, 52] },
+      { label: "RB-WR-RB-WR", mean: 107.34, floor: 89.2, ceiling: 126.8, rb1: 15.7, wr1: 15.8, beats: [36, 45, 42, 47, 0] },
+    ],
+  },
+};
+
+/** The risk dial, run on each seat's best structure: same picks, different appetite for
+ *  volatile players. The headline is that it barely moves the ceiling. With nine starters,
+ *  individual boom/bust averages out — you cannot buy a higher team ceiling by drafting
+ *  volatile players, you only give up mean. Ceilings come from picks that hit, not from risk. */
+export type RiskRow = { approach: string; floor: number; typical: number; ceiling: number; mean: number };
+export const RISK_DIAL: Record<number, { structure: string; rows: RiskRow[] }> = {
+  1: {
+    structure: "RB-WR-WR-RB",
+    rows: [
+      { approach: "safe (steady picks)", floor: 91.2, typical: 108.2, ceiling: 129.7, mean: 109.6 },
+      { approach: "balanced (our board)", floor: 90.7, typical: 107.9, ceiling: 129.6, mean: 109.3 },
+      { approach: "swing (high variance)", floor: 90.2, typical: 107.4, ceiling: 129.1, mean: 108.8 },
+    ],
+  },
+  6: {
+    structure: "WR-RB-WR-RB",
+    rows: [
+      { approach: "safe (steady picks)", floor: 89.3, typical: 106.6, ceiling: 127.3, mean: 107.8 },
+      { approach: "balanced (our board)", floor: 88.2, typical: 106.0, ceiling: 127.1, mean: 107.1 },
+      { approach: "swing (high variance)", floor: 88.0, typical: 105.8, ceiling: 126.9, mean: 106.9 },
+    ],
+  },
+  10: {
+    structure: "RB-RB-WR-WR",
+    rows: [
+      { approach: "safe (steady picks)", floor: 89.6, typical: 106.9, ceiling: 127.9, mean: 108.0 },
+      { approach: "balanced (our board)", floor: 89.3, typical: 106.6, ceiling: 127.9, mean: 107.8 },
+      { approach: "swing (high variance)", floor: 89.2, typical: 106.5, ceiling: 127.8, mean: 107.7 },
     ],
   },
 };

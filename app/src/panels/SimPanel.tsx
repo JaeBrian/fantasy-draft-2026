@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CLIFF_MAP, PAIRED_SIM, SIM_PLANS, TOOL_USERS } from "../data";
+import { CLIFF_MAP, PAIRED_SIM, RISK_DIAL, SIM_PLANS, TOOL_USERS } from "../data";
 import { Card, Eyebrow, Intro, Noob } from "../components/ui";
 
 
@@ -37,20 +37,25 @@ export function SimPanel({ noob }: { noob: boolean }) {
   const plan = SIM_PLANS[seat];
   const cliff = CLIFF_MAP[seat];
   const paired = PAIRED_SIM[seat];
+  const risk = RISK_DIAL[seat];
   const firsts = FIRST_PICK[seat];
 
   return (
     <div className="flex flex-col gap-5">
       <Intro eyebrow="Simulations" title="We drafted this league 50,000 times">
-        Every strategy below was tested by simulating complete 16-round drafts: eleven opponents drafting off the live
-        Sleeper/market board with realistic randomness, our seat following a fixed plan, then scoring the team on its
-        best starting lineup. Numbers are projected points per week of starters, adjusted for our injury and risk flags.
+        Every strategy below was tested by simulating complete 16-round drafts: eleven opponents priced off{" "}
+        <b className="text-ink">Sleeper's real half-PPR ADP</b> — the pick each player actually goes at in our exact
+        format — with realistic randomness, our seat following a fixed plan, then playing the season out. Numbers are
+        points per week from your starting lineup, with each player's season drawn rather than assumed, so the spread
+        you see is the spread you'd actually live through.
       </Intro>
 
       <Noob show={noob} title="How to read this:">
-        A one-point difference across a whole starting lineup is small; anything under about half a point is a coin
-        flip. Use these to pick a <i>shape</i> for your draft — then let the live board on the Draft tab tell you the
-        actual names.
+        Every number is <b className="text-ink">points your starters score in a typical week</b>. Compare the{" "}
+        <b className="text-ink">mean</b> column to pick a plan — but look at the "bad yr" and "good yr" columns before
+        you get attached to it. The spread between a bad season and a good one is far bigger than the spread between
+        the plans, which is the honest way of saying: pick the top row, then relax. Use these to choose a{" "}
+        <i>shape</i> for your draft; let the live board on the Draft tab tell you the actual names.
       </Noob>
 
       <div className="flex flex-wrap gap-1.5">
@@ -126,12 +131,20 @@ export function SimPanel({ noob }: { noob: boolean }) {
         <Card>
           <Eyebrow>Every structure, same draft</Eyebrow>
           <h3 className="display m-0 mb-1 text-[1.2rem] text-ink">
-            {paired.worlds.toLocaleString()} paired worlds — each strategy faced identical opponents
+            {paired.worlds.toLocaleString()} paired seasons — same opponents, same luck, different plan
           </h3>
-          <p className="m-0 mb-3 text-[0.85rem] text-ink-2">
-            Running every strategy through the <i>same</i> draft removes luck from the comparison, so even small edges
-            become measurable. "Beats the field" is how often this strategy finished ahead of the other four in the very
-            same draft.
+          <p className="m-0 mb-2 text-[0.85rem] text-ink-2">
+            Every number is <b className="text-ink">points your starting lineup scores in a week</b> — 1 QB, 2 RB, 2 WR,
+            1 TE, 2 flex. Each strategy runs through the <i>same</i> draft and the <i>same</i> season, so the comparison
+            isolates the plan. "Beats the field" is how often it finished ahead of the other four in that shared season.
+          </p>
+          <p className="m-0 mb-3 rounded-md bg-line-soft/40 px-2.5 py-2 text-[0.8rem] leading-snug text-ink-2">
+            <b className="text-ink">Read the spread before the mean.</b> The gap between the best and worst plan here is{" "}
+            <b className="text-ink">{(paired.rows[0].mean - paired.rows[paired.rows.length - 1].mean).toFixed(1)} pts/wk</b>, but the
+            gap between a bad season and a good one on the <i>same</i> plan is{" "}
+            <b className="text-ink">{(paired.rows[0].ceiling - paired.rows[0].floor).toFixed(0)} pts/wk</b> — roughly{" "}
+            {Math.round((paired.rows[0].ceiling - paired.rows[0].floor) / Math.max(0.1, paired.rows[0].mean - paired.rows[paired.rows.length - 1].mean))}× larger.
+            Pick the top row, then stop worrying: how your players perform matters far more than which order you took them in.
           </p>
           <div className="overflow-x-auto">
             <table className="w-full text-[0.86rem]">
@@ -139,8 +152,8 @@ export function SimPanel({ noob }: { noob: boolean }) {
                 <tr className="text-ink-3">
                   <th className="px-2 py-1 text-left font-semibold">strategy</th>
                   <th className="px-2 py-1 text-right font-semibold">mean</th>
-                  <th className="px-2 py-1 text-right font-semibold">floor</th>
-                  <th className="px-2 py-1 text-right font-semibold">ceiling</th>
+                  <th className="px-2 py-1 text-right font-semibold">bad yr</th>
+                  <th className="px-2 py-1 text-right font-semibold">good yr</th>
                   <th className="px-2 py-1 text-right font-semibold">your RB1</th>
                   <th className="px-2 py-1 text-right font-semibold">your WR1</th>
                   <th className="px-2 py-1 text-right font-semibold">beats the field</th>
@@ -170,6 +183,52 @@ export function SimPanel({ noob }: { noob: boolean }) {
               </tbody>
             </table>
           </div>
+        </Card>
+      )}
+
+      {risk && (
+        <Card>
+          <Eyebrow>The risk dial</Eyebrow>
+          <h3 className="display m-0 mb-1 text-[1.2rem] text-ink">
+            Can you buy a higher ceiling by drafting risky players?
+          </h3>
+          <p className="m-0 mb-3 text-[0.85rem] text-ink-2">
+            Same seat, same structure (<span className="font-mono">{risk.structure}</span>), three different appetites for
+            volatile players — boom-or-bust rookies and injury-prone workhorses versus steady, proven ones.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-[0.86rem]">
+              <thead>
+                <tr className="text-ink-3">
+                  <th className="px-2 py-1 text-left font-semibold">approach</th>
+                  <th className="px-2 py-1 text-right font-semibold">bad yr</th>
+                  <th className="px-2 py-1 text-right font-semibold">typical</th>
+                  <th className="px-2 py-1 text-right font-semibold">good yr</th>
+                  <th className="px-2 py-1 text-right font-semibold">mean</th>
+                </tr>
+              </thead>
+              <tbody>
+                {risk.rows.map((r) => (
+                  <tr key={r.approach} className="border-t border-line-soft">
+                    <td className="px-2 py-1.5 text-ink-2">{r.approach}</td>
+                    <td className="px-2 py-1.5 text-right font-mono tabular-nums text-ink-3">{r.floor.toFixed(1)}</td>
+                    <td className="px-2 py-1.5 text-right font-mono tabular-nums text-ink">{r.typical.toFixed(1)}</td>
+                    <td className="px-2 py-1.5 text-right font-mono tabular-nums text-ink-3">{r.ceiling.toFixed(1)}</td>
+                    <td className="px-2 py-1.5 text-right font-mono tabular-nums text-ink">{r.mean.toFixed(1)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="m-0 mt-3 rounded-md bg-line-soft/40 px-2.5 py-2 text-[0.8rem] leading-snug text-ink-2">
+            <b className="text-ink">The answer is no — and that's the useful finding.</b> Chasing volatile players moves the
+            good-year ceiling by{" "}
+            {(risk.rows[0].ceiling - risk.rows[risk.rows.length - 1].ceiling).toFixed(1)} pts/wk, essentially nothing, while
+            costing {(risk.rows[0].mean - risk.rows[risk.rows.length - 1].mean).toFixed(1)} pts/wk of mean. You start nine
+            players every week, so one man's boom cancels another's bust before it ever reaches your score. A high team
+            ceiling comes from picks that <i>hit</i>, not from picks that <i>could</i>. Take the best player available and
+            let the upside arrive on its own.
+          </p>
         </Card>
       )}
 
