@@ -8,15 +8,15 @@ import { Card, Eyebrow, Intro, Noob } from "../components/ui";
  *  often he was still on the board at that seat. Regenerate with app/scripts/sim-first.mjs */
 const FIRST_PICK: Record<number, { name: string; pos: string; pts: number; avail: number }[]> = {
   1: [
-    { name: "Jahmyr Gibbs", pos: "RB", pts: 108.60, avail: 100 },
-    { name: "Bijan Robinson", pos: "RB", pts: 107.94, avail: 100 },
-    { name: "Jonathan Taylor", pos: "RB", pts: 107.03, avail: 100 },
-    { name: "James Cook", pos: "RB", pts: 106.65, avail: 100 },
-    { name: "Derrick Henry", pos: "RB", pts: 106.43, avail: 100 },
-    { name: "Ja'Marr Chase", pos: "WR", pts: 106.24, avail: 100 },
-    { name: "Jaxon Smith-Njigba", pos: "WR", pts: 105.87, avail: 100 },
-    { name: "Saquon Barkley", pos: "RB", pts: 105.86, avail: 100 },
-    { name: "Amon-Ra St. Brown", pos: "WR", pts: 105.73, avail: 100 },
+    { name: "Jahmyr Gibbs", pos: "RB", pts: 108.09, avail: 100 },
+    { name: "Bijan Robinson", pos: "RB", pts: 107.43, avail: 100 },
+    { name: "Jonathan Taylor", pos: "RB", pts: 106.52, avail: 100 },
+    { name: "James Cook", pos: "RB", pts: 106.14, avail: 100 },
+    { name: "Derrick Henry", pos: "RB", pts: 105.93, avail: 100 },
+    { name: "Ja'Marr Chase", pos: "WR", pts: 105.87, avail: 100 },
+    { name: "Jaxon Smith-Njigba", pos: "WR", pts: 105.49, avail: 100 },
+    { name: "Amon-Ra St. Brown", pos: "WR", pts: 105.36, avail: 100 },
+    { name: "Saquon Barkley", pos: "RB", pts: 105.34, avail: 100 },
   ],
   6: [
     { name: "Jonathan Taylor", pos: "RB", pts: 107.26, avail: 74 },
@@ -46,7 +46,7 @@ const FIRST_PICK: Record<number, { name: string; pos: string; pts: number; avail
  *  Note this is a harder test than the per-seat studies: there, only one seat used our board.
  *  Here all three do, so they compete for the same players. */
 const HEAD_TO_HEAD = [
-  { who: "Ashley", slot: 1, avg: 108.9, best: 40 },
+  { who: "Ashley", slot: 1, avg: 108.3, best: 39 },
   { who: "Emily", slot: 10, avg: 106.3, best: 32 },
   { who: "Brian JK", slot: 6, avg: 105.4, best: 29 },
 ];
@@ -70,6 +70,27 @@ export function SimPanel({ noob }: { noob: boolean }) {
         points per week from your starting lineup, with each player's season drawn rather than assumed, so the spread
         you see is the spread you'd actually live through.
       </Intro>
+
+      <Card>
+        <Eyebrow>What these numbers count</Eyebrow>
+        <p className="m-0 text-[0.85rem] leading-relaxed text-ink-2">
+          Pulled from the league's own Sleeper settings, not assumed: <b className="text-ink">charmin ultra strong</b>,
+          12 teams, 16-round snake, half-PPR — 0.5 per catch, 6-point rushing and receiving TDs, 4-point passing TDs,
+          no tight-end premium. Our projections are built for exactly this scoring, so player values need no adjusting.
+        </p>
+        <p className="m-0 mt-2 text-[0.85rem] leading-relaxed text-ink-2">
+          You start <b className="text-ink">1 QB, 2 RB, 2 WR, 1 TE, 2 flex, 1 K and 1 DST</b>, with 6 bench spots. Every
+          points-per-week figure on this page counts the <b className="text-ink">eight skill starters only</b> — kicker
+          and defense add roughly 16–18 more, but they are close to identical across all twelve teams, so they cannot
+          separate a good draft from a bad one.
+        </p>
+        <p className="m-0 mt-2 text-[0.8rem] leading-relaxed text-ink-3">
+          Because K and DST take two of your sixteen picks, we re-ran every strategy with only fourteen rounds of skill
+          players to confirm the two spent picks change nothing. The ranking is identical at all three seats: no
+          difference at all at picks 6 and 10, and a flat −0.57 across <i>every</i> strategy at pick 1, which shifts the
+          whole column without reordering it.
+        </p>
+      </Card>
 
       <Noob show={noob} title="How to read this:">
         Every number is <b className="text-ink">points your starters score in a typical week</b>. Compare the{" "}
@@ -241,8 +262,9 @@ export function SimPanel({ noob }: { noob: boolean }) {
         <p className="m-0 mt-3 rounded-md bg-line-soft/40 px-2.5 py-2 text-[0.8rem] leading-snug text-ink-2">
           <b className="text-ink">The pattern is tight ends.</b> Seven of the fourteen biggest overpays we found are
           TEs — Kelce, Pitts, LaPorta, Kincaid, Fannin, Ferguson, Kittle. Sleeper's rooms reach for the middle TE tier
-          by two to four rounds. Take Bowers or McBride early if the price is right, otherwise wait it out; the TE you get in
-          round 10 will not be meaningfully worse than the one the room paid round 6 for. The falls run the other
+          by two to four rounds. But punting the position is not the answer either: forcing the pick round by round, the best round
+          for a tight end is <b className="text-ink">round 5</b> at all three seats. Paying up in round 2 costs 1.8–2.4
+          pts/wk, and waiting until round 10 still costs 1.0–1.3. Round 5 is the whole window. The falls run the other
           way — quarterbacks and depth receivers keep, so let them.
         </p>
       </Card>
@@ -349,8 +371,8 @@ export function SimPanel({ noob }: { noob: boolean }) {
             <b className="text-ink">The answer is no — and that's the useful finding.</b> Chasing volatile players moves the
             good-year ceiling by{" "}
             {(risk.rows[0].ceiling - risk.rows[risk.rows.length - 1].ceiling).toFixed(1)} pts/wk, essentially nothing, while
-            costing {(risk.rows[0].mean - risk.rows[risk.rows.length - 1].mean).toFixed(1)} pts/wk of mean. You start nine
-            players every week, so one man's boom cancels another's bust before it ever reaches your score. A high team
+            costing {(risk.rows[0].mean - risk.rows[risk.rows.length - 1].mean).toFixed(1)} pts/wk of mean. You start eight
+            skill players every week, so one man's boom cancels another's bust before it ever reaches your score. A high team
             ceiling comes from picks that <i>hit</i>, not from picks that <i>could</i>. Take the best player available and
             let the upside arrive on its own.
           </p>

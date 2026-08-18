@@ -1,6 +1,9 @@
-/* Run: npx esbuild src/data.ts src/sleeper.ts --format=cjs --outdir=<TSOUT>
- * then point the two requires below at <TSOUT> and `node` this file.
+/* Run from app/:  node scripts/sim-build.mjs && node scripts/sim-tree.mjs
+ * sim-build.mjs transpiles src/data.ts and src/sleeper.ts into .simcache/.
  * Opponents are priced off Sleeper's real half-PPR ADP (SLP[name].adp). */
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 /* CONDITIONAL DRAFT TREE.
  *   "If I land X at pick 1, who should I take at pick 2? then pick 3?"
  *
@@ -13,8 +16,8 @@
  * branches therefore differ only by the picks, never by luck.
  */
 const fs = require('fs');
-const { P, MKT, BYE } = require('/Users/brianlee/.claude/jobs/142115c6/tmp/tsout/data.js');
-const { SLP } = require('/Users/brianlee/.claude/jobs/142115c6/tmp/tsout/sleeper.js');
+const { P, MKT, BYE } = require(CACHE + 'data.cjs');
+const { SLP } = require(CACHE + 'sleeper.cjs');
 
 const PPG = { QB: r => Math.max(14, 23.5 - 0.32*r), RB: r => 12.5*Math.exp(-(r-1)/20)+5.8,
   WR: r => 11.5*Math.exp(-(r-1)/26)+6.2, TE: r => 8.5*Math.exp(-(r-1)/7)+5 };
@@ -77,7 +80,7 @@ function runTree(slot, forced, world) {
   const avail = POOL.slice(), teams = {};
   for (let t=1;t<=12;t++) teams[t]=[];
   let mine = 0;
-  for (let pick=1; pick<=192; pick++) {
+  for (let pick=1; pick<=168; pick++) {
     if(!avail.length) break;
     const t = snap(pick);
     let p;
@@ -180,5 +183,5 @@ for (const slot of Object.keys(SEATS).map(Number)) {
   }
   out[slot] = { picks: myPicks.slice(0,3), worlds: WORLDS, branches: seatOut };
 }
-fs.writeFileSync('/Users/brianlee/.claude/jobs/142115c6/tmp/tree.json', JSON.stringify(out, null, 2));
+fs.writeFileSync(CACHE + 'tree.json', JSON.stringify(out, null, 2));
 console.log('wrote tree.json');

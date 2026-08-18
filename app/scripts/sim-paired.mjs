@@ -1,12 +1,15 @@
-/* Run: npx esbuild src/data.ts src/sleeper.ts --format=cjs --outdir=<TSOUT>
- * then point the two requires below at <TSOUT> and `node` this file.
+/* Run from app/:  node scripts/sim-build.mjs && node scripts/sim-paired.mjs
+ * sim-build.mjs transpiles src/data.ts and src/sleeper.ts into .simcache/.
  * Opponents are priced off Sleeper's real half-PPR ADP (SLP[name].adp). */
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 /* Final study on the corrected model: real Sleeper half-PPR ADP opponents + season variance.
    Emits the exact shape the Simulations page renders. Paired: every strategy shares the seed,
    so it faces the same draft AND the same season luck as its rivals. */
 const fs = require('fs');
-const { P, MKT, BYE } = require('/Users/brianlee/.claude/jobs/142115c6/tmp/tsout/data.js');
-const { SLP } = require('/Users/brianlee/.claude/jobs/142115c6/tmp/tsout/sleeper.js');
+const { P, MKT, BYE } = require(CACHE + 'data.cjs');
+const { SLP } = require(CACHE + 'sleeper.cjs');
 
 const PPG = { QB: r => Math.max(14, 23.5 - 0.32 * r), RB: r => 12.5 * Math.exp(-(r-1)/20) + 5.8,
   WR: r => 11.5 * Math.exp(-(r-1)/26) + 6.2, TE: r => 8.5 * Math.exp(-(r-1)/7) + 5 };
@@ -50,7 +53,7 @@ function myPick(avail, team, tpl, round) { const c=NEED(team), want=tpl[round-1]
 function run(slot, tpl, seed) {
   const rnd = mul(seed), avail = POOL.slice(), teams = {};
   for (let t=1;t<=12;t++) teams[t]=[];
-  for (let pick=1; pick<=192; pick++) { if(!avail.length) break;
+  for (let pick=1; pick<=168; pick++) { if(!avail.length) break;
     const t = snap(pick);
     const p = t===slot ? myPick(avail,teams[t],tpl,Math.ceil(pick/12)) : oppPick(avail,teams[t],rnd);
     if(!p) break; teams[t].push(p); avail.splice(avail.indexOf(p),1); }
@@ -104,5 +107,5 @@ for (const slot of [1,6,10]) {
   const bf = rows[0], spread = rows[0].mean - rows[rows.length-1].mean;
   console.log(`   floor ${bf.floor} / ceiling ${bf.ceiling}; strategy spread ${spread.toFixed(2)}; season swing ${(bf.ceiling-bf.floor).toFixed(1)}`);
 }
-fs.writeFileSync('/Users/brianlee/.claude/jobs/142115c6/tmp/final_sim.json', JSON.stringify(out, null, 2));
+fs.writeFileSync(CACHE + 'final_sim.json', JSON.stringify(out, null, 2));
 console.log('\nwrote final_sim.json');

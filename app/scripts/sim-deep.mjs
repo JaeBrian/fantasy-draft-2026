@@ -1,9 +1,11 @@
-/* Deep study for slots 6 and 10:
-   A) expanded strategy set with confidence intervals
-   B) "who should I actually take first?" — force each candidate, measure the FINAL roster
-   C) head-to-head: all three tool users in the same league at once */
+/* Run from app/:  node scripts/sim-build.mjs && node scripts/sim-deep.mjs
+ * sim-build.mjs transpiles src/data.ts and src/sleeper.ts into .simcache/.
+ * Opponents are priced off Sleeper's real half-PPR ADP (SLP[name].adp). */
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 process.env.RISK = '1';
-const src = require('fs').readFileSync('/Users/brianlee/.claude/jobs/142115c6/tmp/draft_mc.js', 'utf8');
+const src = require('fs').readFileSync(CACHE + 'draft_mc.js', 'utf8');
 const mod = { exports: {} };
 const log = console.log; console.log = () => {};
 new Function('module', 'exports', 'require', 'process',
@@ -42,7 +44,7 @@ function myPick(avail, team, tpl, round) {
 function run(mySlot, tpl, forced = {}, otherBots = {}) {
   const avail = POOL.slice();
   const teams = {}; for (let t = 1; t <= 12; t++) teams[t] = [];
-  for (let pick = 1; pick <= 192; pick++) {
+  for (let pick = 1; pick <= 168; pick++) {
     if (!avail.length) break;
     const t = snap(pick), round = Math.ceil(pick / 12);
     let p;

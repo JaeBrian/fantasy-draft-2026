@@ -78,7 +78,7 @@ export function StartPanel({ noob }: { noob: boolean }) {
         <ul className="mt-1.5 mb-0.5 list-disc space-y-1 pl-5">
           <li><b>The draft:</b> 12 people take turns picking real NFL players. The order snakes — if you pick 3rd in round 1, you pick 10th in round 2. Each player can only be on one team.</li>
           <li><b>Scoring:</b> your players earn points for real-life yards and touchdowns. "Half-PPR" means each catch is worth an extra half point — so runners who also catch passes are gold.</li>
-          <li><b>Positions:</b> QB throws, RB runs, WR catches, TE is a big catcher, K kicks, DST is a whole defense. <b>Your league starts:</b> 1 QB, 2 RB, 2 WR, 1 TE, 2 flex (RB/WR/TE), 1 K, 1 DST — plus 6 bench spots and 1 IR slot. That means SEVEN of your nine skill starters are RB/WR/TE.</li>
+          <li><b>Positions:</b> QB throws, RB runs, WR catches, TE is a big catcher, K kicks, DST is a whole defense. <b>Your league starts:</b> 1 QB, 2 RB, 2 WR, 1 TE, 2 flex (RB/WR/TE), 1 K, 1 DST — plus 6 bench spots. That means SEVEN of your EIGHT skill starters are RB/WR/TE.</li>
           <li><b>ADP</b> = Average Draft Position — where the crowd usually picks a player. Taking a player well <i>before</i> his ADP is a "reach"; getting him after is a "value."</li>
           <li><b>Tiers:</b> players grouped by similar value. The trick: when a tier is almost empty, grab the last guy in it — don't start the next tier early.</li>
           <li><b>Confused by a term anywhere in this guide?</b> There's a full plain-English glossary at the bottom of this page.</li>
