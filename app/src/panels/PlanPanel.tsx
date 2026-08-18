@@ -34,6 +34,8 @@ const PLANS: Record<SlotKey, ReactNode> = {
   s46: (
     <>
       <Round rn="Round 1"><b>Double-RB wins here — 95% of simulated leagues.</b> Chase at 4 if he falls. Otherwise the sim takes McCaffrey ~75% of the time on raw projection — but our research has him at 78% injury odds, and swapping to JSN costs only ~0.4 pts/wk. Jefferson at 5–6 remains a defensible value play.</Round>
+      <Round rn="First pick, ranked"><b>By final roster strength across 900 drafts each:</b> Jonathan Taylor 109.2 (there 48% of the time) · McCaffrey 109.0 (73%) · Chase 109.0 (12%) · James Cook 108.9 (90%) · JSN 108.9 (74%) · Henry 108.5 (98%). <b className="text-avoid">Justin Jefferson is the worst realistic pick here at 107.9</b> — he is ~100% to still be there, so spending pick 6 on him wastes the scarcity. Take the best RB.</Round>
+      <Round rn="Best structure"><b>RB-RB-WR-WR wins outright</b> at 109.0 ±0.04 — a real margin over the next best (108.6), not noise. RB-TE-early is worst at 106.0.</Round>
       <Round rn="Round 2"><b>Kenneth Walker III — the sim’s pick ~70% of the time</b>, and our biggest buy on the board. Henry, Saquon or Chase Brown if he’s gone. Every RB-first line beat every WR-first line from this seat.</Round>
       <Round rn="Round 3"><b>Second RB or elite WR2</b> depending on round 2. This is also the Allen window — he slides here often because everyone's fixated on RB/WR.</Round>
       <Round rn="Rounds 4–7">WR volume (DeVonta, Waddle, McLaurin) + a TE (Bowers/McBride will be gone — Loveland/Warren are the play).</Round>
@@ -52,7 +54,9 @@ const PLANS: Record<SlotKey, ReactNode> = {
   ),
   s1012: (
     <>
-      <Round rn="Rounds 1–2 (back-to-back)"><b>One bellcow, then best WR — 85% win rate.</b> Full 16-round sims put Hero-RB narrowly on top here, with Derrick Henry the most common opener (~59%). The top four strategies sit within 0.4 pts/wk, so what matters is landing one RB early: the WR shelf at picks 34–39 holds, the RB shelf collapses.</Round>
+      <Round rn="First pick, ranked"><b>Almost everything ties — except Jefferson.</b> Forcing each candidate and measuring the final roster across 900 drafts: Amon-Ra 108.06 · Henry 108.03 · JSN 108.01 · Cook 107.96 — all within noise of each other. But <b className="text-avoid">Jefferson finishes 107.29 and Lamb 107.17</b>, a real ~0.75 gap. The reason is availability: both are ~100% to still be there at 10, so taking one spends a scarce pick on a player who was coming back to you anyway.</Round>
+      <Round rn="Best structure"><b>RB-WR-WR-RB (108.01)</b>, but the top five structures sit within 0.27 — genuinely interchangeable. Just don’t open QB or TE.</Round>
+      <Round rn="Earlier framing"><b>One bellcow, then best WR — 85% win rate.</b> Full 16-round sims put Hero-RB narrowly on top here, with Derrick Henry the most common opener (~59%). The top four strategies sit within 0.4 pts/wk, so what matters is landing one RB early: the WR shelf at picks 34–39 holds, the RB shelf collapses.</Round>
       <Round rn="Round 3"><b>RB2 first</b> — Skattebo, Etienne, or a healthy-checked Breece keeps you on the two-RBs-in-three-rounds plan. The one exception worth breaking it: <b>Josh Allen sliding to 26–31</b> — take him and push RB2 to round 4; his edge over QB12 is bigger than the RB you're deferring.</Round>
       <Round rn="Rounds 4–7">You pick in pairs — plan two at a time. WR + RB each turn beats doubling one position. Loveland/Warren for TE in this window; Odunze, Waddle, Egbuka are the WR targets.</Round>
       <Round rn="Rounds 8–16">This seat wins late: Diggs, Mason, Croskey-Merritt, Murray, Likely all live here. K/DST last two.</Round>
