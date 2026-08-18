@@ -8,37 +8,37 @@ import { Card, Eyebrow, Intro, Noob } from "../components/ui";
  *  often he was still on the board at that seat. Regenerate with app/scripts/sim-first.mjs */
 const FIRST_PICK: Record<number, { name: string; pos: string; pts: number; avail: number }[]> = {
   1: [
-    { name: "Jahmyr Gibbs", pos: "RB", pts: 108.09, avail: 100 },
-    { name: "Bijan Robinson", pos: "RB", pts: 107.43, avail: 100 },
-    { name: "Jonathan Taylor", pos: "RB", pts: 106.52, avail: 100 },
-    { name: "James Cook", pos: "RB", pts: 106.14, avail: 100 },
-    { name: "Derrick Henry", pos: "RB", pts: 105.93, avail: 100 },
-    { name: "Ja'Marr Chase", pos: "WR", pts: 105.87, avail: 100 },
-    { name: "Jaxon Smith-Njigba", pos: "WR", pts: 105.49, avail: 100 },
-    { name: "Amon-Ra St. Brown", pos: "WR", pts: 105.36, avail: 100 },
-    { name: "Saquon Barkley", pos: "RB", pts: 105.34, avail: 100 },
+    { name: "Jahmyr Gibbs", pos: "RB", pts: 89.72, avail: 100 },
+    { name: "Bijan Robinson", pos: "RB", pts: 89.26, avail: 100 },
+    { name: "Jonathan Taylor", pos: "RB", pts: 87.45, avail: 100 },
+    { name: "James Cook", pos: "RB", pts: 87.06, avail: 100 },
+    { name: "Derrick Henry", pos: "RB", pts: 86.89, avail: 100 },
+    { name: "Saquon Barkley", pos: "RB", pts: 86.24, avail: 100 },
+    { name: "Kenneth Walker III", pos: "RB", pts: 86.21, avail: 100 },
+    { name: "Chase Brown", pos: "RB", pts: 86.20, avail: 100 },
+    { name: "Omarion Hampton", pos: "RB", pts: 85.75, avail: 100 },
   ],
   6: [
-    { name: "Jonathan Taylor", pos: "RB", pts: 107.26, avail: 74 },
-    { name: "Amon-Ra St. Brown", pos: "WR", pts: 106.89, avail: 88 },
-    { name: "James Cook", pos: "RB", pts: 106.85, avail: 98 },
-    { name: "Jaxon Smith-Njigba", pos: "WR", pts: 106.80, avail: 83 },
-    { name: "Derrick Henry", pos: "RB", pts: 106.43, avail: 100 },
-    { name: "Justin Jefferson", pos: "WR", pts: 106.28, avail: 100 },
-    { name: "Saquon Barkley", pos: "RB", pts: 106.12, avail: 100 },
-    { name: "A.J. Brown", pos: "WR", pts: 106.09, avail: 100 },
-    { name: "Kenneth Walker III", pos: "RB", pts: 105.92, avail: 100 },
+    { name: "Jonathan Taylor", pos: "RB", pts: 90.13, avail: 74 },
+    { name: "James Cook", pos: "RB", pts: 89.77, avail: 98 },
+    { name: "Derrick Henry", pos: "RB", pts: 89.36, avail: 100 },
+    { name: "Saquon Barkley", pos: "RB", pts: 88.98, avail: 100 },
+    { name: "Chase Brown", pos: "RB", pts: 88.95, avail: 100 },
+    { name: "Omarion Hampton", pos: "RB", pts: 88.94, avail: 100 },
+    { name: "Christian McCaffrey", pos: "RB", pts: 88.66, avail: 46 },
+    { name: "Ashton Jeanty", pos: "RB", pts: 88.23, avail: 100 },
+    { name: "Kenneth Walker III", pos: "RB", pts: 87.69, avail: 100 },
   ],
   10: [
-    { name: "Justin Jefferson", pos: "WR", pts: 107.84, avail: 97 },
-    { name: "Derrick Henry", pos: "RB", pts: 107.36, avail: 100 },
-    { name: "Saquon Barkley", pos: "RB", pts: 107.21, avail: 98 },
-    { name: "James Cook", pos: "RB", pts: 107.16, avail: 25 },
-    { name: "CeeDee Lamb", pos: "WR", pts: 107.16, avail: 87 },
-    { name: "Kenneth Walker III", pos: "RB", pts: 106.84, avail: 100 },
-    { name: "A.J. Brown", pos: "WR", pts: 106.33, avail: 100 },
-    { name: "Brock Bowers", pos: "TE", pts: 106.21, avail: 97 },
-    { name: "Chase Brown", pos: "RB", pts: 106.20, avail: 100 },
+    { name: "James Cook", pos: "RB", pts: 90.49, avail: 25 },
+    { name: "Saquon Barkley", pos: "RB", pts: 90.04, avail: 98 },
+    { name: "Derrick Henry", pos: "RB", pts: 90.01, avail: 100 },
+    { name: "Kenneth Walker III", pos: "RB", pts: 89.64, avail: 100 },
+    { name: "Chase Brown", pos: "RB", pts: 89.58, avail: 100 },
+    { name: "Ashton Jeanty", pos: "RB", pts: 89.37, avail: 91 },
+    { name: "Omarion Hampton", pos: "RB", pts: 88.98, avail: 99 },
+    { name: "CeeDee Lamb", pos: "WR", pts: 88.11, avail: 87 },
+    { name: "Justin Jefferson", pos: "WR", pts: 87.87, avail: 97 },
   ],
 };
 
@@ -46,9 +46,9 @@ const FIRST_PICK: Record<number, { name: string; pos: string; pts: number; avail
  *  Note this is a harder test than the per-seat studies: there, only one seat used our board.
  *  Here all three do, so they compete for the same players. */
 const HEAD_TO_HEAD = [
-  { who: "Ashley", slot: 1, avg: 108.3, best: 39 },
-  { who: "Emily", slot: 10, avg: 106.3, best: 32 },
-  { who: "Brian JK", slot: 6, avg: 105.4, best: 29 },
+  { who: "Ashley", slot: 1, avg: 91, best: 41 },
+  { who: "Emily", slot: 10, avg: 88, best: 31 },
+  { who: "Brian JK", slot: 6, avg: 87.1, best: 27 },
 ];
 
 export function SimPanel({ noob }: { noob: boolean }) {

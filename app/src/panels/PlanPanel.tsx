@@ -56,13 +56,14 @@ const PLANS: Record<SlotKey, ReactNode> = {
   s1012: (
     <>
       <Round rn="First pick, ranked"><b>Justin Jefferson, and this reverses our earlier advice.</b> Across 2,500 seasons: Jefferson 107.84 (on the board 97% of the time) · Henry 107.36 (100%) · Saquon 107.21 (98%) · Cook 107.16 (25%) · Lamb 107.16 (87%). We previously called Jefferson the worst pick here on the grounds that he was always available and so would come back to you. On Sleeper’s real ADP he does not: his ADP is 12.3, which falls between your pick 10 and your pick 15, and he survives to 15 only 12% of the time. A player whose ADP sits between two of your picks is exactly the one to take at the earlier pick.</Round>
-      <Round rn="Jefferson, then a running back"><b>Take Jefferson at 10 and an RB at 15.</b> An earlier card here said the best structure was RB-RB; that is withdrawn. It came from a study that scored a season average, which never sees a bye week. Scored week by week with byes live — how the season is actually played — the order reverses. Across 5,000 paired seasons: Jefferson then RB <b>104.74</b> · policy&apos;s own choice 104.55 · Jefferson then WR 104.17 · <b className="text-avoid">RB then RB 103.93</b> · Henry to open 103.90.</Round>
-      <Round rn="Both halves matter">Opening Jefferson is worth 0.81 pts/wk over opening a back — but taking the running back at 15 is worth another 0.57 over taking a second receiver. It is WR-then-RB, not WR-WR and not RB-RB.</Round>
+      <Round rn="Open with a running back"><b>Saquon Barkley or Derrick Henry.</b> This reverses advice given earlier today, and it is worth saying why rather than quietly editing it. The Jefferson case rested on a projection the model invented: his value came from a curve on his board rank, which put him at 16.1 pts/wk. Sleeper&apos;s actual 2026 projection for him is <b>11.4</b>, outside their top eight receivers. On real projections the top six openers at this seat are all running backs — Cook 90.49 (on the board just 25% of the time) · <b>Saquon 90.04 (98%)</b> · <b>Henry 90.01 (100%)</b> · Walker III 89.64 · Chase Brown 89.58 · Jeanty 89.37.</Round>
+      <Round rn="Which one">Cook grades highest but is gone three drafts in four. Saquon and Henry are both there essentially always, and are within 0.03 of each other — take whichever you prefer; there is no measurable difference.</Round>
+      <Round rn="Best structure"><b>RB-RB-WR-WR, 88.63 pts/wk</b> — and RB-first is now unambiguous here: every WR-first line trails it. The five finalists span 1.3.</Round>
       <Round rn="Round 2"><b>Saquon 45%</b>, Walker III 34%, Henry 21% — you pick at 10 and 15, so plan the pair together.</Round>
       <Round rn="Rounds 3–4">DeVonta Smith (53%) then Egbuka (43%) or Zay Flowers (33%). You pick in pairs at this seat — plan two at a time.</Round>
       <Round rn="Rounds 5–7">TE at 58: Kraft 51%, Warren 42%.</Round>
       <Round rn="Rounds 8–16">QB at 63 (Daniels 78%), then depth, a backup QB and TE, K/DST last two.</Round>
-      <Round rn="Sim’s best line">Jefferson → Saquon → DeVonta Smith → Egbuka → Kraft → Daniels… <span className="text-ink-3">(the rounds below come from the older template run, which opened Henry; the opening pair above supersedes it)</span></Round>
+      <Round rn="Sim’s best line">Henry → Saquon → DeVonta Smith → Egbuka → Kraft → Daniels… <span className="text-ink-3">(all numbers on this page now come from Sleeper&apos;s real 2026 projections rather than a curve fitted to our own board order)</span></Round>
     </>
   ),
 };
