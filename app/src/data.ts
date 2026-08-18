@@ -280,25 +280,48 @@ export const DRAFT_ORDER = ["Ashley","Zach","Jeff","Brandon","Duy","Brian JK","M
 /** The slots of the people who use this tool, for one-tap identity. */
 export const TOOL_USERS: [string, number][] = [["Ashley", 1], ["Brian JK", 6], ["Emily", 10]];
 
-/** Winning opening line per seat from 600 risk-adjusted Monte Carlo drafts
- *  (see app/scripts/draft-sim.mjs). Percentages = how often the sim landed that player. */
-export const SIM_PLANS: Record<number, { strategy: string; ppw: number; winPct: number; line: [string, number][] }> = {
+/** Winning opening line per seat from 800 risk-adjusted Monte Carlo drafts
+ *  (see app/scripts/draft-sim.mjs). Each pick lists who the sim actually landed,
+ *  most likely first — so the 2nd/3rd names are your fallbacks. */
+export type SimPick = { pick: number; opts: [string, number][] };
+export const SIM_PLANS: Record<number, { strategy: string; ppw: number; winPct: number; picks: SimPick[] }> = {
   1: {
     strategy: "Double-RB off the 1.01",
     ppw: 110.5,
-    winPct: 99,
-    line: [["Jahmyr Gibbs", 100], ["Breece Hall", 69], ["George Pickens", 60], ["Jaylen Waddle", 39], ["Colston Loveland", 95], ["Justin Herbert", 61]],
+    winPct: 98,
+    picks: [
+      { pick: 1, opts: [["Jahmyr Gibbs", 100]] },
+      { pick: 24, opts: [["Breece Hall", 68], ["Kenneth Walker III", 31]] },
+      { pick: 25, opts: [["George Pickens", 64], ["A.J. Brown", 20], ["Nico Collins", 15]] },
+      { pick: 48, opts: [["Jaylen Waddle", 38], ["Ladd McConkey", 33], ["Emeka Egbuka", 23]] },
+      { pick: 49, opts: [["Colston Loveland", 93], ["Tyler Warren", 7]] },
+      { pick: 72, opts: [["Justin Herbert", 59], ["Trevor Lawrence", 20]] },
+    ],
   },
   6: {
     strategy: "Double-RB",
     ppw: 109.0,
-    winPct: 94,
-    line: [["Christian McCaffrey", 71], ["Kenneth Walker III", 67], ["Malik Nabers", 70], ["Emeka Egbuka", 65], ["Colston Loveland", 67], ["Justin Herbert", 62]],
+    winPct: 93,
+    picks: [
+      { pick: 6, opts: [["Christian McCaffrey", 72], ["Jonathan Taylor", 20], ["James Cook", 8]] },
+      { pick: 19, opts: [["Kenneth Walker III", 70], ["Saquon Barkley", 25]] },
+      { pick: 30, opts: [["Malik Nabers", 72], ["Nico Collins", 14], ["DeVonta Smith", 9]] },
+      { pick: 43, opts: [["Emeka Egbuka", 69], ["Ladd McConkey", 16], ["DeVonta Smith", 9]] },
+      { pick: 54, opts: [["Colston Loveland", 66], ["Tyler Warren", 33]] },
+      { pick: 67, opts: [["Justin Herbert", 65], ["Jalen Hurts", 16]] },
+    ],
   },
   10: {
     strategy: "Hero RB, then receivers",
     ppw: 108.0,
-    winPct: 84,
-    line: [["Derrick Henry", 56], ["A.J. Brown", 52], ["DeVonta Smith", 68], ["Javonte Williams", 58], ["Tyler Warren", 55], ["Justin Herbert", 53]],
+    winPct: 83,
+    picks: [
+      { pick: 10, opts: [["Derrick Henry", 56], ["Saquon Barkley", 23], ["James Cook", 17]] },
+      { pick: 15, opts: [["A.J. Brown", 48], ["Justin Jefferson", 45], ["CeeDee Lamb", 7]] },
+      { pick: 34, opts: [["DeVonta Smith", 62], ["Malik Nabers", 34]] },
+      { pick: 39, opts: [["Javonte Williams", 55], ["Cam Skattebo", 40]] },
+      { pick: 58, opts: [["Tyler Warren", 57], ["Colston Loveland", 36]] },
+      { pick: 63, opts: [["Justin Herbert", 56], ["Jalen Hurts", 29]] },
+    ],
   },
 };

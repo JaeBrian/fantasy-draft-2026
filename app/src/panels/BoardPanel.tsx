@@ -250,22 +250,31 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked }: { DS: DraftState; mySl
             <summary className="cursor-pointer list-none text-ink-2">
               <b className="text-ink">Your simulated best line</b>{" "}
               <span className="text-ink-3">
-                — {SIM_PLANS[mySlot].strategy} · won {SIM_PLANS[mySlot].winPct}% of 600 sims
+                — {SIM_PLANS[mySlot].strategy} · won {SIM_PLANS[mySlot].winPct}% of 800 sims
               </span>
             </summary>
-            <ol className="m-0 mt-1.5 flex list-none flex-wrap gap-x-2 gap-y-1 p-0 text-ink-2">
-              {SIM_PLANS[mySlot].line.map(([nm, pct], i) => (
-                <li key={nm} className={`whitespace-nowrap ${DS[nm] ? "text-ink-3 line-through" : ""}`}>
-                  <span className="font-mono text-[0.72rem] text-ink-3">{i + 1}.</span> {nm}
-                  <span className="ml-1 font-mono text-[0.7rem] text-ink-3">{pct}%</span>
-                  {i < SIM_PLANS[mySlot].line.length - 1 && <span className="ml-2 text-ink-3">→</span>}
-                </li>
-              ))}
-            </ol>
-            <p className="m-0 mt-1 text-[0.76rem] leading-snug text-ink-3">
-              The line the simulator drafted most often from your seat ({SIM_PLANS[mySlot].ppw} pts/wk of starters).
-              Percentages are how often that player was actually there. It is a plan, not a script — the panel above
-              always reflects the real board.
+            <ul className="m-0 mt-1.5 flex list-none flex-col gap-0.5 p-0">
+              {SIM_PLANS[mySlot].picks.map((sp) => {
+                const got = sp.opts.find(([nm]) => DS[nm] === "mine");
+                return (
+                  <li key={sp.pick} className="flex flex-wrap items-baseline gap-x-1.5 text-ink-2">
+                    <span className="w-10 shrink-0 font-mono text-[0.72rem] text-ink-3">#{sp.pick}</span>
+                    {sp.opts.map(([nm, pct], i) => (
+                      <span key={nm} className={DS[nm] ? "text-ink-3 line-through" : i === 0 ? "font-semibold text-ink" : "text-ink-3"}>
+                        {i > 0 && <span className="mr-1 text-ink-3">or</span>}
+                        {nm}
+                        <span className="ml-1 font-mono text-[0.7rem] text-ink-3">{pct}%</span>
+                      </span>
+                    ))}
+                    {got && <span className="font-mono text-[0.7rem] text-value">✓ yours</span>}
+                  </li>
+                );
+              })}
+            </ul>
+            <p className="m-0 mt-1.5 text-[0.76rem] leading-snug text-ink-3">
+              {SIM_PLANS[mySlot].ppw} pts/wk of starters. The % is how often that player was still on the board at that
+              pick across 800 drafts — so the second name is your fallback, not a downgrade. A plan, not a script: the
+              panel above always reflects the real board.
             </p>
           </details>
         )}
