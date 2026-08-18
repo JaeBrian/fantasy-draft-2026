@@ -1,0 +1,317 @@
+@import "tailwindcss";
+
+@theme {
+  /* ground */
+  --color-field: #0c1015;
+  --color-surface: #141a22;
+  --color-raised: #1b2330;
+  --color-line: #232d3b;
+  --color-line-soft: #1b2430;
+
+  /* ink */
+  --color-ink: #e9edf3;
+  --color-ink-2: #a6b0bf;
+  --color-ink-3: #6c7789;
+
+  /* the draft clock — the one loud color */
+  --color-clock: #f0b429;
+  --color-clock-deep: #c98f1b;
+
+  /* position stickers (solid chips, dark text) */
+  --color-qb: #f0567e;
+  --color-rb: #3bc97d;
+  --color-wr: #4ea1f7;
+  --color-te: #f08a3c;
+  --color-k: #a98bf5;
+  --color-dst: #93a1b3;
+
+  /* verdict calls */
+  --color-value: #3ddc97;
+  --color-solid: #9aa6b7;
+  --color-risky: #f0b429;
+  --color-avoid: #f2594b;
+
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-sans: "Barlow", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-field);
+  /* the board: a faint sticker grid behind everything */
+  background-image:
+    linear-gradient(rgba(233, 237, 243, 0.016) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(233, 237, 243, 0.016) 1px, transparent 1px);
+  background-size: 72px 72px;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 15.5px;
+  line-height: 1.6;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-clock);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+::selection {
+  background: rgba(240, 180, 41, 0.25);
+}
+
+@layer components {
+  /* section label: amber tick + condensed caps */
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.86rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+  }
+  .eyebrow::before {
+    content: "";
+    width: 14px;
+    height: 3px;
+    background: var(--color-clock);
+    flex: none;
+  }
+
+  .display {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0.005em;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 6px;
+  }
+
+  /* position sticker chip — solid, like a draft-board sticker */
+  .sticker {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    padding: 1px 7px 2px;
+    border-radius: 3px;
+    color: #0c1015;
+    white-space: nowrap;
+  }
+
+  /* verdict call chip — tinted, uppercase */
+  .call {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    padding: 1px 7px 2px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  /* profile tag — quiet outline */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-line);
+    color: var(--color-ink-3);
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 1px 5px;
+    white-space: nowrap;
+    cursor: default;
+  }
+  .tag.warn {
+    border-color: rgba(240, 180, 41, 0.45);
+    color: var(--color-risky);
+  }
+  .tag.good {
+    border-color: rgba(61, 220, 151, 0.35);
+    color: var(--color-value);
+  }
+
+  .btn {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.84rem;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    color: var(--color-ink-2);
+    border-radius: 5px;
+    padding: 6px 13px;
+    cursor: pointer;
+    transition: border-color 120ms, color 120ms, background-color 120ms;
+  }
+  .btn:hover {
+    border-color: var(--color-ink-3);
+    color: var(--color-ink);
+  }
+  .btn.on {
+    background: var(--color-clock);
+    border-color: var(--color-clock);
+    color: #171204;
+  }
+  .btn.danger {
+    background: var(--color-avoid);
+    border-color: var(--color-avoid);
+    color: #fff;
+  }
+}
+
+/* ---------- data table ---------- */
+.tbl {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+}
+.tbl th {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+  text-align: left;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--color-line);
+  background: var(--color-surface);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.tbl td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--color-line-soft);
+  vertical-align: top;
+}
+.tbl tbody tr:not(.tier-band):hover td {
+  background: var(--color-raised);
+}
+.tbl tr:last-child td {
+  border-bottom: 0;
+}
+.tbl td.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  text-align: right;
+  color: var(--color-ink-2);
+}
+.tbl td.note {
+  color: var(--color-ink-2);
+  min-width: 260px;
+  max-width: 470px;
+  font-size: 0.88rem;
+}
+.tbl .pname {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.tbl .pteam {
+  color: var(--color-ink-3);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  margin-left: 7px;
+}
+
+/* tier separator band */
+.tier-band td {
+  background: var(--color-raised);
+  border-top: 1px solid var(--color-line);
+  padding: 7px 12px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.98rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+}
+.tier-band td span {
+  color: var(--color-ink-3);
+  font-size: 0.82rem;
+  margin-left: 12px;
+  letter-spacing: 0.08em;
+}
+
+/* drafted / mine row states */
+tr.gone td, li.gone {
+  opacity: 0.35;
+}
+tr.gone .pname, li.gone .nm {
+  text-decoration: line-through;
+}
+tr.mine td {
+  background: rgba(240, 180, 41, 0.07);
+}
+tr.mine td:first-child {
+  box-shadow: inset 3px 0 0 var(--color-clock);
+}
+li.mine {
+  background: rgba(240, 180, 41, 0.07);
+  box-shadow: inset 3px 0 0 var(--color-clock);
+}
+
+/* row mark buttons */
+.rowact {
+  display: flex;
+  gap: 4px;
+}
+.rowact button {
+  border: 1px solid var(--color-line);
+  background: transparent;
+  color: var(--color-ink-3);
+  border-radius: 4px;
+  min-width: 26px;
+  height: 24px;
+  font-size: 0.76rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+  transition: border-color 120ms, color 120ms;
+}
+.rowact button:hover {
+  border-color: var(--color-ink-3);
+  color: var(--color-ink);
+}
+tr.gone .rowact .bx {
+  background: rgba(242, 89, 75, 0.15);
+  color: var(--color-avoid);
+  border-color: transparent;
+}
+tr.mine .rowact .bs {
+  background: var(--color-clock);
+  color: #171204;
+  border-color: transparent;
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
