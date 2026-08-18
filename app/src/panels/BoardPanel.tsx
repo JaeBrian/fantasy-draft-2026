@@ -24,8 +24,8 @@ interface BoardProps {
   setMySlot: (n: number) => void;
 }
 
-function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: number; ord: string[]; noob: boolean }) {
-  const a = advise(DS, mySlot, ord);
+function AdvisorStrip({ DS, mySlot, ord, noob, blocked }: { DS: DraftState; mySlot: number; ord: string[]; noob: boolean; blocked: string[] }) {
+  const a = advise(DS, mySlot, ord, new Set(blocked));
   const made = Object.keys(DS).length;
   const [compact, setCompact] = usePersistent<boolean>(
     "fd26-adv-compact",
@@ -277,6 +277,22 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
   const [resetArmed, setResetArmed] = useState(false);
   const [openTiers, setOpenTiers] = useState<number[]>([]);
   const searchRef = useRef<HTMLInputElement>(null);
+  /* personal do-not-draft list — blocked players never appear in a recommendation */
+  const [blocked, setBlocked] = usePersistent<string[]>(
+    "fd26-blocked",
+    [],
+    (raw) => {
+      try {
+        return JSON.parse(raw) as string[];
+      } catch {
+        return [];
+      }
+    },
+    JSON.stringify
+  );
+  const toggleBlock = (name: string) =>
+    setBlocked(blocked.includes(name) ? blocked.filter((x) => x !== name) : [...blocked, name]);
+  const HATED = "Justin Jefferson";
 
   /* ---- Sleeper live draft sync: read-only API, no token; ~1 call per 10s while on.
      The league's real draft is pre-wired so picks start marking themselves the moment it begins. ---- */
@@ -411,7 +427,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
     if (collapsed) return;
     shown++;
     rows.push(
-      <tr key={n} className={st}>
+      <tr key={n} className={`group/row ${st}${blocked.includes(n) ? " opacity-45" : ""}`}>
         <td>
           <span className="rowact">
             <button type="button" className="bx" title="Drafted by another team (click again to undo)" onClick={() => mark(n, "gone")}>
@@ -427,11 +443,22 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
           <span className="inline-flex items-center gap-1.5 align-middle">
             <TeamIcon team={t} />
             <span className="pname">{n}</span>
+            <button
+              type="button"
+              onClick={() => toggleBlock(n)}
+              title={blocked.includes(n) ? `Un-ban ${n}` : `Never recommend ${n}`}
+              className="ml-1 align-middle text-[0.7rem] text-ink-3 opacity-0 transition-opacity hover:text-avoid focus-visible:opacity-100 group-hover/row:opacity-100"
+            >
+              🚫
+            </button>
           </span>
           <span className="pteam">
             {t} · bye {BYE[t] ?? "—"}
           </span>
           <InjChip name={n} className="ml-1.5" /> <TrendChip name={n} />
+          {blocked.includes(n) && (
+            <span className="ml-1.5 rounded-sm border border-avoid/60 px-1 font-mono text-[0.62rem] font-bold text-avoid">BANNED</span>
+          )}
           <br />
           <span className="mt-0.5 inline-flex flex-wrap gap-1"><TagChips tags={tags} max={3} /></span>
           <span className="mt-1 block max-w-[46ch] text-[0.85rem] leading-snug text-ink-2 min-[1560px]:hidden">{note}</span>
@@ -534,6 +561,18 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
           >
             {resetArmed ? "Click again to confirm" : "Reset draft"}
           </button>
+          <button
+            type="button"
+            className={`btn ${blocked.includes(HATED) ? "danger" : ""}`}
+            onClick={() => toggleBlock(HATED)}
+            title={
+              blocked.includes(HATED)
+                ? "Jefferson is banned from your recommendations. Click to forgive him."
+                : "Ban Justin Jefferson from every recommendation, forever (or until you click again)"
+            }
+          >
+            {blocked.includes(HATED) ? "🚫 Jefferson banned" : "🚫 No Jefferson"}
+          </button>
         </div>
         <span className="ml-auto inline-flex items-center gap-1.5 text-[0.85rem] font-semibold text-ink-2">
           I am:
@@ -565,7 +604,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
 
       <div className="flex flex-col gap-5 min-[1200px]:flex-row-reverse min-[1200px]:items-start">
         <div className="contents min-[1200px]:z-30 min-[1200px]:flex min-[1200px]:flex-col min-[1200px]:gap-3 min-[1200px]:sticky min-[1200px]:top-[calc(var(--hdr,86px)+6px)] min-[1200px]:w-[360px] min-[1200px]:shrink-0 min-[1200px]:max-h-[calc(100vh-var(--hdr,86px)-24px)] min-[1200px]:overflow-y-auto min-[1200px]:overscroll-contain">
-      <AdvisorStrip DS={DS} mySlot={mySlot} ord={ord} noob={noob} />
+      <AdvisorStrip DS={DS} mySlot={mySlot} ord={ord} noob={noob} blocked={blocked} />
 
       <div className="flex flex-wrap items-center gap-2">
         <SleeperMark size={18} />

@@ -248,9 +248,10 @@ function runDetect(ord: string[]): Pos | null {
   return null;
 }
 
-export function advise(DS: DraftState, mySlot: number, ord: string[]): Advice {
+export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: Set<string>): Advice {
   const all: Slot[] = P.map((r, i) => ({ r, i }));
-  const avail = all.filter((o) => !DS[o.r[0]]);
+  /* blocked players are dead to us: never recommended, never counted as future value */
+  const avail = all.filter((o) => !DS[o.r[0]] && !blocked?.has(o.r[0]));
   const mine = P.filter((r) => DS[r[0]] === "mine");
   const made = Object.keys(DS).length;
   const cur = made + 1;
