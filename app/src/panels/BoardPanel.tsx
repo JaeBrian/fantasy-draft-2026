@@ -313,9 +313,11 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
   const [openTiers, setOpenTiers] = useState<number[]>([]);
   const searchRef = useRef<HTMLInputElement>(null);
 
-  /* ---- Sleeper live draft sync: read-only API, no token; ~1 call per 8s while on ---- */
-  const [sleeperId, setSleeperId] = usePersistent<string>("fd26-sleeper", "", (r) => r, (v) => v);
-  const [syncOn, setSyncOn] = useState(false);
+  /* ---- Sleeper live draft sync: read-only API, no token; ~1 call per 10s while on.
+     The league's real draft is pre-wired so picks start marking themselves the moment it begins. ---- */
+  const DEFAULT_SLEEPER = "https://sleeper.app/draft/nfl/1389372699129700353";
+  const [sleeperId, setSleeperId] = usePersistent<string>("fd26-sleeper", DEFAULT_SLEEPER, (r) => r || DEFAULT_SLEEPER, (v) => v);
+  const [syncOn, setSyncOn] = usePersistent<boolean>("fd26-sync-on", true, (r) => r === "1", (v) => (v ? "1" : "0"));
   const [syncMsg, setSyncMsg] = useState("");
   const DSRef = useRef(DS);
   DSRef.current = DS;
@@ -336,6 +338,10 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
         const res = await fetch(`https://api.sleeper.app/v1/draft/${id}/picks`);
         if (!res.ok) throw new Error(String(res.status));
         const picks = (await res.json()) as SleeperPick[];
+        if (picks.length === 0) {
+          if (!stop) setSyncMsg('Connected to "charmin ultra strong" — waiting for the draft to start. Set My slot before it does!');
+          return;
+        }
         let offBoard = 0;
         picks
           .sort((x, y) => x.pick_no - y.pick_no)
@@ -356,7 +362,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
       }
     };
     tick();
-    const iv = setInterval(tick, 8000);
+    const iv = setInterval(tick, 10000);
     return () => {
       stop = true;
       clearInterval(iv);
