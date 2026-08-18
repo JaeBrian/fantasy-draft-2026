@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { P, OT, BYE, type Pos } from "../data";
+import { P, OT, BYE, DRAFT_ORDER, TOOL_USERS, type Pos } from "../data";
+import { snapTeam } from "../lib/advisor";
 import { advise, mktADP, needText, rosterSlots, PLAINPOS, type DraftState } from "../lib/advisor";
 import { usePersistent } from "../lib/store";
 import { SLP } from "../sleeper";
@@ -183,13 +184,16 @@ function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: numbe
         </span>
         <span className="font-mono tabular-nums">
           Round {Math.min(16, Math.ceil(a.cur / 12))} · pick {a.cur}
+          {a.cur <= 192 && (
+            <span className="text-ink-3"> · {DRAFT_ORDER[snapTeam(a.cur) - 1]}{a.onClock ? " (you)" : ""}</span>
+          )}
         </span>
         {mySlot >= 1 && a.nextPick && !a.onClock && (
           <span className="font-mono tabular-nums">
             your next pick: #{a.nextPick} ({a.nextPick - a.cur} away)
           </span>
         )}
-        <span className="ml-auto hidden gap-3 text-[0.8rem] text-ink-3 md:flex">
+        <span className="ml-auto hidden gap-3 text-[0.8rem] text-ink-3 md:flex min-[1440px]:hidden">
           {(["RB", "WR", "QB", "TE"] as Pos[]).map((p) => (
             <span key={p}>
               {p}: {next[p] ? <b className="font-medium text-ink-2">{next[p]!.n}</b> : "—"}
@@ -339,8 +343,8 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
         if (!res.ok) throw new Error(String(res.status));
         const picks = (await res.json()) as SleeperPick[];
         if (picks.length === 0) {
-          if (!stop) setSyncMsg('Connected to "charmin ultra strong" — waiting for the draft to start. Set My slot before it does!');
-          return;
+          if (!stop) setSyncMsg('Connected to "charmin ultra strong" — waiting for the draft (checking once a minute). Set who you are before it starts!');
+          return 60000;
         }
         let offBoard = 0;
         picks
@@ -357,15 +361,21 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
           setSyncMsg(
             `Live: ${picks.length} picks synced${offBoard ? ` (${offBoard} off-board)` : ""} · ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" })}`
           );
+        return 10000;
       } catch {
-        if (!stop) setSyncMsg("Sync error — check the draft URL/ID (drafts must have started).");
+        if (!stop) setSyncMsg("Sync error — retrying shortly. Check the draft URL/ID if this persists.");
+        return 30000;
       }
     };
-    tick();
-    const iv = setInterval(tick, 10000);
+    let timer: number | undefined;
+    const loop = async () => {
+      const delay = (await tick()) ?? 10000;
+      if (!stop) timer = window.setTimeout(loop, delay);
+    };
+    loop();
     return () => {
       stop = true;
-      clearInterval(iv);
+      if (timer !== undefined) clearTimeout(timer);
     };
   }, [syncOn, sleeperId, mark]);
 
@@ -410,7 +420,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
       rows.push(
         <tr key={`tier-${ot}`} className="tier-band">
           <td
-            colSpan={8}
+            colSpan={9}
             className={done ? "cursor-pointer select-none" : undefined}
             onClick={done ? () => setOpenTiers((o) => (o.includes(ot) ? o.filter((x) => x !== ot) : [...o, ot])) : undefined}
           >
@@ -454,6 +464,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
         </td>
         <td><Sticker pos={p} /></td>
         <td className="num">{adp.toFixed(1)}</td>
+        <td className="num">{SLP[n]?.rk !== undefined ? SLP[n].rk : <span className="text-ink-3">—</span>}</td>
         <td className="num">
           {(() => {
             const edge = Math.round(mktADP(r) - (i + 1));
@@ -540,23 +551,36 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
             {resetArmed ? "Click again to confirm" : "Reset draft"}
           </button>
         </div>
-        <label className="ml-auto inline-flex items-center gap-2 text-[0.85rem] font-semibold text-ink-2">
-          My slot
+        <span className="ml-auto inline-flex items-center gap-1.5 text-[0.85rem] font-semibold text-ink-2">
+          I am:
+          {TOOL_USERS.map(([nm, slot]) => (
+            <button
+              key={nm}
+              type="button"
+              className={`btn !px-2.5 !py-1 !text-[0.8rem] ${mySlot === slot ? "on" : ""}`}
+              onClick={() => setMySlot(slot)}
+            >
+              {nm}
+            </button>
+          ))}
           <select
             value={String(mySlot)}
             onChange={(e) => setMySlot(parseInt(e.target.value) || 0)}
+            aria-label="My draft slot"
             className="rounded-[5px] border border-line bg-surface px-2 py-1.5 text-[0.88rem] font-semibold text-ink"
           >
             <option value="0">—</option>
             {Array.from({ length: 12 }, (_, i) => (
               <option key={i + 1} value={String(i + 1)}>
-                {i + 1}
+                {i + 1} · {DRAFT_ORDER[i]}
               </option>
             ))}
           </select>
-        </label>
+        </span>
       </div>
 
+      <div className="flex flex-col gap-5 min-[1440px]:flex-row min-[1440px]:items-start">
+        <div className="z-30 flex flex-col gap-3 min-[1440px]:sticky min-[1440px]:top-[86px] min-[1440px]:w-[410px] min-[1440px]:shrink-0">
       <AdvisorStrip DS={DS} mySlot={mySlot} ord={ord} noob={noob} />
 
       <div className="flex flex-wrap items-center gap-2">
@@ -574,7 +598,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
         </button>
         {syncMsg && <span className="text-[0.8rem] text-ink-3">{syncMsg}</span>}
         {!syncMsg && (
-          <Info tip={<>Works for any Sleeper draft (read-only, no login). Set <b className="text-ink">My slot</b> first so your own picks land as <b className="text-ink">Pick</b>, everyone else's as <b className="text-ink">Taken</b>. Refreshes every 8 seconds.</>} />
+          <Info tip={<>Works for any Sleeper draft (read-only, no login). Set <b className="text-ink">My slot</b> first so your own picks land as <b className="text-ink">Pick</b>, everyone else's as <b className="text-ink">Taken</b>. Checks once a minute before the draft, every 10 seconds once picks are flowing.</>} />
         )}
       </div>
 
@@ -582,7 +606,9 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
         <SleeperMark size={13} />
         Injury tags, 🔥/🧊 trending, and the board ranks behind pick predictions come live from Sleeper's public API — refreshed daily.
       </div>
+        </div>
 
+        <div className="flex min-w-0 flex-1 flex-col gap-3">
       <div className="card overflow-x-auto">
         <table className="tbl">
           <thead>
@@ -614,6 +640,12 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
               </th>
               <th className="!text-right">
                 <span className="inline-flex items-center gap-1.5">
+                  SLP
+                  <Info tip={<>Sleeper's own board rank — the default order your Sleeper league-mates see in their draft room. Weighted into "will he reach me?" predictions above mock-market ADP.</>} />
+                </span>
+              </th>
+              <th className="!text-right">
+                <span className="inline-flex items-center gap-1.5">
                   Edge
                   <Info tip={<><b className="text-ink">Is he on sale, or marked up?</b> Rank = what he's worth. ADP = what the room pays. Edge is the gap. <b className="text-value">Green +15</b> = on sale — he'll still be there ~15 picks after he's worth taking, so wait and get him free. <b className="text-avoid">Red −10</b> = marked up — the room pays 10 picks over his real value; let someone else. Near 0 = fair price. <b className="text-ink">Green means wait, red means don't pay.</b></>} />
                 </span>
@@ -632,13 +664,15 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
               rows
             ) : (
               <tr>
-                <td colSpan={8} className="!p-5 text-ink-3">
+                <td colSpan={9} className="!p-5 text-ink-3">
                   No players match — clear the search or the position filter.
                 </td>
               </tr>
             )}
           </tbody>
         </table>
+      </div>
+        </div>
       </div>
     </div>
   );
