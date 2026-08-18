@@ -1,4 +1,5 @@
 import { P, BYE, CUFFS, MKT, VEGAS, type PlayerRow, type Pos, type Verdict } from "../data";
+import { SLP } from "../sleeper";
 
 export type Mark = "gone" | "mine";
 export type DraftState = Record<string, Mark>;
@@ -120,7 +121,10 @@ const PLAINSHORT: Record<string, string> = {
 
 export const mktADP = (row: PlayerRow): number => {
   const m = MKT[row[0]];
-  return m ? m[0] : row[3];
+  const ffc = m ? m[0] : row[3];
+  const srk = SLP[row[0]]?.rk;
+  /* Sleeper home leagues draft off Sleeper's default board — lean its rank over mock-market ADP */
+  return srk !== undefined ? 0.55 * srk + 0.45 * ffc : ffc;
 };
 const sigmaOf = (row: PlayerRow): number => {
   const m = MKT[row[0]];
@@ -370,6 +374,13 @@ export function advise(DS: DraftState, mySlot: number, ord: string[]): Advice {
       if (!onClock) s *= 0.1 + 0.9 * pReach;
       s *= vmul[now.r[4]] ?? 1;
       s *= phaseMul(now.r[8], myCount);
+      /* live Sleeper signals: a player listed Out/IR/PUP can't be your pick no matter the note */
+      const liveInj = SLP[now.r[0]]?.inj;
+      if (liveInj === "O" || liveInj === "IR" || liveInj === "PUP" || liveInj === "SUS" || liveInj === "NA") s *= 0.55;
+      else if (liveInj === "D") s *= 0.85;
+      else if (liveInj === "Q") s *= 0.97;
+      const liveTrend = SLP[now.r[0]]?.trend;
+      if (liveTrend !== undefined && Math.abs(liveTrend) >= 5000) s *= liveTrend > 0 ? 1.02 : 0.98;
       const tier = now.r[6];
       const tLeft = tierSurvivors(ps, tier, avail, back, cur, shift[ps]);
       const cliff = tLeft < 1.5 && gap >= 0.8;
