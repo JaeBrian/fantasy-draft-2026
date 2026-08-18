@@ -302,6 +302,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
         <ul className="mt-1.5 mb-0.5 list-disc space-y-1 pl-5">
           <li>When it's your pick, take the highest-ranked player left (position needs permitting). If his <b>ADP</b> is much higher than his rank here, he'll likely still be there next round — don't reach.</li>
           <li>Chips: <Call v="buy" /> better than his price · <Call v="solid" /> fairly priced · <Call v="risk" /> only at a discount · <Call v="avoid" /> the price ignores a real problem. Hover any small tag for its meaning.</li>
+          <li><b>Edge</b> is a price tag: <b>Rank</b> is what a player is worth, <b>ADP</b> is what your league-mates will pay, and Edge is the difference. <b className="text-value">Green +49</b> (Malik Willis) = on sale — the room waits ~49 picks past his real value, so never reach for him; he comes to you. <b className="text-avoid">Red −103</b> (Alec Pierce) = badly marked up — the room pays round 5 for a player our research puts in the last rounds. <b>Green means wait, red means don't pay.</b></li>
           <li>Hit <b>Taken</b> when anyone drafts a player, <b>Pick</b> when the pick is yours. "Hide drafted" shows only who's left.</li>
           <li>Set <b>My slot</b> and the status bar will suggest who to take next. Mark picks <b>in draft order</b> — the advisor rebuilds every team's roster from your marks and predicts what the teams ahead of you will take. Marks are saved on this device.</li>
         </ul>
@@ -402,7 +403,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
               <th className="!text-right">
                 <span className="inline-flex items-center gap-1.5">
                   Edge
-                  <Info tip={<><b className="text-ink">ADP+ — the research gap.</b> Market price minus our research rank. <b className="text-value">+15</b> = the room drafts him ~15 picks after where our research says he's worth — free value, wait and grab him. <b className="text-avoid">−10</b> = the room pays ~10 picks more than our research supports — let someone else reach.</>} />
+                  <Info tip={<><b className="text-ink">Is he on sale, or marked up?</b> Rank = what he's worth. ADP = what the room pays. Edge is the gap. <b className="text-value">Green +15</b> = on sale — he'll still be there ~15 picks after he's worth taking, so wait and get him free. <b className="text-avoid">Red −10</b> = marked up — the room pays 10 picks over his real value; let someone else. Near 0 = fair price. <b className="text-ink">Green means wait, red means don't pay.</b></>} />
                 </span>
               </th>
               <th>
