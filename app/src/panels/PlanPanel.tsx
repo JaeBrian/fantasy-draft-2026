@@ -22,22 +22,22 @@ function Round({ rn, children }: { rn: string; children: ReactNode }) {
 const PLANS: Record<SlotKey, ReactNode> = {
   s13: (
     <>
-      <Round rn="Round 1"><b>Gibbs or Bijan — a true coin flip.</b> Half-PPR crowd leans Gibbs (bellcow, easiest schedule); Bijan's TD math points up. You can't get this wrong. At 1.03, Ja'Marr Chase.</Round>
-      <Round rn="Round 2"><b>Best available from: Jefferson, Lamb, Cook, Henry, Walker III.</b> Elite WR or your RB2 — the wheel comes back late, so take talent, not need.</Round>
-      <Round rn="Round 3"><b>Complete the base:</b> if you're RB-RB, grab a WR1 (A.J. Brown, Pickens, DeVonta Smith). If RB-WR, lock RB2 (Chase Brown, Walker, Hampton). Josh Allen if he's still here.</Round>
+      <Round rn="Round 1"><b>Take the RB — the sim is emphatic.</b> 400 simulated drafts per strategy: opening with an RB wins 98–99% of simulated leagues from this seat; opening Ja’Marr Chase instead drops you to 50%. Gibbs or Bijan is a coin flip.</Round>
+      <Round rn="Which one">Half-PPR leans Gibbs (bellcow, easiest schedule); Bijan’s TD math points up. You can’t get this wrong. At 1.03 with both gone, Chase is right — you’re forced, and it’s still fine.</Round>
+      <Round rn="Picks 24 + 25 (the wheel)"><b>Breece Hall + George Pickens</b> — the sim’s most common pair at your double (Hall ~65%, Pickens ~58%). RB-RB and RB-WR-RB finish dead even at the top (110.5 pts/wk), so order doesn’t matter; you get both.</Round>
       <Round rn="Rounds 4–7"><b>WR hammer through the dead zone</b> (Egbuka, McConkey, Olave, DJ Moore) + one TE swing (Loveland/Warren) if the value comes.</Round>
       <Round rn="Rounds 8–16">Upside RBs (Mason, Croskey-Merritt), late QB (Murray/Nix/Purdy) if you waited, your RB1's handcuff, K + DST last.</Round>
-      <Round rn="Example">Gibbs → Jefferson → Chase Brown → Egbuka → Loveland → McLaurin → Lamar → Mason…</Round>
+      <Round rn="Sim’s best line">Gibbs → Breece Hall + Pickens → Waddle → Loveland → McLaurin → Lamar → Mason… <span className="text-ink-3">(110.6 pts/wk, won 98% of simulated leagues)</span></Round>
     </>
   ),
   s46: (
     <>
-      <Round rn="Round 1"><b>Chase at 4 is the dream.</b> After him: JSN / Amon-Ra, or McCaffrey if you can stomach the age-30 risk (he's still the projected points leader when healthy). Jefferson at 5–6 is a sneaky-correct pick this year.</Round>
-      <Round rn="Round 2"><b>You need an RB here</b> — Cook, Henry, Walker III, Saquon, Chase Brown. The bellcow shelf is nearly bare after this round.</Round>
+      <Round rn="Round 1"><b>Double-RB wins here — 95% of simulated leagues.</b> Chase at 4 if he falls. Otherwise the sim takes McCaffrey ~75% of the time on raw projection — but our research has him at 78% injury odds, and swapping to JSN costs only ~0.4 pts/wk. Jefferson at 5–6 remains a defensible value play.</Round>
+      <Round rn="Round 2"><b>Kenneth Walker III — the sim’s pick ~70% of the time</b>, and our biggest buy on the board. Henry, Saquon or Chase Brown if he’s gone. Every RB-first line beat every WR-first line from this seat.</Round>
       <Round rn="Round 3"><b>Second RB or elite WR2</b> depending on round 2. This is also the Allen window — he slides here often because everyone's fixated on RB/WR.</Round>
       <Round rn="Rounds 4–7">WR volume (DeVonta, Waddle, McLaurin) + a TE (Bowers/McBride will be gone — Loveland/Warren are the play).</Round>
       <Round rn="Rounds 8–16">Dead-zone-survivor RBs, late QB, handcuffs, K/DST last two.</Round>
-      <Round rn="Example">Chase → James Cook → DeVonta Smith → Breece Hall → Tyler Warren → DJ Moore → Lamar → Diggs…</Round>
+      <Round rn="Sim’s best line">McCaffrey (or JSN) → Walker III → Nabers → Egbuka → Warren → DJ Moore → Lamar → Diggs… <span className="text-ink-3">(109.0 pts/wk, won 95% of simulated leagues)</span></Round>
     </>
   ),
   s79: (
@@ -46,17 +46,17 @@ const PLANS: Record<SlotKey, ReactNode> = {
       <Round rn="Round 2"><b>Second bellcow:</b> Walker III, Chase Brown, Henry, Saquon — a natural RB-RB combo lands here (e.g., Taylor + Chase Brown, Cook + Walker).</Round>
       <Round rn="Rounds 3–8"><b>Attack WR relentlessly:</b> A.J. Brown/Pickens tier in 3, then Egbuka, Olave, McConkey, DJ Moore, Diggs. Bowers/McBride in round 2 instead is fine if the RB you wanted is gone — then go RB in 3.</Round>
       <Round rn="Rounds 9–16">Late QB (Murray/Nix/Purdy), upside RBs, handcuff your studs, K/DST last.</Round>
-      <Round rn="Example">Taylor → Walker III → Pickens → Egbuka → McConkey → Tyler Warren → Watson → Murray…</Round>
+      <Round rn="Example line">Taylor → Walker III → Pickens → Egbuka → McConkey → Tyler Warren → Watson → Murray… <span className="text-ink-3">(not simulated — slots 1, 6 and 10 were; RB-RB won at every one of them)</span></Round>
     </>
   ),
   s1012: (
     <>
-      <Round rn="Rounds 1–2 (back-to-back)"><b>Double-RB is the slight favorite here.</b> Our own sim of the turn (10 + 15) has RB-RB edging WR-RB by ~0.5 pts/wk: the WR shelf at picks 34-39 stays strong, the RB shelf doesn't. So Saquon/Walker/Henry-type pairs beat taking the best WR first — by a hair. Jefferson + an RB is the defensible alternative if he's the value you believe in; order between your two turn picks doesn't matter, you get both.</Round>
+      <Round rn="Rounds 1–2 (back-to-back)"><b>One bellcow, then best WR — 85% win rate.</b> Full 16-round sims put Hero-RB narrowly on top here, with Derrick Henry the most common opener (~59%). The top four strategies sit within 0.4 pts/wk, so what matters is landing one RB early: the WR shelf at picks 34–39 holds, the RB shelf collapses.</Round>
       <Round rn="Round 3"><b>RB2 first</b> — Skattebo, Etienne, or a healthy-checked Breece keeps you on the two-RBs-in-three-rounds plan. The one exception worth breaking it: <b>Josh Allen sliding to 26–31</b> — take him and push RB2 to round 4; his edge over QB12 is bigger than the RB you're deferring.</Round>
       <Round rn="Rounds 4–7">You pick in pairs — plan two at a time. WR + RB each turn beats doubling one position. Loveland/Warren for TE in this window; Odunze, Waddle, Egbuka are the WR targets.</Round>
       <Round rn="Rounds 8–16">This seat wins late: Diggs, Mason, Croskey-Merritt, Murray, Likely all live here. K/DST last two.</Round>
-      <Round rn="Example (base)">Jefferson + Cook → Skattebo → Waddle → Egbuka + Warren → Lamar + Mason…</Round>
-      <Round rn="Example (Allen slides)">Jefferson + Cook → Allen → Skattebo/Etienne → Odunze + Warren → Diggs + Croskey-Merritt…</Round>
+      <Round rn="Sim’s best line">Henry → A.J. Brown → DeVonta Smith → Javonte Williams → Warren → Diggs… <span className="text-ink-3">(108.0 pts/wk, won 85% of simulated leagues)</span></Round>
+      <Round rn="Jefferson line (a tie)">Jefferson → Saquon → Javonte Williams → DeVonta Smith… <span className="text-ink-3">(107.8 pts/wk, 84%) — if you believe the Jefferson case, taking him costs you nothing.</span></Round>
     </>
   ),
 };
