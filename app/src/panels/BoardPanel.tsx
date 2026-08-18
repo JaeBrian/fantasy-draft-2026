@@ -47,7 +47,7 @@ function TrendChip({ name }: { name: string }) {
 type SleeperPick = { pick_no: number; draft_slot: number; metadata?: { first_name?: string; last_name?: string } };
 const normName = (s: string) =>
   s.toLowerCase().replace(/[.'-]/g, " ").replace(/\b(jr|sr|ii|iii|iv|v)\b/g, "").replace(/\s+/g, " ").trim();
-import { Call, Info, Intro, Noob, Sticker, TagChips, TeamIcon } from "../components/ui";
+import { Call, Info, Noob, Sticker, TagChips, TeamIcon } from "../components/ui";
 
 const POS_FILTERS: ("ALL" | Pos)[] = ["ALL", "QB", "RB", "WR", "TE"];
 
@@ -169,7 +169,7 @@ function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: numbe
 
   return (
     <div
-      className={`card sticky top-[86px] z-30 overflow-hidden transition-shadow ${
+      className={`card sticky top-[calc(var(--hdr,86px)+6px)] z-30 overflow-hidden transition-shadow ${
         a.onClock ? "border-clock/60 shadow-[0_0_0_1px_var(--color-clock),0_0_24px_-6px_rgba(240,180,41,0.45)]" : "shadow-[0_10px_30px_-12px_rgba(0,0,0,0.7)]"
       }`}
     >
@@ -480,11 +480,21 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
 
   return (
     <div className="flex flex-col gap-5">
-      <Intro eyebrow="The board" title={`${P.length} players, ranked for your league`}>
-        My synthesized half-PPR ranks — expert consensus adjusted for Vegas environments, TD regression, injury risk,
-        and August camp news. <b className="text-ink">ADP</b> is live Underdog market price (Aug 17); a rank far better than ADP
-        means the market will let you have him late.
-      </Intro>
+      <div className="flex items-center gap-2">
+        <span className="display text-[1.15rem] font-bold uppercase tracking-[0.04em] text-ink">
+          {P.length} players, ranked for your league
+        </span>
+        <Info
+          tip={
+            <>
+              Synthesized half-PPR ranks — expert consensus adjusted for Vegas environments, TD regression, injury
+              risk, and camp news. <b className="text-ink">ADP</b> is the live mock-draft market price,{" "}
+              <b className="text-ink">SLP</b> is Sleeper's own board, and a rank far better than ADP means the market
+              will let you have him late.
+            </>
+          }
+        />
+      </div>
 
       <Noob show={noob} title="Using the board:">
         <ul className="mt-1.5 mb-0.5 list-disc space-y-1 pl-5">
@@ -580,7 +590,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
       </div>
 
       <div className="flex flex-col gap-5 min-[1440px]:flex-row min-[1440px]:items-start">
-        <div className="z-30 flex flex-col gap-3 min-[1440px]:sticky min-[1440px]:top-[86px] min-[1440px]:w-[410px] min-[1440px]:shrink-0">
+        <div className="contents min-[1440px]:z-30 min-[1440px]:flex min-[1440px]:flex-col min-[1440px]:gap-3 min-[1440px]:sticky min-[1440px]:top-[calc(var(--hdr,86px)+6px)] min-[1440px]:w-[410px] min-[1440px]:shrink-0">
       <AdvisorStrip DS={DS} mySlot={mySlot} ord={ord} noob={noob} />
 
       <div className="flex flex-wrap items-center gap-2">
