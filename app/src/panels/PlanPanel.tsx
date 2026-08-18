@@ -34,13 +34,14 @@ const PLANS: Record<SlotKey, ReactNode> = {
   s46: (
     <>
       <Round rn="First pick, ranked"><b>Read availability alongside the score.</b> Across 2,500 seasons each: Jonathan Taylor 107.26 (on the board 74% of the time) · Amon-Ra St. Brown 106.89 (88%) · James Cook 106.85 (98%) · JSN 106.80 (83%) · Henry 106.43 (100%) · Jefferson 106.28 (100%). Taylor grades best but is gone a quarter of the time, so know your second name before you are on the clock.</Round>
-      <Round rn="Best structure"><b>WR-RB-WR-RB, 107.13 pts/wk</b> — this flipped when the model moved to Sleeper’s real ADP; the WR open now edges the RB open. The next three sit within 0.5, so treat them as interchangeable. <b className="text-avoid">RB-RB-QB-WR finishes 104.59</b> — a round-3 quarterback is the costliest common mistake at this seat.</Round>
-      <Round rn="Round 1">JSN is the pick 81% of the time, Amon-Ra 15%.</Round>
+      <Round rn="Open with the running back"><b>Jonathan Taylor.</b> An earlier study reported that opening a WR was better here; that was an artifact and it is withdrawn. Fixing the position each round forces the draft to take whoever our board lists first at it — and our board has Christian McCaffrey at #6, ahead of Taylor at #9, so the RB-first template drafted McCaffrey about half the time. McCaffrey is worth <b>1.8 pts/wk less</b> than Taylor (105.62 vs 107.40), which is the entire reason the RB open looked bad. It was a fact about our board order, not about position.</Round>
+      <Round rn="Policies, not templates"><b>Every value-based way of drafting opens Taylor here.</b> Across 4,000 paired seasons scored week by week: value-plus-scarcity 105.25 (opens Taylor 73%) · need-weighted 105.22 (Taylor 73%) · raw value-over-replacement 104.35 (Taylor 71%) · straight board order 103.70 (opens JSN 81%) · <b className="text-avoid">just following ADP 100.10</b>. The only policy that opens a receiver is the one that reads our board literally, and it is 1.55 pts/wk worse than thinking about scarcity. <b className="text-avoid">RB-RB-QB-WR finishes 104.59</b> — a round-3 quarterback remains the costliest common mistake.</Round>
+      <Round rn="If Taylor is gone">He is on the board 73% of the time. When he is not, Amon-Ra St. Brown (106.89, there 88%) and James Cook (106.85, 98%) are the fallbacks — both fine, neither worth reaching past Taylor for.</Round>
       <Round rn="Round 2"><b>Kenneth Walker III, 59%</b> — Breece Hall (17%) or Omarion Hampton (11%) if he is gone.</Round>
       <Round rn="Round 3"><b>Malik Nabers 73%</b>, DeVonta Smith 23%.</Round>
       <Round rn="Rounds 4–7">Etienne (52%) or Swift (42%) at 43, then a TE at 54 — Warren 60%, Kraft 21%, Loveland 19%.</Round>
       <Round rn="Rounds 8–16">QB at 67 (Daniels 62%), then depth, a backup QB and TE, K/DST last two.</Round>
-      <Round rn="Sim’s best line">JSN → Walker III → Nabers → Etienne → Warren → Daniels… <span className="text-ink-3">(106.7 pts/wk; bad year 88.7, good year 127.2)</span></Round>
+      <Round rn="Sim’s best line">Taylor → Walker III → Nabers → Etienne → Warren → Daniels… <span className="text-ink-3">(the rounds below come from the older template run and still open JSN; the opening pick above supersedes them)</span></Round>
     </>
   ),
   s79: (
@@ -55,13 +56,14 @@ const PLANS: Record<SlotKey, ReactNode> = {
   s1012: (
     <>
       <Round rn="First pick, ranked"><b>Justin Jefferson, and this reverses our earlier advice.</b> Across 2,500 seasons: Jefferson 107.84 (on the board 97% of the time) · Henry 107.36 (100%) · Saquon 107.21 (98%) · Cook 107.16 (25%) · Lamb 107.16 (87%). We previously called Jefferson the worst pick here on the grounds that he was always available and so would come back to you. On Sleeper’s real ADP he does not: his ADP is 12.3, which falls between your pick 10 and your pick 15, and he survives to 15 only 12% of the time. A player whose ADP sits between two of your picks is exactly the one to take at the earlier pick.</Round>
-      <Round rn="Best structure"><b>RB-RB-WR-WR, 108.12 pts/wk</b> — but all five finalists sit inside 0.60, so this seat has genuine freedom. Just do not open QB or TE.</Round>
-      <Round rn="Round 1">Henry is the pick 74% of the time when following the structure, Cook 25%.</Round>
+      <Round rn="Open with a running back"><b>Saquon Barkley or Derrick Henry.</b> This reverses advice given earlier today, and it is worth saying why rather than quietly editing it. The Jefferson case rested on a projection the model invented: his value came from a curve on his board rank, which put him at 16.1 pts/wk. Sleeper&apos;s actual 2026 projection for him is <b>11.4</b>, outside their top eight receivers. On real projections the top six openers at this seat are all running backs — Cook 90.49 (on the board just 25% of the time) · <b>Saquon 90.04 (98%)</b> · <b>Henry 90.01 (100%)</b> · Walker III 89.64 · Chase Brown 89.58 · Jeanty 89.37.</Round>
+      <Round rn="Which one">Cook grades highest but is gone three drafts in four. Saquon and Henry are both there essentially always, and are within 0.03 of each other — take whichever you prefer; there is no measurable difference.</Round>
+      <Round rn="Best structure"><b>RB-RB-WR-WR, 88.63 pts/wk</b> — and RB-first is now unambiguous here: every WR-first line trails it. The five finalists span 1.3.</Round>
       <Round rn="Round 2"><b>Saquon 45%</b>, Walker III 34%, Henry 21% — you pick at 10 and 15, so plan the pair together.</Round>
       <Round rn="Rounds 3–4">DeVonta Smith (53%) then Egbuka (43%) or Zay Flowers (33%). You pick in pairs at this seat — plan two at a time.</Round>
       <Round rn="Rounds 5–7">TE at 58: Kraft 51%, Warren 42%.</Round>
       <Round rn="Rounds 8–16">QB at 63 (Daniels 78%), then depth, a backup QB and TE, K/DST last two.</Round>
-      <Round rn="Sim’s best line">Henry → Saquon → DeVonta Smith → Egbuka → Kraft → Daniels… <span className="text-ink-3">(107.7 pts/wk; the whole seat spans 0.60, so deviating costs you almost nothing)</span></Round>
+      <Round rn="Sim’s best line">Henry → Saquon → DeVonta Smith → Egbuka → Kraft → Daniels… <span className="text-ink-3">(all numbers on this page now come from Sleeper&apos;s real 2026 projections rather than a curve fitted to our own board order)</span></Round>
     </>
   ),
 };

@@ -1,5 +1,6 @@
 import { P, BYE, CUFFS, MKT, VEGAS, type PlayerRow, type Pos, type Verdict } from "../data";
 import { SLP } from "../sleeper";
+import { PROJ } from "../projections";
 
 export type Mark = "gone" | "mine";
 export type DraftState = Record<string, Mark>;
@@ -84,17 +85,42 @@ const PPG: Record<Pos, (r: number) => number> = {
   K: () => 7,
   DST: () => 7,
 };
-const REPL: Record<Pos, number> = {
-  QB: PPG.QB(14), RB: PPG.RB(32), WR: PPG.WR(34), TE: PPG.TE(13), K: 7, DST: 7,
-};
+/* Player value comes from Sleeper's own 2026 half-PPR projection, per game. The curves above
+ * are only a fallback for anyone Sleeper has no projection for (currently 1 of 170).
+ *
+ * This used to be curve-only, and that was a real problem: a player's projection was a pure
+ * function of where OUR board ranked him, so the model had no independent opinion — it simply
+ * restated the board. Against real projections the curves carried a mean absolute error of
+ * 1.99 pts/wk, as large as the differences we were drawing conclusions from, and they were
+ * biased: quarterbacks overrated by ~5 pts/wk, Justin Jefferson by 4.7.
+ *
+ * The board now does the thing it is actually good at — the verdict, tier and tags applied
+ * further down as multipliers. That is our research edge over the projection, not a
+ * substitute for having one. */
+const projOf = (name: string, pos: Pos, posRank: number): number =>
+  PROJ[name] !== undefined ? PROJ[name] : PPG[pos](posRank);
 
+/** Replacement level: what the last startable player at each position is actually projected
+ *  for, read off the real distribution rather than assumed from a curve. A 12-team lineup
+ *  starts 1 QB, 2 RB, 2 WR, 1 TE and 2 flex, so the flex spots push RB and WR deeper. */
+const REPL_RANK: Record<Pos, number> = { QB: 14, RB: 32, WR: 34, TE: 13, K: 1, DST: 1 };
+const REPL: Record<Pos, number> = { QB: 0, RB: 0, WR: 0, TE: 0, K: 7, DST: 7 };
 const GP: Record<string, { pr: number; proj: number; vorp: number }> = {};
 {
   const c: Record<string, number> = { QB: 0, RB: 0, WR: 0, TE: 0 };
+  const byPos: Record<string, number[]> = { QB: [], RB: [], WR: [], TE: [] };
   P.forEach((r) => {
     const pr = ++c[r[1]];
-    const proj = PPG[r[1]](pr);
-    GP[r[0]] = { pr, proj, vorp: Math.max(0.2, proj - REPL[r[1]]) };
+    const proj = projOf(r[0], r[1], pr);
+    GP[r[0]] = { pr, proj, vorp: 0 };
+    byPos[r[1]]?.push(proj);
+  });
+  (["QB", "RB", "WR", "TE"] as Pos[]).forEach((pos) => {
+    const sorted = byPos[pos].slice().sort((a, b) => b - a);
+    REPL[pos] = sorted[Math.min(REPL_RANK[pos] - 1, sorted.length - 1)] ?? 0;
+  });
+  P.forEach((r) => {
+    GP[r[0]].vorp = Math.max(0.2, GP[r[0]].proj - REPL[r[1]]);
   });
 }
 
@@ -207,7 +233,12 @@ function demandShift(ord: string[], mySlot: number, cur: number, until: number):
 
 /** Expected best projection left at `pick` for a position, plus the most likely surviving name */
 function nextBest(ps: Pos, avail: Slot[], pick: number, cur: number, shift: number) {
-  const pool = avail.filter((o) => o.r[1] === ps);
+  /* "best still there" only means something if we walk the pool best-first. That used to be
+   * board order, which was fine while projections WERE board order; now that value is
+   * independent of the board, sort by it. */
+  const pool = avail
+    .filter((o) => o.r[1] === ps)
+    .sort((a, b) => GP[b.r[0]].proj - GP[a.r[0]].proj);
   let pAll = 1;
   let ev = 0;
   let likely: Slot | null = null;
