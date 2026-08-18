@@ -130,7 +130,7 @@ function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: numbe
 
   return (
     <div
-      className={`card sticky top-[calc(var(--hdr,86px)+6px)] z-30 overflow-hidden transition-shadow ${
+      className={`card sticky top-[calc(var(--hdr,86px)+6px)] z-30 max-h-[calc(100vh-var(--hdr,86px)-20px)] overflow-y-auto overscroll-contain transition-shadow min-[1200px]:max-h-none min-[1200px]:overflow-visible ${
         a.onClock ? "border-clock/60 shadow-[0_0_0_1px_var(--color-clock),0_0_24px_-6px_rgba(240,180,41,0.45)]" : "shadow-[0_10px_30px_-12px_rgba(0,0,0,0.7)]"
       }`}
     >
@@ -564,7 +564,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
       </div>
 
       <div className="flex flex-col gap-5 min-[1200px]:flex-row-reverse min-[1200px]:items-start">
-        <div className="contents min-[1200px]:z-30 min-[1200px]:flex min-[1200px]:flex-col min-[1200px]:gap-3 min-[1200px]:sticky min-[1200px]:top-[calc(var(--hdr,86px)+6px)] min-[1200px]:w-[360px] min-[1200px]:shrink-0">
+        <div className="contents min-[1200px]:z-30 min-[1200px]:flex min-[1200px]:flex-col min-[1200px]:gap-3 min-[1200px]:sticky min-[1200px]:top-[calc(var(--hdr,86px)+6px)] min-[1200px]:w-[360px] min-[1200px]:shrink-0 min-[1200px]:max-h-[calc(100vh-var(--hdr,86px)-24px)] min-[1200px]:overflow-y-auto min-[1200px]:overscroll-contain">
       <AdvisorStrip DS={DS} mySlot={mySlot} ord={ord} noob={noob} />
 
       <div className="flex flex-wrap items-center gap-2">
