@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { P, OT, BYE, type Pos } from "../data";
-import { advise, needText, rosterSlots, type DraftState } from "../lib/advisor";
+import { advise, mktADP, needText, rosterSlots, PLAINPOS, type DraftState } from "../lib/advisor";
 import { Call, Info, Intro, Noob, Sticker, TagChips, TeamIcon } from "../components/ui";
 
 const POS_FILTERS: ("ALL" | Pos)[] = ["ALL", "QB", "RB", "WR", "TE"];
@@ -17,7 +17,7 @@ interface BoardProps {
   setMySlot: (n: number) => void;
 }
 
-function AdvisorStrip({ DS, mySlot, ord }: { DS: DraftState; mySlot: number; ord: string[] }) {
+function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: number; ord: string[]; noob: boolean }) {
   const a = advise(DS, mySlot, ord);
   const made = Object.keys(DS).length;
 
@@ -26,24 +26,31 @@ function AdvisorStrip({ DS, mySlot, ord }: { DS: DraftState; mySlot: number; ord
     if (!DS[r[0]] && !next[r[1]]) next[r[1]] = { n: r[0], i };
   });
 
-  let suggestion: { take: string; team: string; pos: Pos; rank: number; why: ReactNode; alts: string } | null = null;
+  const waiting = !a.onClock && a.nextPick !== null && a.myCount < 14;
+  let suggestion: { take: string; team: string; pos: Pos; rank: number; why: ReactNode; alts: typeof a.cands } | null = null;
   let special: string | null = null;
+  let plain: ReactNode = null;
   if (a.myCount >= 16) special = "Roster complete.";
-  else if (a.myCount >= 14)
+  else if (a.myCount >= 14) {
     special =
       a.myCount === 14
         ? "Take your defense — best remaining of Seahawks / Texans / Rams / Steelers. (K and DST always go with your last two picks.)"
         : "Take your kicker — best remaining of Aubrey / Fairbairn / Dicker / Boswell. (K and DST always go with your last two picks.)";
-  else if (a.cands.length) {
+    plain = <>You're almost done! Use your last picks on a kicker and a defense — the ones suggested here are all fine. Click <b>Pick</b> next to a name when you take someone.</>;
+  } else if (a.cands.length) {
     const t = a.cands[0];
-    const alts = a.cands.slice(1, 3);
+    const alts = a.cands.slice(1, 4);
     let why = needText(t.p, a);
     if (t.cuffOf) why = `he's the handcuff to your ${t.cuffOf} — season insurance`;
-    const dropPts = t.vNow - t.vLater;
-    if (dropPts >= 2.5 && t.later) why += `; wait and the best ${t.p} at your next turn projects ~${dropPts.toFixed(1)} pts/wk worse (${t.later.r[0]})`;
-    else if (dropPts >= 1.2 && t.later) why += `; the ${t.p} shelf thins before your next turn`;
-    if (t.now.r[3] - (t.now.i + 1) >= 10) why += `; he usually goes ~pick ${Math.round(t.now.r[3])}, so this is a value`;
+    if (waiting && t.pReach < 0.995) why = `~${Math.round(t.pReach * 100)}% to still be there — ${why}`;
+    if (t.pGone >= 0.5) why += `; only ~${Math.max(1, Math.round((1 - t.pGone) * 100))}% odds he lasts to your next turn`;
+    if (t.gap >= 2.0) why += `; waiting a round costs ~${t.gap.toFixed(1)} pts/wk at ${t.p}${t.later ? ` (likely left: ${t.later.r[0]})` : ""}`;
+    else if (t.gap >= 0.9) why += `; the ${t.p} shelf thins before your next turn`;
+    if (t.cliff) why += `; he's the last of ${t.p} Tier ${t.tier} likely to survive — the cliff is here`;
+    if (t.fell >= 6) why += `; he's slid ${t.fell} picks past his market ADP (~${Math.round(mktADP(t.now.r))}) — free value`;
+    else if (mktADP(t.now.r) - (t.now.i + 1) >= 10) why += `; the room drafts him ~pick ${Math.round(mktADP(t.now.r))} — our board says don't wait`;
     if (a.run === t.p) why += `; a ${t.p} run is on (3+ of the last 5 picks)`;
+    if (t.stack) why += `; stacks with your ${t.p === "QB" ? "pass-catcher" : "QB"} (spike weeks land together)`;
     suggestion = {
       take: t.now.r[0],
       team: t.now.r[2],
@@ -52,13 +59,45 @@ function AdvisorStrip({ DS, mySlot, ord }: { DS: DraftState; mySlot: number; ord
       why: (
         <>
           {why}.
+          {t.antiStack && (
+            <span className="text-risky"> Note: he'd compete for targets with your {t.now.r[2]} pass-catcher.</span>
+          )}
           {t.clash && (
             <span className="text-risky"> Heads-up: same Week {t.bye} bye as {a.byeCount[t.bye!]} of your players.</span>
           )}
         </>
       ),
-      alts: alts.map((c) => `${c.now.r[0]} (${c.p})`).join(" · "),
+      alts,
     };
+    plain = waiting ? (
+      <>
+        It's not your turn yet — your next pick is <b>#{a.nextPick}</b> ({a.nextPick! - a.cur + 1} picks away). Click{" "}
+        <b>Taken</b> for each player other teams draft. When your turn comes, aim for <b>{t.now.r[0]}</b>, the best{" "}
+        {PLAINPOS[t.p]} likely to still be there (~{Math.round(t.pReach * 100)}% chance).
+        {a.plainWarn.length > 0 && <> Also: {a.plainWarn.join("; ")}.</>}
+      </>
+    ) : (
+      <>
+        {t.cuffOf ? (
+          <>Take <b>{t.now.r[0]}</b>. He's the backup to your star {t.cuffOf} — if {t.cuffOf} gets hurt, this pick takes over his job. Think of it as insurance.</>
+        ) : (
+          <>
+            Take <b>{t.now.r[0]}</b>. He's the best {PLAINPOS[t.p]} still available
+            {t.pGone >= 0.5
+              ? ", and if you pass, he'll almost certainly be on someone else's team before your next turn"
+              : t.gap >= 1.5
+                ? `, and the ones left after this round are clearly worse — he's worth about ${Math.max(1, Math.round(t.gap))} extra points every week`
+                : ""}
+            .
+          </>
+        )}
+        {t.clash && (
+          <> One catch: he skips the same week (his "bye week" — every team gets one week off) as {a.byeCount[t.bye!]} of your players, so that week your bench will be thin.</>
+        )}
+        {a.plainWarn.length > 0 && <> Also: {a.plainWarn.join("; ")}.</>}{" "}
+        When it's your pick, hit <b>Pick</b> next to his name; when anyone else drafts, hit <b>Taken</b> next to theirs.
+      </>
+    );
   }
 
   const slots = rosterSlots(DS);
@@ -101,21 +140,57 @@ function AdvisorStrip({ DS, mySlot, ord }: { DS: DraftState; mySlot: number; ord
         {suggestion && (
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <span className="display text-[1.5rem] leading-none text-ink">
-              <span className="text-clock">TAKE →</span> {suggestion.take} <TeamIcon team={suggestion.team} size={21} />
+              <span className="text-clock">{waiting ? `TARGET FOR #${a.nextPick} →` : "TAKE →"}</span> {suggestion.take}{" "}
+              <TeamIcon team={suggestion.team} size={21} />
             </span>
             <Sticker pos={suggestion.pos} />
             <span className="font-mono text-[0.8rem] text-ink-3">#{suggestion.rank}</span>
             <span className="basis-full text-[0.9rem] text-ink-2">
               {suggestion.why}{" "}
-              {suggestion.alts && <span className="text-ink-3">Also fine: {suggestion.alts}</span>}
-              {a.look && a.look.edge >= 0.8 && a.look.second.later && (
+              {suggestion.alts.length > 0 && (
+                <span className="text-ink-3">
+                  Also fine:{" "}
+                  {suggestion.alts.map((c) => (
+                    <span
+                      key={c.now.r[0]}
+                      className="mr-1 inline-block rounded-full border border-line bg-raised px-2 py-0.5 text-[0.8rem] font-semibold text-ink"
+                    >
+                      {c.now.r[0]}
+                      <span className="ml-1 font-medium text-ink-3">
+                        {c.p}
+                        {waiting && c.pReach < 0.995 ? ` · ${Math.round(c.pReach * 100)}%` : ""}
+                      </span>
+                    </span>
+                  ))}
+                </span>
+              )}
+              {a.look && a.look.edge >= 0.8 && (
                 <span className="text-ink-3">
                   {" "}Order matters: {a.look.first.p} now and {a.look.second.p} on the way back beats the reverse by
                   ~{a.look.edge.toFixed(1)} pts/wk.
                 </span>
               )}
+              {a.goneSoon.length > 0 && (
+                <span className="text-ink-3"> Unlikely to come back to you: {a.goneSoon.map((g) => g.n).join(" · ")}.</span>
+              )}
+              {a.dream && (
+                <span className="text-ink-3">
+                  {" "}And if {a.dream.o.r[0]} somehow slides to #{a.nextPick} (~{Math.round(a.dream.pr * 100)}% chance),
+                  forget all of this and sprint the card up.
+                </span>
+              )}
             </span>
           </div>
+        )}
+        {a.warnings.length > 0 && a.myCount < 16 && (
+          <div className="mt-2 rounded border border-risky/50 bg-risky/5 px-3 py-1.5 text-[0.85rem] text-ink-2">
+            <b className="text-risky">Roster radar:</b> {a.warnings.join("  ·  ")}
+          </div>
+        )}
+        {plain && (
+          <Noob show={noob}>
+            <b>Plain English:</b> {plain}
+          </Noob>
         )}
         <div className="mt-2.5 flex flex-wrap gap-1.5">
           {slots.map((s, i) => (
@@ -199,7 +274,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
 
   return (
     <div className="flex flex-col gap-5">
-      <Intro eyebrow="The board" title="158 players, ranked for your league">
+      <Intro eyebrow="The board" title={`${P.length} players, ranked for your league`}>
         My synthesized half-PPR ranks — expert consensus adjusted for Vegas environments, TD regression, injury risk,
         and August camp news. <b className="text-ink">ADP</b> is live Underdog market price (Aug 17); a rank far better than ADP
         means the market will let you have him late.
@@ -275,7 +350,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
         </label>
       </div>
 
-      <AdvisorStrip DS={DS} mySlot={mySlot} ord={ord} />
+      <AdvisorStrip DS={DS} mySlot={mySlot} ord={ord} noob={noob} />
 
       <div className="card max-h-[76vh] overflow-y-auto overflow-x-auto">
         <table className="tbl">
