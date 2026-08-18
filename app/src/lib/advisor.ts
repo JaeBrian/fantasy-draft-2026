@@ -280,9 +280,37 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
 
   const takeAt = onClock || !nextPick ? cur : nextPick;
   const back = Math.max(followPick, takeAt + 1);
+  /* a third horizon: positional shelves that keep collapsing (RB) should outrank
+     shelves that hold (WR) — this is what full-draft simulation rewards. */
+  const back2 = back + (back - takeAt || 12);
   const shift = demandShift(ord, mySlot, cur, back);
   const run = runDetect(ord);
   if (run) shift[run] = (shift[run] || 0) + 1.5;
+  /* Calibration: summed across the pool, P(gone by pick k) must equal the number of picks
+     that actually happen before k. Raw per-player CDFs over-predict by ~18%. We correct by
+     SHIFTING the horizon (bisection on an offset) rather than scaling probabilities — scaling
+     would make locks like the 1.01 look available; shifting keeps certainties certain. */
+  const calibFor = (pick: number) => {
+    const target = Math.max(0, pick - cur);
+    const sumAt = (k: number) => {
+      let t = 0;
+      avail.forEach((o) => { t += pGoneBy(o.r, k, cur, shift[o.r[1]]); });
+      return t;
+    };
+    if (target <= 0) return 0;
+    let lo = -24, hi = 4;
+    for (let i = 0; i < 18; i++) {
+      const mid = (lo + hi) / 2;
+      if (sumAt(pick + mid) > target) hi = mid;
+      else lo = mid;
+    }
+    return (lo + hi) / 2;
+  };
+  const offTake = calibFor(takeAt);
+  const offBack = calibFor(back);
+  const offBack2 = calibFor(back2);
+  const pg = (row: PlayerRow, pick: number, off: number) =>
+    pGoneBy(row, pick + off, cur, shift[row[1]]);
 
   /* ---- roster radar: what must be filled, and how fast the shelf is emptying ---- */
   const needSlots: Record<string, number> = {
@@ -313,7 +341,7 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
       avail.forEach((o) => {
         if (o.r[1] === ps && GP[o.r[0]].pr <= CUT[ps]) {
           expNow++;
-          expNext += 1 - pGoneBy(o.r, back, cur, shift[ps]);
+          expNext += 1 - pg(o.r, back, offBack);
         }
       });
       if (expNow <= needN) {
@@ -368,18 +396,23 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
   (["RB", "WR", "QB", "TE"] as Pos[]).forEach((ps) => {
     const pool = avail.filter((o) => o.r[1] === ps);
     if (!pool.length) return;
-    const nb = nextBest(ps, avail, back, cur, shift[ps]);
+    const nb = nextBest(ps, avail, back + offBack, cur, shift[ps]);
+    const nb2 = nextBest(ps, avail, back2 + offBack2, cur, shift[ps]);
     let kept = 0;
     pool.slice(0, 18).forEach((now, k) => {
       if (kept >= 4) return;
       const g = GP[now.r[0]];
       /* between your picks, judge players by their odds of actually reaching your turn */
-      const pReach = onClock ? 1 : Math.max(0.02, 1 - pGoneBy(now.r, takeAt, cur, shift[ps]));
+      const pReach = onClock ? 1 : Math.max(0.02, 1 - pg(now.r, takeAt, offTake));
       if (k >= 2 && pReach < 0.2) return;
       if (k > 0 && onClock && now.i - pool[0].i > 8) return;
       kept++;
-      const pGone = pGoneBy(now.r, back, cur, shift[ps]);
-      const gap = Math.max(0, g.proj - nb.ev);
+      const pGone = pg(now.r, back, offBack);
+      const gapNext = Math.max(0, g.proj - nb.ev);
+      const gapTwo = Math.max(0, g.proj - nb2.ev);
+      /* full-round decay counts too, at reduced weight — a shelf that empties over two
+         turns is scarcer than one that dips and holds */
+      const gap = gapNext + 0.45 * Math.max(0, gapTwo - gapNext);
       let s = w[ps] * (g.vorp + 1.25 * gap);
       if (!onClock) s *= 0.1 + 0.9 * pReach;
       s *= vmul[now.r[4]] ?? 1;
@@ -392,7 +425,7 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
       const liveTrend = SLP[now.r[0]]?.trend;
       if (liveTrend !== undefined && Math.abs(liveTrend) >= 5000) s *= liveTrend > 0 ? 1.02 : 0.98;
       const tier = now.r[6];
-      const tLeft = tierSurvivors(ps, tier, avail, back, cur, shift[ps]);
+      const tLeft = tierSurvivors(ps, tier, avail, back + offBack, cur, shift[ps]);
       const cliff = tLeft < 1.5 && gap >= 0.8;
       if (cliff) s *= 1.05;
       /* stacking research: QB↔WR1 weekly r≈0.43, QB↔TE1 r≈0.27 — a tiebreaker, never a reach.
@@ -424,7 +457,7 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
   if (!onClock && nextPick) {
     const topC = cands[0];
     for (const o of avail.slice(0, 15)) {
-      const pr = 1 - pGoneBy(o.r, takeAt, cur, shift[o.r[1]]);
+      const pr = 1 - pg(o.r, takeAt, offTake);
       if (pr >= 0.04 && pr < 0.38 && GP[o.r[0]].proj > (topC ? topC.proj + 0.7 : 0)) {
         dream = { o, pr };
         break;
@@ -462,7 +495,7 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
   const goneSoon = avail
     .slice(0, 24)
     .filter((o) => !recommended.has(o.r[0]))
-    .map((o) => ({ n: o.r[0], pg: pGoneBy(o.r, gsPick, cur, shift[o.r[1]]) }))
+    .map((o) => ({ n: o.r[0], pg: pg(o.r, gsPick, gsPick === back ? offBack : offTake) }))
     .filter((x) => x.pg >= 0.6)
     .slice(0, 4);
   return {
