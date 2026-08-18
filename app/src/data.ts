@@ -279,3 +279,26 @@ export const NEWS: { when: string; items: NewsItem[] }[] = [
 export const DRAFT_ORDER = ["Ashley","Zach","Jeff","Brandon","Duy","Brian JK","Michelle","Aaron","Matt","Emily","Josh","Brian V"];
 /** The slots of the people who use this tool, for one-tap identity. */
 export const TOOL_USERS: [string, number][] = [["Ashley", 1], ["Brian JK", 6], ["Emily", 10]];
+
+/** Winning opening line per seat from 600 risk-adjusted Monte Carlo drafts
+ *  (see app/scripts/draft-sim.mjs). Percentages = how often the sim landed that player. */
+export const SIM_PLANS: Record<number, { strategy: string; ppw: number; winPct: number; line: [string, number][] }> = {
+  1: {
+    strategy: "Double-RB off the 1.01",
+    ppw: 110.5,
+    winPct: 99,
+    line: [["Jahmyr Gibbs", 100], ["Breece Hall", 69], ["George Pickens", 60], ["Jaylen Waddle", 39], ["Colston Loveland", 95], ["Justin Herbert", 61]],
+  },
+  6: {
+    strategy: "Double-RB",
+    ppw: 109.0,
+    winPct: 94,
+    line: [["Christian McCaffrey", 71], ["Kenneth Walker III", 67], ["Malik Nabers", 70], ["Emeka Egbuka", 65], ["Colston Loveland", 67], ["Justin Herbert", 62]],
+  },
+  10: {
+    strategy: "Hero RB, then receivers",
+    ppw: 108.0,
+    winPct: 84,
+    line: [["Derrick Henry", 56], ["A.J. Brown", 52], ["DeVonta Smith", 68], ["Javonte Williams", 58], ["Tyler Warren", 55], ["Justin Herbert", 53]],
+  },
+};

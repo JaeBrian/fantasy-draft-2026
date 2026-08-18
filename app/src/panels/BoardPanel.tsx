@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { P, OT, BYE, DRAFT_ORDER, TOOL_USERS, type Pos } from "../data";
+import { P, OT, BYE, DRAFT_ORDER, SIM_PLANS, TOOL_USERS, type Pos } from "../data";
 import { snapTeam } from "../lib/advisor";
 import { advise, mktADP, needText, rosterSlots, PLAINPOS, type DraftState } from "../lib/advisor";
 import { usePersistent } from "../lib/store";
@@ -244,6 +244,30 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked }: { DS: DraftState; mySl
           <div className="mt-2 rounded border border-risky/50 bg-risky/5 px-3 py-1.5 text-[0.85rem] text-ink-2">
             <b className="text-risky">Roster radar:</b> {a.warnings.join("  ·  ")}
           </div>
+        )}
+        {showFull && SIM_PLANS[mySlot] && (
+          <details className="mt-2.5 rounded border border-line-soft bg-raised/40 px-3 py-1.5 text-[0.82rem]" open={a.myCount === 0}>
+            <summary className="cursor-pointer list-none text-ink-2">
+              <b className="text-ink">Your simulated best line</b>{" "}
+              <span className="text-ink-3">
+                — {SIM_PLANS[mySlot].strategy} · won {SIM_PLANS[mySlot].winPct}% of 600 sims
+              </span>
+            </summary>
+            <ol className="m-0 mt-1.5 flex list-none flex-wrap gap-x-2 gap-y-1 p-0 text-ink-2">
+              {SIM_PLANS[mySlot].line.map(([nm, pct], i) => (
+                <li key={nm} className={`whitespace-nowrap ${DS[nm] ? "text-ink-3 line-through" : ""}`}>
+                  <span className="font-mono text-[0.72rem] text-ink-3">{i + 1}.</span> {nm}
+                  <span className="ml-1 font-mono text-[0.7rem] text-ink-3">{pct}%</span>
+                  {i < SIM_PLANS[mySlot].line.length - 1 && <span className="ml-2 text-ink-3">→</span>}
+                </li>
+              ))}
+            </ol>
+            <p className="m-0 mt-1 text-[0.76rem] leading-snug text-ink-3">
+              The line the simulator drafted most often from your seat ({SIM_PLANS[mySlot].ppw} pts/wk of starters).
+              Percentages are how often that player was actually there. It is a plan, not a script — the panel above
+              always reflects the real board.
+            </p>
+          </details>
         )}
         {plain && showFull && (
           <Noob show={noob}>
