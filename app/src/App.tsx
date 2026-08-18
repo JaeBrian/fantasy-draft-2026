@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { LATEST_UPDATE } from "./data";
 import { usePersistent } from "./lib/store";
 import type { DraftState, Mark } from "./lib/advisor";
 import { StartPanel } from "./panels/StartPanel";
@@ -146,6 +147,19 @@ export default function App() {
           </nav>
         </div>
       </header>
+
+      <div className="border-b border-line-soft bg-surface/70">
+        <div className="mx-auto flex max-w-[1100px] flex-wrap items-baseline gap-x-3 gap-y-0.5 px-5 py-1.5 text-[0.8rem] leading-relaxed text-ink-2">
+          <span className="font-mono text-[0.72rem] font-bold uppercase tracking-[0.1em] text-value">
+            ● Updated {LATEST_UPDATE.when}
+          </span>
+          {LATEST_UPDATE.items.map((it) => (
+            <span key={it} className="text-ink-3">
+              {it}
+            </span>
+          ))}
+        </div>
+      </div>
 
       <main className="mx-auto max-w-[1100px] px-5 pt-7 pb-16">
         {tab === "start" && <StartPanel noob={noob} />}
