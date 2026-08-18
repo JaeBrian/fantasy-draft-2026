@@ -1,6 +1,6 @@
 import { P, PT, BYE, type Pos } from "../data";
 import type { DraftState } from "../lib/advisor";
-import { Call, Card, Eyebrow, Intro, Noob, Sticker, TagChips } from "../components/ui";
+import { Call, Card, Eyebrow, Intro, Noob, Sticker, TagChips, TeamIcon } from "../components/ui";
 
 const POS_NAMES: Record<string, string> = {
   QB: "Quarterbacks",
@@ -49,6 +49,7 @@ export function TiersPanel({ noob, DS }: { noob: boolean; DS: DraftState }) {
                           className={`flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5 border-b border-line-soft px-4 py-2 last:border-0 hover:bg-raised ${DS[n] ?? ""}`}
                         >
                           <span className="min-w-[2.4ch] font-mono text-[0.78rem] text-ink-3 tabular-nums">{o.i + 1}</span>
+                          <TeamIcon team={t} size={16} />
                           <span className="nm font-semibold text-ink">{n}</span>
                           <span className="font-mono text-[0.75rem] text-ink-3">
                             {t} · bye {BYE[t] ?? "—"} · ADP {adp.toFixed(0)}

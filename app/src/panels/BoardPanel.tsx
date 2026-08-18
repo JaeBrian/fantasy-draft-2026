@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { P, OT, BYE, type Pos } from "../data";
 import { advise, needText, rosterSlots, type DraftState } from "../lib/advisor";
-import { Call, Intro, Noob, Sticker, TagChips } from "../components/ui";
+import { Call, Intro, Noob, Sticker, TagChips, TeamIcon } from "../components/ui";
 
 const POS_FILTERS: ("ALL" | Pos)[] = ["ALL", "QB", "RB", "WR", "TE"];
 
@@ -25,7 +25,7 @@ function AdvisorStrip({ DS, mySlot }: { DS: DraftState; mySlot: number }) {
     if (!DS[r[0]] && !next[r[1]]) next[r[1]] = { n: r[0], i };
   });
 
-  let suggestion: { take: string; pos: Pos; rank: number; why: ReactNode; alts: string } | null = null;
+  let suggestion: { take: string; team: string; pos: Pos; rank: number; why: ReactNode; alts: string } | null = null;
   let special: string | null = null;
   if (a.myCount >= 16) special = "Roster complete.";
   else if (a.myCount >= 14)
@@ -43,6 +43,7 @@ function AdvisorStrip({ DS, mySlot }: { DS: DraftState; mySlot: number }) {
     if (t.now.r[3] - (t.now.i + 1) >= 10) why += `; he usually goes ~pick ${Math.round(t.now.r[3])}, so this is a value`;
     suggestion = {
       take: t.now.r[0],
+      team: t.now.r[2],
       pos: t.p,
       rank: t.now.i + 1,
       why: (
@@ -96,8 +97,11 @@ function AdvisorStrip({ DS, mySlot }: { DS: DraftState; mySlot: number }) {
         {special && <div className="text-[0.95rem] text-ink"><b>Take:</b> {special}</div>}
         {suggestion && (
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <span className="display text-[1.5rem] leading-none text-ink">
-              <span className="text-clock">TAKE →</span> {suggestion.take}
+            <span className="inline-flex items-center gap-2">
+              <span className="display text-[1.5rem] leading-none text-ink">
+                <span className="text-clock">TAKE →</span> {suggestion.take}
+              </span>
+              <TeamIcon team={suggestion.team} size={22} />
             </span>
             <Sticker pos={suggestion.pos} />
             <span className="font-mono text-[0.8rem] text-ink-3">#{suggestion.rank}</span>
@@ -169,7 +173,10 @@ export function BoardPanel({ noob, DS, mark, undo, reset, canUndo, mySlot, setMy
         </td>
         <td className="num">{i + 1}</td>
         <td>
-          <span className="pname">{n}</span>
+          <span className="inline-flex items-center gap-1.5 align-middle">
+            <TeamIcon team={t} />
+            <span className="pname">{n}</span>
+          </span>
           <span className="pteam">
             {t} · bye {BYE[t] ?? "—"}
           </span>

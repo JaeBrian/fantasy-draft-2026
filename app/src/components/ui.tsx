@@ -1,5 +1,21 @@
 import type { ReactNode } from "react";
 import { TAGS, TAGCLASS, VLBL, type Pos, type Verdict } from "../data";
+import { TEAM_LOGOS } from "../teams-logos";
+
+export function TeamIcon({ team, size = 18 }: { team: string; size?: number }) {
+  const src = TEAM_LOGOS[team];
+  if (!src) return null;
+  return (
+    <img
+      src={src}
+      alt=""
+      width={size}
+      height={size}
+      className="inline-block shrink-0 self-center"
+      style={{ filter: "drop-shadow(0 0 1px rgba(233,237,243,0.35))" }}
+    />
+  );
+}
 
 const POS_BG: Record<Pos, string> = {
   QB: "bg-qb",
