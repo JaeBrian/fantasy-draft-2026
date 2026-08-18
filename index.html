@@ -100,7 +100,7 @@ th{font:700 .72rem 'Public Sans';letter-spacing:.06em;text-transform:uppercase;c
 td{padding:10px 13px;border-bottom:1px solid var(--line-soft);vertical-align:top}
 tbody tr:not(.tierrow):hover td{background:var(--accent-soft)}
 tr:last-child td{border-bottom:0}
-td.num{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.num{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
 tr.tierrow td{background:var(--paper);font-weight:700;font-size:.98rem;color:var(--ink);border-top:1px solid var(--line);padding:9px 13px}
 tr.tierrow td span{color:var(--ink-3);font-weight:400;font-size:.85rem;margin-left:10px}
 td .pname{font-weight:600}
@@ -195,7 +195,7 @@ ol.rules span{color:var(--ink-2);font-size:.94rem;grid-column:2}
     <div>
       <div class="eyebrow">The one-minute version</div>
       <h2>It's a running back year. Leave the first three rounds with two of them.</h2>
-      <p class="lede">This guide merges nine research streams — current expert rankings (ESPN, FantasyPros, CBS, PFF, NBC), live ADP from 4for4's Underdog tool (713 players, pulled today), Vegas win totals &amp; player props, TD-regression models, injury models, beat-writer camp reports, and BDGE's Aug 11 tier video — into one board tuned for a 12-team half-PPR league.</p>
+      <p class="lede">This guide merges twelve research streams — current expert rankings (ESPN, FantasyPros, CBS, PFF, NBC), live ADP from 4for4's Underdog tool (713 players, pulled today), Vegas win totals &amp; player props, TD-regression models, injury models, beat-writer camp reports, and BDGE's Aug 11 tier video — into one board tuned for a 12-team half-PPR league.</p>
     </div>
 
     <div class="noob">
@@ -527,7 +527,7 @@ ol.rules span{color:var(--ink-2);font-size:.94rem;grid-column:2}
   <div class="wrap stack">
     <div>
       <div class="eyebrow">What the money says</div>
-      <h2>Vegas doesn't care about your feelings. That's the point.</h2>
+      <h2>The betting market is the sharpest forecast available. Read it before you draft.</h2>
       <p class="lede">Betting lines are the sharpest public forecast of team scoring that exists. Draft players from offenses the market expects to score, and use season props as a volume signal — directionally, not literally.</p>
     </div>
     <div class="noob">
@@ -561,7 +561,7 @@ ol.rules span{color:var(--ink-2);font-size:.94rem;grid-column:2}
         <div class="card">
           <div class="eyebrow">Prop nuggets worth knowing</div>
           <div class="kv">
-            <dt>Puka Nacua</dt><dd>107.5 receptions line — the market expects a target monsoon (suspension ruling aside).</dd>
+            <dt>Puka Nacua</dt><dd>107.5 receptions line — the market expects huge target volume (suspension ruling aside).</dd>
             <dt>Tyler Warren</dt><dd>74.5 receptions — elite-TE volume, round-6 price.</dd>
             <dt>Jahmyr Gibbs</dt><dd>OPOY favorite (+750) and rushing-TD co-favorite. The market's 1.01.</dd>
             <dt>Rushing yards favs</dt><dd>Taylor and Henry +600, Cook +650, Gibbs/Bijan +700 — the top of your draft in one prop board.</dd>
@@ -579,7 +579,7 @@ ol.rules span{color:var(--ink-2);font-size:.94rem;grid-column:2}
   </div>
 </section>
 <style>
-.tag{display:inline-flex;align-items:center;border:1px solid var(--line);color:var(--ink-3);border-radius:4px;font:600 .66rem 'Public Sans';letter-spacing:.04em;padding:1px 6px;margin:3px 4px 0 0;white-space:nowrap;text-transform:uppercase;cursor:default}
+.tag{display:inline-flex;align-items:center;border:1px solid var(--line-soft);color:var(--ink-3);border-radius:4px;font:600 .64rem 'Public Sans';letter-spacing:.03em;padding:1px 5px;margin:3px 3px 0 0;white-space:nowrap;text-transform:uppercase;cursor:default}
 .tag.warn{border-color:var(--risk);color:var(--risk)}
 .tag.good{border-color:var(--accent);color:var(--accent)}
 tr.gone td{opacity:.4}
@@ -614,7 +614,13 @@ tr.mine .rowact .bs{background:var(--accent);color:var(--accent-ink);border-colo
       <p class="lede">My synthesized half-PPR ranks — expert consensus adjusted for Vegas environments, TD regression, injury risk, and August camp news. <b>ADP</b> is live Underdog market price (Aug 17); a rank far better than ADP means the market will let you have him late.</p>
     </div>
     <div class="noob">
-      <b>Using the board:</b> highest available rank = your pick, position needs permitting. If a player's <b>ADP</b> number is much bigger than his rank here, don't reach — he'll likely still be there next round. The chips: <span class="chip v-buy">VALUE</span> = better than his price, <span class="chip v-solid">SOLID</span> = fairly priced, <span class="chip v-risk">RISKY</span> = real downside, only at a discount, <span class="chip v-avoid">AVOID</span> = the price ignores a serious problem. The small outlined tags describe each player's profile — hover one for a plain-English definition.<br><b>Track your live draft:</b> press <b>✕</b> when anybody in your league drafts a player (he gets crossed out) and <b>★</b> when the pick is yours. "Hide drafted" leaves only available players. Set <b>My slot</b> (your position in the draft order) and the status bar will tell you <b>who to take next</b> — based on which starters you still need and which positions are about to run dry before your turn comes back. Mark every pick, yours and everyone else's, to keep the advice accurate. All marks are remembered on this device.
+      <b>Using the board:</b>
+      <ul>
+        <li>When it's your pick, take the highest-ranked player left (position needs permitting). If his <b>ADP</b> is much higher than his rank here, he'll likely still be there next round — don't reach.</li>
+        <li>Chips: <span class="chip v-buy">VALUE</span> better than his price · <span class="chip v-solid">SOLID</span> fairly priced · <span class="chip v-risk">RISKY</span> only at a discount · <span class="chip v-avoid">AVOID</span> the price ignores a real problem. Hover any small tag for its meaning.</li>
+        <li>Press <b>✕</b> when anyone drafts a player, <b>★</b> when the pick is yours. "Hide drafted" shows only who's left.</li>
+        <li>Set <b>My slot</b> and the status bar will suggest who to take next — mark every pick to keep the advice accurate. Marks are saved on this device.</li>
+      </ul>
     </div>
     <div class="filters">
       <div class="pillrow" id="posfilter">
@@ -637,7 +643,7 @@ tr.mine .rowact .bs{background:var(--accent);color:var(--accent-ink);border-colo
     <div class="card draftstatus" id="draftstatus"></div>
     <div class="tblwrap" style="max-height:76vh;overflow-y:auto">
       <table id="boardtbl">
-        <thead><tr><th title="Mark drafted / mine">Track</th><th>Rk</th><th>Player</th><th>Pos</th><th>ADP</th><th>Call</th><th>Note</th></tr></thead>
+        <thead><tr><th title="Mark drafted / mine">Track</th><th>Rk</th><th>Player</th><th>Pos</th><th style="text-align:right">ADP</th><th>Call</th><th>Note</th></tr></thead>
         <tbody id="boardbody"></tbody>
       </table>
     </div>
@@ -680,9 +686,9 @@ const P=[
 ["Jahmyr Gibbs","RB","DET",1.1,"solid",1,1,"Bellcow at last (Montgomery traded away). Easiest RB schedule in football, OPOY favorite. His 18 TDs will cool — the volume bump covers it.",["bell","reg","ceil"]],
 ["Bijan Robinson","RB","ATL",2.1,"solid",1,1,"Elite line, and the goal-line work is all his now — TD math points UP (13 projected). Coin-flip with Gibbs; you can't miss.",["bell","floor","bnc"]],
 ["Ja'Marr Chase","WR","CIN",3.0,"solid",1,1,"30% target share, Burrow healthy, receiving-TD favorite. The safest elite pick on the board.",["floor", "ceil"]],
-["Jaxon Smith-Njigba","WR","SEA",5.5,"solid",2,1,"Led the NFL with 1,793 yards on a 44% share of Seattle's passing. Some pullback is priced in; the floor is a fortress.",["floor", "reg"]],
+["Jaxon Smith-Njigba","WR","SEA",5.5,"solid",2,1,"Led the NFL with 1,793 yards on a 44% share of Seattle's passing. Some pullback is priced in; the floor is rock-solid.",["floor", "reg"]],
 ["Amon-Ra St. Brown","WR","DET",7.1,"solid",2,1,"172 targets, machine-level consistency, Lions cruise all year including the fantasy playoffs.",["floor"]],
-["Justin Jefferson","WR","MIN",11.1,"buy",2,1,"THE buy: top-7 targets, league-worst TD luck (2 scored vs 8 expected), and a real QB now in Kyler. Top-5 profile at pick 11.",["bnc", "ceil"]],
+["Justin Jefferson","WR","MIN",11.1,"buy",2,1,"The clearest buy on the board: top-7 targets, league-worst TD luck (2 scored vs 8 expected), and a real QB now in Kyler. Top-5 profile at pick 11.",["bnc", "ceil"]],
 ["Christian McCaffrey","RB","SF",6.2,"risk",2,2,"2025's overall fantasy MVP on earned volume, not luck. But: age 30, 450 touches, camp 'tightness,' 78% injury-model risk. Conviction pick — eyes open.",["bell","age","inj"]],
 ["Puka Nacua","WR","LAR",4.1,"risk",2,1,"Best per-route receiver alive in the NFL's best offense (107.5-catch Vegas line). One problem: suspension ruling pending. Check the news, then decide.",["susp", "ceil"]],
 ["Jonathan Taylor","RB","IND",7.8,"solid",2,2,"323 carries behind a top-10 line, led NFL in goal-line points. 20 TDs → expect ~14. Round 1 yes, top-5 no.",["bell","reg","floor"]],
@@ -727,7 +733,7 @@ const P=[
 ["Josh Jacobs","RB","GB",41.4,"avoid",4,4,"Open felony case (NFL reviewing — a suspension could land mid-season with no warning) plus a groin that's kept him out of camp. At Rd 3-4 cost, a landmine.",["bell","susp","inj"]],
 ["Mike Evans","WR","SF",48.9,"risk",5,3,"Pearsall's out for the year, so the targets are real. But only two WRs since 2015 finished top-25 at 33+, and his game fights Shanahan's YAC scheme. Fair price, capped ceiling.",["age", "cap"]],
 ["Quinshon Judkins","RB","CLE",53.2,"solid",5,4,"'Looked 100%' after the ankle; locked starter with goal-line work. The league-worst O-line is the tax.",["bell","y2","floor","cap"]],
-["DJ Moore","WR","BUF",53.3,"buy",5,4,"Vegas's #2 offense, reunited with Joe Brady, priced like a WR27. The market is simply asleep on this one.",["bnc", "ceil"]],
+["DJ Moore","WR","BUF",53.3,"buy",5,4,"Vegas's #2 offense, reunited with Joe Brady, priced like a WR27. The market hasn't caught up yet.",["bnc", "ceil"]],
 ["Lamar Jackson","QB","BAL",56.2,"buy",5,2,"The down 2025 was a hamstring, not decline. Top-2 QB upside at a round-5 price — the best QB value on the board.",["ceil", "bnc"]],
 ["Jameson Williams","WR","DET",51.7,"solid",5,4,"Elite deep threat, but his production halves when LaPorta is healthy (10.2 vs 18.4 PPG). Boom-bust WR3.",["bb"]],
 ["Bhayshul Tuten","RB","JAX",50.9,"risk",5,4,"Year-2 breakout pick (7 TDs as a rookie) — but beat writers call the Jacksonville backfield genuinely unsettled. Role risk at a rising price.",["comm","y2","bb","brk"]],
@@ -735,7 +741,7 @@ const P=[
 ["Bucky Irving","RB","TB",54.6,"risk",5,4,"Tampa built a real three-man committee (Gainwell, Tucker) and his late-2025 efficiency cratered. Elite line keeps him afloat.",["comm","cap"]],
 ["Christian Watson","WR","GB",57.5,"solid",5,4,"Green Bay quietly traded away Doubs AND Wicks — someone has to catch the ball. Target-vacuum bet.",["bb"]],
 ["Rome Odunze","WR","CHI",58.4,"buy",5,4,"On FIVE independent breakout lists — Ben Johnson scheme jump plus a 29% deep-target rate. The consensus sleeper of the summer.",["brk","ceil"]],
-["Tyler Warren","TE","IND",62.1,"buy",5,2,"106 targets as a rookie, Pittman traded away, Vegas set his catch line at 74.5 — elite-TE volume at a round-6 price. Smash.",["y2", "brk", "ceil"]],
+["Tyler Warren","TE","IND",62.1,"buy",5,2,"106 targets as a rookie, Pittman traded away, Vegas set his catch line at 74.5 — elite-TE volume at a round-6 price. Take him at cost.",["y2", "brk", "ceil"]],
 ["Carnell Tate","WR","TEN",61.7,"solid",5,4,"The safest rookie: instant WR1, elite capital, zero-drop college profile. Bottom-tier offense caps the ceiling.",["rk", "floor", "cap"]],
 ["TreVeyon Henderson","RB","NE",57.4,"risk",5,4,"Explosive (top-10 RB down the 2025 stretch) but Stevenson outsnapped him in 15 of 18 games. Price assumes a takeover that isn't confirmed.",["comm","y2","bb","ceil"]],
 ["Jadarian Price","RB","SEA",61.9,"risk",5,4,"'Prime Dalvin Cook' camp comps; Walker gone, Charbonnet on PUP. He's just back from a month-long leg injury — runway huge, ramp-up real.",["comm","rk","bb","ceil"]],
@@ -779,7 +785,7 @@ const P=[
 ["Matthew Golden","WR","GB",104.9,"buy",6,5,"Model-projected ~40 picks above price in a receiver room that just lost two starters.",["y2", "brk"]],
 ["Bo Nix","QB","DEN",107.0,"buy",6,4,"QB7 two straight years, best O-line in football, they traded a 1st for Waddle — and he's priced QB14. Buy.",["floor"]],
 ["Jacory Croskey-Merritt","RB","WAS",107.6,"buy",6,5,"126 vacated Washington carries and the projection models' favorite late RB (+22 vs ADP).",["comm","brk"]],
-["Kyle Pitts Sr.","TE","ATL",102.5,"risk",6,3,"19.0 PPG without London on the field, 9.6 with him. London is healthy. You do the math.",["bb", "cap"]],
+["Kyle Pitts Sr.","TE","ATL",102.5,"risk",6,3,"19.0 PPG without London on the field, 9.6 with him. London is healthy — price him accordingly.",["bb", "cap"]],
 ["Harold Fannin Jr.","TE","CLE",102.4,"avoid",6,4,"Small-sample 2025 magic; TE-friendly coach gone, rookie WRs added, QB chaos. Most overdrafted TE on the board.",["y2", "reg"]],
 ["Matthew Stafford","QB","LAR",108.8,"risk",6,4,"Reigning MVP, 46 TDs at 38 — base rates say ~30 this year. Fine QB2; on ESPN his ADP runs two rounds hotter, don't chase it.",["age", "reg"]],
 ["Jared Goff","QB","DET",110.7,"solid",6,4,"Four straight 4,000-yard years; the Amon-Ra stack partner. Steady late QB1.",["floor", "cap"]],
@@ -870,9 +876,9 @@ function renderBoard(pos,q){
     if(q&&!(n.toLowerCase().includes(q)||t.toLowerCase().includes(q)))return;
     if(hideDrafted&&st)return;
     if(pos==="ALL"&&!q&&!hideDrafted&&ot!==lastTier){lastTier=ot;html+=`<tr class="tierrow"><td colspan="7">Tier ${ot} — ${OT[ot][0]}<span>${OT[ot][1]}</span></td></tr>`}
-    html+=`<tr class="${st}"><td><span class="rowact"><button class="bx" data-n="${esc(n)}" title="Mark drafted by another team">✕</button><button class="bs" data-n="${esc(n)}" title="My pick">★</button></span></td><td class="num">${i+1}</td><td><span class="pname">${esc(n)}</span><span class="pteam">${t} · bye ${BYE[t]||"—"}</span><br>${chipTags(tags)}</td><td>${chipPos(p)}</td><td class="num">${adp.toFixed(1)}</td><td>${chipV(v)}</td><td class="note">${esc(note)}</td></tr>`;
+    html+=`<tr class="${st}"><td><span class="rowact"><button class="bx" data-n="${esc(n)}" title="Mark drafted by another team">✕</button><button class="bs" data-n="${esc(n)}" title="My pick">★</button></span></td><td class="num">${i+1}</td><td><span class="pname">${esc(n)}</span><span class="pteam">${t} · bye ${BYE[t]||"—"}</span><br>${chipTags((tags||[]).slice(0,3))}</td><td>${chipPos(p)}</td><td class="num">${adp.toFixed(1)}</td><td>${chipV(v)}</td><td class="note">${esc(note)}</td></tr>`;
   });
-  tb.innerHTML=html||`<tr><td colspan="7" style="color:var(--ink-3);padding:20px">No players match.</td></tr>`;
+  tb.innerHTML=html||`<tr><td colspan="7" style="color:var(--ink-3);padding:20px">No players match — clear the search or the position filter.</td></tr>`;
   renderStatus();
 }
 let mySlot=0;try{mySlot=parseInt(localStorage.getItem("fd26-slot")||"0")||0}catch(e){}
@@ -942,7 +948,7 @@ function renderStatus(){
   let clock=` &nbsp;·&nbsp; Round ${Math.min(16,Math.ceil(a.cur/12))}, pick ${a.cur}`;
   if(mySlot>=1&&a.nextPick)clock+=a.onClock?` &nbsp;·&nbsp; <b style="color:var(--accent)">You're on the clock</b>`:` &nbsp;·&nbsp; your next pick: #${a.nextPick} (${a.nextPick-a.cur} away)`;
   let sug="";
-  if(a.myCount>=16)sug=`<div class="sugg"><b>Roster complete.</b> Go win the $2,000.</div>`;
+  if(a.myCount>=16)sug=`<div class="sugg"><b>Roster complete.</b></div>`;
   else if(a.myCount>=14)sug=`<div class="sugg"><b>Take:</b> ${a.myCount===14?"your defense — best remaining of Seahawks / Texans / Rams / Steelers":"your kicker — best remaining of Aubrey / Fairbairn / Dicker / Boswell"}. <span class="alt">(K and DST always go with your last two picks.)</span></div>`;
   else if(a.cands.length){
     const t=a.cands[0],alts=a.cands.slice(1,3);
