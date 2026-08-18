@@ -11,6 +11,8 @@ const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
 const { SLP } = require(CACHE + 'sleeper.cjs');
 const { PROJ } = require(CACHE + 'projections.cjs');
+const { riskOf } = require(CACHE + 'risk.cjs');
+
 
 
 const PPG={QB:r=>Math.max(14,23.5-0.32*r),RB:r=>12.5*Math.exp(-(r-1)/20)+5.8,
@@ -25,8 +27,8 @@ const POOL=[];{const c={QB:0,RB:0,WR:0,TE:0};
     const hurt=['O','IR','PUP','SUS'].includes(s.inj)?0.85:s.inj==='D'?0.95:1;
     POOL.push({name:r[0],pos:r[1],team:r[2],ourRank:i+1,idx:POOL.length,
       proj: (PROJ[r[0]] !== undefined ? PROJ[r[0]] : PPG[r[1]](pr)) * (RISK[r[4]] || 1) * hurt,
-      cv:BASE_CV[r[1]]*(RISK_CV[r[4]]||1)*(s.inj?1.15:1),
-      pMiss:BASE_MISS[r[1]]*(r[4]==='risk'?1.3:r[4]==='avoid'?1.5:1)*(s.inj?1.4:1),
+      cv: riskOf(r[0], r[1], r[4]).cv,
+      pMiss: riskOf(r[0], r[1], r[4]).pMiss,
       mkt,sig:Math.max(2.2,MKT[r[0]]?MKT[r[0]][1]:0,0.13*mkt),bye:BYE[r[2]]||0});});}
 const snap=p=>{const r=Math.ceil(p/12),i=p-(r-1)*12;return r%2?i:13-i;};
 const mul=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
