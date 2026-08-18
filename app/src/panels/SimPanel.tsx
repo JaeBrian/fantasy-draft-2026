@@ -63,12 +63,15 @@ export function SimPanel({ noob }: { noob: boolean }) {
 
   return (
     <div className="flex flex-col gap-5">
-      <Intro eyebrow="Simulations" title="We drafted this league 50,000 times">
+      <Intro eyebrow="Simulations" title="We drafted this league a million times">
         Every strategy below was tested by simulating complete 16-round drafts: eleven opponents priced off{" "}
         <b className="text-ink">Sleeper's real half-PPR ADP</b> — the pick each player actually goes at in our exact
         format — with realistic randomness, our seat following a fixed plan, then playing the season out. Numbers are
         points per week from your starting lineup, with each player's season drawn rather than assumed, so the spread
-        you see is the spread you'd actually live through.
+        you see is the spread you'd actually live through.{" "}
+        <b className="text-ink">Every study is seeded</b>, so re-running it returns the same numbers — that is what lets
+        two strategies meet the identical draft and the identical season, which is the only way a difference this small
+        means anything. When these figures move, it is because ADP or the projections moved, not the dice.
       </Intro>
 
       <Card>
