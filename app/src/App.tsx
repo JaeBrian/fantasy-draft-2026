@@ -13,7 +13,7 @@ import { TiersPanel } from "./panels/TiersPanel";
 
 const TABS = [
   ["start", "Start Here"],
-  ["board", "Big Board"],
+  ["board", "Draft"],
   ["news", "News"],
   ["tiers", "Position Tiers"],
   ["plan", "Draft Plan"],

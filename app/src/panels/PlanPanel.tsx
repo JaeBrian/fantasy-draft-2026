@@ -152,7 +152,7 @@ export function PlanPanel({ noob }: { noob: boolean }) {
             ]}
           />
           <p className="mt-2.5 mb-0 text-[0.85rem] text-ink-3">
-            Every player's bye is shown next to his team on the Big Board, and the pick advisor warns you before you
+            Every player's bye is shown next to his team on the Draft tab, and the pick advisor warns you before you
             stack a third starter on one bye.
           </p>
         </Card>

@@ -293,6 +293,17 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
   const toggleBlock = (name: string) =>
     setBlocked(blocked.includes(name) ? blocked.filter((x) => x !== name) : [...blocked, name]);
   const HATED = "Justin Jefferson";
+  /* notes collapse by default so more players fit on one screen */
+  const [openNotes, setOpenNotes] = useState<string[]>([]);
+  const [allNotes, setAllNotes] = usePersistent<boolean>(
+    "fd26-allnotes",
+    false,
+    (raw) => raw === "1",
+    (v) => (v ? "1" : "0")
+  );
+  const noteOpen = (n: string) => allNotes || openNotes.includes(n);
+  const toggleNote = (n: string) =>
+    setOpenNotes(openNotes.includes(n) ? openNotes.filter((x) => x !== n) : [...openNotes, n]);
 
   /* ---- Sleeper live draft sync: read-only API, no token; ~1 call per 10s while on.
      The league's real draft is pre-wired so picks start marking themselves the moment it begins. ---- */
@@ -461,11 +472,20 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
           )}
           <br />
           <span className="mt-0.5 inline-flex flex-wrap gap-1"><TagChips tags={tags} max={3} /></span>
-          <span className="mt-1 block max-w-[46ch] text-[0.85rem] leading-snug text-ink-2 min-[1560px]:hidden">{note}</span>
+          <button
+            type="button"
+            onClick={() => toggleNote(n)}
+            title={noteOpen(n) ? "Collapse note" : "Expand note"}
+            className={`mt-1 block max-w-[46ch] cursor-pointer text-left text-[0.85rem] leading-snug text-ink-2 min-[1620px]:hidden ${
+              noteOpen(n) ? "" : "truncate"
+            }`}
+          >
+            {note}
+          </button>
         </td>
         <td><Sticker pos={p} /></td>
         <td className="num">{adp.toFixed(1)}</td>
-        <td className="num">{SLP[n]?.rk !== undefined ? SLP[n].rk : <span className="text-ink-3">—</span>}</td>
+        <td className="num hidden min-[1400px]:table-cell">{SLP[n]?.rk !== undefined ? SLP[n].rk : <span className="text-ink-3">—</span>}</td>
         <td className="num">
           {(() => {
             const edge = Math.round(mktADP(r) - (i + 1));
@@ -474,7 +494,16 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
           })()}
         </td>
         <td><Call v={v} explain /></td>
-        <td className="note hidden min-[1560px]:table-cell">{note}</td>
+        <td className="note hidden min-[1620px]:table-cell">
+          <button
+            type="button"
+            onClick={() => toggleNote(n)}
+            title={noteOpen(n) ? "Collapse note" : "Expand note"}
+            className={`w-full cursor-pointer text-left ${noteOpen(n) ? "" : "line-clamp-2"}`}
+          >
+            {note}
+          </button>
+        </td>
       </tr>
     );
   });
@@ -572,6 +601,14 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
             }
           >
             {blocked.includes(HATED) ? "🚫 Jefferson banned" : "🚫 No Jefferson"}
+          </button>
+          <button
+            type="button"
+            className={`btn ${allNotes ? "on" : ""}`}
+            onClick={() => setAllNotes(!allNotes)}
+            title={allNotes ? "Collapse every note — fit more players on screen" : "Expand every note"}
+          >
+            {allNotes ? "Notes: full" : "Notes: short"}
           </button>
         </div>
         <span className="ml-auto inline-flex items-center gap-1.5 text-[0.85rem] font-semibold text-ink-2">
@@ -673,7 +710,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
                   <Info tip={<><b className="text-ink">Average Draft Position</b> — the pick where the market usually takes him (live draft data, Aug 17). Rank far better than ADP = he'll likely still be there next round, so don't reach. ADP far better than rank = overpriced, let someone else pay.</>} />
                 </span>
               </th>
-              <th className="!text-right">
+              <th className="hidden !text-right min-[1400px]:table-cell">
                 <span className="inline-flex items-center gap-1.5">
                   <SleeperMark size={12} />SLP
                   <Info tip={<>Sleeper's own board rank — the default order your Sleeper league-mates see in their draft room. Weighted into "will he reach me?" predictions above mock-market ADP.</>} />
@@ -691,7 +728,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
                   <Info tip={<>My verdict at his current price: <b className="text-value">VALUE</b> take him a bit early · <b className="text-solid">SOLID</b> take at price · <b className="text-risky">RISKY</b> only at a discount · <b className="text-avoid">AVOID</b> let someone else deal with it. Hover any chip for the one-line meaning.</>} />
                 </span>
               </th>
-              <th className="hidden min-[1560px]:table-cell">Note</th>
+              <th className="hidden min-[1620px]:table-cell">Note</th>
             </tr>
           </thead>
           <tbody>
