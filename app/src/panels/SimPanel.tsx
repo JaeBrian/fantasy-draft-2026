@@ -8,37 +8,37 @@ import { Card, Eyebrow, Intro, Noob } from "../components/ui";
  *  often he was still on the board at that seat. Regenerate with app/scripts/sim-first.mjs */
 const FIRST_PICK: Record<number, { name: string; pos: string; pts: number; avail: number }[]> = {
   1: [
-    { name: "Jahmyr Gibbs", pos: "RB", pts: 89.72, avail: 100 },
-    { name: "Bijan Robinson", pos: "RB", pts: 89.26, avail: 100 },
-    { name: "Jonathan Taylor", pos: "RB", pts: 87.45, avail: 100 },
-    { name: "James Cook", pos: "RB", pts: 87.06, avail: 100 },
-    { name: "Derrick Henry", pos: "RB", pts: 86.89, avail: 100 },
-    { name: "Saquon Barkley", pos: "RB", pts: 86.24, avail: 100 },
-    { name: "Kenneth Walker III", pos: "RB", pts: 86.21, avail: 100 },
-    { name: "Chase Brown", pos: "RB", pts: 86.20, avail: 100 },
-    { name: "Omarion Hampton", pos: "RB", pts: 85.75, avail: 100 },
+    { name: "Jahmyr Gibbs", pos: "RB", pts: 106.61, avail: 100 },
+    { name: "Bijan Robinson", pos: "RB", pts: 106.03, avail: 100 },
+    { name: "Jonathan Taylor", pos: "RB", pts: 104.24, avail: 100 },
+    { name: "James Cook", pos: "RB", pts: 102.97, avail: 100 },
+    { name: "Christian McCaffrey", pos: "RB", pts: 102.64, avail: 100 },
+    { name: "Chase Brown", pos: "RB", pts: 101.74, avail: 100 },
+    { name: "Derrick Henry", pos: "RB", pts: 101.17, avail: 100 },
+    { name: "Kenneth Walker III", pos: "RB", pts: 100.85, avail: 100 },
+    { name: "Omarion Hampton", pos: "RB", pts: 100.61, avail: 100 },
   ],
   6: [
-    { name: "Jonathan Taylor", pos: "RB", pts: 90.13, avail: 74 },
-    { name: "James Cook", pos: "RB", pts: 89.77, avail: 98 },
-    { name: "Derrick Henry", pos: "RB", pts: 89.36, avail: 100 },
-    { name: "Saquon Barkley", pos: "RB", pts: 88.98, avail: 100 },
-    { name: "Chase Brown", pos: "RB", pts: 88.95, avail: 100 },
-    { name: "Omarion Hampton", pos: "RB", pts: 88.94, avail: 100 },
-    { name: "Christian McCaffrey", pos: "RB", pts: 88.66, avail: 46 },
-    { name: "Ashton Jeanty", pos: "RB", pts: 88.23, avail: 100 },
-    { name: "Kenneth Walker III", pos: "RB", pts: 87.69, avail: 100 },
+    { name: "Jonathan Taylor", pos: "RB", pts: 105.75, avail: 74 },
+    { name: "James Cook", pos: "RB", pts: 104.41, avail: 98 },
+    { name: "Christian McCaffrey", pos: "RB", pts: 104.36, avail: 46 },
+    { name: "Chase Brown", pos: "RB", pts: 103.25, avail: 100 },
+    { name: "Omarion Hampton", pos: "RB", pts: 102.55, avail: 100 },
+    { name: "Derrick Henry", pos: "RB", pts: 102.46, avail: 100 },
+    { name: "Jaxon Smith-Njigba", pos: "WR", pts: 101.87, avail: 83 },
+    { name: "Amon-Ra St. Brown", pos: "WR", pts: 101.37, avail: 88 },
+    { name: "Saquon Barkley", pos: "RB", pts: 101.27, avail: 100 },
   ],
   10: [
-    { name: "James Cook", pos: "RB", pts: 90.49, avail: 25 },
-    { name: "Saquon Barkley", pos: "RB", pts: 90.04, avail: 98 },
-    { name: "Derrick Henry", pos: "RB", pts: 90.01, avail: 100 },
-    { name: "Kenneth Walker III", pos: "RB", pts: 89.64, avail: 100 },
-    { name: "Chase Brown", pos: "RB", pts: 89.58, avail: 100 },
-    { name: "Ashton Jeanty", pos: "RB", pts: 89.37, avail: 91 },
-    { name: "Omarion Hampton", pos: "RB", pts: 88.98, avail: 99 },
-    { name: "CeeDee Lamb", pos: "WR", pts: 88.11, avail: 87 },
-    { name: "Justin Jefferson", pos: "WR", pts: 87.87, avail: 97 },
+    { name: "James Cook", pos: "RB", pts: 104.03, avail: 25 },
+    { name: "Chase Brown", pos: "RB", pts: 102.85, avail: 100 },
+    { name: "Kenneth Walker III", pos: "RB", pts: 102.09, avail: 100 },
+    { name: "Derrick Henry", pos: "RB", pts: 101.81, avail: 100 },
+    { name: "Omarion Hampton", pos: "RB", pts: 101.51, avail: 99 },
+    { name: "Saquon Barkley", pos: "RB", pts: 101.28, avail: 98 },
+    { name: "Justin Jefferson", pos: "WR", pts: 100.61, avail: 97 },
+    { name: "CeeDee Lamb", pos: "WR", pts: 100.57, avail: 87 },
+    { name: "Ashton Jeanty", pos: "RB", pts: 100.45, avail: 91 },
   ],
 };
 
@@ -46,9 +46,9 @@ const FIRST_PICK: Record<number, { name: string; pos: string; pts: number; avail
  *  Note this is a harder test than the per-seat studies: there, only one seat used our board.
  *  Here all three do, so they compete for the same players. */
 const HEAD_TO_HEAD = [
-  { who: "Ashley", slot: 1, avg: 91, best: 41 },
-  { who: "Emily", slot: 10, avg: 88, best: 31 },
-  { who: "Brian JK", slot: 6, avg: 87.1, best: 27 },
+  { who: "Ashley", slot: 1, avg: 108.7, best: 47 },
+  { who: "Brian JK", slot: 6, avg: 102.8, best: 30 },
+  { who: "Emily", slot: 10, avg: 100.2, best: 23 },
 ];
 
 export function SimPanel({ noob }: { noob: boolean }) {
@@ -434,17 +434,15 @@ export function SimPanel({ noob }: { noob: boolean }) {
               <span className="text-ink-3">best of the three in {h.best}% of drafts</span>
             </li>
           ))}
-          <li className="mt-1 border-t border-line-soft pt-1.5 text-ink-3">
-            <span className="w-24 inline-block">The other nine</span>
-            <span className="font-mono tabular-nums">99.3 pts/wk</span>
-          </li>
         </ul>
         <p className="m-0 mt-2 text-[0.82rem] leading-relaxed text-ink-3">
-          All three of you project 6–10 points a week clear of the rest of the league, which is the whole point of the
-          tool. Ashley's edge is the seat, not the plan — the 1.01 is simply the best chair in a year this top-heavy.
-          Worth knowing: because the three of you draft off the <i>same</i> board, you compete for the same players, so
-          each of you scores a little lower here than in the single-seat studies above. Pick 6 gives up the most to
-          that, since Ashley clears the board ahead of him every round.
+          Read these as seat comparisons, not as the tool’s edge over your league. The gap between these
+          numbers and a simulated opponent’s depends heavily on how well the opponent model drafts, and ours
+          reaches and panics more than real people do — so any “points clear of the league” figure flatters us.
+          The defensible measure is title odds: running full seasons with the real 7-of-12 playoff field and the
+          weeks 15–17 bracket, all three seats land near <b className="text-ink">14–16%</b> against the
+          <b className="text-ink">8.3%</b> a random team gets. Roughly double, which is worth having and is not
+          the same claim as being ten points a week better than everyone.
         </p>
       </Card>
     </div>
