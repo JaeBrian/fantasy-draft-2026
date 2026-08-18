@@ -54,7 +54,7 @@ export function TiersPanel({ noob, DS }: { noob: boolean; DS: DraftState }) {
                           <span className="font-mono text-[0.75rem] text-ink-3">
                             {t} · bye {BYE[t] ?? "—"} · ADP {adp.toFixed(0)}
                           </span>
-                          <Call v={v} />
+                          <Call v={v} explain />
                           <TagChips tags={tags} />
                           <span className="basis-full pl-[calc(2.4ch+10px)] text-[0.87rem] text-ink-2">{note}</span>
                         </li>

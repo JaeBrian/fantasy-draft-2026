@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Card, Eyebrow, Intro, Noob } from "../components/ui";
+import { Card, Eyebrow, Info, Intro, Noob } from "../components/ui";
 
 function PCell({ name, sub }: { name: string; sub?: string }) {
   return (
@@ -10,12 +10,12 @@ function PCell({ name, sub }: { name: string; sub?: string }) {
   );
 }
 
-function Tbl({ head, children }: { head: string[]; children: ReactNode }) {
+function Tbl({ head, children }: { head: ReactNode[]; children: ReactNode }) {
   return (
     <div className="overflow-x-auto">
       <table className="tbl">
         <thead>
-          <tr>{head.map((h) => <th key={h}>{h}</th>)}</tr>
+          <tr>{head.map((h, i) => <th key={i}>{h}</th>)}</tr>
         </thead>
         <tbody>{children}</tbody>
       </table>
@@ -93,7 +93,16 @@ export function AvoidPanel({ noob }: { noob: boolean }) {
 
       <Card className="!p-0">
         <div className="border-b border-line px-5 py-4"><Eyebrow className="mb-0">Consensus fades at current price</Eyebrow></div>
-        <Tbl head={["Player", "Price", "Why the experts are out"]}>
+        <Tbl
+          head={[
+            "Player",
+            <span key="price" className="inline-flex items-center gap-1.5">
+              Price
+              <Info tip="What he currently costs (round and overall ADP). 'Avoid' always means at THIS price — if he falls two rounds past it, the math changes." />
+            </span>,
+            "Why the experts are out",
+          ]}
+        >
           {FADES.map(([name, sub, price, why]) => (
             <tr key={name}>
               <td><PCell name={name} sub={sub} /></td>

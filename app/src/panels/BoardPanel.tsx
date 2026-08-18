@@ -1,13 +1,14 @@
 import { useState, type ReactNode } from "react";
 import { P, OT, BYE, type Pos } from "../data";
 import { advise, needText, rosterSlots, type DraftState } from "../lib/advisor";
-import { Call, Intro, Noob, Sticker, TagChips, TeamIcon } from "../components/ui";
+import { Call, Info, Intro, Noob, Sticker, TagChips, TeamIcon } from "../components/ui";
 
 const POS_FILTERS: ("ALL" | Pos)[] = ["ALL", "QB", "RB", "WR", "TE"];
 
 interface BoardProps {
   noob: boolean;
   DS: DraftState;
+  ord: string[];
   mark: (name: string, want: "gone" | "mine") => void;
   undo: () => void;
   reset: () => void;
@@ -16,8 +17,8 @@ interface BoardProps {
   setMySlot: (n: number) => void;
 }
 
-function AdvisorStrip({ DS, mySlot }: { DS: DraftState; mySlot: number }) {
-  const a = advise(DS, mySlot);
+function AdvisorStrip({ DS, mySlot, ord }: { DS: DraftState; mySlot: number; ord: string[] }) {
+  const a = advise(DS, mySlot, ord);
   const made = Object.keys(DS).length;
 
   const next: Partial<Record<Pos, { n: string; i: number }>> = {};
@@ -38,9 +39,11 @@ function AdvisorStrip({ DS, mySlot }: { DS: DraftState; mySlot: number }) {
     const alts = a.cands.slice(1, 3);
     let why = needText(t.p, a);
     if (t.cuffOf) why = `he's the handcuff to your ${t.cuffOf} — season insurance`;
-    if (t.drop >= 12 && t.later) why += `; ${t.p}s fall off a cliff before your next turn (best left would be ${t.later.r[0]}, #${t.later.i + 1})`;
-    else if (t.drop >= 6 && t.later) why += `; the ${t.p} shelf thins fast from here`;
+    const dropPts = t.vNow - t.vLater;
+    if (dropPts >= 2.5 && t.later) why += `; wait and the best ${t.p} at your next turn projects ~${dropPts.toFixed(1)} pts/wk worse (${t.later.r[0]})`;
+    else if (dropPts >= 1.2 && t.later) why += `; the ${t.p} shelf thins before your next turn`;
     if (t.now.r[3] - (t.now.i + 1) >= 10) why += `; he usually goes ~pick ${Math.round(t.now.r[3])}, so this is a value`;
+    if (a.run === t.p) why += `; a ${t.p} run is on (3+ of the last 5 picks)`;
     suggestion = {
       take: t.now.r[0],
       team: t.now.r[2],
@@ -108,6 +111,12 @@ function AdvisorStrip({ DS, mySlot }: { DS: DraftState; mySlot: number }) {
             <span className="basis-full text-[0.9rem] text-ink-2">
               {suggestion.why}{" "}
               {suggestion.alts && <span className="text-ink-3">Also fine: {suggestion.alts}</span>}
+              {a.look && a.look.edge >= 0.8 && a.look.second.later && (
+                <span className="text-ink-3">
+                  {" "}Order matters: {a.look.first.p} now and {a.look.second.p} on the way back beats the reverse by
+                  ~{a.look.edge.toFixed(1)} pts/wk.
+                </span>
+              )}
             </span>
           </div>
         )}
@@ -129,7 +138,7 @@ function AdvisorStrip({ DS, mySlot }: { DS: DraftState; mySlot: number }) {
   );
 }
 
-export function BoardPanel({ noob, DS, mark, undo, reset, canUndo, mySlot, setMySlot }: BoardProps) {
+export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, setMySlot }: BoardProps) {
   const [pos, setPos] = useState<"ALL" | Pos>("ALL");
   const [q, setQ] = useState("");
   const [hideDrafted, setHideDrafted] = useState(false);
@@ -185,7 +194,7 @@ export function BoardPanel({ noob, DS, mark, undo, reset, canUndo, mySlot, setMy
         </td>
         <td><Sticker pos={p} /></td>
         <td className="num">{adp.toFixed(1)}</td>
-        <td><Call v={v} /></td>
+        <td><Call v={v} explain /></td>
         <td className="note">{note}</td>
       </tr>
     );
@@ -204,7 +213,7 @@ export function BoardPanel({ noob, DS, mark, undo, reset, canUndo, mySlot, setMy
           <li>When it's your pick, take the highest-ranked player left (position needs permitting). If his <b>ADP</b> is much higher than his rank here, he'll likely still be there next round — don't reach.</li>
           <li>Chips: <Call v="buy" /> better than his price · <Call v="solid" /> fairly priced · <Call v="risk" /> only at a discount · <Call v="avoid" /> the price ignores a real problem. Hover any small tag for its meaning.</li>
           <li>Press <b>✕</b> when anyone drafts a player, <b>★</b> when the pick is yours. "Hide drafted" shows only who's left.</li>
-          <li>Set <b>My slot</b> and the status bar will suggest who to take next — mark every pick to keep the advice accurate. Marks are saved on this device.</li>
+          <li>Set <b>My slot</b> and the status bar will suggest who to take next. Mark picks <b>in draft order</b> — the advisor rebuilds every team's roster from your marks and predicts what the teams ahead of you will take. Marks are saved on this device.</li>
         </ul>
       </Noob>
 
@@ -269,18 +278,43 @@ export function BoardPanel({ noob, DS, mark, undo, reset, canUndo, mySlot, setMy
         </label>
       </div>
 
-      <AdvisorStrip DS={DS} mySlot={mySlot} />
+      <AdvisorStrip DS={DS} mySlot={mySlot} ord={ord} />
 
       <div className="card max-h-[76vh] overflow-y-auto overflow-x-auto">
         <table className="tbl">
           <thead>
             <tr>
-              <th title="Mark drafted / mine">Track</th>
-              <th>Rk</th>
+              <th>
+                <span className="inline-flex items-center gap-1.5">
+                  Track
+                  <Info tip={<>Mark every pick here, in draft order: <b className="text-ink">✕</b> = drafted by another team, <b className="text-ink">★</b> = your pick. The advisor rebuilds all 12 rosters from these marks. Click again to un-mark.</>} />
+                </span>
+              </th>
+              <th>
+                <span className="inline-flex items-center gap-1.5">
+                  Rk
+                  <Info tip={<>My overall rank for <i>your</i> league (12-team, half-PPR, 2 flex). On the clock, take the highest rank left — not the biggest name.</>} />
+                </span>
+              </th>
               <th>Player</th>
-              <th>Pos</th>
-              <th className="!text-right">ADP</th>
-              <th>Call</th>
+              <th>
+                <span className="inline-flex items-center gap-1.5">
+                  Pos
+                  <Info tip={<>Position, color-coded the same everywhere: <b className="text-rb">RB</b> · <b className="text-wr">WR</b> · <b className="text-qb">QB</b> · <b className="text-te">TE</b>. Your lineup starts 1 QB, 2 RB, 2 WR, 1 TE and 2 flex (RB/WR/TE).</>} />
+                </span>
+              </th>
+              <th className="!text-right">
+                <span className="inline-flex items-center gap-1.5">
+                  ADP
+                  <Info tip={<><b className="text-ink">Average Draft Position</b> — the pick where the market usually takes him (Underdog, Aug 17). Rank far better than ADP = he'll likely still be there next round, so don't reach. ADP far better than rank = overpriced, let someone else pay.</>} />
+                </span>
+              </th>
+              <th>
+                <span className="inline-flex items-center gap-1.5">
+                  Call
+                  <Info tip={<>My verdict at his current price: <b className="text-value">VALUE</b> take him a bit early · <b className="text-solid">SOLID</b> take at price · <b className="text-risky">RISKY</b> only at a discount · <b className="text-avoid">AVOID</b> let someone else deal with it. Hover any chip for the one-line meaning.</>} />
+                </span>
+              </th>
               <th>Note</th>
             </tr>
           </thead>

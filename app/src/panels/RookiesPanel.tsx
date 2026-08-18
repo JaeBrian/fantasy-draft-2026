@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Card, Eyebrow, Intro, Noob, Call } from "../components/ui";
+import { Card, Eyebrow, Info, Intro, Noob, Call } from "../components/ui";
 import type { Verdict } from "../data";
 
 function PCell({ name, sub }: { name: string; sub?: string }) {
@@ -11,12 +11,12 @@ function PCell({ name, sub }: { name: string; sub?: string }) {
   );
 }
 
-function Tbl({ head, children }: { head: string[]; children: ReactNode }) {
+function Tbl({ head, children }: { head: ReactNode[]; children: ReactNode }) {
   return (
     <div className="overflow-x-auto">
       <table className="tbl">
         <thead>
-          <tr>{head.map((h) => <th key={h}>{h}</th>)}</tr>
+          <tr>{head.map((h, i) => <th key={i}>{h}</th>)}</tr>
         </thead>
         <tbody>{children}</tbody>
       </table>
@@ -62,7 +62,17 @@ export function RookiesPanel({ noob }: { noob: boolean }) {
 
       <Card className="!p-0">
         <div className="border-b border-line px-5 py-4"><Eyebrow className="mb-0">True 2026 rookies — draft board</Eyebrow></div>
-        <Tbl head={["Tier", "Player", "Cost", "The case"]}>
+        <Tbl
+          head={[
+            "Tier",
+            "Player",
+            <span key="cost" className="inline-flex items-center gap-1.5">
+              Cost
+              <Info tip="The draft round he currently costs (his ADP). Pay it only if the case next to it still holds on draft day." />
+            </span>,
+            "The case",
+          ]}
+        >
           {ROOKIES.map(([v, label, name, sub, cost, why]) => (
             <tr key={name}>
               <td><Call v={v} label={label} /></td>
@@ -76,7 +86,16 @@ export function RookiesPanel({ noob }: { noob: boolean }) {
 
       <Card className="!p-0">
         <div className="border-b border-line px-5 py-4"><Eyebrow className="mb-0">The sophomore leap — 2025 draftees primed to break out</Eyebrow></div>
-        <Tbl head={["Player", "Cost", "Why this is the year"]}>
+        <Tbl
+          head={[
+            "Player",
+            <span key="cost" className="inline-flex items-center gap-1.5">
+              Cost
+              <Info tip="The draft round he currently costs (his ADP)." />
+            </span>,
+            "Why this is the year",
+          ]}
+        >
           {SOPHOMORES.map(([name, sub, cost, why]) => (
             <tr key={name}>
               <td><PCell name={name} sub={sub} /></td>

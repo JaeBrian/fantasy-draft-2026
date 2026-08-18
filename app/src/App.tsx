@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { usePersistent } from "./lib/store";
 import type { DraftState, Mark } from "./lib/advisor";
 import { StartPanel } from "./panels/StartPanel";
@@ -34,37 +34,67 @@ export default function App() {
   const [noob, setNoob] = usePersistent("fd26-noob", true, (r) => r === "1", (v) => (v ? "1" : "0"));
   const [mySlot, setMySlot] = usePersistent("fd26-slot", 0, (r) => parseInt(r) || 0, String);
   const [DS, setDS] = usePersistent<DraftState>("fd26-draft", {}, parseDS, JSON.stringify);
+  // Pick order (overall pick 1, 2, 3…) — the advisor rebuilds every team's
+  // roster from it. Reconciled against DS on load, same as the v1 page did.
+  const [ord, setOrd] = useState<string[]>(() => {
+    let o: string[] = [];
+    try {
+      o = JSON.parse(localStorage.getItem("fd26-ord") || "[]") as string[];
+    } catch {
+      o = [];
+    }
+    o = o.filter((n) => DS[n]);
+    Object.keys(DS).forEach((n) => {
+      if (!o.includes(n)) o.push(n);
+    });
+    return o;
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem("fd26-ord", JSON.stringify(ord));
+    } catch {
+      /* storage unavailable */
+    }
+  }, [ord]);
   const hist = useRef<{ n: string; prev: Mark | "" }[]>([]);
   const [histSize, setHistSize] = useState(0);
+
+  const applyMark = useCallback(
+    (n: string, state: Mark | "") => {
+      const next = { ...DS };
+      if (state) {
+        if (!next[n]) setOrd((o) => [...o, n]);
+        next[n] = state;
+      } else {
+        delete next[n];
+        setOrd((o) => o.filter((x) => x !== n));
+      }
+      setDS(next);
+    },
+    [DS, setDS]
+  );
 
   const mark = useCallback(
     (n: string, want: Mark) => {
       hist.current.push({ n, prev: DS[n] ?? "" });
       if (hist.current.length > 200) hist.current.shift();
       setHistSize(hist.current.length);
-      const next = { ...DS };
-      if (next[n] === want) delete next[n];
-      else next[n] = want;
-      setDS(next);
+      applyMark(n, DS[n] === want ? "" : want);
     },
-    [DS, setDS]
+    [DS, applyMark]
   );
 
   const undo = useCallback(() => {
     const h = hist.current.pop();
     setHistSize(hist.current.length);
     if (!h) return;
-    setDS((prev) => {
-      const next = { ...prev };
-      if (h.prev) next[h.n] = h.prev;
-      else delete next[h.n];
-      return next;
-    });
-  }, [setDS]);
+    applyMark(h.n, h.prev);
+  }, [applyMark]);
 
   const reset = useCallback(() => {
     hist.current = [];
     setHistSize(0);
+    setOrd([]);
     setDS({});
   }, [setDS]);
 
@@ -123,6 +153,7 @@ export default function App() {
           <BoardPanel
             noob={noob}
             DS={DS}
+            ord={ord}
             mark={mark}
             undo={undo}
             reset={reset}

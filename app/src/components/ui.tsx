@@ -1,6 +1,49 @@
-import type { ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { TAGS, TAGCLASS, VLBL, type Pos, type Verdict } from "../data";
 import { TEAM_LOGOS } from "../teams-logos";
+
+/** Styled hover/focus tooltip. Rendered position:fixed so it never gets
+ *  clipped by the table's scroll container. */
+export function Tip({ tip, children }: { tip: ReactNode; children: ReactNode }) {
+  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
+  const ref = useRef<HTMLSpanElement>(null);
+  const show = () => {
+    const r = ref.current?.getBoundingClientRect();
+    if (!r) return;
+    const x = Math.min(Math.max(r.left + r.width / 2, 150), window.innerWidth - 150);
+    setPos({ x, y: r.bottom + 7 });
+  };
+  const hide = () => setPos(null);
+  return (
+    <span
+      ref={ref}
+      tabIndex={0}
+      className="inline-flex outline-none"
+      onMouseEnter={show}
+      onMouseLeave={hide}
+      onFocus={show}
+      onBlur={hide}
+    >
+      {children}
+      {pos && (
+        <span role="tooltip" className="tipbox" style={{ left: pos.x, top: pos.y, transform: "translateX(-50%)" }}>
+          {tip}
+        </span>
+      )}
+    </span>
+  );
+}
+
+/** Small "i" dot for column headers — hover or focus it for the explanation. */
+export function Info({ tip }: { tip: ReactNode }) {
+  return (
+    <Tip tip={tip}>
+      <span aria-label="What this column means" className="info-dot">
+        i
+      </span>
+    </Tip>
+  );
+}
 
 export function TeamIcon({ team, size = 18 }: { team: string; size?: number }) {
   const src = TEAM_LOGOS[team];
@@ -37,8 +80,27 @@ const CALL_STYLE: Record<Verdict, string> = {
   avoid: "text-avoid bg-avoid/12",
 };
 
-export function Call({ v, label }: { v: Verdict; label?: string }) {
-  return <span className={`call ${CALL_STYLE[v]}`}>{label ?? VLBL[v]}</span>;
+const VDESC: Record<Verdict, string> = {
+  buy: "Priced below his real value — happy to take him a little before his ADP.",
+  solid: "Fairly priced — take him at or after his ADP.",
+  risk: "Real upside, real red flags — only at a discount.",
+  avoid: "The price ignores a live problem — let someone else pay it.",
+};
+
+export function Call({ v, label, explain }: { v: Verdict; label?: string; explain?: boolean }) {
+  const chip = <span className={`call ${CALL_STYLE[v]}`}>{label ?? VLBL[v]}</span>;
+  if (!explain) return chip;
+  return (
+    <Tip
+      tip={
+        <>
+          <b className="text-ink">{VLBL[v]}</b> — {VDESC[v]}
+        </>
+      }
+    >
+      {chip}
+    </Tip>
+  );
 }
 
 export function TagChips({ tags, max }: { tags: string[] | undefined; max?: number }) {
@@ -47,9 +109,16 @@ export function TagChips({ tags, max }: { tags: string[] | undefined; max?: numb
     <>
       {list.map((t) =>
         TAGS[t] ? (
-          <span key={t} className={`tag ${TAGCLASS[t] ?? ""}`} title={TAGS[t][1]}>
-            {TAGS[t][0]}
-          </span>
+          <Tip
+            key={t}
+            tip={
+              <>
+                <b className="text-ink">{TAGS[t][0]}</b> — {TAGS[t][1]}
+              </>
+            }
+          >
+            <span className={`tag ${TAGCLASS[t] ?? ""}`}>{TAGS[t][0]}</span>
+          </Tip>
         ) : null
       )}
     </>
