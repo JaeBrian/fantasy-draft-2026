@@ -119,12 +119,20 @@ const PLAINSHORT: Record<string, string> = {
   QB: "quarterback", RB: "running back", WR: "wide receiver", TE: "tight end",
 };
 
+/** What pick this player is expected to come off the board at.
+ *
+ *  We draft on Sleeper, so Sleeper's own half-PPR ADP is the truth: it is measured from real
+ *  Sleeper drafts in our exact scoring format. Mock-market ADP is kept only as a blend partner
+ *  to steady players Sleeper has thin data on, and as the fallback when Sleeper has none.
+ *
+ *  Deliberately NOT used: `SLP.rk`, Sleeper's in-app board-sort rank. It is superflex-flavoured
+ *  and lists QBs ~37 picks earlier than a 1-QB league drafts them; pricing on it made the model
+ *  expect 3 QBs gone by the end of round 3 when the real number is 2. */
 export const mktADP = (row: PlayerRow): number => {
   const m = MKT[row[0]];
   const ffc = m ? m[0] : row[3];
-  const srk = SLP[row[0]]?.rk;
-  /* Sleeper home leagues draft off Sleeper's default board — lean its rank over mock-market ADP */
-  return srk !== undefined ? 0.55 * srk + 0.45 * ffc : ffc;
+  const sadp = SLP[row[0]]?.adp;
+  return sadp !== undefined ? 0.75 * sadp + 0.25 * ffc : ffc;
 };
 const sigmaOf = (row: PlayerRow): number => {
   const m = MKT[row[0]];

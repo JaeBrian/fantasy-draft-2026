@@ -454,43 +454,397 @@ export const TD_MODEL: TdRow[] = [
   { name: "Christian McCaffrey", pos: "RB", team: "SF", rank: 6, td: 17, xtd: 24.1, delta: -7.1, rz: 96 },
 ];
 
-/** Paired-world strategy study: 2,500 simulated drafts per seat in which every finalist
- *  strategy faced the IDENTICAL opponents, so the comparison measures strategy rather than
- *  luck. `beats` is the % of identical drafts this strategy finished ahead of each other
- *  finalist. Regenerate with app/scripts/sim-paired.mjs */
+/** Paired-world strategy study: 8,000 simulated SEASONS per seat. Every finalist strategy
+ *  faces the identical draft and the identical season luck, so the comparison isolates
+ *  strategy. Two corrections make these numbers differ sharply from the earlier study:
+ *
+ *  1. Opponents are priced off Sleeper's REAL half-PPR ADP. The old run leaned on Sleeper's
+ *     board-sort rank, which is superflex-flavoured and had the room taking three QBs inside
+ *     three rounds instead of two. Fixing it reordered the best structure at every seat.
+ *  2. Each player's season is now drawn, not assumed — a lognormal on his projection plus a
+ *     chance of missing time. The old floor/ceiling only captured who fell to you on draft
+ *     day, which is why they sat a point apart. Real spread is nearly 40 points a week.
+ *
+ *  floor/ceiling are the 10th and 90th percentile weeks. `beats` is the % of identical
+ *  seasons this strategy finished ahead of each other finalist. Regenerate: scripts/sim-paired.mjs */
 export type PairedRow = {
   label: string; mean: number; floor: number; ceiling: number;
   rb1: number; wr1: number; beats: number[]; note?: string;
 };
 export const PAIRED_SIM: Record<number, { worlds: number; rows: PairedRow[] }> = {
   1: {
-    worlds: 2500,
+    worlds: 8000,
     rows: [
-      { label: "RB-RB-WR-WR", mean: 110.51, floor: 108.5, ceiling: 113.1, rb1: 18.3, wr1: 15.0, beats: [0, 0, 47, 96, 100], note: "identical to RB-WR-RB-WR — your picks 24/25 are back-to-back" },
-      { label: "RB-WR-RB-WR", mean: 110.51, floor: 108.5, ceiling: 113.1, rb1: 18.3, wr1: 15.0, beats: [0, 0, 47, 96, 100] },
-      { label: "RB-WR-WR-RB", mean: 110.13, floor: 108.0, ceiling: 111.9, rb1: 18.3, wr1: 15.0, beats: [53, 53, 0, 71, 91] },
-      { label: "RB-RB-WR-RB", mean: 108.99, floor: 107.2, ceiling: 111.4, rb1: 18.3, wr1: 15.0, beats: [4, 4, 29, 0, 97] },
-      { label: "WR-RB-RB-WR", mean: 106.64, floor: 104.5, ceiling: 109.3, rb1: 12.9, wr1: 17.7, beats: [0, 0, 9, 3, 0], note: "opening Chase instead of Gibbs costs 5.4 pts of RB1 quality" },
+      { label: "RB-WR-WR-RB", mean: 109.86, floor: 91.2, ceiling: 130.3, rb1: 18.3, wr1: 14.8, beats: [0, 59, 61, 57, 73], note: "best here — the round-2/3 turn lands two WRs while RB value holds" },
+      { label: "RB-RB-WR-RB", mean: 108.57, floor: 89.7, ceiling: 128.8, rb1: 18.3, wr1: 14.7, beats: [43, 46, 50, 0, 78] },
+      { label: "RB-WR-RB-WR", mean: 108.53, floor: 89.8, ceiling: 128.8, rb1: 18.3, wr1: 14.7, beats: [38, 50, 0, 50, 69] },
+      { label: "RB-RB-WR-WR", mean: 108.46, floor: 89.8, ceiling: 128.7, rb1: 18.3, wr1: 14.7, beats: [41, 0, 48, 48, 80] },
+      { label: "WR-RB-RB-WR", mean: 106.12, floor: 88.1, ceiling: 125.8, rb1: 12.6, wr1: 17.7, beats: [27, 20, 31, 22, 0], note: "opening a WR instead of Gibbs costs 3.7 pts/wk — the one real mistake at this seat" },
     ],
   },
   6: {
-    worlds: 2500,
+    worlds: 8000,
     rows: [
-      { label: "RB-RB-WR-WR", mean: 108.98, floor: 107.7, ceiling: 110.3, rb1: 16.0, wr1: 13.7, beats: [0, 57, 69, 78, 81], note: "wins 57-81% of identical drafts" },
-      { label: "WR-RB-RB-WR", mean: 108.59, floor: 107.5, ceiling: 109.7, rb1: 14.9, wr1: 17.2, beats: [43, 0, 53, 73, 75] },
-      { label: "WR-RB-WR-RB", mean: 108.50, floor: 107.2, ceiling: 109.8, rb1: 14.9, wr1: 17.2, beats: [31, 47, 0, 56, 67] },
-      { label: "RB-WR-RB-WR", mean: 108.24, floor: 107.0, ceiling: 109.3, rb1: 16.0, wr1: 15.6, beats: [22, 27, 44, 0, 64] },
-      { label: "RB-RB-QB-WR", mean: 107.84, floor: 106.4, ceiling: 109.1, rb1: 16.0, wr1: 13.3, beats: [19, 25, 33, 36, 0], note: "taking a QB in round 3 is the costliest common mistake" },
+      { label: "WR-RB-WR-RB", mean: 107.29, floor: 89.0, ceiling: 127.3, rb1: 14.2, wr1: 17.2, beats: [0, 51, 48, 52, 62], note: "best here, and it flipped: on real Sleeper ADP the WR open now edges the RB open" },
+      { label: "WR-RB-RB-WR", mean: 106.94, floor: 88.9, ceiling: 126.9, rb1: 14.3, wr1: 17.2, beats: [48, 0, 47, 53, 61] },
+      { label: "RB-RB-WR-WR", mean: 106.50, floor: 87.5, ceiling: 127.1, rb1: 16.2, wr1: 13.4, beats: [52, 53, 0, 55, 65] },
+      { label: "RB-WR-RB-WR", mean: 106.47, floor: 88.4, ceiling: 127.0, rb1: 16.2, wr1: 15.5, beats: [48, 47, 45, 0, 61] },
+      { label: "RB-RB-QB-WR", mean: 104.72, floor: 86.3, ceiling: 124.7, rb1: 16.2, wr1: 12.4, beats: [38, 39, 35, 39, 0], note: "taking a QB in round 3 is still the costliest common mistake" },
     ],
   },
   10: {
-    worlds: 2500,
+    worlds: 8000,
     rows: [
-      { label: "RB-WR-WR-RB", mean: 108.04, floor: 106.8, ceiling: 109.2, rb1: 15.5, wr1: 16.0, beats: [0, 48, 56, 57, 66], note: "best, but only barely" },
-      { label: "RB-WR-RB-WR", mean: 107.95, floor: 106.6, ceiling: 109.3, rb1: 15.5, wr1: 16.0, beats: [44, 0, 54, 53, 63] },
-      { label: "WR-RB-WR-RB", mean: 107.84, floor: 106.8, ceiling: 108.8, rb1: 15.0, wr1: 16.6, beats: [44, 46, 0, 48, 59] },
-      { label: "WR-RB-RB-WR", mean: 107.80, floor: 106.7, ceiling: 108.8, rb1: 15.0, wr1: 16.6, beats: [43, 47, 43, 0, 53] },
-      { label: "RB-RB-WR-WR", mean: 107.69, floor: 106.6, ceiling: 108.8, rb1: 15.5, wr1: 13.9, beats: [34, 37, 41, 47, 0], note: "even the worst finalist wins ~40% — this seat has real freedom" },
+      { label: "RB-RB-WR-WR", mean: 107.99, floor: 89.5, ceiling: 128.1, rb1: 15.7, wr1: 13.7, beats: [0, 58, 60, 65, 64], note: "best here, but the whole seat spans 0.65 pts/wk — you have real freedom" },
+      { label: "WR-RB-WR-RB", mean: 107.70, floor: 89.4, ceiling: 127.3, rb1: 15.4, wr1: 16.4, beats: [42, 0, 52, 58, 55] },
+      { label: "WR-RB-RB-WR", mean: 107.66, floor: 89.6, ceiling: 127.3, rb1: 15.4, wr1: 16.4, beats: [40, 47, 0, 52, 58] },
+      { label: "RB-WR-WR-RB", mean: 107.38, floor: 89.3, ceiling: 126.9, rb1: 15.7, wr1: 15.8, beats: [35, 42, 48, 0, 52] },
+      { label: "RB-WR-RB-WR", mean: 107.34, floor: 89.2, ceiling: 126.8, rb1: 15.7, wr1: 15.8, beats: [36, 45, 42, 47, 0] },
+    ],
+  },
+};
+
+/** The risk dial, run on each seat's best structure: same picks, different appetite for
+ *  volatile players. The headline is that it barely moves the ceiling. With nine starters,
+ *  individual boom/bust averages out — you cannot buy a higher team ceiling by drafting
+ *  volatile players, you only give up mean. Ceilings come from picks that hit, not from risk. */
+export type RiskRow = { approach: string; floor: number; typical: number; ceiling: number; mean: number };
+export const RISK_DIAL: Record<number, { structure: string; rows: RiskRow[] }> = {
+  1: {
+    structure: "RB-WR-WR-RB",
+    rows: [
+      { approach: "safe (steady picks)", floor: 91.2, typical: 108.2, ceiling: 129.7, mean: 109.6 },
+      { approach: "balanced (our board)", floor: 90.7, typical: 107.9, ceiling: 129.6, mean: 109.3 },
+      { approach: "swing (high variance)", floor: 90.2, typical: 107.4, ceiling: 129.1, mean: 108.8 },
+    ],
+  },
+  6: {
+    structure: "WR-RB-WR-RB",
+    rows: [
+      { approach: "safe (steady picks)", floor: 89.3, typical: 106.6, ceiling: 127.3, mean: 107.8 },
+      { approach: "balanced (our board)", floor: 88.2, typical: 106.0, ceiling: 127.1, mean: 107.1 },
+      { approach: "swing (high variance)", floor: 88.0, typical: 105.8, ceiling: 126.9, mean: 106.9 },
+    ],
+  },
+  10: {
+    structure: "RB-RB-WR-WR",
+    rows: [
+      { approach: "safe (steady picks)", floor: 89.6, typical: 106.9, ceiling: 127.9, mean: 108.0 },
+      { approach: "balanced (our board)", floor: 89.3, typical: 106.6, ceiling: 127.9, mean: 107.8 },
+      { approach: "swing (high variance)", floor: 89.2, typical: 106.5, ceiling: 127.8, mean: 107.7 },
+    ],
+  },
+};
+
+/** Conditional draft tree: 700 paired seasons per branch. For each realistic first pick we
+ *  force it, then force each candidate second pick, let the rest run on best-available, and
+ *  play the season out. Each player draws the SAME season in every branch, so differences are
+ *  caused by the picks and nothing else. `avail` is how often he is still on the board.
+ *  Regenerate with app/scripts/sim-tree.mjs */
+export type TreePick = { name: string; pos: string; pts: number; avail: number };
+export type TreeBranch = { first: TreePick; second: TreePick[]; third: TreePick[] };
+export const DRAFT_TREE: Record<number, { picks: number[]; worlds: number; branches: TreeBranch[] }> = {
+  1: {
+    picks: [1, 24, 25],
+    worlds: 700,
+    branches: [
+      {
+        first: { name: "Jahmyr Gibbs", pos: "RB", pts: 0, avail: 100 },
+        second: [
+          { name: "Nico Collins", pos: "WR", pts: 110.00, avail: 50 },
+          { name: "George Pickens", pos: "WR", pts: 109.24, avail: 77 },
+          { name: "Kyren Williams", pos: "RB", pts: 108.98, avail: 95 },
+          { name: "Chris Olave", pos: "WR", pts: 108.95, avail: 98 },
+          { name: "DeVonta Smith", pos: "WR", pts: 108.95, avail: 100 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 108.56, avail: 100 },
+        ],
+        third: [
+          { name: "George Pickens", pos: "WR", pts: 110.75, avail: 35 },
+          { name: "Chris Olave", pos: "WR", pts: 109.13, avail: 49 },
+          { name: "Kyren Williams", pos: "RB", pts: 109.02, avail: 46 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 108.86, avail: 50 },
+          { name: "DeVonta Smith", pos: "WR", pts: 108.70, avail: 50 },
+          { name: "Ladd McConkey", pos: "WR", pts: 108.43, avail: 50 },
+        ],
+      },
+      {
+        first: { name: "Bijan Robinson", pos: "RB", pts: 0, avail: 100 },
+        second: [
+          { name: "Nico Collins", pos: "WR", pts: 109.25, avail: 50 },
+          { name: "Chris Olave", pos: "WR", pts: 107.57, avail: 98 },
+          { name: "DeVonta Smith", pos: "WR", pts: 107.48, avail: 100 },
+          { name: "Trey McBride", pos: "TE", pts: 107.44, avail: 58 },
+          { name: "Kyren Williams", pos: "RB", pts: 107.38, avail: 95 },
+          { name: "George Pickens", pos: "WR", pts: 107.32, avail: 77 },
+        ],
+        third: [
+          { name: "George Pickens", pos: "WR", pts: 109.14, avail: 35 },
+          { name: "Chris Olave", pos: "WR", pts: 108.37, avail: 48 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 108.02, avail: 50 },
+          { name: "DeVonta Smith", pos: "WR", pts: 107.97, avail: 50 },
+          { name: "Kyren Williams", pos: "RB", pts: 107.80, avail: 46 },
+          { name: "Malik Nabers", pos: "WR", pts: 107.62, avail: 49 },
+        ],
+      },
+      {
+        first: { name: "Ja'Marr Chase", pos: "WR", pts: 0, avail: 100 },
+        second: [
+          { name: "Nico Collins", pos: "WR", pts: 107.59, avail: 50 },
+          { name: "Kyren Williams", pos: "RB", pts: 107.20, avail: 95 },
+          { name: "George Pickens", pos: "WR", pts: 106.46, avail: 76 },
+          { name: "DeVonta Smith", pos: "WR", pts: 106.45, avail: 100 },
+          { name: "Chris Olave", pos: "WR", pts: 106.31, avail: 98 },
+          { name: "Breece Hall", pos: "RB", pts: 105.83, avail: 98 },
+        ],
+        third: [
+          { name: "George Pickens", pos: "WR", pts: 107.72, avail: 35 },
+          { name: "Kyren Williams", pos: "RB", pts: 107.38, avail: 46 },
+          { name: "Chris Olave", pos: "WR", pts: 106.62, avail: 49 },
+          { name: "DeVonta Smith", pos: "WR", pts: 106.36, avail: 50 },
+          { name: "Breece Hall", pos: "RB", pts: 106.33, avail: 49 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 106.13, avail: 50 },
+        ],
+      },
+      {
+        first: { name: "Jaxon Smith-Njigba", pos: "WR", pts: 0, avail: 100 },
+        second: [
+          { name: "Nico Collins", pos: "WR", pts: 106.58, avail: 49 },
+          { name: "Kyren Williams", pos: "RB", pts: 106.43, avail: 95 },
+          { name: "George Pickens", pos: "WR", pts: 106.04, avail: 77 },
+          { name: "DeVonta Smith", pos: "WR", pts: 105.80, avail: 100 },
+          { name: "Chris Olave", pos: "WR", pts: 105.70, avail: 98 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 105.27, avail: 100 },
+        ],
+        third: [
+          { name: "George Pickens", pos: "WR", pts: 106.90, avail: 34 },
+          { name: "Kyren Williams", pos: "RB", pts: 106.28, avail: 45 },
+          { name: "Chris Olave", pos: "WR", pts: 105.82, avail: 48 },
+          { name: "Breece Hall", pos: "RB", pts: 105.46, avail: 48 },
+          { name: "DeVonta Smith", pos: "WR", pts: 105.44, avail: 49 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 105.43, avail: 49 },
+        ],
+      },
+      {
+        first: { name: "Amon-Ra St. Brown", pos: "WR", pts: 0, avail: 100 },
+        second: [
+          { name: "Nico Collins", pos: "WR", pts: 106.56, avail: 49 },
+          { name: "Kyren Williams", pos: "RB", pts: 106.49, avail: 95 },
+          { name: "George Pickens", pos: "WR", pts: 105.82, avail: 76 },
+          { name: "DeVonta Smith", pos: "WR", pts: 105.66, avail: 100 },
+          { name: "Chris Olave", pos: "WR", pts: 105.54, avail: 98 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 105.19, avail: 100 },
+        ],
+        third: [
+          { name: "George Pickens", pos: "WR", pts: 107.14, avail: 34 },
+          { name: "Kyren Williams", pos: "RB", pts: 106.56, avail: 46 },
+          { name: "Chris Olave", pos: "WR", pts: 105.89, avail: 48 },
+          { name: "Breece Hall", pos: "RB", pts: 105.55, avail: 49 },
+          { name: "DeVonta Smith", pos: "WR", pts: 105.52, avail: 49 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 105.48, avail: 49 },
+        ],
+      },
+    ],
+  },
+  6: {
+    picks: [6, 19, 30],
+    worlds: 700,
+    branches: [
+      {
+        first: { name: "Jaxon Smith-Njigba", pos: "WR", pts: 0, avail: 82 },
+        second: [
+          { name: "Kenneth Walker III", pos: "RB", pts: 107.22, avail: 54 },
+          { name: "A.J. Brown", pos: "WR", pts: 106.54, avail: 64 },
+          { name: "Brock Bowers", pos: "TE", pts: 105.36, avail: 55 },
+          { name: "Nico Collins", pos: "WR", pts: 105.35, avail: 82 },
+          { name: "George Pickens", pos: "WR", pts: 105.32, avail: 82 },
+          { name: "Drake London", pos: "WR", pts: 104.97, avail: 62 },
+        ],
+        third: [
+          { name: "Chris Olave", pos: "WR", pts: 107.45, avail: 33 },
+          { name: "DeVonta Smith", pos: "WR", pts: 107.17, avail: 51 },
+          { name: "Zay Flowers", pos: "WR", pts: 107.13, avail: 53 },
+          { name: "Breece Hall", pos: "RB", pts: 107.08, avail: 37 },
+          { name: "Ladd McConkey", pos: "WR", pts: 107.06, avail: 53 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 106.68, avail: 53 },
+        ],
+      },
+      {
+        first: { name: "Amon-Ra St. Brown", pos: "WR", pts: 0, avail: 88 },
+        second: [
+          { name: "Kenneth Walker III", pos: "RB", pts: 107.07, avail: 58 },
+          { name: "A.J. Brown", pos: "WR", pts: 107.06, avail: 69 },
+          { name: "Brock Bowers", pos: "TE", pts: 106.04, avail: 59 },
+          { name: "Drake London", pos: "WR", pts: 105.83, avail: 64 },
+          { name: "George Pickens", pos: "WR", pts: 105.78, avail: 88 },
+          { name: "Nico Collins", pos: "WR", pts: 105.63, avail: 87 },
+        ],
+        third: [
+          { name: "Chris Olave", pos: "WR", pts: 108.00, avail: 35 },
+          { name: "Breece Hall", pos: "RB", pts: 107.52, avail: 39 },
+          { name: "DeVonta Smith", pos: "WR", pts: 107.40, avail: 56 },
+          { name: "Ladd McConkey", pos: "WR", pts: 107.29, avail: 58 },
+          { name: "Zay Flowers", pos: "WR", pts: 106.95, avail: 58 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 106.82, avail: 58 },
+        ],
+      },
+      {
+        first: { name: "Christian McCaffrey", pos: "RB", pts: 0, avail: 49 },
+        second: [
+          { name: "Kenneth Walker III", pos: "RB", pts: 105.45, avail: 33 },
+          { name: "A.J. Brown", pos: "WR", pts: 104.78, avail: 37 },
+          { name: "Brock Bowers", pos: "TE", pts: 104.35, avail: 34 },
+          { name: "George Pickens", pos: "WR", pts: 104.16, avail: 49 },
+          { name: "Nico Collins", pos: "WR", pts: 103.99, avail: 49 },
+          { name: "Chris Olave", pos: "WR", pts: 103.42, avail: 49 },
+        ],
+        third: [
+          { name: "DeVonta Smith", pos: "WR", pts: 105.47, avail: 31 },
+          { name: "Jaylen Waddle", pos: "WR", pts: 105.44, avail: 33 },
+          { name: "Ladd McConkey", pos: "WR", pts: 105.12, avail: 33 },
+          { name: "Cam Skattebo", pos: "RB", pts: 104.97, avail: 33 },
+          { name: "Zay Flowers", pos: "WR", pts: 104.89, avail: 33 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 104.84, avail: 32 },
+        ],
+      },
+      {
+        first: { name: "Justin Jefferson", pos: "WR", pts: 0, avail: 100 },
+        second: [
+          { name: "Kenneth Walker III", pos: "RB", pts: 106.44, avail: 67 },
+          { name: "A.J. Brown", pos: "WR", pts: 106.10, avail: 79 },
+          { name: "Drake London", pos: "WR", pts: 105.40, avail: 73 },
+          { name: "Brock Bowers", pos: "TE", pts: 105.05, avail: 67 },
+          { name: "George Pickens", pos: "WR", pts: 104.92, avail: 100 },
+          { name: "Nico Collins", pos: "WR", pts: 104.90, avail: 100 },
+        ],
+        third: [
+          { name: "Chris Olave", pos: "WR", pts: 107.22, avail: 40 },
+          { name: "DeVonta Smith", pos: "WR", pts: 106.81, avail: 64 },
+          { name: "Breece Hall", pos: "RB", pts: 106.62, avail: 44 },
+          { name: "Zay Flowers", pos: "WR", pts: 106.56, avail: 66 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 106.30, avail: 66 },
+          { name: "Javonte Williams", pos: "RB", pts: 106.13, avail: 64 },
+        ],
+      },
+      {
+        first: { name: "Jonathan Taylor", pos: "RB", pts: 0, avail: 73 },
+        second: [
+          { name: "A.J. Brown", pos: "WR", pts: 107.68, avail: 58 },
+          { name: "Brock Bowers", pos: "TE", pts: 107.31, avail: 49 },
+          { name: "Kenneth Walker III", pos: "RB", pts: 107.21, avail: 48 },
+          { name: "Drake London", pos: "WR", pts: 106.94, avail: 53 },
+          { name: "Nico Collins", pos: "WR", pts: 106.76, avail: 73 },
+          { name: "George Pickens", pos: "WR", pts: 106.47, avail: 73 },
+        ],
+        third: [
+          { name: "Chris Olave", pos: "WR", pts: 108.64, avail: 36 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 107.88, avail: 57 },
+          { name: "Breece Hall", pos: "RB", pts: 107.81, avail: 38 },
+          { name: "DeVonta Smith", pos: "WR", pts: 107.77, avail: 55 },
+          { name: "Javonte Williams", pos: "RB", pts: 107.72, avail: 55 },
+          { name: "Malik Nabers", pos: "WR", pts: 107.63, avail: 42 },
+        ],
+      },
+    ],
+  },
+  10: {
+    picks: [10, 15, 34],
+    worlds: 700,
+    branches: [
+      {
+        first: { name: "Justin Jefferson", pos: "WR", pts: 0, avail: 97 },
+        second: [
+          { name: "Derrick Henry", pos: "RB", pts: 107.79, avail: 79 },
+          { name: "Chase Brown", pos: "RB", pts: 107.44, avail: 69 },
+          { name: "Kenneth Walker III", pos: "RB", pts: 107.34, avail: 92 },
+          { name: "Saquon Barkley", pos: "RB", pts: 107.02, avail: 43 },
+          { name: "Omarion Hampton", pos: "RB", pts: 106.52, avail: 75 },
+          { name: "A.J. Brown", pos: "WR", pts: 106.49, avail: 96 },
+        ],
+        third: [
+          { name: "DeVonta Smith", pos: "WR", pts: 108.27, avail: 47 },
+          { name: "Zay Flowers", pos: "WR", pts: 107.55, avail: 73 },
+          { name: "Cam Skattebo", pos: "RB", pts: 107.54, avail: 72 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 107.23, avail: 75 },
+          { name: "Tetairoa McMillan", pos: "WR", pts: 107.23, avail: 66 },
+          { name: "Jaylen Waddle", pos: "WR", pts: 107.10, avail: 79 },
+        ],
+      },
+      {
+        first: { name: "CeeDee Lamb", pos: "WR", pts: 0, avail: 88 },
+        second: [
+          { name: "Saquon Barkley", pos: "RB", pts: 106.99, avail: 38 },
+          { name: "Derrick Henry", pos: "RB", pts: 106.91, avail: 70 },
+          { name: "Kenneth Walker III", pos: "RB", pts: 106.26, avail: 83 },
+          { name: "Chase Brown", pos: "RB", pts: 106.25, avail: 62 },
+          { name: "Brock Bowers", pos: "TE", pts: 105.76, avail: 78 },
+          { name: "A.J. Brown", pos: "WR", pts: 105.70, avail: 87 },
+        ],
+        third: [
+          { name: "Zay Flowers", pos: "WR", pts: 106.92, avail: 36 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 106.81, avail: 36 },
+          { name: "Cam Skattebo", pos: "RB", pts: 106.41, avail: 36 },
+          { name: "Ladd McConkey", pos: "WR", pts: 106.32, avail: 37 },
+          { name: "Colston Loveland", pos: "TE", pts: 106.09, avail: 38 },
+          { name: "Terry McLaurin", pos: "WR", pts: 105.86, avail: 38 },
+        ],
+      },
+      {
+        first: { name: "Derrick Henry", pos: "RB", pts: 0, avail: 100 },
+        second: [
+          { name: "Saquon Barkley", pos: "RB", pts: 106.51, avail: 53 },
+          { name: "Kenneth Walker III", pos: "RB", pts: 106.42, avail: 96 },
+          { name: "A.J. Brown", pos: "WR", pts: 106.40, avail: 100 },
+          { name: "Brock Bowers", pos: "TE", pts: 106.30, avail: 90 },
+          { name: "George Pickens", pos: "WR", pts: 106.03, avail: 100 },
+          { name: "Nico Collins", pos: "WR", pts: 105.73, avail: 100 },
+        ],
+        third: [
+          { name: "DeVonta Smith", pos: "WR", pts: 106.31, avail: 32 },
+          { name: "Zay Flowers", pos: "WR", pts: 105.62, avail: 50 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 105.35, avail: 50 },
+          { name: "Tetairoa McMillan", pos: "WR", pts: 105.23, avail: 45 },
+          { name: "Jaylen Waddle", pos: "WR", pts: 105.00, avail: 53 },
+          { name: "Ladd McConkey", pos: "WR", pts: 104.98, avail: 52 },
+        ],
+      },
+      {
+        first: { name: "Saquon Barkley", pos: "RB", pts: 0, avail: 98 },
+        second: [
+          { name: "Derrick Henry", pos: "RB", pts: 106.34, avail: 84 },
+          { name: "A.J. Brown", pos: "WR", pts: 106.25, avail: 97 },
+          { name: "Kenneth Walker III", pos: "RB", pts: 106.15, avail: 93 },
+          { name: "Brock Bowers", pos: "TE", pts: 106.04, avail: 87 },
+          { name: "Chase Brown", pos: "RB", pts: 105.83, avail: 75 },
+          { name: "George Pickens", pos: "WR", pts: 105.82, avail: 98 },
+        ],
+        third: [
+          { name: "DeVonta Smith", pos: "WR", pts: 106.47, avail: 51 },
+          { name: "Jaylen Waddle", pos: "WR", pts: 105.71, avail: 84 },
+          { name: "Zay Flowers", pos: "WR", pts: 105.68, avail: 78 },
+          { name: "Tetairoa McMillan", pos: "WR", pts: 105.46, avail: 71 },
+          { name: "Ladd McConkey", pos: "WR", pts: 105.39, avail: 81 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 105.34, avail: 79 },
+        ],
+      },
+      {
+        first: { name: "Kenneth Walker III", pos: "RB", pts: 0, avail: 100 },
+        second: [
+          { name: "Saquon Barkley", pos: "RB", pts: 106.59, avail: 58 },
+          { name: "Derrick Henry", pos: "RB", pts: 106.59, avail: 90 },
+          { name: "Brock Bowers", pos: "TE", pts: 106.05, avail: 90 },
+          { name: "A.J. Brown", pos: "WR", pts: 106.03, avail: 100 },
+          { name: "George Pickens", pos: "WR", pts: 105.61, avail: 100 },
+          { name: "Drake London", pos: "WR", pts: 105.42, avail: 100 },
+        ],
+        third: [
+          { name: "DeVonta Smith", pos: "WR", pts: 106.43, avail: 33 },
+          { name: "Tetairoa McMillan", pos: "WR", pts: 105.98, avail: 50 },
+          { name: "Zay Flowers", pos: "WR", pts: 105.96, avail: 54 },
+          { name: "Emeka Egbuka", pos: "WR", pts: 105.79, avail: 55 },
+          { name: "Jaylen Waddle", pos: "WR", pts: 105.55, avail: 58 },
+          { name: "Tee Higgins", pos: "WR", pts: 105.45, avail: 54 },
+        ],
+      },
     ],
   },
 };

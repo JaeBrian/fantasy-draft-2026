@@ -539,14 +539,16 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
         </td>
         <td><Sticker pos={p} /></td>
         <td className="num">
-          {adp.toFixed(1)}
-          {SLP[n]?.rk !== undefined && (
-            <span className="block text-[0.66rem] leading-tight text-ink-3 min-[1400px]:hidden" title="Sleeper's own board rank">
-              slp {SLP[n].rk}
+          {SLP[n]?.adp !== undefined ? SLP[n].adp!.toFixed(1) : adp.toFixed(1)}
+          {SLP[n]?.adp !== undefined && (
+            <span className="block text-[0.66rem] leading-tight text-ink-3 min-[1400px]:hidden" title="mock-draft market ADP">
+              mock {adp.toFixed(0)}
             </span>
           )}
         </td>
-        <td className="num hidden min-[1400px]:table-cell">{SLP[n]?.rk !== undefined ? SLP[n].rk : <span className="text-ink-3">—</span>}</td>
+        <td className="num hidden min-[1400px]:table-cell">
+          {SLP[n]?.adp !== undefined ? adp.toFixed(1) : <span className="text-ink-3">—</span>}
+        </td>
         <td className="num">
           {(() => {
             const edge = Math.round(mktADP(r) - (i + 1));
@@ -579,9 +581,9 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
           tip={
             <>
               Synthesized half-PPR ranks — expert consensus adjusted for Vegas environments, TD regression, injury
-              risk, and camp news. <b className="text-ink">ADP</b> is the live mock-draft market price,{" "}
-              <b className="text-ink">SLP</b> is Sleeper's own board, and a rank far better than ADP means the market
-              will let you have him late.
+              risk, and camp news. <b className="text-ink">ADP</b> is Sleeper's own half-PPR average draft position,
+              measured from real Sleeper drafts, with the outside <b className="text-ink">mock</b> market beside it for
+              contrast. A rank far better than ADP means the room will let you have him late.
             </>
           }
         />
@@ -592,7 +594,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
           <li><b>Do this one thing:</b> tap your name under <b>I am</b> (Ashley / Brian JK / Emily). That's it — our league's Sleeper draft is already connected, so every pick marks itself as it happens. You never touch <b>Taken</b> or <b>Pick</b> unless the sync is off.</li>
           <li>Then just read the panel: it shows your <b>next three targets in order</b>, each with the odds he's still there when your turn comes. Take #1 if he's there, else #2, else #3.</li>
           <li>Chips: <Call v="buy" /> better than his price · <Call v="solid" /> fairly priced · <Call v="risk" /> only at a discount · <Call v="avoid" /> the price ignores a real problem. Hover any small tag for its meaning.</li>
-          <li><b>Edge</b> is a price tag: <b>Rank</b> is what a player is worth, <b>ADP</b> is what the room will pay. <b className="text-value">Green</b> = on sale, he'll come back to you — don't reach. <b className="text-avoid">Red</b> = marked up, let someone else pay. <b>SLP</b> is Sleeper's own board rank.</li>
+          <li><b>Edge</b> is a price tag: <b>Rank</b> is what a player is worth, <b>ADP</b> is what the room will pay. <b className="text-value">Green</b> = on sale, he'll come back to you — don't reach. <b className="text-avoid">Red</b> = marked up, let someone else pay. <b>ADP</b> comes straight from real Sleeper half-PPR drafts, so it is what this room actually pays.</li>
           <li>Drafting somewhere other than Sleeper? Turn sync off and mark picks yourself: type a name in the search box and press <b>Enter</b> (someone else took him) or <b>Shift+Enter</b> (you took him). Press <b>/</b> to jump to the search box.</li>
         </ul>
       </Noob>
@@ -767,14 +769,14 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
               </th>
               <th className="!text-right">
                 <span className="inline-flex items-center gap-1.5">
-                  ADP
-                  <Info tip={<><b className="text-ink">Average Draft Position</b> — the pick where the market usually takes him (live draft data). The small <b className="text-ink">slp</b> number underneath is Sleeper's own board rank, which is what your league-mates actually see in their draft room (it gets its own column on wider screens). Rank far better than ADP = he'll likely still be there next round, so don't reach. ADP far better than rank = overpriced, let someone else pay.</>} />
+                  <SleeperMark size={12} />ADP
+                  <Info tip={<><b className="text-ink">Sleeper's own average draft position</b>, measured from real half-PPR Sleeper drafts — the pick this player actually goes at in our exact format. This is the number the model prices with, because it is the room we are drafting in. The smaller <b className="text-ink">mock</b> figure is the outside mock-draft market for comparison; where the two disagree, trust Sleeper. Rank far better than ADP = he'll likely still be there next round, so don't reach.</>} />
                 </span>
               </th>
               <th className="hidden !text-right min-[1400px]:table-cell">
                 <span className="inline-flex items-center gap-1.5">
-                  <SleeperMark size={12} />SLP
-                  <Info tip={<>Sleeper's own board rank — the default order your Sleeper league-mates see in their draft room. Weighted into "will he reach me?" predictions above mock-market ADP.</>} />
+                  mock
+                  <Info tip={<>The outside mock-draft market ADP, from national mock drafts rather than Sleeper. Shown for comparison only. When it disagrees with Sleeper's ADP, Sleeper wins — that's the board your league-mates are actually looking at.</>} />
                 </span>
               </th>
               <th className="!text-right">
