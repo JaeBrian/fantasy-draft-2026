@@ -27,7 +27,18 @@ function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: numbe
   });
 
   const waiting = !a.onClock && a.nextPick !== null && a.myCount < 14;
-  let suggestion: { take: string; team: string; pos: Pos; rank: number; reach: number | null; why: ReactNode; alts: typeof a.cands } | null = null;
+  /* one-phrase reason for the 2nd/3rd choices */
+  const shortWhy = (c: (typeof a.cands)[number]) =>
+    c.cuffOf ? `handcuffs your ${c.cuffOf}`
+    : c.cliff ? `last of ${c.p} Tier ${c.tier}`
+    : c.fell >= 6 ? `slid ${c.fell} past his ADP`
+    : c.gap >= 1.5 ? `${c.p} cliff right behind him`
+    : needText(c.p, a);
+  const reachCls = (n: number) =>
+    `rounded border px-1.5 py-0.5 font-mono text-[0.72rem] font-semibold ${
+      n >= 70 ? "border-value/50 text-value" : n >= 40 ? "border-clock/50 text-clock" : "border-avoid/50 text-avoid"
+    }`;
+  let suggestion: { list: typeof a.cands; why: ReactNode } | null = null;
   let special: string | null = null;
   let plain: ReactNode = null;
   if (a.myCount >= 16) special = "Roster complete.";
@@ -39,7 +50,6 @@ function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: numbe
     plain = <>You're almost done! Use your last picks on a kicker and a defense — the ones suggested here are all fine. Click <b>Pick</b> next to a name when you take someone.</>;
   } else if (a.cands.length) {
     const t = a.cands[0];
-    const alts = a.cands.slice(1, 4);
     /* one readable sentence: what he fills, plus at most two supporting reasons */
     const clauses: string[] = [];
     clauses.push(t.cuffOf ? `he's the handcuff to your ${t.cuffOf} — season insurance` : needText(t.p, a));
@@ -53,11 +63,7 @@ function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: numbe
     else if (t.stack) clauses.push(`stacks with your ${t.p === "QB" ? "pass-catcher" : "QB"}`);
     const whyText = clauses.slice(0, 3).join("; ");
     suggestion = {
-      take: t.now.r[0],
-      team: t.now.r[2],
-      pos: t.p,
-      rank: t.now.i + 1,
-      reach: waiting && t.pReach < 0.995 ? Math.round(t.pReach * 100) : null,
+      list: a.cands.slice(0, 3),
       why: (
         <>
           {whyText.charAt(0).toUpperCase() + whyText.slice(1)}.
@@ -69,13 +75,13 @@ function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: numbe
           )}
         </>
       ),
-      alts,
     };
     plain = waiting ? (
       <>
         It's not your turn yet — your next pick is <b>#{a.nextPick}</b> ({a.nextPick! - a.cur} picks away). Click{" "}
         <b>Taken</b> for each player other teams draft. When your turn comes, aim for <b>{t.now.r[0]}</b>, the best{" "}
         {PLAINPOS[t.p]} likely to still be there (~{Math.round(t.pReach * 100)}% chance).
+        {a.cands.length > 1 && <> If he's gone, next in line: {a.cands.slice(1, 3).map((c) => c.now.r[0]).join(", then ")}.</>}
         {a.plainWarn.length > 0 && <> Also: {a.plainWarn.join("; ")}.</>}
       </>
     ) : (
@@ -96,6 +102,7 @@ function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: numbe
         {t.clash && (
           <> One catch: he skips the same week (his "bye week" — every team gets one week off) as {a.byeCount[t.bye!]} of your players, so that week your bench will be thin.</>
         )}
+        {a.cands.length > 1 && <> If someone just snagged him, take {a.cands[1].now.r[0]} instead.</>}
         {a.plainWarn.length > 0 && <> Also: {a.plainWarn.join("; ")}.</>}{" "}
         When it's your pick, hit <b>Pick</b> next to his name; when anyone else drafts, hit <b>Taken</b> next to theirs.
       </>
@@ -106,8 +113,8 @@ function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: numbe
 
   return (
     <div
-      className={`card overflow-hidden transition-shadow ${
-        a.onClock ? "border-clock/60 shadow-[0_0_0_1px_var(--color-clock),0_0_24px_-6px_rgba(240,180,41,0.45)]" : ""
+      className={`card sticky top-[86px] z-30 overflow-hidden transition-shadow ${
+        a.onClock ? "border-clock/60 shadow-[0_0_0_1px_var(--color-clock),0_0_24px_-6px_rgba(240,180,41,0.45)]" : "shadow-[0_10px_30px_-12px_rgba(0,0,0,0.7)]"
       }`}
     >
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-line-soft px-4 py-2 text-[0.85rem] text-ink-2">
@@ -141,45 +148,35 @@ function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: numbe
         {special && <div className="text-[0.95rem] text-ink"><b>Take:</b> {special}</div>}
         {suggestion && (
           <div className="flex flex-col gap-1.5">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-              <span className="display text-[1.5rem] leading-none text-ink">
-                <span className="text-clock">{waiting ? `TARGET FOR #${a.nextPick} →` : "TAKE →"}</span> {suggestion.take}{" "}
-                <TeamIcon team={suggestion.team} size={21} />
-              </span>
-              <Sticker pos={suggestion.pos} />
-              <span className="font-mono text-[0.8rem] text-ink-3">#{suggestion.rank}</span>
-              {suggestion.reach !== null && (
-                <span
-                  className={`rounded border px-2 py-0.5 font-mono text-[0.78rem] font-semibold ${
-                    suggestion.reach >= 70
-                      ? "border-value/50 text-value"
-                      : suggestion.reach >= 40
-                        ? "border-clock/50 text-clock"
-                        : "border-avoid/50 text-avoid"
-                  }`}
-                >
-                  ~{suggestion.reach}% to reach you
-                </span>
-              )}
+            <div className="display text-[0.92rem] uppercase tracking-[0.14em] text-clock">
+              {waiting ? `Your board for pick #${a.nextPick} — in order` : "Take — in order"}
             </div>
-            <p className="m-0 max-w-[70ch] text-[0.92rem] leading-relaxed text-ink-2">{suggestion.why}</p>
-            {suggestion.alts.length > 0 && (
-              <div className="flex flex-wrap items-center gap-1.5 text-[0.85rem] text-ink-3">
-                Also fine:
-                {suggestion.alts.map((c) => (
-                  <span
-                    key={c.now.r[0]}
-                    className="inline-block rounded-full border border-line bg-raised px-2.5 py-0.5 text-[0.82rem] font-semibold text-ink"
-                  >
-                    {c.now.r[0]}
-                    <span className="ml-1.5 font-medium text-ink-3">
-                      {c.p}
-                      {waiting && c.pReach < 0.995 ? ` · ${Math.round(c.pReach * 100)}%` : ""}
-                    </span>
+            {suggestion.list.map((c, idx) => (
+              <div key={c.now.r[0]} className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5">
+                <span className="w-5 text-right font-mono text-[0.85rem] text-ink-3">{idx + 1}</span>
+                <span
+                  className={
+                    idx === 0 ? "display text-[1.4rem] leading-none text-ink" : "text-[0.95rem] font-semibold text-ink"
+                  }
+                >
+                  {c.now.r[0]} <TeamIcon team={c.now.r[2]} size={idx === 0 ? 20 : 15} />
+                </span>
+                <Sticker pos={c.p} />
+                <span className="font-mono text-[0.75rem] text-ink-3">#{c.now.i + 1}</span>
+                {waiting && c.pReach < 0.995 && (
+                  <span className={reachCls(Math.round(c.pReach * 100))}>~{Math.round(c.pReach * 100)}% there</span>
+                )}
+                {idx > 0 && (
+                  <span className="text-[0.84rem] text-ink-3">
+                    — {shortWhy(c)}
+                    {c.clash && (
+                      <span className="text-risky"> · same Week {c.bye} bye as {a.byeCount[c.bye!]} of yours</span>
+                    )}
                   </span>
-                ))}
+                )}
               </div>
-            )}
+            ))}
+            <p className="m-0 max-w-[70ch] pl-7 text-[0.92rem] leading-relaxed text-ink-2">{suggestion.why}</p>
             {(a.goneSoon.length > 0 || a.dream || (a.look && a.look.edge >= 0.8)) && (
               <p className="m-0 text-[0.82rem] leading-relaxed text-ink-3">
                 {a.goneSoon.length > 0 && <>{waiting ? "Won't reach your pick" : "Won't come back to you"}: {a.goneSoon.map((g) => g.n).join(" · ")}.</>}
@@ -226,9 +223,16 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
   const [q, setQ] = useState("");
   const [hideDrafted, setHideDrafted] = useState(false);
   const [resetArmed, setResetArmed] = useState(false);
+  const [openTiers, setOpenTiers] = useState<number[]>([]);
 
   const query = q.trim().toLowerCase();
   const showTiers = pos === "ALL" && !query && !hideDrafted;
+
+  /* a tier collapses once every player in it is drafted (click its band to peek) */
+  const tierDone: Record<number, boolean> = {};
+  P.forEach((r) => {
+    tierDone[r[5]] = (tierDone[r[5]] ?? true) && !!DS[r[0]];
+  });
 
   const rows: ReactNode[] = [];
   let lastTier = 0;
@@ -239,17 +243,29 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
     if (pos !== "ALL" && p !== pos) return;
     if (query && !(n.toLowerCase().includes(query) || t.toLowerCase().includes(query))) return;
     if (hideDrafted && st) return;
+    const collapsed = showTiers && tierDone[ot] && !openTiers.includes(ot);
     if (showTiers && ot !== lastTier) {
       lastTier = ot;
+      const done = tierDone[ot];
       rows.push(
         <tr key={`tier-${ot}`} className="tier-band">
-          <td colSpan={8}>
+          <td
+            colSpan={8}
+            className={done ? "cursor-pointer select-none" : undefined}
+            onClick={done ? () => setOpenTiers((o) => (o.includes(ot) ? o.filter((x) => x !== ot) : [...o, ot])) : undefined}
+          >
             Tier {ot} — {OT[ot][0]}
             <span>{OT[ot][1]}</span>
+            {done && (
+              <span className="ml-2 font-semibold text-value">
+                ✓ all drafted · {collapsed ? "show" : "hide"}
+              </span>
+            )}
           </td>
         </tr>
       );
     }
+    if (collapsed) return;
     shown++;
     rows.push(
       <tr key={n} className={st}>
