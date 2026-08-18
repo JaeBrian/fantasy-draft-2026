@@ -5,7 +5,7 @@ import { advise, mktADP, needText, rosterSlots, PLAINPOS, type DraftState } from
 import { usePersistent } from "../lib/store";
 import { SLP } from "../sleeper";
 
-type SleeperPick = { pick_no: number; draft_slot: number; metadata?: { first_name?: string; last_name?: string } };
+type SleeperPick = { pick_no: number; draft_slot: number; metadata?: { first_name?: string; last_name?: string; team?: string } };
 const normName = (s: string) =>
   s.toLowerCase().replace(/[.'-]/g, " ").replace(/\b(jr|sr|ii|iii|iv|v)\b/g, "").replace(/\s+/g, " ").trim();
 import { Call, Info, InjChip, Noob, SleeperMark, Sticker, TagChips, TeamIcon, TrendChip } from "../components/ui";
@@ -358,6 +358,27 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
     }
     const id = idMatch[1];
     const lookup = new Map(P.map((r) => [normName(r[0]), r[0]]));
+    /* nickname fallback: Sleeper says "Kenny Gainwell", our board says "Kenneth".
+       Accept a UNIQUE last-name + first-initial match when the full name misses. */
+    const byLast = new Map<string, string[]>();
+    P.forEach((r) => {
+      const parts = normName(r[0]).split(" ");
+      const key = parts[parts.length - 1] + "|" + parts[0][0];
+      byLast.set(key, [...(byLast.get(key) ?? []), r[0]]);
+    });
+    const teamOf = new Map(P.map((r) => [r[0], r[2]]));
+    const resolve = (raw: string, team?: string) => {
+      const k = normName(raw);
+      const exact = lookup.get(k);
+      if (exact) return exact;
+      /* fallback only fires for a UNIQUE last-name + first-initial match on the SAME team,
+         so an obscure namesake can never mark a real player as drafted */
+      const parts = k.split(" ");
+      if (parts.length < 2 || !parts[0] || !team) return undefined;
+      const cand = byLast.get(parts[parts.length - 1] + "|" + parts[0][0]);
+      if (!cand || cand.length !== 1) return undefined;
+      return teamOf.get(cand[0]) === team ? cand[0] : undefined;
+    };
     let stop = false;
     const tick = async () => {
       try {
@@ -381,7 +402,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
         picks
           .sort((x, y) => x.pick_no - y.pick_no)
           .forEach((pk) => {
-            const nm = lookup.get(normName(`${pk.metadata?.first_name ?? ""} ${pk.metadata?.last_name ?? ""}`));
+            const nm = resolve(`${pk.metadata?.first_name ?? ""} ${pk.metadata?.last_name ?? ""}`, pk.metadata?.team);
             if (!nm) {
               offBoard++;
               return;

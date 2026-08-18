@@ -394,6 +394,9 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
 
   const cands: Candidate[] = [];
   (["RB", "WR", "QB", "TE"] as Pos[]).forEach((ps) => {
+    /* hard roster caps: a third QB or TE is a wasted bench spot in a 1QB/1TE league */
+    if (ps === "QB" && qb >= 2) return;
+    if (ps === "TE" && te >= 2) return;
     const pool = avail.filter((o) => o.r[1] === ps);
     if (!pool.length) return;
     const nb = nextBest(ps, avail, back + offBack, cur, shift[ps]);
