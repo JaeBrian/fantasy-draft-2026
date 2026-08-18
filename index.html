@@ -619,7 +619,7 @@ tr.mine .rowact .bs{background:var(--accent);color:var(--accent-ink);border-colo
         <li>When it's your pick, take the highest-ranked player left (position needs permitting). If his <b>ADP</b> is much higher than his rank here, he'll likely still be there next round — don't reach.</li>
         <li>Chips: <span class="chip v-buy">VALUE</span> better than his price · <span class="chip v-solid">SOLID</span> fairly priced · <span class="chip v-risk">RISKY</span> only at a discount · <span class="chip v-avoid">AVOID</span> the price ignores a real problem. Hover any small tag for its meaning.</li>
         <li>Press <b>✕</b> when anyone drafts a player, <b>★</b> when the pick is yours. "Hide drafted" shows only who's left.</li>
-        <li>Set <b>My slot</b> and the status bar will suggest who to take next — mark every pick to keep the advice accurate. Marks are saved on this device.</li>
+        <li>Set <b>My slot</b> and the status bar will suggest who to take next. Mark picks <b>in draft order</b> — the advisor rebuilds every team's roster from your marks and predicts what the teams ahead of you will take. Marks are saved on this device.</li>
       </ul>
     </div>
     <div class="filters">
@@ -855,7 +855,13 @@ const TAGCLASS={inj:"warn",susp:"warn",reg:"warn",age:"warn",ceil:"good",brk:"go
 const BYE={KC:5,CAR:5,CIN:6,DET:6,MIA:6,MIN:6,BUF:7,JAX:7,LAC:7,WAS:7,HOU:8,NO:8,NYG:8,SF:8,PIT:9,TEN:9,CHI:10,DEN:10,PHI:10,TB:10,ATL:11,CLE:11,GB:11,LAR:11,NE:11,SEA:11,BAL:13,IND:13,LV:13,NYJ:13,ARI:14,DAL:14};
 const CUFFS={"Kyren Williams":"Blake Corum","Jahmyr Gibbs":"Isiah Pacheco","Saquon Barkley":"Tank Bigsby","Jeremiyah Love":"Tyler Allgeier","Josh Jacobs":"MarShawn Lloyd","Cam Skattebo":"Tyrone Tracy Jr.","Tony Pollard":"Tyjae Spears"};
 let DS={};try{DS=JSON.parse(localStorage.getItem("fd26-draft")||"{}")}catch(e){}
-function saveDS(){try{localStorage.setItem("fd26-draft",JSON.stringify(DS))}catch(e){}}
+let ORD=[];try{ORD=JSON.parse(localStorage.getItem("fd26-ord")||"[]")}catch(e){}
+ORD=ORD.filter(n=>DS[n]);Object.keys(DS).forEach(n=>{if(!ORD.includes(n))ORD.push(n)});
+function saveDS(){try{localStorage.setItem("fd26-draft",JSON.stringify(DS));localStorage.setItem("fd26-ord",JSON.stringify(ORD))}catch(e){}}
+function setMark(n,state){
+  if(state){if(!DS[n])ORD.push(n);DS[n]=state}
+  else{delete DS[n];ORD=ORD.filter(x=>x!==n)}
+}
 let hideDrafted=false;
 
 const VEGAS=[["Rams",26.7,78.8],["Bills",26.1,79.0],["Lions",26.1,75.0],["Bengals",26.0,79.0],["Ravens",25.9,75.8],["Cowboys",25.7,77.6],["49ers",25.0,67.8],["Packers",24.8,73.5],["Seahawks",24.8,69.5],["Bears",24.6,74.0],["Chiefs",24.1,70.8],["Chargers",23.8,74.8],["Patriots",23.8,67.5],["Eagles",23.8,64.5],["Jaguars",23.5,70.6],["Commanders",23.5,69.5],["Colts",23.4,73.0],["Buccaneers",23.3,70.0],["Texans",22.5,60.8],["Vikings",22.4,68.5],["Broncos",22.3,65.5],["Giants",22.1,67.5],["Saints",21.5,67.5],["Steelers",21.4,66.5],["Falcons",21.2,66.5],["Panthers",20.8,60.0],["Titans",20.6,64.0],["Raiders",19.2,62.5],["Dolphins",19.0,56.8],["Browns",18.7,55.3],["Jets",18.5,56.5],["Cardinals",18.4,60.0]];
@@ -882,59 +888,121 @@ function renderBoard(pos,q){
   renderStatus();
 }
 let mySlot=0;try{mySlot=parseInt(localStorage.getItem("fd26-slot")||"0")||0}catch(e){}
+/* projected half-PPR points-per-game curves by position rank (fit to 2025 finishes + VBD baselines) */
+const PPG={
+  QB:r=>Math.max(14,23.5-0.32*r),
+  RB:r=>12.5*Math.exp(-(r-1)/20)+5.8,
+  WR:r=>11.5*Math.exp(-(r-1)/26)+6.2,
+  TE:r=>8.5*Math.exp(-(r-1)/7)+5
+};
+const REPL={QB:PPG.QB(14),RB:PPG.RB(32),WR:PPG.WR(34),TE:PPG.TE(13)};
+function posRankOf(o,pool){let k=0;for(const q of pool){if(q.r[1]===o.r[1]){k++;if(q.r[0]===o.r[0])return k}}return k||1}
+function vorp(o,pool){const pr=posRankOf(o,pool);return Math.max(0.2,PPG[o.r[1]](pr)-REPL[o.r[1]])}
+function snapTeam(pickNo){const r=Math.ceil(pickNo/12),idx=pickNo-(r-1)*12;return r%2?idx:13-idx}
+function teamNeeds(roster){
+  const c={QB:0,RB:0,WR:0,TE:0};roster.forEach(pl=>{if(c[pl.r[1]]!==undefined)c[pl.r[1]]++});
+  const need={QB:c.QB<1,RB:c.RB<2,WR:c.WR<2,TE:c.TE<1};
+  const flexOpen=(c.RB+c.WR+c.TE)<7;
+  return {need,flexOpen,c};
+}
+function simulateTo(targetPick,cur,pool){
+  const removed=[];let simPool=pool.slice();
+  const rosters={};for(let t=1;t<=12;t++)rosters[t]=[];
+  ORD.forEach((n,i)=>{const o=P.map((r,j)=>({r,i:j})).find(x=>x.r[0]===n);if(o)rosters[snapTeam(i+1)].push(o)});
+  for(let pk=cur;pk<targetPick;pk++){
+    const t=snapTeam(pk);
+    if(mySlot>=1&&t===mySlot)continue;
+    const {need,flexOpen}=teamNeeds(rosters[t]);
+    const wanted=simPool.filter(o=>{
+      const ps=o.r[1];
+      if(need[ps])return true;
+      if(["RB","WR","TE"].includes(ps)&&flexOpen)return true;
+      return false;
+    });
+    const candPool=(wanted.length?wanted:simPool).slice();
+    candPool.sort((a,b)=>a.r[3]-b.r[3]);
+    const pick=candPool[0];
+    if(!pick)break;
+    rosters[t].push(pick);removed.push(pick.r[0]);
+    simPool=simPool.filter(o=>o.r[0]!==pick.r[0]);
+  }
+  return {simPool,removed};
+}
+function runDetect(){
+  const last=ORD.slice(-5),cnt={};
+  last.forEach(n=>{const r=P.find(x=>x[0]===n);if(r)cnt[r[1]]=(cnt[r[1]]||0)+1});
+  for(const ps of ["RB","WR","TE","QB"])if((cnt[ps]||0)>=3)return ps;
+  return null;
+}
 function advise(){
-  const avail=P.map((r,i)=>({r,i})).filter(o=>!DS[o.r[0]]);
+  const all=P.map((r,i)=>({r,i}));
+  const avail=all.filter(o=>!DS[o.r[0]]);
   const mine=P.filter(r=>DS[r[0]]==="mine");
   const made=Object.keys(DS).length,cur=made+1;
-  let horizon=12,onClock=false,nextPick=null;
+  let onClock=false,nextPick=null,followPick=cur+12;
   if(mySlot>=1){
     const picks=[];for(let r=1;r<=16;r++)picks.push((r-1)*12+(r%2?mySlot:13-mySlot));
     const fut=picks.filter(x=>x>=cur);
-    if(fut.length){nextPick=fut[0];onClock=fut[0]===cur;horizon=Math.max(1,(fut[1]||fut[0]+12)-Math.max(cur,fut[0]))}
+    if(fut.length){nextPick=fut[0];onClock=fut[0]===cur;followPick=fut[1]||fut[0]+12}
   }
-  const have=p=>mine.filter(r=>r[1]===p).length;
-  const a={qb:have("QB"),rb:have("RB"),wr:have("WR"),te:have("TE"),myCount:mine.length,cur,onClock,nextPick,horizon};
+  const have=ps=>mine.filter(r=>r[1]===ps).length;
+  const a={qb:have("QB"),rb:have("RB"),wr:have("WR"),te:have("TE"),myCount:mine.length,cur,onClock,nextPick};
   a.wrt=a.rb+a.wr+a.te;
   const byeCount={};mine.forEach(r=>{const b=BYE[r[2]];if(b)byeCount[b]=(byeCount[b]||0)+1});
   a.byeCount=byeCount;
-  const w={QB:a.qb===0?(a.myCount>=5?0.95:0.5):(a.myCount>=13?0.12:0.05),
-    RB:a.rb<2?1.05:(a.wrt<7?0.75:(a.rb>=6?0.08:0.42)),
-    WR:a.wr<2?1.05:(a.wrt<7?0.75:(a.wr>=6?0.08:0.42)),
-    TE:a.te===0?(a.myCount>=3?0.8:0.55):0.07};
+  const w={QB:a.qb===0?(a.myCount>=5?1:0.55):(a.myCount>=13?0.15:0.05),
+    RB:a.rb<2?1.05:(a.wrt<7?0.8:(a.rb>=6?0.08:0.45)),
+    WR:a.wr<2?1.05:(a.wrt<7?0.8:(a.wr>=6?0.08:0.45)),
+    TE:a.te===0?(a.myCount>=3?0.85:0.6):0.07};
   const bestQB=avail.find(o=>o.r[1]==="QB"),bestTE=avail.find(o=>o.r[1]==="TE");
-  if(bestQB&&a.qb===0&&cur-(bestQB.i+1)>=6)w.QB=Math.max(w.QB,0.92);
-  if(bestTE&&a.te===0&&cur-(bestTE.i+1)>=6)w.TE=Math.max(w.TE,0.92);
+  if(bestQB&&a.qb===0&&cur-(bestQB.i+1)>=6)w.QB=Math.max(w.QB,0.95);
+  if(bestTE&&a.te===0&&cur-(bestTE.i+1)>=6)w.TE=Math.max(w.TE,0.95);
+  const run=runDetect();
+  if(run&&w[run]>0.3)w[run]*=1.12;
+  a.run=run;
   const vmul={buy:1.06,solid:1,risk:0.94,avoid:0.8};
-  const val=i=>200*Math.exp(-i/45);
-  const taken=new Set([...avail].sort((x,y)=>x.r[3]-y.r[3]).slice(0,Math.max(0,horizon-1)).map(o=>o.r[0]));
-  const cuffTargets={};
-  mine.forEach(r=>{const c=CUFFS[r[0]];if(c)cuffTargets[c]=r[0]});
+  const cuffTargets={};mine.forEach(r=>{const c=CUFFS[r[0]];if(c)cuffTargets[c]=r[0]});
+  const start=onClock||!nextPick?cur:nextPick;
+  const sim=simulateTo(Math.max(followPick,start+1),cur,avail);
+  a.simGone=sim.removed.length;
   const cands=[];
-  ["RB","WR","QB","TE"].forEach(p=>{
-    const pool=avail.filter(o=>o.r[1]===p);if(!pool.length)return;
+  ["RB","WR","QB","TE"].forEach(ps=>{
+    const pool=avail.filter(o=>o.r[1]===ps);if(!pool.length)return;
     pool.slice(0,2).forEach((now,k)=>{
       if(k>0&&now.i-pool[0].i>6)return;
-      const later=pool.find(o=>!taken.has(o.r[0])&&o.r[0]!==now.r[0]);
-      const drop=(later?later.i:now.i)-now.i;
-      let s=w[p]*(val(now.i)+1.4*(val(now.i)-val(now.i+drop)));
+      const later=sim.simPool.find(o=>o.r[1]===ps&&o.r[0]!==now.r[0]);
+      const vNow=vorp(now,avail);
+      const vLater=later?vorp(later,avail):0.2;
+      let s=w[ps]*(vNow+1.35*Math.max(0,vNow-vLater));
       s*=vmul[now.r[4]]||1;
       const cuffOf=cuffTargets[now.r[0]];
-      if(a.myCount>=9&&cuffOf)s+=30;
+      if(a.myCount>=9&&cuffOf)s+=2.5;
       const b=BYE[now.r[2]],clash=!!(b&&byeCount[b]>=2);
       if(clash)s*=0.93;
-      cands.push({p,now,later,drop,score:s,clash,bye:b,cuffOf});
+      cands.push({p:ps,now,later,vNow,vLater,score:s,clash,bye:b,cuffOf});
     });
   });
   cands.sort((x,y)=>y.score-x.score);
   const seen=new Set();
   a.cands=cands.filter(c=>{if(seen.has(c.now.r[0]))return false;seen.add(c.now.r[0]);return true});
+  a.look=null;
+  const t0=a.cands[0],t1=a.cands.find(c=>t0&&c.p!==t0.p);
+  if(t0&&t1&&t0.later&&t1.later){
+    const AB=t0.vNow+t1.vLater, BA=t1.vNow+t0.vLater;
+    if(AB>=BA)a.look={first:t0,second:t1,edge:AB-BA};
+    else a.look={first:t1,second:t0,edge:BA-AB,flipped:true};
+  }
+  if(a.look&&a.look.flipped){
+    const i=a.cands.indexOf(a.look.first);
+    if(i>0){a.cands.splice(i,1);a.cands.unshift(a.look.first)}
+  }
   return a;
 }
-function needText(p,a){
-  if(p==="QB")return a.qb===0?"your QB slot is still empty":"QB depth";
-  if(p==="TE")return a.te===0?"fills your TE":"TE depth";
-  const h=p==="RB"?a.rb:a.wr;
-  if(h<2)return "fills your "+p+(h+1);
+function needText(ps,a){
+  if(ps==="QB")return a.qb===0?"your QB slot is still empty":"QB depth";
+  if(ps==="TE")return a.te===0?"fills your TE":"TE depth";
+  const h=ps==="RB"?a.rb:a.wr;
+  if(h<2)return "fills your "+ps+(h+1);
   if(a.wrt<7)return "fills a flex spot";
   return "bench depth";
 }
@@ -942,8 +1010,8 @@ function renderStatus(){
   const el=document.getElementById("draftstatus");
   const mine=P.filter(r=>DS[r[0]]==="mine");
   const next={};
-  P.forEach((r,i)=>{const[n,p]=r;if(!DS[n]&&!next[p])next[p]={n,i}});
-  const nxt=["RB","WR","QB","TE"].map(p=>next[p]?`${p}: <b>${esc(next[p].n)}</b> <span style="color:var(--ink-3)">#${next[p].i+1}</span>`:`${p}: —`).join(" &nbsp;·&nbsp; ");
+  P.forEach((r,i)=>{const[n,ps]=r;if(!DS[n]&&!next[ps])next[ps]={n,i}});
+  const nxt=["RB","WR","QB","TE"].map(ps=>next[ps]?`${ps}: <b>${esc(next[ps].n)}</b> <span style="color:var(--ink-3)">#${next[ps].i+1}</span>`:`${ps}: —`).join(" &nbsp;·&nbsp; ");
   const a=advise();
   let clock=` &nbsp;·&nbsp; Round ${Math.min(16,Math.ceil(a.cur/12))}, pick ${a.cur}`;
   if(mySlot>=1&&a.nextPick)clock+=a.onClock?` &nbsp;·&nbsp; <b style="color:var(--accent)">You're on the clock</b>`:` &nbsp;·&nbsp; your next pick: #${a.nextPick} (${a.nextPick-a.cur} away)`;
@@ -954,14 +1022,19 @@ function renderStatus(){
     const t=a.cands[0],alts=a.cands.slice(1,3);
     let why=needText(t.p,a);
     if(t.cuffOf)why=`he's the handcuff to your ${esc(t.cuffOf)} — season insurance`;
-    if(t.drop>=12&&t.later)why+=`; ${t.p}s fall off a cliff before your next turn (best left would be ${esc(t.later.r[0])}, #${t.later.i+1})`;
-    else if(t.drop>=6&&t.later)why+=`; the ${t.p} shelf thins fast from here`;
+    const dropPts=t.vNow-t.vLater;
+    if(dropPts>=2.5&&t.later)why+=`; wait and the best ${t.p} at your next turn projects ~${dropPts.toFixed(1)} pts/wk worse (${esc(t.later.r[0])})`;
+    else if(dropPts>=1.2&&t.later)why+=`; the ${t.p} shelf thins before your next turn`;
     if(t.now.r[3]-(t.now.i+1)>=10)why+=`; he usually goes ~pick ${Math.round(t.now.r[3])}, so this is a value`;
+    if(a.run===t.p)why+=`; a ${t.p} run is on (3+ of the last 5 picks)`;
     if(t.clash)why+=`. <span style="color:var(--risk)">Heads-up: same Week ${t.bye} bye as ${a.byeCount[t.bye]} of your players</span>`;
-    sug=`<div class="sugg"><b>Take:</b> ${esc(t.now.r[0])} (${t.p} · #${t.now.i+1}) — ${why}. <span class="alt">Also fine: ${alts.map(c=>`${esc(c.now.r[0])} (${c.p})`).join(" · ")}</span></div>`;
+    let lookNote="";
+    if(a.look&&a.look.edge>=0.8&&a.look.second&&a.look.second.later)
+      lookNote=` <span class="alt">Order matters: ${a.look.first.p} now and ${a.look.second.p} on the way back beats the reverse by ~${a.look.edge.toFixed(1)} pts/wk.</span>`;
+    sug=`<div class="sugg"><b>Take:</b> ${esc(t.now.r[0])} (${t.p} · #${t.now.i+1}) — ${why}. <span class="alt">Also fine: ${alts.map(c=>`${esc(c.now.r[0])} (${c.p})`).join(" · ")}</span>${lookNote}</div>`;
   }
   const slots=[["QB",1],["RB",2],["WR",2],["TE",1],["FLX",2],["K",1],["DST",1],["BN",6]];
-  const used=new Set(),fill={QB:[],RB:[],WR:[],TE:[],FLX:[],K:[],DST:[],BN:[]};
+  const fill={QB:[],RB:[],WR:[],TE:[],FLX:[],K:[],DST:[],BN:[]};
   mine.forEach(r=>{
     const p2=r[1],cap={QB:1,RB:2,WR:2,TE:1}[p2]||0;
     if(fill[p2]&&fill[p2].length<cap)fill[p2].push(r[0]);
@@ -1032,13 +1105,12 @@ document.getElementById("boardbody").addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b||!b.dataset.n)return;
   const n=b.dataset.n,want=b.classList.contains("bs")?"mine":"gone";
   HIST.push({n,prev:DS[n]||""});if(HIST.length>200)HIST.shift();
-  DS[n]=DS[n]===want?"":want;
-  if(!DS[n])delete DS[n];
+  setMark(n,DS[n]===want?"":want);
   saveDS();refresh();
 });
 document.getElementById("undoBtn").addEventListener("click",()=>{
   const h=HIST.pop();if(!h)return;
-  if(h.prev)DS[h.n]=h.prev;else delete DS[h.n];
+  setMark(h.n,h.prev);
   saveDS();refresh();
 });
 const hd=document.getElementById("hideDrafted");
@@ -1046,7 +1118,7 @@ hd.addEventListener("click",()=>{hideDrafted=!hideDrafted;hd.classList.toggle("a
 const rd=document.getElementById("resetDraft");
 let rdArm=null;
 rd.addEventListener("click",()=>{
-  if(rd.classList.contains("arm")){DS={};HIST=[];saveDS();rd.classList.remove("arm");rd.textContent="Reset draft";clearTimeout(rdArm);refresh()}
+  if(rd.classList.contains("arm")){DS={};ORD=[];HIST=[];saveDS();rd.classList.remove("arm");rd.textContent="Reset draft";clearTimeout(rdArm);refresh()}
   else{rd.classList.add("arm");rd.textContent="Click again to confirm";rdArm=setTimeout(()=>{rd.classList.remove("arm");rd.textContent="Reset draft"},3500)}
 });
 
