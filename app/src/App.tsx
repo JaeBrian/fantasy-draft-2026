@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { LATEST_UPDATE } from "./data";
+import { NEWS } from "./data";
 import { usePersistent } from "./lib/store";
 import type { DraftState, Mark } from "./lib/advisor";
 import { StartPanel } from "./panels/StartPanel";
+import { NewsPanel } from "./panels/NewsPanel";
 import { PlanPanel } from "./panels/PlanPanel";
 import { RookiesPanel } from "./panels/RookiesPanel";
 import { AvoidPanel } from "./panels/AvoidPanel";
@@ -13,6 +14,7 @@ import { TiersPanel } from "./panels/TiersPanel";
 const TABS = [
   ["start", "Start Here"],
   ["board", "Big Board"],
+  ["news", "News"],
   ["tiers", "Position Tiers"],
   ["plan", "Draft Plan"],
   ["rookies", "Rookies"],
@@ -75,6 +77,18 @@ export default function App() {
     [DS, setDS]
   );
 
+  /* publish the real header height as --hdr so sticky panels always clear it, at any zoom */
+  const headerRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const apply = () => document.documentElement.style.setProperty("--hdr", `${el.offsetHeight}px`);
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const mark = useCallback(
     (n: string, want: Mark) => {
       hist.current.push({ n, prev: DS[n] ?? "" });
@@ -106,7 +120,7 @@ export default function App() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-line bg-field/95 backdrop-blur">
+      <header ref={headerRef} className="sticky top-0 z-40 border-b border-line bg-field/95 backdrop-blur">
         <div className="mx-auto max-w-[1100px] px-5">
           <div className="flex flex-wrap items-center gap-x-3.5 gap-y-1 pt-3.5 pb-1">
             <div className="flex items-baseline gap-2">
@@ -117,7 +131,7 @@ export default function App() {
                 '26
               </span>
             </div>
-            <span className="text-[0.83rem] text-ink-3">12-team · half-PPR · updated Aug 17, 2026</span>
+            <span className="text-[0.83rem] text-ink-3">12-team · half-PPR · updated {NEWS[0].when.split(" · ")[0]}</span>
             <button
               type="button"
               aria-pressed={noob}
@@ -148,21 +162,10 @@ export default function App() {
         </div>
       </header>
 
-      <div className="border-b border-line-soft bg-surface/70">
-        <div className="mx-auto flex max-w-[1100px] flex-wrap items-baseline gap-x-3 gap-y-0.5 px-5 py-1.5 text-[0.8rem] leading-relaxed text-ink-2">
-          <span className="font-mono text-[0.72rem] font-bold uppercase tracking-[0.1em] text-value">
-            ● Updated {LATEST_UPDATE.when}
-          </span>
-          {LATEST_UPDATE.items.map((it) => (
-            <span key={it} className="text-ink-3">
-              {it}
-            </span>
-          ))}
-        </div>
-      </div>
 
       <main className={`mx-auto px-5 pt-7 pb-16 ${tab === "board" ? "max-w-[1560px]" : "max-w-[1100px]"}`}>
         {tab === "start" && <StartPanel noob={noob} />}
+        {tab === "news" && <NewsPanel noob={noob} />}
         {tab === "board" && (
           <BoardPanel
             noob={noob}
