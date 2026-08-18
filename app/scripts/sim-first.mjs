@@ -49,7 +49,7 @@ function bestAvail(avail,team){const c=NEED(team);
 function run(slot,forceName,w){
   const rnd=mul(20000+w); const avail=POOL.slice(),teams={};
   for(let t=1;t<=12;t++)teams[t]=[]; let mine=0;
-  for(let pick=1;pick<=192;pick++){ if(!avail.length)break; const t=snap(pick); let p;
+  for(let pick=1;pick<=168;pick++){ if(!avail.length)break; const t=snap(pick); let p;
     if(t===slot){ if(mine===0&&forceName){p=IDX.get(forceName); if(!p||!avail.includes(p))return null;}
       else p=bestAvail(avail,teams[t]); mine++; }
     else p=oppPick(avail,teams[t],rnd);

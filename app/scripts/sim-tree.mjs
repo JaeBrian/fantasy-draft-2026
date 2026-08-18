@@ -80,7 +80,7 @@ function runTree(slot, forced, world) {
   const avail = POOL.slice(), teams = {};
   for (let t=1;t<=12;t++) teams[t]=[];
   let mine = 0;
-  for (let pick=1; pick<=192; pick++) {
+  for (let pick=1; pick<=168; pick++) {
     if(!avail.length) break;
     const t = snap(pick);
     let p;

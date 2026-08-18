@@ -23,45 +23,45 @@ function Round({ rn, children }: { rn: string; children: ReactNode }) {
 const PLANS: Record<SlotKey, ReactNode> = {
   s13: (
     <>
-      <Round rn="Round 1"><b>Take the RB — the sim is emphatic.</b> 400 simulated drafts per strategy: opening with an RB wins 98–99% of simulated leagues from this seat; opening Ja’Marr Chase instead drops you to 50%. Gibbs or Bijan is a coin flip.</Round>
-      <Round rn="Which one">Half-PPR leans Gibbs (bellcow, easiest schedule); Bijan’s TD math points up. You can’t get this wrong. At 1.03 with both gone, Chase is right — you’re forced, and it’s still fine.</Round>
-      <Round rn="Picks 24 + 25 (the wheel)"><b>Breece Hall + George Pickens</b> — the sim’s most common pair at your double (Hall ~65%, Pickens ~58%). RB-RB and RB-WR-RB finish dead even at the top (110.5 pts/wk), so order doesn’t matter; you get both.</Round>
-      <Round rn="Rounds 4–7"><b>WR hammer through the dead zone</b> (Egbuka, McConkey, Olave, DJ Moore) + one TE swing (Loveland/Warren) if the value comes.</Round>
-      <Round rn="Rounds 8–16">Upside RBs (Mason, Croskey-Merritt), late QB (Murray/Nix/Purdy) if you waited, your RB1's handcuff, K + DST last.</Round>
-      <Round rn="Sim’s best line">Gibbs → Breece Hall + Pickens → Waddle → Loveland → McLaurin → Lamar → Mason… <span className="text-ink-3">(110.6 pts/wk, won 98% of simulated leagues)</span></Round>
+      <Round rn="Round 1"><b>Take Gibbs.</b> Forcing each candidate and playing out 2,500 seasons: Gibbs 108.09 · Bijan 107.43 · Taylor 106.52 · Cook 106.14 · Henry 105.93 · Chase 105.87. Everyone is available at 1.01, so this is a straight talent call and Gibbs wins it.</Round>
+      <Round rn="Best structure"><b>RB-WR-WR-RB, 109.26 pts/wk</b> — a real margin over the next four (107.86–107.92). The one mistake is opening a WR: WR-RB-RB-WR finishes 105.42, a 3.8-point drop, because you never recover the RB1.</Round>
+      <Round rn="Picks 24 + 25 (the wheel)"><b>George Pickens then Malik Nabers</b> — Pickens is the pick at 24 in 76% of drafts, Nabers at 25 in 57% (Nico Collins is the common alternate at either). Your picks are back-to-back, so order between them does not matter.</Round>
+      <Round rn="Rounds 4–7">D&apos;Andre Swift at 48 (75%), then a tight end at 49 — Loveland 55% or Warren 42%. Round 5 is the measured optimum for TE at every seat.</Round>
+      <Round rn="Rounds 8–16">Quarterback at 72 (Caleb Williams 41%, Daniels 33%, Hurts 19%), then upside RBs, a backup QB and TE, K + DST last.</Round>
+      <Round rn="Sim’s best line">Gibbs → Pickens + Nabers → Swift → Loveland → Caleb Williams… <span className="text-ink-3">(108.8 pts/wk across 4,000 seasons; bad year 90.5, good year 129.3)</span></Round>
     </>
   ),
   s46: (
     <>
-      <Round rn="Round 1"><b>Double-RB wins here — 95% of simulated leagues.</b> Chase at 4 if he falls. Otherwise the sim takes McCaffrey ~75% of the time on raw projection — but our research has him at 78% injury odds, and swapping to JSN costs only ~0.4 pts/wk. Jefferson at 5–6 remains a defensible value play.</Round>
-      <Round rn="First pick, ranked"><b>By final roster strength across 900 drafts each:</b> Jonathan Taylor 109.2 (there 48% of the time) · McCaffrey 109.0 (73%) · Chase 109.0 (12%) · James Cook 108.9 (90%) · JSN 108.9 (74%) · Henry 108.5 (98%). <b className="text-avoid">Justin Jefferson is the worst realistic pick here at 107.9</b> — he is ~100% to still be there, so spending pick 6 on him wastes the scarcity. Take the best RB.</Round>
-      <Round rn="Best structure"><b>RB-RB-WR-WR wins outright</b> at 109.0 ±0.04 — a real margin over the next best (108.6), not noise. RB-TE-early is worst at 106.0.</Round>
-      <Round rn="Round 2"><b>Kenneth Walker III — the sim’s pick ~70% of the time</b>, and our biggest buy on the board. Henry, Saquon or Chase Brown if he’s gone. Every RB-first line beat every WR-first line from this seat.</Round>
-      <Round rn="Round 3"><b>Second RB or elite WR2</b> depending on round 2. This is also the Allen window — he slides here often because everyone's fixated on RB/WR.</Round>
-      <Round rn="Rounds 4–7">WR volume (DeVonta, Waddle, McLaurin) + a TE (Bowers/McBride will be gone — Loveland/Warren are the play).</Round>
-      <Round rn="Rounds 8–16">Dead-zone-survivor RBs, late QB, handcuffs, K/DST last two.</Round>
-      <Round rn="Sim’s best line">McCaffrey (or JSN) → Walker III → Nabers → Egbuka → Warren → DJ Moore → Lamar → Diggs… <span className="text-ink-3">(109.0 pts/wk, won 95% of simulated leagues)</span></Round>
+      <Round rn="First pick, ranked"><b>Read availability alongside the score.</b> Across 2,500 seasons each: Jonathan Taylor 107.26 (on the board 74% of the time) · Amon-Ra St. Brown 106.89 (88%) · James Cook 106.85 (98%) · JSN 106.80 (83%) · Henry 106.43 (100%) · Jefferson 106.28 (100%). Taylor grades best but is gone a quarter of the time, so know your second name before you are on the clock.</Round>
+      <Round rn="Best structure"><b>WR-RB-WR-RB, 107.13 pts/wk</b> — this flipped when the model moved to Sleeper’s real ADP; the WR open now edges the RB open. The next three sit within 0.5, so treat them as interchangeable. <b className="text-avoid">RB-RB-QB-WR finishes 104.59</b> — a round-3 quarterback is the costliest common mistake at this seat.</Round>
+      <Round rn="Round 1">JSN is the pick 81% of the time, Amon-Ra 15%.</Round>
+      <Round rn="Round 2"><b>Kenneth Walker III, 59%</b> — Breece Hall (17%) or Omarion Hampton (11%) if he is gone.</Round>
+      <Round rn="Round 3"><b>Malik Nabers 73%</b>, DeVonta Smith 23%.</Round>
+      <Round rn="Rounds 4–7">Etienne (52%) or Swift (42%) at 43, then a TE at 54 — Warren 60%, Kraft 21%, Loveland 19%.</Round>
+      <Round rn="Rounds 8–16">QB at 67 (Daniels 62%), then depth, a backup QB and TE, K/DST last two.</Round>
+      <Round rn="Sim’s best line">JSN → Walker III → Nabers → Etienne → Warren → Daniels… <span className="text-ink-3">(106.7 pts/wk; bad year 88.7, good year 127.2)</span></Round>
     </>
   ),
   s79: (
     <>
-      <Round rn="Round 1"><b>The RB-RB sweet spot.</b> Establish The Run's favorite seats this year. Taylor, Cook, or CMC (with eyes open) starts the double-tap.</Round>
-      <Round rn="Round 2"><b>Second bellcow:</b> Walker III, Chase Brown, Henry, Saquon — a natural RB-RB combo lands here (e.g., Taylor + Chase Brown, Cook + Walker).</Round>
-      <Round rn="Rounds 3–8"><b>Attack WR relentlessly:</b> A.J. Brown/Pickens tier in 3, then Egbuka, Olave, McConkey, DJ Moore, Diggs. Bowers/McBride in round 2 instead is fine if the RB you wanted is gone — then go RB in 3.</Round>
-      <Round rn="Rounds 9–16">Late QB (Murray/Nix/Purdy), upside RBs, handcuff your studs, K/DST last.</Round>
-      <Round rn="Example line">Taylor → Walker III → Pickens → Egbuka → McConkey → Tyler Warren → Watson → Murray… <span className="text-ink-3">(not simulated — slots 1, 6 and 10 were; RB-RB won at every one of them)</span></Round>
+      <Round rn="Not simulated">Slots 1, 6 and 10 are the seats we simulate, because those are the three being drafted from. Treat this as a read-across rather than a measured plan.</Round>
+      <Round rn="Round 1">Best available of Taylor, Cook or Henry. At 7–9 the elite RB tier is thinning but not gone.</Round>
+      <Round rn="Round 2"><b>Second bellcow or the best WR left</b> — Walker III, Chase Brown, Saquon, or an A.J. Brown-tier receiver.</Round>
+      <Round rn="Rounds 3–8">Attack WR: the shelf holds far longer than RB. Tight end in round 5 is the measured optimum at every seat we tested.</Round>
+      <Round rn="Rounds 9–16">Quarterback around round 10–12 — waiting costs almost nothing and taking one in round 3 costs 2+ pts/wk. Then a backup QB and TE, K/DST last.</Round>
     </>
   ),
   s1012: (
     <>
-      <Round rn="First pick, ranked"><b>Almost everything ties — except Jefferson.</b> Forcing each candidate and measuring the final roster across 900 drafts: Amon-Ra 108.06 · Henry 108.03 · JSN 108.01 · Cook 107.96 — all within noise of each other. But <b className="text-avoid">Jefferson finishes 107.29 and Lamb 107.17</b>, a real ~0.75 gap. The reason is availability: both are ~100% to still be there at 10, so taking one spends a scarce pick on a player who was coming back to you anyway.</Round>
-      <Round rn="Best structure"><b>RB-WR-WR-RB (108.01)</b>, but the top five structures sit within 0.27 — genuinely interchangeable. Just don’t open QB or TE.</Round>
-      <Round rn="Earlier framing"><b>One bellcow, then best WR — 85% win rate.</b> Full 16-round sims put Hero-RB narrowly on top here, with Derrick Henry the most common opener (~59%). The top four strategies sit within 0.4 pts/wk, so what matters is landing one RB early: the WR shelf at picks 34–39 holds, the RB shelf collapses.</Round>
-      <Round rn="Round 3"><b>RB2 first</b> — Skattebo, Etienne, or a healthy-checked Breece keeps you on the two-RBs-in-three-rounds plan. The one exception worth breaking it: <b>Josh Allen sliding to 26–31</b> — take him and push RB2 to round 4; his edge over QB12 is bigger than the RB you're deferring.</Round>
-      <Round rn="Rounds 4–7">You pick in pairs — plan two at a time. WR + RB each turn beats doubling one position. Loveland/Warren for TE in this window; Odunze, Waddle, Egbuka are the WR targets.</Round>
-      <Round rn="Rounds 8–16">This seat wins late: Diggs, Mason, Croskey-Merritt, Murray, Likely all live here. K/DST last two.</Round>
-      <Round rn="Sim’s best line">Henry → A.J. Brown → DeVonta Smith → Javonte Williams → Warren → Diggs… <span className="text-ink-3">(108.0 pts/wk, won 85% of simulated leagues)</span></Round>
-      <Round rn="Jefferson line (a tie)">Jefferson → Saquon → Javonte Williams → DeVonta Smith… <span className="text-ink-3">(107.8 pts/wk, 84%) — if you believe the Jefferson case, taking him costs you nothing.</span></Round>
+      <Round rn="First pick, ranked"><b>Justin Jefferson, and this reverses our earlier advice.</b> Across 2,500 seasons: Jefferson 107.84 (on the board 97% of the time) · Henry 107.36 (100%) · Saquon 107.21 (98%) · Cook 107.16 (25%) · Lamb 107.16 (87%). We previously called Jefferson the worst pick here on the grounds that he was always available and so would come back to you. On Sleeper’s real ADP he does not: his ADP is 12.3, which falls between your pick 10 and your pick 15, and he survives to 15 only 12% of the time. A player whose ADP sits between two of your picks is exactly the one to take at the earlier pick.</Round>
+      <Round rn="Best structure"><b>RB-RB-WR-WR, 108.12 pts/wk</b> — but all five finalists sit inside 0.60, so this seat has genuine freedom. Just do not open QB or TE.</Round>
+      <Round rn="Round 1">Henry is the pick 74% of the time when following the structure, Cook 25%.</Round>
+      <Round rn="Round 2"><b>Saquon 45%</b>, Walker III 34%, Henry 21% — you pick at 10 and 15, so plan the pair together.</Round>
+      <Round rn="Rounds 3–4">DeVonta Smith (53%) then Egbuka (43%) or Zay Flowers (33%). You pick in pairs at this seat — plan two at a time.</Round>
+      <Round rn="Rounds 5–7">TE at 58: Kraft 51%, Warren 42%.</Round>
+      <Round rn="Rounds 8–16">QB at 63 (Daniels 78%), then depth, a backup QB and TE, K/DST last two.</Round>
+      <Round rn="Sim’s best line">Henry → Saquon → DeVonta Smith → Egbuka → Kraft → Daniels… <span className="text-ink-3">(107.7 pts/wk; the whole seat spans 0.60, so deviating costs you almost nothing)</span></Round>
     </>
   ),
 };

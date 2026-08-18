@@ -8,15 +8,15 @@ import { Card, Eyebrow, Intro, Noob } from "../components/ui";
  *  often he was still on the board at that seat. Regenerate with app/scripts/sim-first.mjs */
 const FIRST_PICK: Record<number, { name: string; pos: string; pts: number; avail: number }[]> = {
   1: [
-    { name: "Jahmyr Gibbs", pos: "RB", pts: 108.60, avail: 100 },
-    { name: "Bijan Robinson", pos: "RB", pts: 107.94, avail: 100 },
-    { name: "Jonathan Taylor", pos: "RB", pts: 107.03, avail: 100 },
-    { name: "James Cook", pos: "RB", pts: 106.65, avail: 100 },
-    { name: "Derrick Henry", pos: "RB", pts: 106.43, avail: 100 },
-    { name: "Ja'Marr Chase", pos: "WR", pts: 106.24, avail: 100 },
-    { name: "Jaxon Smith-Njigba", pos: "WR", pts: 105.87, avail: 100 },
-    { name: "Saquon Barkley", pos: "RB", pts: 105.86, avail: 100 },
-    { name: "Amon-Ra St. Brown", pos: "WR", pts: 105.73, avail: 100 },
+    { name: "Jahmyr Gibbs", pos: "RB", pts: 108.09, avail: 100 },
+    { name: "Bijan Robinson", pos: "RB", pts: 107.43, avail: 100 },
+    { name: "Jonathan Taylor", pos: "RB", pts: 106.52, avail: 100 },
+    { name: "James Cook", pos: "RB", pts: 106.14, avail: 100 },
+    { name: "Derrick Henry", pos: "RB", pts: 105.93, avail: 100 },
+    { name: "Ja'Marr Chase", pos: "WR", pts: 105.87, avail: 100 },
+    { name: "Jaxon Smith-Njigba", pos: "WR", pts: 105.49, avail: 100 },
+    { name: "Amon-Ra St. Brown", pos: "WR", pts: 105.36, avail: 100 },
+    { name: "Saquon Barkley", pos: "RB", pts: 105.34, avail: 100 },
   ],
   6: [
     { name: "Jonathan Taylor", pos: "RB", pts: 107.26, avail: 74 },
@@ -46,7 +46,7 @@ const FIRST_PICK: Record<number, { name: string; pos: string; pts: number; avail
  *  Note this is a harder test than the per-seat studies: there, only one seat used our board.
  *  Here all three do, so they compete for the same players. */
 const HEAD_TO_HEAD = [
-  { who: "Ashley", slot: 1, avg: 108.9, best: 40 },
+  { who: "Ashley", slot: 1, avg: 108.3, best: 39 },
   { who: "Emily", slot: 10, avg: 106.3, best: 32 },
   { who: "Brian JK", slot: 6, avg: 105.4, best: 29 },
 ];

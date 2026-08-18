@@ -381,10 +381,16 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
   }
 
   const w: Record<Pos, number> = {
-    QB: qb === 0 ? (myCount >= 5 ? 1 : 0.55) : myCount >= 13 ? 0.15 : 0.05,
+    /* A backup QB and TE are worth far more than the weights used to allow. Scored week by
+     * week with byes live, going 2 QB + 2 TE instead of 1 + 1 is worth +1.3 to +2.7 pts/wk —
+     * more than the gap between any two draft strategies. On your starter's bye you otherwise
+     * field nobody in the slot. Kept near zero until the late rounds, where the alternative is
+     * a sixth wide receiver who will never start. (The sim has no waiver wire, so the true
+     * edge is smaller than measured — but it is clearly not 0.05.) */
+    QB: qb === 0 ? (myCount >= 5 ? 1 : 0.55) : qb === 1 && myCount >= 10 ? 0.5 : 0.05,
     RB: rb < 2 ? 1.05 : wrt < 7 ? 0.8 : rb >= 6 ? 0.08 : 0.45,
     WR: wr < 2 ? 1.05 : wrt < 7 ? 0.8 : wr >= 6 ? 0.08 : 0.45,
-    TE: te === 0 ? (myCount >= 3 ? 0.85 : 0.6) : 0.07,
+    TE: te === 0 ? (myCount >= 3 ? 0.85 : 0.6) : te === 1 && myCount >= 10 ? 0.6 : 0.07,
     K: 0,
     DST: 0,
   };

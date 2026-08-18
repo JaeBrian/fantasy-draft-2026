@@ -70,7 +70,7 @@ for (const slot of [1,6,10]) {
   for(let w=0;w<WORLDS;w++){
     const rnd=mul(20000+w), avail=POOL.slice(), teams={};
     for(let t=1;t<=12;t++)teams[t]=[]; let mine=0;
-    for(let pick=1;pick<=192;pick++){ if(!avail.length)break; const t=snap(pick); let p;
+    for(let pick=1;pick<=168;pick++){ if(!avail.length)break; const t=snap(pick); let p;
       if(t===slot){
         const mi=myPicks.indexOf(pick);
         if(mi>=0){ for(const pos of ['RB','WR','TE','QB']){
@@ -101,7 +101,7 @@ for (const slot of [1,6,10]) {
   for(let w=0;w<WORLDS;w++){
     const rnd=mul(31000+w), avail=POOL.slice(), teams={};
     for(let t=1;t<=12;t++)teams[t]=[];
-    for(let pick=1;pick<=192;pick++){ if(!avail.length)break; const t=snap(pick);
+    for(let pick=1;pick<=168;pick++){ if(!avail.length)break; const t=snap(pick);
       /* our three seats all use the same board-first policy; the other nine use ADP */
       const p = seats.includes(t) ? tplPick(avail,teams[t],BEST_TPL[t],Math.ceil(pick/12))
                                   : oppPick(avail,teams[t],rnd);

@@ -44,7 +44,7 @@ function myPick(avail, team, tpl, round) {
 function run(mySlot, tpl, forced = {}, otherBots = {}) {
   const avail = POOL.slice();
   const teams = {}; for (let t = 1; t <= 12; t++) teams[t] = [];
-  for (let pick = 1; pick <= 192; pick++) {
+  for (let pick = 1; pick <= 168; pick++) {
     if (!avail.length) break;
     const t = snap(pick), round = Math.ceil(pick / 12);
     let p;

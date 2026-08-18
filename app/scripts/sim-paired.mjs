@@ -53,7 +53,7 @@ function myPick(avail, team, tpl, round) { const c=NEED(team), want=tpl[round-1]
 function run(slot, tpl, seed) {
   const rnd = mul(seed), avail = POOL.slice(), teams = {};
   for (let t=1;t<=12;t++) teams[t]=[];
-  for (let pick=1; pick<=192; pick++) { if(!avail.length) break;
+  for (let pick=1; pick<=168; pick++) { if(!avail.length) break;
     const t = snap(pick);
     const p = t===slot ? myPick(avail,teams[t],tpl,Math.ceil(pick/12)) : oppPick(avail,teams[t],rnd);
     if(!p) break; teams[t].push(p); avail.splice(avail.indexOf(p),1); }
