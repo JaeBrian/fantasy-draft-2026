@@ -71,6 +71,27 @@ export function SimPanel({ noob }: { noob: boolean }) {
         you see is the spread you'd actually live through.
       </Intro>
 
+      <Card>
+        <Eyebrow>What these numbers count</Eyebrow>
+        <p className="m-0 text-[0.85rem] leading-relaxed text-ink-2">
+          Pulled from the league's own Sleeper settings, not assumed: <b className="text-ink">charmin ultra strong</b>,
+          12 teams, 16-round snake, half-PPR — 0.5 per catch, 6-point rushing and receiving TDs, 4-point passing TDs,
+          no tight-end premium. Our projections are built for exactly this scoring, so player values need no adjusting.
+        </p>
+        <p className="m-0 mt-2 text-[0.85rem] leading-relaxed text-ink-2">
+          You start <b className="text-ink">1 QB, 2 RB, 2 WR, 1 TE, 2 flex, 1 K and 1 DST</b>, with 6 bench spots. Every
+          points-per-week figure on this page counts the <b className="text-ink">eight skill starters only</b> — kicker
+          and defense add roughly 16–18 more, but they are close to identical across all twelve teams, so they cannot
+          separate a good draft from a bad one.
+        </p>
+        <p className="m-0 mt-2 text-[0.8rem] leading-relaxed text-ink-3">
+          Because K and DST take two of your sixteen picks, we re-ran every strategy with only fourteen rounds of skill
+          players to confirm the two spent picks change nothing. The ranking is identical at all three seats: no
+          difference at all at picks 6 and 10, and a flat −0.57 across <i>every</i> strategy at pick 1, which shifts the
+          whole column without reordering it.
+        </p>
+      </Card>
+
       <Noob show={noob} title="How to read this:">
         Every number is <b className="text-ink">points your starters score in a typical week</b>. Compare the{" "}
         <b className="text-ink">mean</b> column to pick a plan — but look at the "bad yr" and "good yr" columns before
@@ -349,8 +370,8 @@ export function SimPanel({ noob }: { noob: boolean }) {
             <b className="text-ink">The answer is no — and that's the useful finding.</b> Chasing volatile players moves the
             good-year ceiling by{" "}
             {(risk.rows[0].ceiling - risk.rows[risk.rows.length - 1].ceiling).toFixed(1)} pts/wk, essentially nothing, while
-            costing {(risk.rows[0].mean - risk.rows[risk.rows.length - 1].mean).toFixed(1)} pts/wk of mean. You start nine
-            players every week, so one man's boom cancels another's bust before it ever reaches your score. A high team
+            costing {(risk.rows[0].mean - risk.rows[risk.rows.length - 1].mean).toFixed(1)} pts/wk of mean. You start eight
+            skill players every week, so one man's boom cancels another's bust before it ever reaches your score. A high team
             ceiling comes from picks that <i>hit</i>, not from picks that <i>could</i>. Take the best player available and
             let the upside arrive on its own.
           </p>
