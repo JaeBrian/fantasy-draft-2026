@@ -1,6 +1,6 @@
 import { P, PT, BYE, type Pos } from "../data";
 import type { DraftState } from "../lib/advisor";
-import { Call, Card, Eyebrow, Intro, Noob, Sticker, TagChips, TeamIcon } from "../components/ui";
+import { Call, Card, Eyebrow, InjChip, Intro, Noob, SleeperMark, Sticker, TagChips, TeamIcon, TrendChip } from "../components/ui";
 
 const POS_NAMES: Record<string, string> = {
   QB: "Quarterbacks",
@@ -16,6 +16,11 @@ export function TiersPanel({ noob, DS }: { noob: boolean; DS: DraftState }) {
         Inside a tier, the players are close enough that need and preference should decide. Between tiers there's a real
         drop. The move that wins drafts: when a tier is down to its last player, take him — even a little early.
       </Intro>
+
+      <div className="flex items-center gap-1.5 text-[0.75rem] text-ink-3">
+        <SleeperMark size={13} />
+        Injury tags and 🔥/🧊 waiver heat beside each name are live from Sleeper, refreshed daily.
+      </div>
 
       <Noob show={noob} title="Example:">
         it's your pick and RB Tier 2 has one player left but WR Tier 2 has five. Take the RB — some of those WRs will
@@ -51,6 +56,8 @@ export function TiersPanel({ noob, DS }: { noob: boolean; DS: DraftState }) {
                           <span className="min-w-[2.4ch] font-mono text-[0.78rem] text-ink-3 tabular-nums">{o.i + 1}</span>
                           <TeamIcon team={t} size={16} />
                           <span className="nm font-semibold text-ink">{n}</span>
+                          <InjChip name={n} />
+                          <TrendChip name={n} />
                           <span className="font-mono text-[0.75rem] text-ink-3">
                             {t} · bye {BYE[t] ?? "—"} · ADP {adp.toFixed(0)}
                           </span>

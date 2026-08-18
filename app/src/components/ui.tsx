@@ -1,3 +1,5 @@
+import { SLP } from "../sleeper";
+import { SLEEPER_ICON } from "../brand";
 import { useRef, useState, type ReactNode } from "react";
 import { TAGS, TAGCLASS, VLBL, type Pos, type Verdict } from "../data";
 import { TEAM_LOGOS } from "../teams-logos";
@@ -170,5 +172,48 @@ function FragmentRow({ k, v }: { k: ReactNode; v: ReactNode }) {
       <dt className="whitespace-nowrap font-semibold text-ink">{k}</dt>
       <dd className="m-0 text-ink-2">{v}</dd>
     </>
+  );
+}
+
+/** Sleeper wordmark/icon — used wherever Sleeper's live data appears. */
+export function SleeperMark({ size = 14, label }: { size?: number; label?: string }) {
+  return (
+    <span className="inline-flex items-center gap-1 align-middle" title="Data: Sleeper (read-only public API)">
+      <img src={SLEEPER_ICON} width={size} height={size} alt="Sleeper" className="inline-block rounded-[3px]" />
+      {label && <span className="text-[0.72rem] text-ink-3">{label}</span>}
+    </span>
+  );
+}
+
+/** Live injury designation straight from Sleeper. */
+export function InjChip({ name, className = "" }: { name: string; className?: string }) {
+  const inj = SLP[name]?.inj;
+  if (!inj) return null;
+  const soft = inj === "Q" || inj === "D";
+  const full = inj === "Q" ? "Questionable" : inj === "D" ? "Doubtful" : inj === "O" ? "Out" : inj;
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded-sm border px-1 font-mono text-[0.62rem] font-bold ${soft ? "border-risky/60 text-risky" : "border-avoid/60 text-avoid"} ${className}`}
+      title={`Sleeper live injury designation: ${full}`}
+    >
+      <img src={SLEEPER_ICON} width={10} height={10} alt="Sleeper" className="rounded-[2px] opacity-80" />
+      {inj}
+    </span>
+  );
+}
+
+/** 24h waiver heat across Sleeper leagues. */
+export function TrendChip({ name }: { name: string }) {
+  const t = SLP[name]?.trend;
+  if (t === undefined) return null;
+  const k = Math.max(1, Math.round(Math.abs(t) / 1000));
+  return (
+    <span
+      className="inline-flex items-center gap-0.5 font-mono text-[0.65rem] text-ink-3"
+      title={`${Math.abs(t).toLocaleString()} Sleeper leagues ${t > 0 ? "added" : "dropped"} him in the last 24 hours`}
+    >
+      <img src={SLEEPER_ICON} width={9} height={9} alt="Sleeper" className="rounded-[2px] opacity-70" />
+      {t > 0 ? `\u{1F525}${k}k` : `\u{1F9CA}${k}k`}
+    </span>
   );
 }

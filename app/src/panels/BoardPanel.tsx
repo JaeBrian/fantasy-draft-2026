@@ -4,50 +4,11 @@ import { snapTeam } from "../lib/advisor";
 import { advise, mktADP, needText, rosterSlots, PLAINPOS, type DraftState } from "../lib/advisor";
 import { usePersistent } from "../lib/store";
 import { SLP } from "../sleeper";
-import { SLEEPER_ICON } from "../brand";
-
-function SleeperMark({ size = 14, label }: { size?: number; label?: string }) {
-  return (
-    <span className="inline-flex items-center gap-1 align-middle" title="Data: Sleeper (read-only public API)">
-      <img src={SLEEPER_ICON} width={size} height={size} alt="Sleeper" className="inline-block rounded-[3px]" />
-      {label && <span className="text-[0.72rem] text-ink-3">{label}</span>}
-    </span>
-  );
-}
-
-function InjChip({ name, className = "" }: { name: string; className?: string }) {
-  const inj = SLP[name]?.inj;
-  if (!inj) return null;
-  const soft = inj === "Q" || inj === "D";
-  return (
-    <span
-      className={`inline-flex items-center gap-1 rounded-sm border px-1 font-mono text-[0.62rem] font-bold ${soft ? "border-risky/60 text-risky" : "border-avoid/60 text-avoid"} ${className}`}
-      title={`Sleeper live injury designation: ${inj === "Q" ? "Questionable" : inj === "D" ? "Doubtful" : inj === "O" ? "Out" : inj}`}
-    >
-      <img src={SLEEPER_ICON} width={10} height={10} alt="" className="rounded-[2px] opacity-80" />
-      {inj}
-    </span>
-  );
-}
-
-function TrendChip({ name }: { name: string }) {
-  const t = SLP[name]?.trend;
-  if (t === undefined) return null;
-  const k = Math.max(1, Math.round(Math.abs(t) / 1000));
-  return (
-    <span
-      className="font-mono text-[0.65rem] text-ink-3"
-      title={`${Math.abs(t).toLocaleString()} Sleeper leagues ${t > 0 ? "added" : "dropped"} him in the last 24 hours`}
-    >
-      {t > 0 ? `🔥${k}k` : `🧊${k}k`}
-    </span>
-  );
-}
 
 type SleeperPick = { pick_no: number; draft_slot: number; metadata?: { first_name?: string; last_name?: string } };
 const normName = (s: string) =>
   s.toLowerCase().replace(/[.'-]/g, " ").replace(/\b(jr|sr|ii|iii|iv|v)\b/g, "").replace(/\s+/g, " ").trim();
-import { Call, Info, Noob, Sticker, TagChips, TeamIcon } from "../components/ui";
+import { Call, Info, InjChip, Noob, SleeperMark, Sticker, TagChips, TeamIcon, TrendChip } from "../components/ui";
 
 const POS_FILTERS: ("ALL" | Pos)[] = ["ALL", "QB", "RB", "WR", "TE"];
 
@@ -193,7 +154,7 @@ function AdvisorStrip({ DS, mySlot, ord, noob }: { DS: DraftState; mySlot: numbe
             your next pick: #{a.nextPick} ({a.nextPick - a.cur} away)
           </span>
         )}
-        <span className="ml-auto hidden gap-3 text-[0.8rem] text-ink-3 md:flex min-[1500px]:hidden">
+        <span className="ml-auto hidden gap-3 text-[0.8rem] text-ink-3 md:flex min-[1200px]:hidden">
           {(["RB", "WR", "QB", "TE"] as Pos[]).map((p) => (
             <span key={p}>
               {p}: {next[p] ? <b className="font-medium text-ink-2">{next[p]!.n}</b> : "—"}
@@ -473,6 +434,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
           <InjChip name={n} className="ml-1.5" /> <TrendChip name={n} />
           <br />
           <span className="mt-0.5 inline-flex flex-wrap gap-1"><TagChips tags={tags} max={3} /></span>
+          <span className="mt-1 block max-w-[46ch] text-[0.85rem] leading-snug text-ink-2 min-[1560px]:hidden">{note}</span>
         </td>
         <td><Sticker pos={p} /></td>
         <td className="num">{adp.toFixed(1)}</td>
@@ -485,7 +447,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
           })()}
         </td>
         <td><Call v={v} explain /></td>
-        <td className="note">{note}</td>
+        <td className="note hidden min-[1560px]:table-cell">{note}</td>
       </tr>
     );
   });
@@ -601,8 +563,8 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
         </span>
       </div>
 
-      <div className="flex flex-col gap-5 min-[1500px]:flex-row-reverse min-[1500px]:items-start">
-        <div className="contents min-[1500px]:z-30 min-[1500px]:flex min-[1500px]:flex-col min-[1500px]:gap-3 min-[1500px]:sticky min-[1500px]:top-[calc(var(--hdr,86px)+6px)] min-[1500px]:w-[360px] min-[1500px]:shrink-0">
+      <div className="flex flex-col gap-5 min-[1200px]:flex-row-reverse min-[1200px]:items-start">
+        <div className="contents min-[1200px]:z-30 min-[1200px]:flex min-[1200px]:flex-col min-[1200px]:gap-3 min-[1200px]:sticky min-[1200px]:top-[calc(var(--hdr,86px)+6px)] min-[1200px]:w-[360px] min-[1200px]:shrink-0">
       <AdvisorStrip DS={DS} mySlot={mySlot} ord={ord} noob={noob} />
 
       <div className="flex flex-wrap items-center gap-2">
@@ -674,7 +636,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
               </th>
               <th className="!text-right">
                 <span className="inline-flex items-center gap-1.5">
-                  SLP
+                  <SleeperMark size={12} />SLP
                   <Info tip={<>Sleeper's own board rank — the default order your Sleeper league-mates see in their draft room. Weighted into "will he reach me?" predictions above mock-market ADP.</>} />
                 </span>
               </th>
@@ -690,7 +652,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, canUndo, mySlot, 
                   <Info tip={<>My verdict at his current price: <b className="text-value">VALUE</b> take him a bit early · <b className="text-solid">SOLID</b> take at price · <b className="text-risky">RISKY</b> only at a discount · <b className="text-avoid">AVOID</b> let someone else deal with it. Hover any chip for the one-line meaning.</>} />
                 </span>
               </th>
-              <th>Note</th>
+              <th className="hidden min-[1560px]:table-cell">Note</th>
             </tr>
           </thead>
           <tbody>
