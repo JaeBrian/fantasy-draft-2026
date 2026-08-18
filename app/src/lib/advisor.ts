@@ -501,8 +501,18 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
       const cuffOf = cuffTargets[now.r[0]];
       if (myCount >= 9 && cuffOf) s += 1.8;
       const b = BYE[now.r[2]];
-      const clash = !!(b && byeCount[b] >= 2);
-      if (clash) s *= byeCount[b] >= 3 ? 0.88 : 0.94;
+      /* byeCount is the roster BEFORE this pick, so `>= 2` only fired on the third player
+       * sharing a week — the second one, which is the one that actually creates the hole, went
+       * through unpenalised. That is how Zay Flowers landed on Derrick Henry's week-13 bye with
+       * nothing said. Trigger on the pick that creates the clash, not the one that deepens it. */
+      const clash = !!(b && byeCount[b] >= 1);
+      /* Bye pile-ups are dearer than this used to price them. Scored week by week with byes
+       * live, they drag a roster by around three points a week — more than any strategy
+       * difference we have measured — because the weeks you field an incomplete lineup are
+       * losses, not averages. A 6% nudge was routinely overridden by a tenth of a point of
+       * projection, which is how Emily ended up with Zay Flowers stacked on Derrick Henry's
+       * week-13 bye. */
+      if (clash) s *= byeCount[b] >= 2 ? 0.78 : 0.88;
       const fell = Math.round(takeAt - mktADP(now.r));
       if (fell >= 6) s *= 1.04;
       cands.push({ p: ps, now, later: nb.likely, proj: g.proj, vNow: g.vorp, evLater: nb.ev, gap, pGone, pReach, score: s, clash, bye: b, cuffOf, cliff, tier, stack, antiStack, fell });

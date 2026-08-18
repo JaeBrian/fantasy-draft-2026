@@ -90,7 +90,7 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked }: { DS: DraftState; mySl
             <span className="text-risky"> Note: he'd compete for targets with your {t.now.r[2]} pass-catcher.</span>
           )}
           {t.clash && (
-            <span className="text-risky"> Heads-up: same Week {t.bye} bye as {a.byeCount[t.bye!]} of your players.</span>
+            <span className="text-risky"> <b>Bye clash:</b> Week {t.bye} already takes {a.byeCount[t.bye!]} of your starters — that week you field an incomplete lineup, which costs you the week rather than lowering an average.</span>
           )}
         </>
       ),
@@ -248,6 +248,27 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked }: { DS: DraftState; mySl
               </div>
             ))}
             <p className="m-0 max-w-[70ch] pl-7 text-[0.92rem] leading-relaxed text-ink-2">{suggestion.why}</p>
+            {(a.qb === 0 || a.te === 0) && a.myCount >= 4 && (
+              <p className="m-0 max-w-[70ch] pl-7 text-[0.86rem] leading-relaxed text-ink-3">
+                {a.qb === 0 && a.te === 0
+                  ? "Your QB and TE slots are both still empty. "
+                  : a.qb === 0
+                    ? "Your QB slot is still empty. "
+                    : "Your TE slot is still empty. "}
+                {a.qb === 0 && (
+                  <>
+                    The quarterback can wait — QB1 through QB14 covers just 3.4 pts/wk, so they are close to
+                    interchangeable, and forcing one in round 3 rather than round 10 costs about two points a week.{" "}
+                  </>
+                )}
+                {a.te === 0 && (
+                  <>
+                    Tight end is the opposite: TE1 to TE13 spans 5.2 pts/wk, so the position genuinely runs out. Round 5
+                    is the measured sweet spot and the useful ones are gone by round 8.
+                  </>
+                )}
+              </p>
+            )}
             {(a.goneSoon.length > 0 || a.dream || (a.look && a.look.edge >= 0.8)) && (
               <p className="m-0 text-[0.82rem] leading-relaxed text-ink-3">
                 {a.goneSoon.length > 0 && <>{waiting ? "Won't reach your pick" : "Won't come back to you"}: {a.goneSoon.map((g) => g.n).join(" · ")}.</>}
