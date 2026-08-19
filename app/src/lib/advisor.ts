@@ -439,8 +439,10 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
     K: 0,
     DST: 0,
   };
-  const bestQB = avail.find((o) => o.r[1] === "QB");
-  const bestTE = avail.find((o) => o.r[1] === "TE");
+  const bestAt = (ps: Pos) =>
+    avail.filter((o) => o.r[1] === ps).sort((a, b) => GP[b.r[0]].proj - GP[a.r[0]].proj)[0];
+  const bestQB = bestAt("QB");
+  const bestTE = bestAt("TE");
   if (bestQB && qb === 0 && cur - (bestQB.i + 1) >= 6) w.QB = Math.max(w.QB, 0.95);
   if (bestTE && te === 0 && cur - (bestTE.i + 1) >= 6) w.TE = Math.max(w.TE, 0.95);
   const vmul: Record<Verdict, number> = { buy: 1.06, solid: 1, risk: 0.94, avoid: 0.8 };
@@ -458,7 +460,19 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
     /* hard roster caps: a third QB or TE is a wasted bench spot in a 1QB/1TE league */
     if (ps === "QB" && qb >= 2) return;
     if (ps === "TE" && te >= 2) return;
-    const pool = avail.filter((o) => o.r[1] === ps);
+    /* Consider candidates by VALUE, not by where our board happens to list them.
+     *
+     * This used to slice the first 18 available at the position in board order, which was
+     * fine while a player's projection WAS his board rank. It is not any more, and the gap
+     * bit: Josh Jacobs projects as the 12th best back and goes at pick 29, but our board has
+     * him 21st among running backs, so he fell outside the slice and the advisor could not
+     * recommend him at all. Same for Burden, Waddle and McMillan at receiver.
+     *
+     * The board still does its real job below — verdict, tier and tags adjust the score. It
+     * just no longer decides who gets to be considered. */
+    const pool = avail
+      .filter((o) => o.r[1] === ps)
+      .sort((a, b) => GP[b.r[0]].proj - GP[a.r[0]].proj);
     if (!pool.length) return;
     const nb = nextBest(ps, avail, back + offBack, cur, shift[ps]);
     const nb2 = nextBest(ps, avail, back2 + offBack2, cur, shift[ps]);
@@ -469,7 +483,9 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
       /* between your picks, judge players by their odds of actually reaching your turn */
       const pReach = onClock ? 1 : Math.max(0.02, 1 - pg(now.r, takeAt, offTake));
       if (k >= 2 && pReach < 0.2) return;
-      if (k > 0 && onClock && now.i - pool[0].i > 8) return;
+      /* on the clock, do not offer someone far below the best at his position — measured in
+         value now that the pool is ordered by it, rather than in board slots */
+      if (k > 0 && onClock && GP[pool[0].r[0]].proj - g.proj > 2.5) return;
       kept++;
       const pGone = pg(now.r, back, offBack);
       const gapNext = Math.max(0, g.proj - nb.ev);
