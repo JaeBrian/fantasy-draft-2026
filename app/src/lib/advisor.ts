@@ -5,6 +5,39 @@ import { CEIL } from "../ceilings";
 import { pinnedPick } from "./intel";
 import { riskOf } from "./risk";
 
+/* ---- measured teammate correlation ------------------------------------------------------
+ * scripts/sim-correlation.mjs, 2025 weekly half-PPR logs. 2025 rosters were reconstructed
+ * from the team snap counts carried on every stats row (teammates in a week share the exact
+ * tm_off_snp / tm_def_snp / tm_st_snp triple), because Sleeper's stats have no team field and
+ * the players endpoint only knows where someone plays now.
+ *
+ * Every figure is quoted against a control of non-teammate pairs, which came back at ~0.000
+ * for every position pair — so these are teammate effects, not a league-wide weekly rhythm.
+ *
+ *   QB-WR  +0.342  (n=87)  <- real, and large
+ *   QB-TE  +0.236  (n=49)  <- real
+ *   QB-RB  +0.071  (n=71)  <- real, small
+ *   RB-WR  +0.001  (n=223) <- nothing
+ *   WR-WR  +0.006  (n=108) <- nothing
+ *   RB-RB  +0.023  (n=53)  <- nothing
+ *
+ * Only pairs clearing two combined standard errors are carried. The rest are set to zero
+ * deliberately: "two Rams cannibalise each other" is a widely held belief that the game logs
+ * do not support, and encoding it anyway would be adding a bias with no evidence behind it.
+ *
+ * Caveat worth keeping in view: a pair must share 8+ weeks with BOTH playing to be measured,
+ * so a pure handcuff — who only plays when the starter is hurt — is excluded by construction.
+ * This answers "given both are startable, do they move together?", which is the question that
+ * matters when both are in your lineup, but it is not a claim about handcuffs. */
+const TEAMMATE_RHO: Record<string, number> = { "QB-WR": 0.342, "QB-TE": 0.236, "QB-RB": 0.071 };
+
+/** Correlation between two players' weekly scores. Zero unless they are teammates in a pair
+ *  the data actually called. */
+const CORR = (a: PlayerRow, b: PlayerRow): number => {
+  if (a[2] !== b[2]) return 0;                       // different teams — independent
+  return TEAMMATE_RHO[[a[1], b[1]].sort().join("-")] ?? 0;
+};
+
 export type Mark = "gone" | "mine";
 export type DraftState = Record<string, Mark>;
 
@@ -708,21 +741,49 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
     take(qbs, 1); take(rbs, 2); take(wrs, 2); take(tes, 1);
     take([...rbs, ...wrs, ...tes].filter((r) => !used.has(r[0])).sort((a, b) => val(b) - val(a)), 2);
     if (picked.length) {
-      let mid = 0, lo = 0, hi = 0;
+      /* Adding p10s together answers "what if all eight have their worst week at once" — that
+       * is a correlation-of-1.0 question, and it is not the one anyone is asking. Eight
+       * players do not bottom out in the same week; their ups and downs partly cancel. So
+       * combine VARIANCES, which is where correlation actually enters:
+       *
+       *     Var(total) = Σ σi²  +  2 Σi<j  ρij σi σj
+       *
+       * ρ is measured, not assumed — scripts/sim-correlation.mjs, 2025 game logs, teammate
+       * pairs against a non-teammate control that came back at ~0.000 across the board:
+       *
+       *     QB-WR +0.34    QB-TE +0.24    QB-RB +0.07     (same team, real)
+       *     RB-WR  0.00    WR-WR  0.00    RB-RB  0.02     (nothing — see below)
+       *
+       * Worth stating plainly because the folk wisdom says otherwise: two receivers off one
+       * team, or a back and a receiver off one team, do NOT measurably eat each other's
+       * lunch. They behave like strangers. What is real is the quarterback stack, and it cuts
+       * the other way — a stacked lineup is genuinely swingier, higher ceiling and lower
+       * floor, and until now we were not showing that. */
+      const Z = 1.2816;                                  // p10/p90 of a normal
+      const sig: number[] = [];
+      let mid = 0;
       picked.forEach((r) => {
         const c = CEIL[r[0]];
         const v = val(r);
         mid += v;
-        /* where we have a measured distribution use it, scaled to this year's projection;
-           otherwise fall back to a flat band so one unmeasured rookie cannot distort it */
         if (c && c.games >= 6) {
           const med = (c.p10 + c.p90) / 2 || v;
           const k = med > 0 ? v / med : 1;
-          lo += c.p10 * k;
-          hi += c.p90 * k;
-        } else { lo += v * 0.55; hi += v * 1.5; }
+          sig.push(Math.max(0, ((c.p90 - c.p10) * k) / (2 * Z)));
+        } else {
+          /* unmeasured: a flat band, same shape as before, so one rookie cannot distort it */
+          sig.push((v * 1.5 - v * 0.55) / (2 * Z));
+        }
       });
-      lineup = { mid, floor: lo, ceiling: hi, starters: picked.length };
+
+      let varTot = sig.reduce((s, x) => s + x * x, 0);
+      for (let i = 0; i < picked.length; i++)
+        for (let j = i + 1; j < picked.length; j++) {
+          const rho = CORR(picked[i], picked[j]);
+          if (rho) varTot += 2 * rho * sig[i] * sig[j];
+        }
+      const sd = Math.sqrt(Math.max(0, varTot));
+      lineup = { mid, floor: mid - Z * sd, ceiling: mid + Z * sd, starters: picked.length };
     }
   }
 

@@ -1,6 +1,7 @@
 import type { Pos, Verdict } from "../data";
 import { SLP } from "../sleeper";
 import { CEIL } from "../ceilings";
+import { topNews } from "./news";
 
 /* One definition of how uncertain a player is, shared by the advisor and every simulation so
  * the two cannot drift apart.
@@ -111,5 +112,55 @@ export function riskOf(name: string, pos: Pos, verdict: Verdict): Risk {
     flags.push("rookie — widest range on the board");
   }
 
-  return { cv, pMiss: Math.min(0.75, pMiss), flags: [...flags, ...flagsFromData] };
+  /* ---- the wire --------------------------------------------------------------------------
+   * A reported absence is direct evidence about AVAILABILITY, which is exactly what pMiss
+   * models, so this is the one place a news item legitimately enters the arithmetic. It moves
+   * availability and nothing else — it never touches the projection, and the flag it produces
+   * carries the reporter's name so the adjustment can be argued with.
+   *
+   * Only sourced items reach here: scripts/fetch-news.mjs drops 57% of the feed for having no
+   * primary attribution, and guards the rest against past-season recaps, injuries belonging to
+   * another player named in the same sentence, and negation ("NOT expected to miss").
+   *
+   * Sleeper's own injury_status is a designation, which is a different and slower thing. Alvin
+   * Kamara read "Q" on the morning Schefter reported a month on the shelf. */
+  const top = topNews(name);
+  if (top?.g) {
+    const wk = /\b(\d+)\s*[-–to]{1,3}\s*(\d+)\s*week/i.exec(top.d) || /\b(\d+)\s*week/i.exec(top.d);
+    const mo = /\b(a|one|two|three|\d+)\s*month/i.exec(top.d);
+    const NUM: Record<string, number> = { a: 1, one: 1, two: 2, three: 3 };
+    /* turn the report into games missed out of a 17-week season */
+    let miss = 0;
+    if (top.g === "out") miss = 17;
+    else if (top.g === "miss") {
+      if (mo) miss = 4.3 * (NUM[mo[1].toLowerCase()] ?? Number(mo[1]) ?? 1);
+      else if (wk) miss = Number(wk[2] ?? wk[1]);
+      else miss = 3;
+    }
+    /* `hurt` is deliberately NOT priced. It fires on any mention of a knock — "limited in
+     * practice", "left the game" — and in August that is thirty-odd players, most of whom
+     * will start Week 1. Treating a practice note as evidence of missed games would inflate
+     * risk across half the board on the flimsiest signal. It shows as a flag; nothing else. */
+
+    if (miss > 0) {
+      const share = Math.min(1, miss / 17);
+      /* a report supersedes the base rate rather than stacking on top of it */
+      pMiss = Math.max(pMiss, share);
+      cv *= 1 + 0.5 * share;
+      flags.push(
+        top.g === "out"
+          ? `reported out for the season — ${top.a}`
+          : `reported to miss ~${miss < 1 ? "time" : `${Math.round(miss)} week${Math.round(miss) === 1 ? "" : "s"}`} — ${top.a}`,
+      );
+    } else if (top.g === "committee" || top.g === "workload" || top.g === "demoted") {
+      /* not an availability question — a share-of-work question. Flagged for a human, and
+       * deliberately NOT priced: we have no measurement of how much a reported timeshare
+       * actually costs, and inventing a number here would be worse than saying so. */
+      flags.push(`reported ${top.g === "committee" ? "timeshare" : top.g} — ${top.a}`);
+    } else if (top.g === "hurt") {
+      flags.push(`knock reported in camp — ${top.a}`);
+    }
+  }
+
+  return { cv, pMiss: Math.min(0.92, pMiss), flags: [...flags, ...flagsFromData] };
 }

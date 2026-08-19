@@ -144,7 +144,13 @@ for (const slot of [1, 6, 10]) {
   const who = slot === 1 ? "ASHLEY (1)" : slot === 6 ? "BRIAN JK (6)" : "EMILY (10)";
   for (const round of [1, 3, 6]) {
     const target = (round - 1) * 12 + (round % 2 ? slot : 13 - slot);
-    const DS = round === 1 ? {} : stateAt(target, slot);
+    /* Ask the advisor about the SAME board the simulation is about to play from. Round 1 used
+     * to be special-cased to an empty board, which is right for seat 1 and wrong for everyone
+     * else: seat 10 was being asked "who do you want?" with all 170 players showing, then
+     * judged on a simulation that ran picks 1-9 first. It duly recommended James Cook, who is
+     * gone before pick 10 in four worlds out of five, and the audit recorded a disagreement
+     * that was really just the two halves looking at different boards. */
+    const DS = stateAt(target, slot);
     const a = advise(DS, slot, ORD);
     const cands = a.cands.slice(0, 5).map((c) => c.now.r[0]);
     if (!cands.length) continue;
@@ -170,6 +176,14 @@ for (const slot of [1, 6, 10]) {
     const se = advisorScore ? Math.sqrt(scored[0].se ** 2 + advisorScore.se ** 2) : 0;
     const agree = advisorPick === simBest;
     const tag = `${who} round ${round}`;
+    /* "We could not evaluate this" is not "this is catastrophically wrong". Before, a pick the
+       simulation never got to score came out as a gap of Infinity against a threshold of zero,
+       which reads like the worst failure on the board and means nothing. */
+    if (!advisorScore) {
+      warns++;
+      console.log(`  WARN  ${tag}: advisor says ${advisorPick}, but he survived to this pick in under 20% of worlds — not enough to score him`);
+      continue;
+    }
     if (agree) console.log(`  PASS  ${tag}: both say ${advisorPick}`);
     else if (gap <= 2 * se) { warns++; console.log(`  WARN  ${tag}: advisor says ${advisorPick}, sim leans ${simBest} by ${gap.toFixed(2)} (±${se.toFixed(2)}) — inside noise`); }
     else { fails++; console.log(`  FAIL  ${tag}: advisor says ${advisorPick}, sim prefers ${simBest} by ${gap.toFixed(2)} pts/wk, which clears ${(2 * se).toFixed(2)}`); }

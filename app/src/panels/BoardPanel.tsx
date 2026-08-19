@@ -13,7 +13,7 @@ import { getPins, setPin, togglePin, parseIntel, pinnedPick } from "../lib/intel
 type SleeperPick = { pick_no: number; draft_slot: number; metadata?: { first_name?: string; last_name?: string; team?: string } };
 const normName = (s: string) =>
   s.toLowerCase().replace(/[.'-]/g, " ").replace(/\b(jr|sr|ii|iii|iv|v)\b/g, "").replace(/\s+/g, " ").trim();
-import { Call, Info, InjChip, Noob, SleeperMark, Sticker, TagChips, TeamIcon, TrendChip } from "../components/ui";
+import { Call, Chevrons, Info, InjChip, NewsChip, Noob, SleeperMark, Sticker, TagChips, TeamIcon, TrendChip } from "../components/ui";
 
 const NICKOF: Record<string, string> = {
   LAR: "Rams", BUF: "Bills", DET: "Lions", CIN: "Bengals", BAL: "Ravens", DAL: "Cowboys",
@@ -776,7 +776,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
           <span className="pteam">
             {t} · bye {BYE[t] ?? "—"}
           </span>
-          <InjChip name={n} className="ml-1.5" /> <TrendChip name={n} />
+          <InjChip name={n} className="ml-1.5" /> <NewsChip name={n} /> <TrendChip name={n} />
           {blocked.includes(n) && (
             <span className="ml-1.5 rounded-sm border border-avoid/60 px-1 font-mono text-[0.62rem] font-bold text-avoid">BANNED</span>
           )}
@@ -861,9 +861,9 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
               return <span className="text-ink-3">{shown}</span>;
             }
             const past = picksMade + 1 - a;      // positive: he has outlasted his price
-            const chev =
-              past >= 24 ? "▲▲▲" : past >= 12 ? "▲▲" : past >= 5 ? "▲"
-              : past <= -18 ? "▼▼▼" : past <= -9 ? "▼▼" : past <= -4 ? "▼" : "";
+            const rank = (past >= 24 ? 3 : past >= 12 ? 2 : past >= 5 ? 1
+              : past <= -18 ? 3 : past <= -9 ? 2 : past <= -4 ? 1 : 0) as 0 | 1 | 2 | 3;
+            const dir: "up" | "down" = past >= 0 ? "up" : "down";
             const tone =
               past >= 12 ? "bg-value/20 text-value font-bold"
               : past >= 5 ? "text-value"
@@ -882,7 +882,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
                 }
               >
                 {shown}
-                {chev && <span className="text-[0.7rem] leading-none">{chev}</span>}
+                {rank > 0 && <Chevrons n={rank as 1 | 2 | 3} dir={dir} />}
               </span>
             );
           })()}
