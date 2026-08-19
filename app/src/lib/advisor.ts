@@ -1,6 +1,7 @@
 import { P, BYE, CUFFS, MKT, VEGAS, type PlayerRow, type Pos, type Verdict } from "../data";
 import { SLP } from "../sleeper";
 import { PROJ } from "../projections";
+import { CEIL } from "../ceilings";
 
 export type Mark = "gone" | "mine";
 export type DraftState = Record<string, Mark>;
@@ -69,6 +70,12 @@ export interface Advice {
   /** unlikely-but-possible faller clearly better than the top target */
   dream: { o: Slot; pr: number } | null;
   horizon: { takeAt: number; back: number };
+  /** how many teams picking before your next turn still need each position, and how many
+   *  pick at all. This is the thing ADP cannot see: a run is coming when the room needs the
+   *  position, not when the board says it is scarce. */
+  runAhead: { pos: Pos; need: number; of: number }[];
+  /** your current starters, scored on measured 2025 week-to-week distributions */
+  lineup: { mid: number; floor: number; ceiling: number; starters: number } | null;
 }
 
 /* ---------------- advisor engine v4 ----------------
@@ -143,7 +150,7 @@ export const PLAINPOS: Record<string, string> = {
   WR: "wide receiver (the one who catches passes)",
   TE: "tight end (a big player who blocks and catches)",
 };
-const PLAINSHORT: Record<string, string> = {
+export const PLAINSHORT: Record<string, string> = {
   QB: "quarterback", RB: "running back", WR: "wide receiver", TE: "tight end",
 };
 
@@ -593,10 +600,72 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
     .map((o) => ({ n: o.r[0], pg: pg(o.r, gsPick, gsPick === back ? offBack : offTake) }))
     .filter((x) => x.pg >= 0.6)
     .slice(0, 4);
+  /* Who picks between now and your next turn, and what do they still need? Eleven other
+   * rosters are visible in the draft state, so this is knowable — and it is the part ADP
+   * structurally cannot tell you. A back is not scarce because a list says so; he is scarce
+   * because six of the eight teams ahead of you have no running back yet. */
+  const runAhead: Advice["runAhead"] = [];
+  {
+    const rosters: Record<number, PlayerRow[]> = {};
+    for (let t = 1; t <= 12; t++) rosters[t] = [];
+    ord.forEach((n, i) => {
+      const r = P.find((x) => x[0] === n);
+      if (r) rosters[snapTeam(i + 1)].push(r);
+    });
+    const until = onClock ? back : takeAt;
+    const want: Record<string, number> = { QB: 0, RB: 0, WR: 0, TE: 0 };
+    let teams = 0;
+    for (let pk = cur; pk < until; pk++) {
+      const t = snapTeam(pk);
+      if (mySlot >= 1 && t === mySlot) continue;
+      teams++;
+      const { need, flexOpen } = teamNeeds(rosters[t]);
+      (["QB", "RB", "WR", "TE"] as Pos[]).forEach((ps) => {
+        if (need[ps] || (flexOpen && (ps === "RB" || ps === "WR"))) want[ps]++;
+      });
+    }
+    (["RB", "WR", "TE", "QB"] as Pos[]).forEach((ps) => {
+      if (teams > 0) runAhead.push({ pos: ps, need: want[ps], of: teams });
+    });
+  }
+
+  /* What your starters actually look like week to week, from measured 2025 distributions
+   * rather than from the projection alone. A lineup of steady players and a lineup of
+   * boom-bust players can average the same and win very different numbers of weeks. */
+  let lineup: Advice["lineup"] = null;
+  if (mine.length) {
+    const val = (r: PlayerRow) => (PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6);
+    const by = (ps: Pos) => mine.filter((r) => r[1] === ps).sort((a, b) => val(b) - val(a));
+    const qbs = by("QB"), rbs = by("RB"), wrs = by("WR"), tes = by("TE");
+    const used = new Set<string>();
+    const picked: PlayerRow[] = [];
+    const take = (a: PlayerRow[], n: number) =>
+      a.slice(0, n).forEach((r) => { picked.push(r); used.add(r[0]); });
+    take(qbs, 1); take(rbs, 2); take(wrs, 2); take(tes, 1);
+    take([...rbs, ...wrs, ...tes].filter((r) => !used.has(r[0])).sort((a, b) => val(b) - val(a)), 2);
+    if (picked.length) {
+      let mid = 0, lo = 0, hi = 0;
+      picked.forEach((r) => {
+        const c = CEIL[r[0]];
+        const v = val(r);
+        mid += v;
+        /* where we have a measured distribution use it, scaled to this year's projection;
+           otherwise fall back to a flat band so one unmeasured rookie cannot distort it */
+        if (c && c.games >= 6) {
+          const med = (c.p10 + c.p90) / 2 || v;
+          const k = med > 0 ? v / med : 1;
+          lo += c.p10 * k;
+          hi += c.p90 * k;
+        } else { lo += v * 0.55; hi += v * 1.5; }
+      });
+      lineup = { mid, floor: lo, ceiling: hi, starters: picked.length };
+    }
+  }
+
   return {
     qb, rb, wr, te, wrt, myCount, cur, onClock, nextPick, byeCount,
     run, look, cands: deduped, warnings, plainWarn, goneSoon, dream,
-    horizon: { takeAt, back },
+    horizon: { takeAt, back }, runAhead, lineup,
   };
 }
 
