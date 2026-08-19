@@ -222,11 +222,11 @@ export default function App() {
         {tab === "vegas" && <VegasPanel noob={noob} />}
 
         <footer className="mt-10 border-t border-line pt-6 text-[0.8rem] leading-relaxed text-ink-3">
-          Sources: Sleeper public API (live injury designations, 24h trending, board ranks — refreshed daily), FantasyPros (live half-PPR expert consensus + tiers, pulled Aug 17), Justin Boone's Yahoo top-300
+          Sources: Sleeper public API — real half-PPR ADP, per-player weekly projections, 2025 game logs, live injury designations, depth charts, 24h trending, and the per-player news wire (filtered to named reporters and direct quotes; 57% of it discarded). FantasyPros (live half-PPR expert consensus + tiers, pulled Aug 17), Justin Boone's Yahoo top-300
           (updated Aug 17), ESPN (Field Yates, xTD models, 10-analyst panel), CBS Sports, NBC/Rotoworld, PFF, 4for4
           (Underdog ADP tool, 713 players, Aug 17 pull), Establish The Run, RotoWire, Sharp Football Analysis (implied
           totals &amp; O-line ranks), DraftKings lines via Action-market aggregators, Footballguys, PlayerProfiler,
-          Draft Sharks injury model, team beat coverage, and BDGE's Aug 11 "Official Top 50" video. Compiled Aug 17,
+          Draft Sharks injury model, team beat coverage, and BDGE's Aug 11 "Official Top 50" video. Data refreshed Aug 19,
           2026 — verify injury news on draft day. Not betting advice; it's a fantasy draft guide.
         </footer>
       </main>

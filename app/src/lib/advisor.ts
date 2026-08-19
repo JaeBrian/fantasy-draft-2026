@@ -534,7 +534,8 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
   });
   const myQBteams = new Set(mine.filter((r) => r[1] === "QB").map((r) => r[2]));
   const myPCteams = new Set(mine.filter((r) => r[1] === "WR" || r[1] === "TE").map((r) => r[2]));
-  const myRBteams = new Set(mine.filter((r) => r[1] === "RB").map((r) => r[2]));
+  /* (the RB-team set was only used by the RB+WR anti-stack penalty, which the correlation
+     measurement retired — see the stacking note below) */
 
   const cands: Candidate[] = [];
   (["RB", "WR", "QB", "TE"] as Pos[]).forEach((ps) => {
@@ -589,15 +590,31 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
       const tLeft = tierSurvivors(ps, tier, avail, back + offBack, cur, shift[ps]);
       const cliff = tLeft < 1.5 && gap >= 0.8;
       if (cliff) s *= 1.05;
-      /* stacking research: QB↔WR1 weekly r≈0.43, QB↔TE1 r≈0.27 — a tiebreaker, never a reach.
-         Two same-team pass-catchers = negative outside elite offenses; RB+WR same team mildly negative. */
+      /* Stacking. These used to be three rules taken from published research; we have now
+       * measured all three ourselves on 2025 game logs, against a control of non-teammate
+       * pairs that came back at ~0.000 (scripts/sim-correlation.mjs). Two survived and one
+       * did not:
+       *
+       *   QB with his own pass-catcher   cited r≈0.43 / 0.27    measured +0.342 / +0.236  KEPT
+       *   two same-team pass-catchers    assumed negative       measured +0.006 (n=108)   GONE
+       *   RB + WR, same team             assumed negative       measured +0.001 (n=223)   GONE
+       *
+       * The quarterback stack holds up — our own number is a little smaller than the cited
+       * one but the same effect, and it stays a tiebreaker rather than a reason to reach.
+       *
+       * The two anti-stack penalties do not hold up at all, so they are removed. "Two Rams
+       * eat each other's lunch" is widely believed and simply is not in the game logs: a
+       * receiver pairs with his own teammate exactly the way he pairs with a stranger. The
+       * penalties were small (0.97 and 0.985) but they applied to every same-team pair on the
+       * board, and a small bias with no evidence behind it is still a bias.
+       *
+       * What the correlation genuinely changes is the SPREAD of a stacked lineup, not the
+       * value of the pick — and that is handled properly now in the floor/ceiling below. */
       const stack =
         ((ps === "WR" || ps === "TE") && myQBteams.has(now.r[2])) ||
         (ps === "QB" && myPCteams.has(now.r[2]));
       if (stack) s *= 1.03;
-      const antiStack = !stack && (ps === "WR" || ps === "TE") && myPCteams.has(now.r[2]) && (PO[now.r[2]] || 0) < 73;
-      if (antiStack) s *= 0.97;
-      if (!stack && ((ps === "RB" && myPCteams.has(now.r[2])) || ((ps === "WR" || ps === "TE") && myRBteams.has(now.r[2])))) s *= 0.985;
+      const antiStack = false;
       if (myCount >= 5 && ps !== "RB") {
         const po = PO[now.r[2]] || 67;
         s *= 1 + Math.max(-0.02, Math.min(0.025, (po - 68) / 450));

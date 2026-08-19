@@ -262,6 +262,21 @@ export const MKT: Record<string, [number, number, number, number]> = {"Jahmyr Gi
 export type NewsItem = { text: string; player?: string; dir?: "up" | "down" };
 export const NEWS: { when: string; items: NewsItem[] }[] = [
   {
+    when: "Aug 19, 2026 \u00b7 3:30 PM PT",
+    items: [
+      { player: "Jayden Higgins", dir: "down", text: "Torn ACL in Tuesday practice \u2014 out for the season (Ian Rapoport, NFL Network). Tank Dell and Jaylin Noel absorb the targets." },
+      { player: "Alvin Kamara", dir: "down", text: "Sprained MCL at Tuesday's joint practice; out at least a month (Adam Schefter, ESPN). Devin Neal and Kendre Miller split behind him." },
+      { player: "Jordyn Tyson", dir: "down", text: "Hamstring will cost him about two months (Mike Garafolo, NFL Network) \u2014 that is half your season." },
+      { player: "Breece Hall", dir: "down", text: "Groin now has a number on it: 2\u20133 weeks (Zack Rosenblatt, The Athletic). HC Aaron Glenn expects him ready for Week 1." },
+      { player: "Omarion Hampton", dir: "down", text: "OC Mike McDaniel says he will use a \"hot hand\" approach at running back (Kris Rhim, ESPN). Hampton is still priced as a workhorse at 12.5." },
+      { player: "Kyle Monangai", dir: "down", text: "Hyperextended knee, multiple weeks (Jeremy Fowler, ESPN)." },
+      { player: "Rhamondre Stevenson", dir: "down", text: "Set to share the backfield with Henderson (Chad Graff, The Athletic)." },
+      { text: "Live news wire added \u2014 Sleeper's per-player feed, filtered to items traceable to a named reporter or a direct quote. 57% of the feed is discarded as unsourced analysis. Reported absences now move availability; they never move a projection." },
+      { text: "Teammate correlation measured from 2025 game logs: QB-WR +0.34, QB-TE +0.24, everything else zero against control. Two receivers off one team do NOT cannibalise each other \u2014 the folk wisdom is wrong, and no penalty was added for it." },
+      { text: "Lineup floor/ceiling fixed: it was summing percentiles across eight starters, which assumes they all bottom out in the same week. The band was 2.8x too wide." },
+    ],
+  },
+  {
     when: "Aug 17, 2026 \u00b7 9:15 PM PT",
     items: [
       { player: "Breece Hall", dir: "down", text: "Left practice with a non-contact groin strain (8/17), timeline unknown \u2014 verify before paying his round-3 price." },
