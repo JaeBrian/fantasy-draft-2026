@@ -308,6 +308,32 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked }: { DS: DraftState; mySl
                 </p>
               );
             })()}
+            {(() => {
+              /* Is this room drafting ahead of the market or behind it? Compare every pick
+                 made to that player's ADP. It matters more than it sounds: if the room is
+                 running three picks hot, every survival number ADP implies is optimistic, and
+                 the players you are counting on will not reach you. */
+              const diffs: number[] = [];
+              ord.forEach((n, i) => {
+                const ad = SLP[n]?.adp;
+                if (ad !== undefined) diffs.push(ad - (i + 1));
+              });
+              if (diffs.length < 12) return null;
+              const recent = diffs.slice(-24);
+              const avg = recent.reduce((a, b) => a + b, 0) / recent.length;
+              if (Math.abs(avg) < 2.5) return null;
+              return (
+                <p className="m-0 max-w-[70ch] pl-7 text-[0.86rem] leading-relaxed text-ink-3">
+                  <b className="text-ink-2">Room tempo:</b> the last {recent.length} picks have run{" "}
+                  <b className={avg > 0 ? "text-avoid" : "text-value"}>
+                    {Math.abs(avg).toFixed(1)} picks {avg > 0 ? "ahead of" : "behind"} ADP
+                  </b>
+                  {avg > 0
+                    ? " — this room reaches, so anyone you are counting on will reach you less often than his ADP suggests."
+                    : " — this room waits, so value is sliding further than usual. Be patient."}
+                </p>
+              );
+            })()}
             {fcPct !== null && (
               <p className="m-0 max-w-[70ch] pl-7 text-[0.86rem] leading-relaxed text-ink-3">
                 <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-clock" />{" "}
@@ -719,7 +745,28 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
                because the room has passed on him this many times already. Recomputed every
                pick, so it moves as the draft moves. */
             const sadp = SLP[n]?.adp;
-            if (!sadp || DS[n]) return null;
+            if (!sadp) return null;
+            if (DS[n]) {
+              /* already gone — show what the room paid. A player taken well before his ADP is
+                 a reach, and reaches are contagious: they pull the whole board forward and
+                 make everyone else harder to get than any list suggests. */
+              const at = ord.indexOf(n) + 1;
+              if (at <= 0) return null;
+              const over = sadp - at;
+              if (Math.abs(over) < 8) return null;
+              return (
+                <span
+                  className={`ml-1 rounded-sm border px-1 py-px font-mono text-[0.62rem] uppercase tracking-wide ${
+                    over > 0 ? "border-avoid/50 text-avoid" : "border-ink-3/40 text-ink-3"
+                  }`}
+                  title={over > 0
+                    ? `Taken at ${at}, ${Math.round(over)} picks before his ADP of ${sadp.toFixed(1)} — a reach`
+                    : `Taken at ${at}, ${Math.round(-over)} picks after his ADP of ${sadp.toFixed(1)} — the room let him slide`}
+                >
+                  {over > 0 ? `reach ${Math.round(over)}` : `late ${Math.round(-over)}`}
+                </span>
+              );
+            }
             const slid = picksMade + 1 - sadp;
             if (slid < 6) return null;
             const big = slid >= 15;
