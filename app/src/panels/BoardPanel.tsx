@@ -24,6 +24,13 @@ const NICKOF: Record<string, string> = {
   NYJ: "Jets", ARI: "Cardinals",
 };
 
+/** Overall pick 39 is round 4, pick 3 — which is how anyone at a draft actually says it. */
+const roundPick = (overall: number): string => {
+  const rd = Math.ceil(overall / 12);
+  const inRd = overall - (rd - 1) * 12;
+  return `${rd}.${String(inRd).padStart(2, "0")}`;
+};
+
 const POS_FILTERS: ("ALL" | Pos)[] = ["ALL", "QB", "RB", "WR", "TE"];
 
 interface BoardProps {
@@ -843,7 +850,42 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
           })()}
         </td>
         <td className="num">
-          {SLP[n]?.adp !== undefined ? SLP[n].adp!.toFixed(1) : adp.toFixed(1)}
+          {(() => {
+            /* Value is not a property of a player, it is a property of a MOMENT. A back with an
+               ADP of 30 is a steal at pick 45 and a reach at pick 20, and the same number on
+               screen means opposite things an hour apart. So read it against where the draft
+               actually is: how many picks past his ADP has he now lasted? */
+            const a = SLP[n]?.adp;
+            const shown = a !== undefined ? a.toFixed(1) : adp.toFixed(1);
+            if (a === undefined || DS[n]) {
+              return <span className="text-ink-3">{shown}</span>;
+            }
+            const past = picksMade + 1 - a;      // positive: he has outlasted his price
+            const chev =
+              past >= 24 ? "▲▲▲" : past >= 12 ? "▲▲" : past >= 5 ? "▲"
+              : past <= -18 ? "▼▼▼" : past <= -9 ? "▼▼" : past <= -4 ? "▼" : "";
+            const tone =
+              past >= 12 ? "bg-value/20 text-value font-bold"
+              : past >= 5 ? "text-value"
+              : past <= -9 ? "bg-avoid/15 text-avoid font-bold"
+              : past <= -4 ? "text-avoid"
+              : "text-ink";
+            return (
+              <span
+                className={`inline-flex items-baseline gap-1 rounded px-1 ${tone}`}
+                title={
+                  past >= 5
+                    ? `The room usually takes him at ${a.toFixed(1)} and you are at ${roundPick(picksMade + 1)}. He has lasted ${Math.round(past)} picks past his price.`
+                    : past <= -4
+                      ? `He goes at ${a.toFixed(1)} and you are only at ${roundPick(picksMade + 1)} — taking him now is reaching ${Math.round(-past)} picks early.`
+                      : `Right about on schedule: he goes at ${a.toFixed(1)}, you are at ${roundPick(picksMade + 1)}.`
+                }
+              >
+                {shown}
+                {chev && <span className="text-[0.7rem] leading-none">{chev}</span>}
+              </span>
+            );
+          })()}
           {SLP[n]?.adp !== undefined && (
             <span className="block text-[0.66rem] leading-tight text-ink-3 min-[1400px]:hidden" title="mock-draft market ADP">
               mock {adp.toFixed(0)}
@@ -1169,7 +1211,8 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
               <th className="!text-right">
                 <span className="inline-flex items-center gap-1.5">
                   <SleeperMark size={12} />ADP
-                  <Info tip={<><b className="text-ink">Sleeper's own average draft position</b>, measured from real half-PPR Sleeper drafts — the pick this player actually goes at in our exact format. This is the number the model prices with, because it is the room we are drafting in. The smaller <b className="text-ink">mock</b> figure is the outside mock-draft market for comparison; where the two disagree, trust Sleeper. Rank far better than ADP = he'll likely still be there next round, so don't reach.</>} />
+                  <span className="font-mono text-[0.7rem] font-normal text-clock">@ {roundPick(picksMade + 1)}</span>
+                  <Info tip={<><b className="text-ink">Sleeper's own average draft position</b>, shaded against the pick you are on right now — green and <b className="text-value">▲</b> means he has already lasted past his price, red and <b className="text-avoid">▼</b> means taking him here is a reach. More arrows, bigger gap. Measured from real half-PPR Sleeper drafts — the pick this player actually goes at in our exact format. This is the number the model prices with, because it is the room we are drafting in. The smaller <b className="text-ink">mock</b> figure is the outside mock-draft market for comparison; where the two disagree, trust Sleeper. Rank far better than ADP = he'll likely still be there next round, so don't reach.</>} />
                 </span>
               </th>
               <th className="hidden !text-right min-[1400px]:table-cell">
