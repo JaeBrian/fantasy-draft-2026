@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { P, OT, BYE, DRAFT_ORDER, SIM_PLANS, TOOL_USERS, VEGAS, type Pos } from "../data";
 import { snapTeam } from "../lib/advisor";
-import { advise, mktADP, needText, rosterSlots, PLAINPOS, PLAINSHORT, type DraftState } from "../lib/advisor";
+import { advise, needText, rosterSlots, PLAINPOS, PLAINSHORT, type DraftState } from "../lib/advisor";
 import { fillToMyTurn, gradeDraft } from "../lib/mock";
 import { usePersistent } from "../lib/store";
 import { SLP } from "../sleeper";
 import { CEIL } from "../ceilings";
+import { valueOf, valueTier } from "../lib/value";
 import { runForecast, type Forecast } from "../lib/forecast";
 import { getPins, setPin, togglePin, parseIntel, pinnedPick } from "../lib/intel";
 
@@ -341,6 +342,36 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked }: { DS: DraftState; mySl
                 Simulating the next {a.nextPick && a.cur ? Math.max(0, a.nextPick - a.cur) : ""} picks
                 against every rival roster… {fcPct}%
               </p>
+            )}
+            {fc && fc.room.length > 0 && (
+              <details className="pl-7 text-[0.84rem]">
+                <summary className="cursor-pointer text-ink-3 hover:text-ink-2">
+                  Why — the {fc.room.length} {fc.room.length === 1 ? "team" : "teams"} picking before you
+                </summary>
+                <div className="mt-1.5 flex flex-col gap-0.5">
+                  {fc.room.map((r) => (
+                    <div key={r.pick} className="flex flex-wrap items-baseline gap-x-2 text-ink-3">
+                      <span className="w-12 shrink-0 font-mono text-[0.76rem]">#{r.pick}</span>
+                      <span className="w-28 shrink-0 truncate text-ink-2">{DRAFT_ORDER[r.team - 1] ?? `Team ${r.team}`}</span>
+                      <span className="font-mono text-[0.76rem]">has {r.has}</span>
+                      {r.needs.length > 0 && r.needs.length <= 2 && (
+                        <span className="text-[0.76rem]">· short of {r.needs.join(" and ")}</span>
+                      )}
+                      {r.likely.length > 0 && (
+                        <span className="ml-auto font-mono text-[0.76rem] text-clock">
+                          likely {r.likely.map((l) => `${l.pos} ${Math.round(l.p * 100)}%`).join(" · ")}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <p className="m-0 mt-2 max-w-[70ch] text-[0.78rem] leading-snug text-ink-3">
+                  Rosters come from the live sync, so "needs" is what each team is actually short of rather
+                  than a guess. "Likely" is what they took across {fc.sims.toLocaleString()} simulated versions
+                  of these picks. When several teams in a row need the same position, that is the run — and it
+                  is visible here before it shows up in anyone's ADP.
+                </p>
+              </details>
             )}
             {fc && fc.picksAhead > 0 && (() => {
               const hot = fc.runs.filter((r) => r.p >= 0.5 && r.expected >= 2).sort((x, y) => y.p - x.p);
@@ -824,9 +855,26 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
         </td>
         <td className="num">
           {(() => {
-            const edge = Math.round(mktADP(r) - (i + 1));
-            const cls = edge >= 10 ? "text-value" : edge <= -8 ? "text-avoid" : "text-ink-3";
-            return <span className={cls}>{edge > 0 ? `+${edge}` : edge}</span>;
+            /* Where his projection ranks him against the pick the market takes him at. Both
+               numbers are Sleeper's, so this is the market disagreeing with itself rather than
+               us disagreeing with the market — a much harder thing to argue with. */
+            const v = valueOf(n);
+            if (!v) return <span className="text-ink-3">—</span>;
+            const tier = valueTier(v.edge);
+            const sign = v.edge > 0 ? `+${Math.round(v.edge)}` : `${Math.round(v.edge)}`;
+            const cls =
+              tier === "big" ? "rounded bg-value/20 px-1.5 py-0.5 font-bold text-value"
+              : tier === "good" ? "font-semibold text-value"
+              : tier === "steep" ? "rounded bg-avoid/15 px-1.5 py-0.5 font-bold text-avoid"
+              : "text-ink-3";
+            return (
+              <span
+                className={cls}
+                title={`Projects as the ${v.rank}${v.rank % 10 === 1 && v.rank !== 11 ? "st" : v.rank % 10 === 2 && v.rank !== 12 ? "nd" : v.rank % 10 === 3 && v.rank !== 13 ? "rd" : "th"} most valuable player on the board, and the market takes him at ${v.adp.toFixed(1)}.`}
+              >
+                {sign}
+              </span>
+            );
           })()}
         </td>
         <td><Call v={v} explain /></td>
@@ -867,7 +915,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
           <li><b>Do this one thing:</b> tap your name under <b>I am</b> (Ashley / Brian JK / Emily). That's it — our league's Sleeper draft is already connected, so every pick marks itself as it happens. You never touch <b>Taken</b> or <b>Pick</b> unless the sync is off.</li>
           <li>Then just read the panel: it shows your <b>next three targets in order</b>, each with the odds he's still there when your turn comes. Take #1 if he's there, else #2, else #3.</li>
           <li>Chips: <Call v="buy" /> better than his price · <Call v="solid" /> fairly priced · <Call v="risk" /> only at a discount · <Call v="avoid" /> the price ignores a real problem. Hover any small tag for its meaning.</li>
-          <li><b>Edge</b> is a price tag: <b>Rank</b> is what a player is worth, <b>ADP</b> is what the room will pay. <b className="text-value">Green</b> = on sale, he'll come back to you — don't reach. <b className="text-avoid">Red</b> = marked up, let someone else pay. <b>ADP</b> comes straight from real Sleeper half-PPR drafts, so it is what this room actually pays.</li>
+          <li><b>Value</b> is a price tag: how good he is against what the room pays. <b className="text-value">Green</b> = on sale, he'll come back to you — don't reach. <b className="text-avoid">Red</b> = marked up, let someone else pay. <b>ADP</b> comes straight from real Sleeper half-PPR drafts, so it is what this room actually pays.</li>
           <li>Drafting somewhere other than Sleeper? Turn sync off and mark picks yourself: type a name in the search box and press <b>Enter</b> (someone else took him) or <b>Shift+Enter</b> (you took him). Press <b>/</b> to jump to the search box.</li>
         </ul>
       </Noob>
@@ -1132,8 +1180,8 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
               </th>
               <th className="!text-right">
                 <span className="inline-flex items-center gap-1.5">
-                  Edge
-                  <Info tip={<><b className="text-ink">Is he on sale, or marked up?</b> Rank = what he's worth. ADP = what the room pays. Edge is the gap. <b className="text-value">Green +15</b> = on sale — he'll still be there ~15 picks after he's worth taking, so wait and get him free. <b className="text-avoid">Red −10</b> = marked up — the room pays 10 picks over his real value; let someone else. Near 0 = fair price. <b className="text-ink">Green means wait, red means don't pay.</b></>} />
+                  Value
+                  <Info tip={<><b className="text-ink">How many picks of value he is.</b> We rank every player by what he is worth over a replacement starter, then compare that to the pick the market actually takes him at. <b className="text-value">+45 or more</b> is highlighted: he grades 45 places better than where he goes, which is the clearest edge on the board. <b className="text-avoid">−30 or worse</b> is highlighted the other way — the room pays a lot over his worth, so let someone else. Both halves are Sleeper's own numbers, their projection against their ADP, so this is the market disagreeing with itself rather than us picking a fight with it.</>} />
                 </span>
               </th>
               <th>

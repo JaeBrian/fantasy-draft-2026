@@ -117,7 +117,10 @@ function playFrom(DS, slot, force, w) {
 }
 
 const ORD = ["Ashley","Zach","Jeff","Brandon","Duy","Brian JK","Michelle","Aaron","Matt","Emily","Josh","Brian V"];
-const W = 2500;
+/* 2,500 left several comparisons sitting on the two-standard-error line, where the verdict
+   flips between runs and tells you nothing. 7,000 tightens the error bar enough that a
+   failure means something. */
+const W = 7000;
 const mean = (a) => a.reduce((x, y) => x + y, 0) / a.length;
 let fails = 0, warns = 0;
 
