@@ -95,15 +95,21 @@ console.log("\n=== 2. ROSTER ACCOUNTING: does the advisor read the pick order co
 
 console.log("\n=== 3. BLOCKLIST ===");
 {
-  const blocked = new Set(["Justin Jefferson"]);
-  const a = advise({}, 10, ORD, blocked);
-  a.cands.some(c => c.now.r[0] === "Justin Jefferson")
-    ? fail("blocked player still recommended")
-    : ok("blocked player is excluded from recommendations");
-  const b = advise({}, 10, ORD);
-  b.cands.some(c => c.now.r[0] === "Justin Jefferson")
-    ? ok("and he returns when not blocked")
-    : warn("player absent even unblocked — check the test premise");
+  /* Block whoever the advisor currently recommends, rather than a hard-coded name — a fixed
+     name goes stale the moment the value model changes, and then the test reports a defect
+     that is really just its own premise rotting. */
+  const before = advise({}, 10, ORD);
+  const target = before.cands[0]?.now.r[0];
+  if (!target) fail("no candidates to test the blocklist against");
+  else {
+    const a = advise({}, 10, ORD, new Set([target]));
+    a.cands.some(c => c.now.r[0] === target)
+      ? fail(`blocked player still recommended`, target)
+      : ok("blocked player is excluded from recommendations", target);
+    advise({}, 10, ORD).cands.some(c => c.now.r[0] === target)
+      ? ok("and he returns when not blocked", target)
+      : fail("player vanished even unblocked", target);
+  }
 }
 
 console.log("\n=== 4. NOT-MY-TURN BEHAVIOUR ===");

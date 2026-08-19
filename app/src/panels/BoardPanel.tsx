@@ -1,16 +1,26 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { P, OT, BYE, DRAFT_ORDER, SIM_PLANS, TOOL_USERS, type Pos } from "../data";
+import { P, OT, BYE, DRAFT_ORDER, SIM_PLANS, TOOL_USERS, VEGAS, type Pos } from "../data";
 import { snapTeam } from "../lib/advisor";
-import { advise, mktADP, needText, rosterSlots, PLAINPOS, type DraftState } from "../lib/advisor";
+import { advise, mktADP, needText, rosterSlots, PLAINPOS, PLAINSHORT, type DraftState } from "../lib/advisor";
 import { fillToMyTurn, gradeDraft } from "../lib/mock";
 import { usePersistent } from "../lib/store";
 import { SLP } from "../sleeper";
 import { CEIL } from "../ceilings";
+import { runForecast, type Forecast } from "../lib/forecast";
 
 type SleeperPick = { pick_no: number; draft_slot: number; metadata?: { first_name?: string; last_name?: string; team?: string } };
 const normName = (s: string) =>
   s.toLowerCase().replace(/[.'-]/g, " ").replace(/\b(jr|sr|ii|iii|iv|v)\b/g, "").replace(/\s+/g, " ").trim();
 import { Call, Info, InjChip, Noob, SleeperMark, Sticker, TagChips, TeamIcon, TrendChip } from "../components/ui";
+
+const NICKOF: Record<string, string> = {
+  LAR: "Rams", BUF: "Bills", DET: "Lions", CIN: "Bengals", BAL: "Ravens", DAL: "Cowboys",
+  SF: "49ers", GB: "Packers", SEA: "Seahawks", CHI: "Bears", KC: "Chiefs", LAC: "Chargers",
+  NE: "Patriots", PHI: "Eagles", JAX: "Jaguars", WAS: "Commanders", IND: "Colts", TB: "Buccaneers",
+  HOU: "Texans", MIN: "Vikings", DEN: "Broncos", NYG: "Giants", NO: "Saints", PIT: "Steelers",
+  ATL: "Falcons", CAR: "Panthers", TEN: "Titans", LV: "Raiders", MIA: "Dolphins", CLE: "Browns",
+  NYJ: "Jets", ARI: "Cardinals",
+};
 
 const POS_FILTERS: ("ALL" | Pos)[] = ["ALL", "QB", "RB", "WR", "TE"];
 
@@ -29,6 +39,23 @@ interface BoardProps {
 
 function AdvisorStrip({ DS, mySlot, ord, noob, blocked }: { DS: DraftState; mySlot: number; ord: string[]; noob: boolean; blocked: string[] }) {
   const a = advise(DS, mySlot, ord, new Set(blocked));
+
+  /* Heavy forecast, recomputed every pick. You have a minute on the clock, so spend it: this
+   * simulates the intervening picks rather than approximating them with a curve, which is the
+   * only way to see a run that is coming because of what the other rooms still NEED rather
+   * than because of what a list says. Chunked so the page stays usable while it runs. */
+  const [fc, setFc] = useState<Forecast | null>(null);
+  const [fcPct, setFcPct] = useState<number | null>(null);
+  useEffect(() => {
+    if (!mySlot) { setFc(null); return; }
+    let stale = false;
+    setFc(null);
+    setFcPct(0);
+    runForecast(DS, ord, mySlot, 5000, (d, t) => { if (!stale) setFcPct(Math.round((d / t) * 100)); })
+      .then((r) => { if (!stale) { setFc(r); setFcPct(null); } });
+    return () => { stale = true; };
+  }, [DS, ord, mySlot]);
+
   const made = Object.keys(DS).length;
   const [compact, setCompact] = usePersistent<boolean>(
     "fd26-adv-compact",
@@ -235,9 +262,18 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked }: { DS: DraftState; mySl
                     too close to call
                   </span>
                 )}
-                {waiting && c.pReach < 0.995 && (
-                  <span className={reachCls(Math.round(c.pReach * 100))}>~{Math.round(c.pReach * 100)}% there</span>
-                )}
+                {waiting && (() => {
+                  /* simulated survival beats the analytic curve when we have it — same number,
+                     measured against the actual rooms rather than a normal distribution */
+                  const sim = fc?.survive[c.now.r[0]];
+                  const pr = sim !== undefined ? sim : c.pReach;
+                  if (pr >= 0.995) return null;
+                  return (
+                    <span className={reachCls(Math.round(pr * 100))} title={sim !== undefined ? `simulated across ${fc!.sims.toLocaleString()} drafts` : "estimated from ADP"}>
+                      ~{Math.round(pr * 100)}% there{sim !== undefined ? "" : "*"}
+                    </span>
+                  );
+                })()}
                 {idx > 0 && (
                   <span className="text-[0.84rem] text-ink-3">
                     — {shortWhy(c)}
@@ -263,11 +299,67 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked }: { DS: DraftState; mySl
               bits.push(`a good week is ${c.p90.toFixed(0)} pts, a bad one ${c.p10.toFixed(0)}`);
               if (c.tdShare !== null && c.tdShare >= 0.3) bits.push(`${Math.round(c.tdShare * 100)}% of his points come from touchdowns — the part that regresses hardest`);
               else if (c.tdShare !== null && c.tdShare <= 0.22) bits.push(`only ${Math.round(c.tdShare * 100)}% from touchdowns, so it rests on volume rather than scoring luck`);
-              if (c.touches) bits.push(`${c.touches} projected touches`);
+              if (c.touches) bits.push(`${c.touches} projected touches — opportunity is what a coach controls`);
+              const vg = VEGAS.find(([t]) => t === NICKOF[top.now.r[2]]);
+              if (vg) bits.push(`his offence is projected for ${vg[1].toFixed(1)} a game`);
               return (
                 <p className="m-0 max-w-[70ch] pl-7 text-[0.84rem] leading-relaxed text-ink-3">
                   <b className="text-ink-2">{top.now.r[0]} in 2025:</b> {bits.join(" · ")}.
                 </p>
+              );
+            })()}
+            {fcPct !== null && (
+              <p className="m-0 max-w-[70ch] pl-7 text-[0.86rem] leading-relaxed text-ink-3">
+                <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-clock" />{" "}
+                Simulating the next {a.nextPick && a.cur ? Math.max(0, a.nextPick - a.cur) : ""} picks
+                against every rival roster… {fcPct}%
+              </p>
+            )}
+            {fc && fc.picksAhead > 0 && (() => {
+              const hot = fc.runs.filter((r) => r.p >= 0.5 && r.expected >= 2).sort((x, y) => y.p - x.p);
+              if (!hot.length) return null;
+              return (
+                <p className="m-0 max-w-[70ch] pl-7 text-[0.86rem] leading-relaxed text-clock">
+                  <b>Run incoming:</b>{" "}
+                  {hot.slice(0, 2).map((r) => {
+                    const nd = fc.needs.find((x) => x.pos === r.pos);
+                    return `${Math.round(r.p * 100)}% chance three or more ${PLAINSHORT[r.pos]}s go before your turn (about ${r.expected.toFixed(1)} expected${nd ? `, and ${nd.need} of the ${nd.of} teams ahead of you still need one` : ""})`;
+                  }).join("; ")}
+                  . Simulated across {fc.sims.toLocaleString()} versions of the next{" "}
+                  {fc.picksAhead} picks — this comes from what those rosters actually hold, which
+                  is the part ADP cannot see.
+                </p>
+              );
+            })()}
+            {a.lineup && a.lineup.starters >= 4 && (
+              <p className="m-0 max-w-[70ch] pl-7 text-[0.86rem] leading-relaxed text-ink-3">
+                <b className="text-ink-2">Your starters so far:</b> about{" "}
+                <b className="text-ink">{a.lineup.mid.toFixed(0)}</b> pts in a typical week — a bad
+                one {a.lineup.floor.toFixed(0)}, a good one {a.lineup.ceiling.toFixed(0)}. From
+                measured 2025 week-to-week ranges, not from the projection alone.
+              </p>
+            )}
+            {(() => {
+              const weeks = Object.entries(a.byeCount)
+                .map(([w, n]) => ({ w: Number(w), n }))
+                .filter((x) => x.n >= 1)
+                .sort((x, y) => x.w - y.w);
+              if (!weeks.length || a.myCount < 3) return null;
+              return (
+                <div className="flex flex-wrap items-center gap-1.5 pl-7 text-[0.8rem] text-ink-3">
+                  <span>Byes:</span>
+                  {weeks.map((x) => (
+                    <span
+                      key={x.w}
+                      className={`rounded px-1.5 py-0.5 font-mono ${
+                        x.n >= 3 ? "bg-avoid/20 text-avoid" : x.n === 2 ? "bg-risky/20 text-risky" : "bg-line-soft text-ink-3"
+                      }`}
+                      title={`${x.n} of your players are off in week ${x.w}`}
+                    >
+                      wk{x.w} ×{x.n}
+                    </span>
+                  ))}
+                </div>
               );
             })()}
             {(a.qb === 0 || a.te === 0) && a.myCount >= 4 && (
@@ -620,7 +712,29 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
             {note}
           </button>
         </td>
-        <td><Sticker pos={p} /></td>
+        <td>
+          <Sticker pos={p} />
+          {(() => {
+            /* Live value flag. A player is not cheap because a list says so — he is cheap
+               because the room has passed on him this many times already. Recomputed every
+               pick, so it moves as the draft moves. */
+            const sadp = SLP[n]?.adp;
+            if (!sadp || DS[n]) return null;
+            const slid = picksMade + 1 - sadp;
+            if (slid < 6) return null;
+            const big = slid >= 15;
+            return (
+              <span
+                className={`ml-1 rounded-sm border px-1 py-px font-mono text-[0.62rem] uppercase tracking-wide ${
+                  big ? "border-value bg-value/15 text-value font-bold" : "border-value/40 text-value"
+                }`}
+                title={`Still here ${Math.round(slid)} picks after the room usually takes him (ADP ${sadp.toFixed(1)})`}
+              >
+                {big ? `fell ${Math.round(slid)}` : `-${Math.round(slid)}`}
+              </span>
+            );
+          })()}
+        </td>
         <td className="num">
           {SLP[n]?.adp !== undefined ? SLP[n].adp!.toFixed(1) : adp.toFixed(1)}
           {SLP[n]?.adp !== undefined && (
