@@ -168,12 +168,20 @@ for (const seat of SEATS) {
   console.log(`  open with            pos   adp     pts/wk            floor  ceiling   worlds`);
   console.log('  ' + '-'.repeat(74));
   const top = res[0];
+  const RARE = Math.round(W / 2) * 0.5;
   for (const r of res) {
     const d = r.ppg - top.ppg;
     const sed = Math.sqrt(r.se ** 2 + top.se ** 2);
     const mark = r === top ? '  <-- best' : Math.abs(d) < 2 * sed ? '  (tied)' : '';
-    console.log(`  ${r.name.padEnd(20)} ${r.pos.padEnd(5)} ${r.adp.toFixed(1).padStart(5)}  ${r.ppg.toFixed(2)} ±${r.se.toFixed(2)}   ${r.floor.toFixed(0).padStart(5)}  ${r.ceil.toFixed(0).padStart(6)}   ${String(r.n).padStart(6)}${mark}`);
+    /* A row built from few worlds is not just noisier — it is a DIFFERENT question. He only
+       reached this seat in the worlds where the room drafted around him, and those same
+       worlds leave a different board behind for rounds 2-14. Comparing him against someone
+       who is always there compares two different leagues, not two different picks. */
+    const bias = r.n < RARE ? '  ** conditioned on him falling — see note' : '';
+    console.log(`  ${r.name.padEnd(20)} ${r.pos.padEnd(5)} ${r.adp.toFixed(1).padStart(5)}  ${r.ppg.toFixed(2)} ±${r.se.toFixed(2)}   ${r.floor.toFixed(0).padStart(5)}  ${r.ceil.toFixed(0).padStart(6)}   ${String(r.n).padStart(6)}${mark}${bias}`);
   }
+  if (res.some(r => r.n < RARE))
+    console.log(`\n  ** These reached the seat in under half the worlds. Their average is taken over the\n     drafts where the room let them slide, which is not the same set of drafts as the rows\n     above them — read them as "if he falls", never as a straight comparison.`);
   console.log('');
 }
 console.log('  "tied" = the gap does not clear two combined standard errors. Treat those as equal.\n');
