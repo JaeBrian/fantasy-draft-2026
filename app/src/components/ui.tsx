@@ -315,3 +315,14 @@ export function NewsChip({ name }: { name: string }) {
     </Tip>
   );
 }
+
+/** The tag on its own, for the news page where the player is already named. */
+export function NewsTag({ tag }: { tag: string }) {
+  const meta = NEWS_TAGS[tag];
+  if (!meta) return null;
+  return (
+    <span className={`inline-flex items-center rounded-sm border px-1 font-mono text-[0.58rem] font-bold tracking-tight ${meta.cls}`}>
+      {meta.label}
+    </span>
+  );
+}
