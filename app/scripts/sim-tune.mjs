@@ -114,7 +114,7 @@ function season(slot, K, w) {
   }
   return weekly(teams[slot].map(p=>({...p,real:realise(p,900000+w)})));
 }
-const W = 3000;
+const W = 5000;
 function evaluate(K) {
   const all = [];
   for (const slot of [1,6,10]) for (let w=0; w<W; w++) all.push(season(slot,K,w));
@@ -124,13 +124,7 @@ function evaluate(K) {
 }
 
 const SWEEP = {
-  gap:      [0.0, 0.5, 1.0, 1.25, 1.75, 2.5],
-  bye2:     [1.0, 0.94, 0.88, 0.80],
-  bye3:     [1.0, 0.88, 0.78, 0.65],
-  rbFilled: [1.0, 0.9, 0.8, 0.65],
-  rbDeep:   [0.7, 0.55, 0.45, 0.3],
-  teFirst:  [1.1, 0.95, 0.85, 0.7, 0.5],
-  qbFirst:  [1.4, 1.15, 1.0, 0.8],
+  teFirst:  [0.95, 0.85, 0.75, 0.65, 0.55, 0.45],
 };
 
 console.log(`\nPARAMETER SWEEP — ${W.toLocaleString()} seasons per seat per value, three seats.`);

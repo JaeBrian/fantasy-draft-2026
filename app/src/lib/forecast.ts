@@ -60,6 +60,11 @@ export interface Forecast {
   needs: { pos: Pos; need: number; of: number }[];
   sims: number;
   picksAhead: number;
+  /** each team picking before you: what they already hold and what the sim expects them to
+   *  take. This is the forecast's working, and it is the part worth reading — a number saying
+   *  62% tells you nothing you can argue with, but "the team at 7 has no back and four of the
+   *  next six are in the same position" is something you can weigh yourself. */
+  room: { pick: number; team: number; has: string; needs: Pos[]; likely: { pos: Pos; p: number }[] }[];
 }
 
 /** Roster each team holds right now, rebuilt from the pick order. */
@@ -109,8 +114,30 @@ export function runForecast(
   const POOL = pricePool();
   const live = POOL.filter((p) => !DS[p.name]);
   const surviveHits: Record<string, number> = {};
+  const took: Record<number, Record<string, number>> = {};
   const takenSum: Record<string, number> = { QB: 0, RB: 0, WR: 0, TE: 0 };
   const runHits: Record<string, number> = { QB: 0, RB: 0, WR: 0, TE: 0 };
+
+  /* who is between you and your next turn, and what each of them is short of */
+  const room: Forecast["room"] = [];
+  {
+    for (let pk = onClock ? cur + 1 : cur; pk < target; pk++) {
+      const t = snapTeam(pk);
+      if (t === mySlot) continue;
+      const c = counts(base[t] ?? []);
+      const flexOpen = c.RB + c.WR + c.TE < 7;
+      const needs: Pos[] = [];
+      (["QB", "RB", "WR", "TE"] as Pos[]).forEach((ps) => {
+        const need = ps === "QB" ? c.QB < 1 : ps === "TE" ? c.TE < 1 : c[ps] < 2;
+        if (need) needs.push(ps);
+      });
+      if (flexOpen && !needs.includes("RB")) needs.push("RB");
+      if (flexOpen && !needs.includes("WR")) needs.push("WR");
+      const has = (["QB", "RB", "WR", "TE"] as Pos[])
+        .filter((ps) => c[ps] > 0).map((ps) => `${c[ps]}${ps}`).join(" ") || "nothing yet";
+      room.push({ pick: pk, team: t, has, needs, likely: [] });
+    }
+  }
 
   /* how many of the teams ahead of you still need each spot — the reason a run happens */
   const needs: Forecast["needs"] = [];
@@ -146,6 +173,7 @@ export function runForecast(
         for (let pk = onClock ? cur + 1 : cur; pk < target; pk++) {
           const t = snapTeam(pk);
           if (t === mySlot) continue;
+          const slot = room.find((x) => x.pick === pk);
           /* Intel is a fact, not a price. Pricing a pinned player at his pick still let another
              player's random noise beat him to it, so "he goes at 8" came out as 92% rather than
              certain. If you say he goes at 8, he is taken at 8. */
@@ -154,6 +182,7 @@ export function runForecast(
             gone.add(pinnedNow.name);
             c[t][pinnedNow.pos]++;
             tally[pinnedNow.pos]++;
+            if (slot) took[pk] = (took[pk] ?? {}), took[pk][pinnedNow.pos] = (took[pk][pinnedNow.pos] ?? 0) + 1;
             continue;
           }
           let best: Priced | null = null;
@@ -175,6 +204,7 @@ export function runForecast(
           gone.add(best.name);
           c[t][best.pos]++;
           tally[best.pos]++;
+          if (slot) { took[pk] = (took[pk] ?? {}); took[pk][best.pos] = (took[pk][best.pos] ?? 0) + 1; }
         }
         for (const p of live) if (!gone.has(p.name)) surviveHits[p.name] = (surviveHits[p.name] ?? 0) + 1;
         (["QB", "RB", "WR", "TE"] as Pos[]).forEach((ps) => {
@@ -194,7 +224,14 @@ export function runForecast(
           taken[ps] = takenSum[ps] / iters;
           runs.push({ pos: ps, p: runHits[ps] / iters, expected: takenSum[ps] / iters });
         });
-        resolve({ survive, taken, runs, needs, sims: iters, picksAhead });
+        room.forEach((r) => {
+          const t = took[r.pick] ?? {};
+          r.likely = (Object.entries(t) as [Pos, number][])
+            .map(([pos, n]) => ({ pos, p: n / iters }))
+            .sort((a, b) => b.p - a.p)
+            .slice(0, 2);
+        });
+        resolve({ survive, taken, runs, needs, room, sims: iters, picksAhead });
       }
     };
     if (picksAhead === 0) {
@@ -204,7 +241,7 @@ export function runForecast(
         survive,
         taken: { QB: 0, RB: 0, WR: 0, TE: 0 },
         runs: (["RB", "WR", "TE", "QB"] as Pos[]).map((pos) => ({ pos, p: 0, expected: 0 })),
-        needs, sims: 0, picksAhead: 0,
+        needs, room, sims: 0, picksAhead: 0,
       });
     } else step();
   });

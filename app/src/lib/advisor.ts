@@ -3,6 +3,7 @@ import { SLP } from "../sleeper";
 import { PROJ } from "../projections";
 import { CEIL } from "../ceilings";
 import { pinnedPick } from "./intel";
+import { riskOf } from "./risk";
 
 export type Mark = "gone" | "mine";
 export type DraftState = Record<string, Mark>;
@@ -105,13 +106,40 @@ const PPG: Record<Pos, (r: number) => number> = {
  * The board now does the thing it is actually good at — the verdict, tier and tags applied
  * further down as multipliers. That is our research edge over the projection, not a
  * substitute for having one. */
+/* Sleeper projects points in games a player PLAYS. What you actually get is that times the
+ * share of the season he is available, and those differ by a lot more than the projections do.
+ *
+ * The advisor was scoring on the raw figure while the simulations applied a chance of missing
+ * time, so the two disagreed systematically — and always in the same direction, because
+ * running backs carry a higher base miss rate than receivers. At Emily's third pick it had her
+ * taking Javonte Williams (12.84 projected, 30% chance of missing a stretch) over Zay Flowers
+ * (12.61, 22%), and the simulation preferred Flowers by 1.21 pts/wk against a 0.63 threshold.
+ * Javonte grades higher only if you assume he plays every week.
+ *
+ * When the sim does take a player out he still returns for roughly 60% of the season, so the
+ * expected multiplier is 1 - 0.4 x pMiss. That is the same arithmetic the simulation performs,
+ * moved to where the recommendation is made. */
+const availOf = (name: string, pos: Pos, verdict: Verdict): number =>
+  1 - 0.4 * riskOf(name, pos, verdict).pMiss;
+
 const projOf = (name: string, pos: Pos, posRank: number): number =>
   PROJ[name] !== undefined ? PROJ[name] : PPG[pos](posRank);
 
 /** Replacement level: what the last startable player at each position is actually projected
  *  for, read off the real distribution rather than assumed from a curve. A 12-team lineup
  *  starts 1 QB, 2 RB, 2 WR, 1 TE and 2 flex, so the flex spots push RB and WR deeper. */
-const REPL_RANK: Record<Pos, number> = { QB: 14, RB: 32, WR: 34, TE: 13, K: 1, DST: 1 };
+/* Replacement level, MEASURED rather than assumed. Simulating 3,000 drafted leagues and
+ * counting who actually appears in the twelve starting lineups gives 12.0 quarterbacks, 31.3
+ * backs, 39.5 receivers and 13.2 tight ends per league — so the last starter sits at roughly
+ * QB12, RB31, WR40, TE13.
+ *
+ * The old WR34 was the load-bearing error. Both flex spots go to receivers far more often than
+ * that implied, and because RB value falls away faster than WR (10.8 at RB24 down to 8.9 by
+ * RB32, against 10.7 to 9.7 for WR), calling RB32 replacement while calling WR34 replacement
+ * handed running backs a structural edge in every comparison the advisor made. It showed up as
+ * the simulation preferring a receiver the advisor had ranked behind a back — twice, at two
+ * different seats, which is what sent us looking. */
+const REPL_RANK: Record<Pos, number> = { QB: 12, RB: 31, WR: 40, TE: 13, K: 1, DST: 1 };
 const REPL: Record<Pos, number> = { QB: 0, RB: 0, WR: 0, TE: 0, K: 7, DST: 7 };
 const GP: Record<string, { pr: number; proj: number; vorp: number }> = {};
 {
@@ -119,7 +147,8 @@ const GP: Record<string, { pr: number; proj: number; vorp: number }> = {};
   const byPos: Record<string, number[]> = { QB: [], RB: [], WR: [], TE: [] };
   P.forEach((r) => {
     const pr = ++c[r[1]];
-    const proj = projOf(r[0], r[1], pr);
+    /* expected points, not healthy-week points */
+    const proj = projOf(r[0], r[1], pr) * availOf(r[0], r[1], r[4]);
     GP[r[0]] = { pr, proj, vorp: 0 };
     byPos[r[1]]?.push(proj);
   });
