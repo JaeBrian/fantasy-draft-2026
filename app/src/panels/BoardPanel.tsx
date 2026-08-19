@@ -7,6 +7,7 @@ import { usePersistent } from "../lib/store";
 import { SLP } from "../sleeper";
 import { CEIL } from "../ceilings";
 import { runForecast, type Forecast } from "../lib/forecast";
+import { getPins, setPin, togglePin, parseIntel, pinnedPick } from "../lib/intel";
 
 type SleeperPick = { pick_no: number; draft_slot: number; metadata?: { first_name?: string; last_name?: string; team?: string } };
 const normName = (s: string) =>
@@ -308,6 +309,32 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked }: { DS: DraftState; mySl
                 </p>
               );
             })()}
+            {(() => {
+              /* Is this room drafting ahead of the market or behind it? Compare every pick
+                 made to that player's ADP. It matters more than it sounds: if the room is
+                 running three picks hot, every survival number ADP implies is optimistic, and
+                 the players you are counting on will not reach you. */
+              const diffs: number[] = [];
+              ord.forEach((n, i) => {
+                const ad = SLP[n]?.adp;
+                if (ad !== undefined) diffs.push(ad - (i + 1));
+              });
+              if (diffs.length < 12) return null;
+              const recent = diffs.slice(-24);
+              const avg = recent.reduce((a, b) => a + b, 0) / recent.length;
+              if (Math.abs(avg) < 2.5) return null;
+              return (
+                <p className="m-0 max-w-[70ch] pl-7 text-[0.86rem] leading-relaxed text-ink-3">
+                  <b className="text-ink-2">Room tempo:</b> the last {recent.length} picks have run{" "}
+                  <b className={avg > 0 ? "text-avoid" : "text-value"}>
+                    {Math.abs(avg).toFixed(1)} picks {avg > 0 ? "ahead of" : "behind"} ADP
+                  </b>
+                  {avg > 0
+                    ? " — this room reaches, so anyone you are counting on will reach you less often than his ADP suggests."
+                    : " — this room waits, so value is sliding further than usual. Be patient."}
+                </p>
+              );
+            })()}
             {fcPct !== null && (
               <p className="m-0 max-w-[70ch] pl-7 text-[0.86rem] leading-relaxed text-ink-3">
                 <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-clock" />{" "}
@@ -483,6 +510,22 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
    * The other eleven seats pick with the same model the simulations use, straight into the
    * real draft state, so the advisor and the board behave exactly as they will on the night. */
   const [practice, setPractice] = usePersistent("fd26-practice", false, (r) => r === "1", (v) => (v ? "1" : "0"));
+  /* League intel — things you know that no market average does. Kept in component state only
+     to force a re-render; the values themselves live in lib/intel so the engine can read them
+     without the UI having to pass them down through everything. */
+  const [pins, setPinsState] = useState(() => ({ ...getPins() }));
+  const [intelText, setIntelText] = useState("");
+  const [intelErr, setIntelErr] = useState<string | null>(null);
+  const applyIntel = () => {
+    const parsed = parseIntel(intelText, P.map((r) => r[0]));
+    if (!parsed) { setIntelErr("Try: James Cook 8"); return; }
+    setPin(parsed.name, parsed.pick);
+    setPinsState({ ...getPins() });
+    setIntelText("");
+    setIntelErr(null);
+  };
+  const dropPin = (n: string) => { setPin(n, null); setPinsState({ ...getPins() }); };
+  const flipPin = (n: string) => { togglePin(n); setPinsState({ ...getPins() }); };
   const myPickCount = Object.values(DS).filter((v) => v === "mine").length;
   const picksMade = Object.keys(DS).length;
   const practiceOver = myPickCount >= 14;
@@ -718,8 +761,41 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
             /* Live value flag. A player is not cheap because a list says so — he is cheap
                because the room has passed on him this many times already. Recomputed every
                pick, so it moves as the draft moves. */
+            /* your own intel outranks anything the market says about him */
+            const pin = pinnedPick(n);
+            if (pin !== undefined && !DS[n]) {
+              return (
+                <span
+                  className="ml-1 rounded-sm border border-clock bg-clock/15 px-1 py-px font-mono text-[0.62rem] uppercase tracking-wide text-clock"
+                  title={`You told the tool he goes at ${pin}. Every survival number for him uses that, not his ADP.`}
+                >
+                  goes {pin}
+                </span>
+              );
+            }
             const sadp = SLP[n]?.adp;
-            if (!sadp || DS[n]) return null;
+            if (!sadp) return null;
+            if (DS[n]) {
+              /* already gone — show what the room paid. A player taken well before his ADP is
+                 a reach, and reaches are contagious: they pull the whole board forward and
+                 make everyone else harder to get than any list suggests. */
+              const at = ord.indexOf(n) + 1;
+              if (at <= 0) return null;
+              const over = sadp - at;
+              if (Math.abs(over) < 8) return null;
+              return (
+                <span
+                  className={`ml-1 rounded-sm border px-1 py-px font-mono text-[0.62rem] uppercase tracking-wide ${
+                    over > 0 ? "border-avoid/50 text-avoid" : "border-ink-3/40 text-ink-3"
+                  }`}
+                  title={over > 0
+                    ? `Taken at ${at}, ${Math.round(over)} picks before his ADP of ${sadp.toFixed(1)} — a reach`
+                    : `Taken at ${at}, ${Math.round(-over)} picks after his ADP of ${sadp.toFixed(1)} — the room let him slide`}
+                >
+                  {over > 0 ? `reach ${Math.round(over)}` : `late ${Math.round(-over)}`}
+                </span>
+              );
+            }
             const slid = picksMade + 1 - sadp;
             if (slid < 6) return null;
             const big = slid >= 15;
@@ -835,6 +911,17 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
           <button type="button" className="btn" disabled={!canUndo} onClick={undo}>
             Undo
           </button>
+          <span className="inline-flex items-center gap-1">
+            <input
+              value={intelText}
+              onChange={(e) => { setIntelText(e.target.value); setIntelErr(null); }}
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); applyIntel(); } }}
+              placeholder="Intel → James Cook 8"
+              title="Something you know that ADP does not — a player you are sure goes at a particular pick. Type a name and the pick, then Enter."
+              className="w-[184px] rounded border border-line-soft bg-raised px-2 py-1 text-[0.82rem] text-ink placeholder:text-ink-3"
+            />
+            {intelErr && <span className="text-[0.72rem] text-avoid">{intelErr}</span>}
+          </span>
           <button
             type="button"
             className={`btn ${practice ? "on" : ""}`}
@@ -912,6 +999,40 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
 
       <div className="flex flex-col gap-5 min-[1200px]:flex-row-reverse min-[1200px]:items-start">
         <div className="contents min-[1200px]:z-30 min-[1200px]:flex min-[1200px]:flex-col min-[1200px]:gap-3 min-[1200px]:sticky min-[1200px]:top-[calc(var(--hdr,86px)+6px)] min-[1200px]:w-[360px] min-[1200px]:shrink-0 min-[1200px]:max-h-[calc(100vh-var(--hdr,86px)-24px)] min-[1200px]:overflow-y-auto min-[1200px]:overscroll-contain">
+      {Object.keys(pins).length > 0 && (
+        <div className="mb-3 flex flex-wrap items-center gap-1.5 text-[0.8rem]">
+          <span className="text-ink-3">Your intel — click one to switch it on or off:</span>
+          {Object.entries(pins).sort((a, b) => a[1].pick - b[1].pick).map(([n, pin]) => (
+            <span key={n} className="inline-flex items-center">
+              <button
+                type="button"
+                onClick={() => flipPin(n)}
+                title={pin.on
+                  ? `On — the model is treating ${n} as going at ${pin.pick}. Click to switch it off and see what changes.`
+                  : `Off — ${n} is being priced by the market again. Click to apply your read.`}
+                className={`rounded-l border py-0.5 pl-1.5 pr-1 font-mono text-[0.75rem] ${
+                  pin.on
+                    ? "border-clock bg-clock/15 text-clock"
+                    : "border-line-soft text-ink-3 line-through decoration-ink-3/60"
+                }`}
+              >
+                {n} → {pin.pick}
+              </button>
+              <button
+                type="button"
+                onClick={() => dropPin(n)}
+                title="Forget this one"
+                className={`rounded-r border border-l-0 px-1 py-0.5 font-mono text-[0.75rem] ${
+                  pin.on ? "border-clock text-clock" : "border-line-soft text-ink-3"
+                } hover:border-avoid hover:text-avoid`}
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+
       {grade && (
         <div className="mb-4 rounded-lg border border-clock/40 bg-raised px-4 py-3">
           <div className="display mb-1 text-[0.8rem] uppercase tracking-wide text-clock">Practice draft complete</div>

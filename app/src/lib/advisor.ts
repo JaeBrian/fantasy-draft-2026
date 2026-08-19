@@ -2,6 +2,7 @@ import { P, BYE, CUFFS, MKT, VEGAS, type PlayerRow, type Pos, type Verdict } fro
 import { SLP } from "../sleeper";
 import { PROJ } from "../projections";
 import { CEIL } from "../ceilings";
+import { pinnedPick } from "./intel";
 
 export type Mark = "gone" | "mine";
 export type DraftState = Record<string, Mark>;
@@ -164,12 +165,19 @@ export const PLAINSHORT: Record<string, string> = {
  *  and lists QBs ~37 picks earlier than a 1-QB league drafts them; pricing on it made the model
  *  expect 3 QBs gone by the end of round 3 when the real number is 2. */
 export const mktADP = (row: PlayerRow): number => {
+  /* League intel wins outright. If you know he goes at 8, he goes at 8 — a market average
+   * built from thousands of other people's drafts is not evidence about this room. */
+  const pin = pinnedPick(row[0]);
+  if (pin !== undefined) return pin;
   const m = MKT[row[0]];
   const ffc = m ? m[0] : row[3];
   const sadp = SLP[row[0]]?.adp;
   return sadp !== undefined ? 0.75 * sadp + 0.25 * ffc : ffc;
 };
 const sigmaOf = (row: PlayerRow): number => {
+  /* a pin is a near-certainty, so collapse the spread around it rather than leaving the
+     model hedging against a market it has been told to ignore */
+  if (pinnedPick(row[0]) !== undefined) return 0.8;
   const m = MKT[row[0]];
   return Math.max(2.2, m ? m[1] : 0, 0.13 * mktADP(row));
 };
