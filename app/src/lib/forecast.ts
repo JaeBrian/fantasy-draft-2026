@@ -33,7 +33,7 @@ function pricePool(): Priced[] {
       pos: r[1] as Pos,
       row: r,
       adp,
-      sig: pinnedPick(r[0]) !== undefined ? 0.8 : Math.max(2.2, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * adp),
+      sig: pinnedPick(r[0]) !== undefined ? 0.8 : Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * adp),
     });
   });
   return out;

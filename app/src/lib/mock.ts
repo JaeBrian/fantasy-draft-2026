@@ -1,4 +1,4 @@
-import { P, type PlayerRow, type Pos } from "../data";
+import { P, MKT, type PlayerRow, type Pos } from "../data";
 import { PROJ } from "../projections";
 import { mktADP, snapTeam, type DraftState } from "./advisor";
 
@@ -18,7 +18,11 @@ P.forEach((r) => {
   ROW[r[0]] = r;
 });
 
-const sigmaOf = (r: PlayerRow): number => Math.max(2.2, 0.13 * mktADP(r));
+/* Same measured spread the rest of the model uses, so a practice room behaves like a real
+   one. With a flat floor the elite tier drifted around the first five picks; nobody's league
+   leaves the consensus top three on the board. */
+const sigmaOf = (r: PlayerRow): number =>
+  Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * mktADP(r));
 
 /** Box-Muller, seeded per call site so a practice draft is not deterministic. */
 function gauss(): number {

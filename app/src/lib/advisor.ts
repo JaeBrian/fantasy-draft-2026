@@ -174,12 +174,23 @@ export const mktADP = (row: PlayerRow): number => {
   const sadp = SLP[row[0]]?.adp;
   return sadp !== undefined ? 0.75 * sadp + 0.25 * ffc : ffc;
 };
+/* How far a player can slide from his expected pick.
+ *
+ * This used to floor at 2.2 picks for everyone, which was badly wrong at the top and doing no
+ * work anywhere else. The mock-draft data measures the real spread and it grows steeply with
+ * ADP — median 1.3 picks inside the first round, 3.2 by pick 36, 6.1 by 72, 15.3 past 121 —
+ * so 0.13 x ADP already covers the deep board. The floor only ever bit at the very top, where
+ * the market is most certain of all: Gibbs is measured at 0.7 and Puka at 0.5, and a 2.2 floor
+ * had the model believing Gibbs could last to pick 6. No real league leaves him there.
+ *
+ * So: trust the measurement where we have one, keep the ADP-scaled estimate for the 18 players
+ * we do not, and floor at half a pick rather than two. */
 const sigmaOf = (row: PlayerRow): number => {
   /* a pin is a near-certainty, so collapse the spread around it rather than leaving the
      model hedging against a market it has been told to ignore */
   if (pinnedPick(row[0]) !== undefined) return 0.8;
   const m = MKT[row[0]];
-  return Math.max(2.2, m ? m[1] : 0, 0.13 * mktADP(row));
+  return Math.max(0.5, m ? m[1] : 0, 0.13 * mktADP(row));
 };
 
 function ncdf(z: number): number {

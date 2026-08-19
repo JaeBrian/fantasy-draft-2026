@@ -50,7 +50,7 @@ const POOL = [];
       proj: PPG[r[1]](pr) * (RISK[tag] || 1) * hurt,
       cv: BASE_CV[r[1]] * (RISK_CV[tag] || 1) * (s.inj ? 1.15 : 1),
       pMiss: BASE_MISS[r[1]] * (tag === 'risk' ? 1.3 : tag === 'avoid' ? 1.5 : 1) * (s.inj ? 1.4 : 1),
-      mkt, sig: Math.max(2.2, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * mkt), bye: BYE[r[2]] || 0,
+      mkt, sig: Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * mkt), bye: BYE[r[2]] || 0,
     });
   });
 }
