@@ -7,6 +7,7 @@ import { usePersistent } from "../lib/store";
 import { SLP } from "../sleeper";
 import { CEIL } from "../ceilings";
 import { runForecast, type Forecast } from "../lib/forecast";
+import { getPins, setPin, parseIntel, pinnedPick } from "../lib/intel";
 
 type SleeperPick = { pick_no: number; draft_slot: number; metadata?: { first_name?: string; last_name?: string; team?: string } };
 const normName = (s: string) =>
@@ -509,6 +510,21 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
    * The other eleven seats pick with the same model the simulations use, straight into the
    * real draft state, so the advisor and the board behave exactly as they will on the night. */
   const [practice, setPractice] = usePersistent("fd26-practice", false, (r) => r === "1", (v) => (v ? "1" : "0"));
+  /* League intel — things you know that no market average does. Kept in component state only
+     to force a re-render; the values themselves live in lib/intel so the engine can read them
+     without the UI having to pass them down through everything. */
+  const [pins, setPinsState] = useState<Record<string, number>>(() => ({ ...getPins() }));
+  const [intelText, setIntelText] = useState("");
+  const [intelErr, setIntelErr] = useState<string | null>(null);
+  const applyIntel = () => {
+    const parsed = parseIntel(intelText, P.map((r) => r[0]));
+    if (!parsed) { setIntelErr("Try: James Cook 8"); return; }
+    setPin(parsed.name, parsed.pick);
+    setPinsState({ ...getPins() });
+    setIntelText("");
+    setIntelErr(null);
+  };
+  const dropPin = (n: string) => { setPin(n, null); setPinsState({ ...getPins() }); };
   const myPickCount = Object.values(DS).filter((v) => v === "mine").length;
   const picksMade = Object.keys(DS).length;
   const practiceOver = myPickCount >= 14;
@@ -744,6 +760,18 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
             /* Live value flag. A player is not cheap because a list says so — he is cheap
                because the room has passed on him this many times already. Recomputed every
                pick, so it moves as the draft moves. */
+            /* your own intel outranks anything the market says about him */
+            const pin = pinnedPick(n);
+            if (pin !== undefined && !DS[n]) {
+              return (
+                <span
+                  className="ml-1 rounded-sm border border-clock bg-clock/15 px-1 py-px font-mono text-[0.62rem] uppercase tracking-wide text-clock"
+                  title={`You told the tool he goes at ${pin}. Every survival number for him uses that, not his ADP.`}
+                >
+                  goes {pin}
+                </span>
+              );
+            }
             const sadp = SLP[n]?.adp;
             if (!sadp) return null;
             if (DS[n]) {
@@ -882,6 +910,17 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
           <button type="button" className="btn" disabled={!canUndo} onClick={undo}>
             Undo
           </button>
+          <span className="inline-flex items-center gap-1">
+            <input
+              value={intelText}
+              onChange={(e) => { setIntelText(e.target.value); setIntelErr(null); }}
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); applyIntel(); } }}
+              placeholder="Intel → James Cook 8"
+              title="Something you know that ADP does not — a player you are sure goes at a particular pick. Type a name and the pick, then Enter."
+              className="w-[184px] rounded border border-line-soft bg-raised px-2 py-1 text-[0.82rem] text-ink placeholder:text-ink-3"
+            />
+            {intelErr && <span className="text-[0.72rem] text-avoid">{intelErr}</span>}
+          </span>
           <button
             type="button"
             className={`btn ${practice ? "on" : ""}`}
@@ -959,6 +998,23 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
 
       <div className="flex flex-col gap-5 min-[1200px]:flex-row-reverse min-[1200px]:items-start">
         <div className="contents min-[1200px]:z-30 min-[1200px]:flex min-[1200px]:flex-col min-[1200px]:gap-3 min-[1200px]:sticky min-[1200px]:top-[calc(var(--hdr,86px)+6px)] min-[1200px]:w-[360px] min-[1200px]:shrink-0 min-[1200px]:max-h-[calc(100vh-var(--hdr,86px)-24px)] min-[1200px]:overflow-y-auto min-[1200px]:overscroll-contain">
+      {Object.keys(pins).length > 0 && (
+        <div className="mb-3 flex flex-wrap items-center gap-1.5 text-[0.8rem]">
+          <span className="text-ink-3">Your intel, overriding the market:</span>
+          {Object.entries(pins).sort((a, b) => a[1] - b[1]).map(([n, pk]) => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => dropPin(n)}
+              title="Click to remove"
+              className="rounded border border-clock/50 bg-clock/10 px-1.5 py-0.5 font-mono text-[0.75rem] text-clock hover:border-avoid hover:text-avoid"
+            >
+              {n} → {pk} ×
+            </button>
+          ))}
+        </div>
+      )}
+
       {grade && (
         <div className="mb-4 rounded-lg border border-clock/40 bg-raised px-4 py-3">
           <div className="display mb-1 text-[0.8rem] uppercase tracking-wide text-clock">Practice draft complete</div>

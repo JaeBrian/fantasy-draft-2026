@@ -1,6 +1,7 @@
 import { P, MKT, type PlayerRow, type Pos } from "../data";
 import { SLP } from "../sleeper";
 import { mktADP, snapTeam, type DraftState } from "./advisor";
+import { pinnedPick } from "./intel";
 
 /* Live forecast of the picks between now and your next turn.
  *
@@ -18,18 +19,25 @@ import { mktADP, snapTeam, type DraftState } from "./advisor";
  * Chunked deliberately: you have a minute on the clock, so accuracy is cheap, but the tab must
  * stay responsive while it runs. Each slice yields to the browser and reports progress. */
 
-const POOL: { name: string; pos: Pos; row: PlayerRow; adp: number; sig: number }[] = [];
-P.forEach((r) => {
-  if (!["QB", "RB", "WR", "TE"].includes(r[1])) return;
-  const adp = mktADP(r);
-  POOL.push({
-    name: r[0],
-    pos: r[1] as Pos,
-    row: r,
-    adp,
-    sig: Math.max(2.2, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * adp),
+/* Priced fresh on every forecast rather than cached at module load. A pin added mid-draft has
+ * to reach this, and a stale pool would go on quoting the market's price for a player after
+ * you have told the tool otherwise. The cost is nothing beside the simulation it feeds. */
+type Priced = { name: string; pos: Pos; row: PlayerRow; adp: number; sig: number };
+function pricePool(): Priced[] {
+  const out: Priced[] = [];
+  P.forEach((r) => {
+    if (!["QB", "RB", "WR", "TE"].includes(r[1])) return;
+    const adp = mktADP(r);
+    out.push({
+      name: r[0],
+      pos: r[1] as Pos,
+      row: r,
+      adp,
+      sig: pinnedPick(r[0]) !== undefined ? 0.8 : Math.max(2.2, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * adp),
+    });
   });
-});
+  return out;
+}
 const ROW: Record<string, PlayerRow> = {};
 P.forEach((r) => { ROW[r[0]] = r; });
 
@@ -98,6 +106,7 @@ export function runForecast(
   const picksAhead = Math.max(0, target - cur - (onClock ? 1 : 0));
 
   const base = rosters(ord);
+  const POOL = pricePool();
   const live = POOL.filter((p) => !DS[p.name]);
   const surviveHits: Record<string, number> = {};
   const takenSum: Record<string, number> = { QB: 0, RB: 0, WR: 0, TE: 0 };
@@ -137,10 +146,23 @@ export function runForecast(
         for (let pk = onClock ? cur + 1 : cur; pk < target; pk++) {
           const t = snapTeam(pk);
           if (t === mySlot) continue;
-          let best: (typeof POOL)[number] | null = null;
+          /* Intel is a fact, not a price. Pricing a pinned player at his pick still let another
+             player's random noise beat him to it, so "he goes at 8" came out as 92% rather than
+             certain. If you say he goes at 8, he is taken at 8. */
+          const pinnedNow = live.find((x) => !gone.has(x.name) && pinnedPick(x.name) === pk);
+          if (pinnedNow) {
+            gone.add(pinnedNow.name);
+            c[t][pinnedNow.pos]++;
+            tally[pinnedNow.pos]++;
+            continue;
+          }
+          let best: Priced | null = null;
           let bs = Infinity;
           for (const p of live) {
             if (gone.has(p.name)) continue;
+            /* and he cannot be taken before the pick you named — that is what naming it means */
+            const pinAt = pinnedPick(p.name);
+            if (pinAt !== undefined && pinAt > pk) continue;
             let s = p.adp + gauss() * p.sig * 0.8;
             const rc = c[t];
             if (p.pos === "QB" && rc.QB >= 1) s += 60;
