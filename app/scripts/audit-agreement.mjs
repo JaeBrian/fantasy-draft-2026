@@ -149,7 +149,11 @@ for (const slot of [1, 6, 10]) {
     for (const n of cands) {
       const out = [];
       for (let w = 0; w < W; w++) { const v = playFrom(DS, slot, n, w); if (v !== null) out.push(v); }
-      if (out.length > W * 0.2) scored.push({ n, m: mean(out) });
+      if (out.length > W * 0.2) {
+        const m = mean(out);
+        const sd = Math.sqrt(out.reduce((a, b) => a + (b - m) * (b - m), 0) / (out.length - 1));
+        scored.push({ n, m, se: sd / Math.sqrt(out.length) });
+      }
     }
     if (!scored.length) continue;
     scored.sort((x, y) => y.m - x.m);
@@ -157,11 +161,15 @@ for (const slot of [1, 6, 10]) {
     const simBest = scored[0].n;
     const advisorScore = scored.find((s) => s.n === advisorPick);
     const gap = advisorScore ? scored[0].m - advisorScore.m : Infinity;
+    /* Judge against the actual error bars, not a round number. A fixed threshold either
+       flags noise as a defect or hides a real one depending on how noisy the state happens
+       to be; two combined standard errors is the same bar the precision study uses. */
+    const se = advisorScore ? Math.sqrt(scored[0].se ** 2 + advisorScore.se ** 2) : 0;
     const agree = advisorPick === simBest;
     const tag = `${who} round ${round}`;
     if (agree) console.log(`  PASS  ${tag}: both say ${advisorPick}`);
-    else if (gap <= 0.35) { warns++; console.log(`  WARN  ${tag}: advisor says ${advisorPick}, sim prefers ${simBest} by ${gap.toFixed(2)} pts/wk (inside noise)`); }
-    else { fails++; console.log(`  FAIL  ${tag}: advisor says ${advisorPick}, sim prefers ${simBest} by ${gap.toFixed(2)} pts/wk`); }
+    else if (gap <= 2 * se) { warns++; console.log(`  WARN  ${tag}: advisor says ${advisorPick}, sim leans ${simBest} by ${gap.toFixed(2)} (±${se.toFixed(2)}) — inside noise`); }
+    else { fails++; console.log(`  FAIL  ${tag}: advisor says ${advisorPick}, sim prefers ${simBest} by ${gap.toFixed(2)} pts/wk, which clears ${(2 * se).toFixed(2)}`); }
     console.log(`        ${scored.map((s) => `${s.n} ${s.m.toFixed(2)}`).join("  ·  ")}`);
   }
 }

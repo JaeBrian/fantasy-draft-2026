@@ -84,10 +84,18 @@ export function runForecast(
 ): Promise<Forecast> {
   const made = Object.keys(DS).length;
   const cur = made + 1;
-  /* find your next pick from here */
-  let target = cur;
+  /* Which pick are we forecasting to?
+   *
+   * When you are waiting, it is your next turn: will he still be there when I pick?
+   *
+   * When you are ON the clock the naive answer is "this pick", which makes every survival
+   * number 100% and the forecast worthless at the exact moment it matters most. On the clock
+   * the real question is the one you are actually weighing — if I pass on him now, is he back
+   * at my NEXT turn? So skip past this pick and forecast to the one after. */
+  const onClock = snapTeam(cur) === mySlot;
+  let target = onClock ? cur + 1 : cur;
   while (target <= 168 && snapTeam(target) !== mySlot) target++;
-  const picksAhead = Math.max(0, target - cur);
+  const picksAhead = Math.max(0, target - cur - (onClock ? 1 : 0));
 
   const base = rosters(ord);
   const live = POOL.filter((p) => !DS[p.name]);
@@ -100,7 +108,7 @@ export function runForecast(
   {
     const want: Record<string, number> = { QB: 0, RB: 0, WR: 0, TE: 0 };
     let teams = 0;
-    for (let pk = cur; pk < target; pk++) {
+    for (let pk = onClock ? cur + 1 : cur; pk < target; pk++) {
       const t = snapTeam(pk);
       if (t === mySlot) continue;
       teams++;
@@ -126,7 +134,7 @@ export function runForecast(
         for (let t = 1; t <= 12; t++) c[t] = counts(base[t] ?? []);
         const tally: Record<string, number> = { QB: 0, RB: 0, WR: 0, TE: 0 };
 
-        for (let pk = cur; pk < target; pk++) {
+        for (let pk = onClock ? cur + 1 : cur; pk < target; pk++) {
           const t = snapTeam(pk);
           if (t === mySlot) continue;
           let best: (typeof POOL)[number] | null = null;

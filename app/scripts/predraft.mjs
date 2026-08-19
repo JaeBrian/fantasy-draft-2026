@@ -27,7 +27,7 @@ for (const s of ["sim-all", "sim-paired", "sim-first", "sim-tree"]) run(s, `${s}
 
 /* 4. gates. These decide whether the numbers above are safe to publish, so a failure here
  *    must stop the run rather than be noted and passed over. */
-const gates = ["audit-logic", "audit-advisor", "audit-agreement"];
+const gates = ["audit-logic", "audit-advisor", "audit-agreement", "audit-forecast"];
 const failed = [];
 for (const g of gates) {
   process.stdout.write(`\n=== ${g} ===\n`);
