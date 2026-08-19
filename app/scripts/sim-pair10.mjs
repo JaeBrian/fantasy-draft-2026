@@ -29,7 +29,7 @@ P.forEach((r, i) => {
   const rk = riskOf(r[0], r[1], r[4]);
   POOL.push({ name: r[0], pos: r[1], idx: POOL.length, adp: s.adp,
     proj: PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6, cv: rk.cv, pMiss: rk.pMiss,
-    mkt, sig: Math.max(2.2, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * mkt), bye: BYE[r[2]] || 0 });
+    mkt, sig: Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * mkt), bye: BYE[r[2]] || 0 });
 });
 const IDX = new Map(POOL.map(p => [p.name, p]));
 const REPL = {};

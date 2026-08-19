@@ -40,7 +40,7 @@ const POOL=[];{const c={QB:0,RB:0,WR:0,TE:0};
       scv: riskOf(r[0], r[1], r[4]).cv,
       wcv:WEEK_CV[r[1]],
       pMiss: riskOf(r[0], r[1], r[4]).pMiss,
-      mkt,sig:Math.max(2.2,MKT[r[0]]?MKT[r[0]][1]:0,0.13*mkt),bye:BYE[r[2]]||0});});}
+      mkt,sig:Math.max(0.5,MKT[r[0]]?MKT[r[0]][1]:0,0.13*mkt),bye:BYE[r[2]]||0});});}
 const REPL={};for(const pos of ['QB','RB','WR','TE']){
   const v=POOL.filter(p=>p.pos===pos).map(p=>p.proj).sort((a,b)=>b-a);
   REPL[pos]=v[Math.min({QB:14,RB:32,WR:34,TE:13}[pos]-1,v.length-1)]||0;}
