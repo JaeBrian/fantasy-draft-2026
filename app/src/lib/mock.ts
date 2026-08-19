@@ -1,6 +1,7 @@
 import { P, MKT, type PlayerRow, type Pos } from "../data";
 import { PROJ } from "../projections";
 import { mktADP, snapTeam, type DraftState } from "./advisor";
+import { rbShift } from "./tendency";
 
 /* Practice draft.
  *
@@ -55,6 +56,8 @@ function counts(roster: PlayerRow[]): Record<string, number> {
 /** Who the AI team on the clock takes. Mirrors the simulation's opponent exactly. */
 export function opponentPick(DS: DraftState, ord: string[], team: number): string | null {
   const c = counts(rosterOf(ord, team));
+  /* which overall pick this is — the room's early-round lean only applies at the top */
+  const pk = Object.keys(DS).length + 1;
   let best: string | null = null;
   let bestScore = Infinity;
   for (const n of NAMES) {
@@ -65,6 +68,8 @@ export function opponentPick(DS: DraftState, ord: string[], team: number): strin
     if (r[1] === "TE" && c.TE >= 1) s += 50;
     if (r[1] === "RB" && c.RB >= 5) s += 25;
     if (r[1] === "WR" && c.WR >= 5) s += 25;
+    /* practice against the room you actually draft in, not the average of all rooms */
+    if (r[1] === "RB") s -= rbShift(pk);
     if (s < bestScore) {
       bestScore = s;
       best = n;

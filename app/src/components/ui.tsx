@@ -226,11 +226,16 @@ export function TrendChip({ name }: { name: string }) {
  *  and a draft board is somewhere you are always glancing. */
 export function Chevrons({ n, dir, title }: { n: 1 | 2 | 3; dir: "up" | "down"; title?: string }) {
   const h = 4 + n * 3.2;
+  /* The stroke is centred on the path, so at width 1.9 it reaches ~0.95 beyond the outermost
+   * point — which sat exactly on the viewBox edge and got shaved off. Pad the box by more than
+   * half the stroke and the tips draw in full. */
+  const PAD = 1.3;
+  const S = 0.85;
   return (
     <svg
-      viewBox={`0 0 10 ${h}`}
-      width={9}
-      height={h * 0.9}
+      viewBox={`${-PAD} ${-PAD} ${10 + 2 * PAD} ${h + 2 * PAD}`}
+      width={(10 + 2 * PAD) * S}
+      height={(h + 2 * PAD) * S}
       className="inline-block shrink-0 align-middle"
       aria-hidden="true"
       focusable="false"
