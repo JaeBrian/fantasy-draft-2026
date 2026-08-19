@@ -14,6 +14,7 @@ type SleeperPick = { pick_no: number; draft_slot: number; metadata?: { first_nam
 const normName = (s: string) =>
   s.toLowerCase().replace(/[.'-]/g, " ").replace(/\b(jr|sr|ii|iii|iv|v)\b/g, "").replace(/\s+/g, " ").trim();
 import { Call, Chevrons, Info, InjChip, NewsChip, Noob, SleeperMark, Sticker, TagChips, TeamIcon, TrendChip } from "../components/ui";
+import { RB_LEAN, rbLean, setRbLean, type RbLean } from "../lib/tendency";
 
 const NICKOF: Record<string, string> = {
   LAR: "Rams", BUF: "Bills", DET: "Lions", CIN: "Bengals", BAL: "Ravens", DAL: "Cowboys",
@@ -46,7 +47,7 @@ interface BoardProps {
   setMySlot: (n: number) => void;
 }
 
-function AdvisorStrip({ DS, mySlot, ord, noob, blocked }: { DS: DraftState; mySlot: number; ord: string[]; noob: boolean; blocked: string[] }) {
+function AdvisorStrip({ DS, mySlot, ord, noob, blocked, lean }: { DS: DraftState; mySlot: number; ord: string[]; noob: boolean; blocked: string[]; lean: RbLean }) {
   const a = advise(DS, mySlot, ord, new Set(blocked));
 
   /* Heavy forecast, recomputed every pick. You have a minute on the clock, so spend it: this
@@ -63,7 +64,7 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked }: { DS: DraftState; mySl
     runForecast(DS, ord, mySlot, 5000, (d, t) => { if (!stale) setFcPct(Math.round((d / t) * 100)); })
       .then((r) => { if (!stale) { setFc(r); setFcPct(null); } });
     return () => { stale = true; };
-  }, [DS, ord, mySlot]);
+  }, [DS, ord, mySlot, lean]);
 
   const made = Object.keys(DS).length;
   const [compact, setCompact] = usePersistent<boolean>(
@@ -552,6 +553,10 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
      to force a re-render; the values themselves live in lib/intel so the engine can read them
      without the UI having to pass them down through everything. */
   const [pins, setPinsState] = useState(() => ({ ...getPins() }));
+  /* How this room drafts, as opposed to how the market does. Owned here because the toolbar
+     sets it, and passed down to the advisor strip because the forecast depends on it: a room
+     that takes backs early empties the RB shelf sooner, and "will he reach me?" must know. */
+  const [lean, setLean] = useState<RbLean>(() => rbLean());
   const [intelText, setIntelText] = useState("");
   const [intelErr, setIntelErr] = useState<string | null>(null);
   const applyIntel = () => {
@@ -864,15 +869,19 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
             const rank = (past >= 24 ? 3 : past >= 12 ? 2 : past >= 5 ? 1
               : past <= -18 ? 3 : past <= -9 ? 2 : past <= -4 ? 1 : 0) as 0 | 1 | 2 | 3;
             const dir: "up" | "down" = past >= 0 ? "up" : "down";
+            /* Colour and the height of the chevron stack already carry the signal. Filled
+               boxes behind the number added a third encoding of the same thing and turned a
+               quiet column of figures into a patchwork — the numbers stopped being readable
+               as numbers. Weight and hue only. */
             const tone =
-              past >= 12 ? "bg-value/20 text-value font-bold"
+              past >= 12 ? "text-value font-bold"
               : past >= 5 ? "text-value"
-              : past <= -9 ? "bg-avoid/15 text-avoid font-bold"
+              : past <= -9 ? "text-avoid font-bold"
               : past <= -4 ? "text-avoid"
               : "text-ink";
             return (
               <span
-                className={`inline-flex items-baseline gap-1 rounded px-1 ${tone}`}
+                className={`inline-flex items-baseline gap-1 ${tone}`}
                 title={
                   past >= 5
                     ? `The room usually takes him at ${a.toFixed(1)} and you are at ${roundPick(picksMade + 1)}. He has lasted ${Math.round(past)} picks past his price.`
@@ -904,10 +913,13 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
             if (!v) return <span className="text-ink-3">—</span>;
             const tier = valueTier(v.edge);
             const sign = v.edge > 0 ? `+${Math.round(v.edge)}` : `${Math.round(v.edge)}`;
+            /* Same reasoning as the ADP column: weight and hue, no filled box. Two adjacent
+               numeric columns both drawing chips made the row read as a row of badges rather
+               than a row of figures. */
             const cls =
-              tier === "big" ? "rounded bg-value/20 px-1.5 py-0.5 font-bold text-value"
+              tier === "big" ? "font-bold text-value"
               : tier === "good" ? "font-semibold text-value"
-              : tier === "steep" ? "rounded bg-avoid/15 px-1.5 py-0.5 font-bold text-avoid"
+              : tier === "steep" ? "font-bold text-avoid"
               : "text-ink-3";
             return (
               <span
@@ -1011,6 +1023,23 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
               className="w-[184px] rounded border border-line-soft bg-raised px-2 py-1 text-[0.82rem] text-ink placeholder:text-ink-3"
             />
             {intelErr && <span className="text-[0.72rem] text-avoid">{intelErr}</span>}
+          </span>
+          {/* How this room drafts, as opposed to how the market drafts. ADP is an average over
+              strangers; your league is twelve specific people, and if they all take backs early
+              then "will he reach me?" is wrong in a way that costs real picks. */}
+          <span className="inline-flex items-center gap-1">
+            <label htmlFor="rblean" className="text-[0.78rem] text-ink-3">Room:</label>
+            <select
+              id="rblean"
+              value={lean}
+              onChange={(e) => { const v = e.target.value as RbLean; setLean(v); setRbLean(v); }}
+              title={RB_LEAN[lean].blurb}
+              className={`rounded border bg-raised px-2 py-1 text-[0.82rem] ${lean === "market" ? "border-line-soft text-ink-3" : "border-clock text-clock font-semibold"}`}
+            >
+              {(Object.keys(RB_LEAN) as RbLean[]).map((k) => (
+                <option key={k} value={k}>{RB_LEAN[k].label} · {RB_LEAN[k].backs} RB</option>
+              ))}
+            </select>
           </span>
           <button
             type="button"
@@ -1145,7 +1174,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
         </div>
       )}
 
-      <AdvisorStrip DS={DS} mySlot={mySlot} ord={ord} noob={noob} blocked={blocked} />
+      <AdvisorStrip DS={DS} mySlot={mySlot} ord={ord} noob={noob} blocked={blocked} lean={lean} />
 
       <div className="flex flex-wrap items-center gap-2">
         <SleeperMark size={18} />

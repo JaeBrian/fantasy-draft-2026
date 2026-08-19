@@ -2,6 +2,7 @@ import { P, MKT, type PlayerRow, type Pos } from "../data";
 import { SLP } from "../sleeper";
 import { mktADP, snapTeam, type DraftState } from "./advisor";
 import { pinnedPick } from "./intel";
+import { rbShift } from "./tendency";
 
 /* Live forecast of the picks between now and your next turn.
  *
@@ -198,6 +199,8 @@ export function runForecast(
             if (p.pos === "TE" && rc.TE >= 1) s += 50;
             if (p.pos === "RB" && rc.RB >= 5) s += 25;
             if (p.pos === "WR" && rc.WR >= 5) s += 25;
+            /* what THIS room does, as opposed to what the market does — off unless set */
+            if (p.pos === "RB") s -= rbShift(pk);
             if (s < bs) { bs = s; best = p; }
           }
           if (!best) break;
