@@ -7,7 +7,7 @@ import { usePersistent } from "../lib/store";
 import { SLP } from "../sleeper";
 import { CEIL } from "../ceilings";
 import { runForecast, type Forecast } from "../lib/forecast";
-import { getPins, setPin, parseIntel, pinnedPick } from "../lib/intel";
+import { getPins, setPin, togglePin, parseIntel, pinnedPick } from "../lib/intel";
 
 type SleeperPick = { pick_no: number; draft_slot: number; metadata?: { first_name?: string; last_name?: string; team?: string } };
 const normName = (s: string) =>
@@ -513,7 +513,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
   /* League intel — things you know that no market average does. Kept in component state only
      to force a re-render; the values themselves live in lib/intel so the engine can read them
      without the UI having to pass them down through everything. */
-  const [pins, setPinsState] = useState<Record<string, number>>(() => ({ ...getPins() }));
+  const [pins, setPinsState] = useState(() => ({ ...getPins() }));
   const [intelText, setIntelText] = useState("");
   const [intelErr, setIntelErr] = useState<string | null>(null);
   const applyIntel = () => {
@@ -525,6 +525,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
     setIntelErr(null);
   };
   const dropPin = (n: string) => { setPin(n, null); setPinsState({ ...getPins() }); };
+  const flipPin = (n: string) => { togglePin(n); setPinsState({ ...getPins() }); };
   const myPickCount = Object.values(DS).filter((v) => v === "mine").length;
   const picksMade = Object.keys(DS).length;
   const practiceOver = myPickCount >= 14;
@@ -1000,17 +1001,34 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
         <div className="contents min-[1200px]:z-30 min-[1200px]:flex min-[1200px]:flex-col min-[1200px]:gap-3 min-[1200px]:sticky min-[1200px]:top-[calc(var(--hdr,86px)+6px)] min-[1200px]:w-[360px] min-[1200px]:shrink-0 min-[1200px]:max-h-[calc(100vh-var(--hdr,86px)-24px)] min-[1200px]:overflow-y-auto min-[1200px]:overscroll-contain">
       {Object.keys(pins).length > 0 && (
         <div className="mb-3 flex flex-wrap items-center gap-1.5 text-[0.8rem]">
-          <span className="text-ink-3">Your intel, overriding the market:</span>
-          {Object.entries(pins).sort((a, b) => a[1] - b[1]).map(([n, pk]) => (
-            <button
-              key={n}
-              type="button"
-              onClick={() => dropPin(n)}
-              title="Click to remove"
-              className="rounded border border-clock/50 bg-clock/10 px-1.5 py-0.5 font-mono text-[0.75rem] text-clock hover:border-avoid hover:text-avoid"
-            >
-              {n} → {pk} ×
-            </button>
+          <span className="text-ink-3">Your intel — click one to switch it on or off:</span>
+          {Object.entries(pins).sort((a, b) => a[1].pick - b[1].pick).map(([n, pin]) => (
+            <span key={n} className="inline-flex items-center">
+              <button
+                type="button"
+                onClick={() => flipPin(n)}
+                title={pin.on
+                  ? `On — the model is treating ${n} as going at ${pin.pick}. Click to switch it off and see what changes.`
+                  : `Off — ${n} is being priced by the market again. Click to apply your read.`}
+                className={`rounded-l border py-0.5 pl-1.5 pr-1 font-mono text-[0.75rem] ${
+                  pin.on
+                    ? "border-clock bg-clock/15 text-clock"
+                    : "border-line-soft text-ink-3 line-through decoration-ink-3/60"
+                }`}
+              >
+                {n} → {pin.pick}
+              </button>
+              <button
+                type="button"
+                onClick={() => dropPin(n)}
+                title="Forget this one"
+                className={`rounded-r border border-l-0 px-1 py-0.5 font-mono text-[0.75rem] ${
+                  pin.on ? "border-clock text-clock" : "border-line-soft text-ink-3"
+                } hover:border-avoid hover:text-avoid`}
+              >
+                ×
+              </button>
+            </span>
           ))}
         </div>
       )}

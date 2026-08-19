@@ -7,7 +7,7 @@
  *
  * So check the whole chain: the pin changes his own survival, it changes the players around
  * him, and removing it puts everything back. */
-import { setPin, pinnedPick, parseIntel } from "../src/lib/intel.ts";
+import { setPin, togglePin, pinnedPick, getPins, parseIntel } from "../src/lib/intel.ts";
 import { runForecast } from "../src/lib/forecast.ts";
 import { mktADP } from "../src/lib/advisor.ts";
 import { P } from "../src/data.ts";
@@ -70,7 +70,30 @@ Math.abs(gone - after.picksAhead) < 0.15
   ? ok("survival still conserves picks with intel applied", `${gone.toFixed(2)} over ${after.picksAhead}`)
   : fail("intel broke pick conservation", `${gone.toFixed(2)} vs ${after.picksAhead}`);
 
+console.log("\n=== the toggle ===");
+setPin("James Cook", 8);
+pinnedPick("James Cook") === 8 ? ok("a new belief starts switched on") : fail("new pin was not active");
+togglePin("James Cook");
+pinnedPick("James Cook") === undefined
+  ? ok("switched off, the model stops applying it")
+  : fail("switching off did not stop the override");
+getPins()["James Cook"]?.pick === 8
+  ? ok("but the pick you named is remembered, so you can switch it back")
+  : fail("switching off forgot the pick");
+
+/* off must mean off all the way through, not just at the top */
+const offRun = await runForecast(DS, ord, 10, 3000);
+Math.abs(offRun.survive["James Cook"] - before.survive["James Cook"]) < 0.06
+  ? ok("with it off, the forecast matches the market again",
+       `${(offRun.survive["James Cook"] * 100).toFixed(0)}% vs ${(before.survive["James Cook"] * 100).toFixed(0)}% baseline`)
+  : fail("a switched-off belief is still moving the forecast",
+       `${(offRun.survive["James Cook"] * 100).toFixed(0)}% vs ${(before.survive["James Cook"] * 100).toFixed(0)}%`);
+
+togglePin("James Cook");
+pinnedPick("James Cook") === 8 ? ok("and switching it back on restores it") : fail("could not switch back on");
+
 setPin("James Cook", null);
-pinnedPick("James Cook") === undefined ? ok("pin cleared") : fail("pin would not clear");
+pinnedPick("James Cook") === undefined && getPins()["James Cook"] === undefined
+  ? ok("forgetting it removes it entirely") : fail("pin would not clear");
 
 console.log(`\n${"=".repeat(70)}\nRESULT: ${fails} FAIL\n`);

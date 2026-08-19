@@ -15,17 +15,26 @@
 
 const KEY = "fd26-intel";
 
-/** player name -> the pick you believe he actually goes at */
-let PINS: Record<string, number> = {};
+/** player name -> the pick you believe he goes at, and whether that belief is switched on.
+ *  Keeping it switchable rather than just present is the point: you can flip "Cook goes 8th"
+ *  on and off and watch the whole board move, which is a far better way to weigh a rumour than
+ *  committing to it and trying to remember what it changed. */
+export type Pin = { pick: number; on: boolean };
+let PINS: Record<string, Pin> = {};
 
-function load(): Record<string, number> {
+function load(): Record<string, Pin> {
   if (typeof localStorage === "undefined") return {};
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return {};
-    const o = JSON.parse(raw) as Record<string, number>;
-    const out: Record<string, number> = {};
-    for (const [k, v] of Object.entries(o)) if (typeof v === "number" && v >= 1 && v <= 200) out[k] = v;
+    const o = JSON.parse(raw) as Record<string, Pin | number>;
+    const out: Record<string, Pin> = {};
+    for (const [k, v] of Object.entries(o)) {
+      /* tolerate the older shape, which stored a bare pick number */
+      const pick = typeof v === "number" ? v : v?.pick;
+      const on = typeof v === "number" ? true : v?.on !== false;
+      if (typeof pick === "number" && pick >= 1 && pick <= 200) out[k] = { pick, on };
+    }
     return out;
   } catch {
     return {};
@@ -35,15 +44,28 @@ PINS = load();
 
 const listeners = new Set<() => void>();
 
-export const getPins = (): Record<string, number> => PINS;
+export const getPins = (): Record<string, Pin> => PINS;
 
-export function setPin(name: string, pick: number | null): void {
-  if (pick === null) delete PINS[name];
-  else PINS[name] = pick;
+function save(): void {
   if (typeof localStorage !== "undefined") {
     try { localStorage.setItem(KEY, JSON.stringify(PINS)); } catch { /* private mode */ }
   }
   listeners.forEach((f) => f());
+}
+
+/** Add or replace a belief. Passing null forgets it entirely. */
+export function setPin(name: string, pick: number | null): void {
+  if (pick === null) delete PINS[name];
+  else PINS[name] = { pick, on: true };
+  save();
+}
+
+/** Switch a belief on or off without forgetting the pick you named. */
+export function togglePin(name: string): void {
+  const p = PINS[name];
+  if (!p) return;
+  PINS[name] = { ...p, on: !p.on };
+  save();
 }
 
 export function onPinsChange(f: () => void): () => void {
@@ -51,8 +73,9 @@ export function onPinsChange(f: () => void): () => void {
   return () => listeners.delete(f);
 }
 
-/** The pinned pick for a player, if you have said one. */
-export const pinnedPick = (name: string): number | undefined => PINS[name];
+/** The pinned pick for a player, if you have named one AND it is switched on. */
+export const pinnedPick = (name: string): number | undefined =>
+  PINS[name]?.on ? PINS[name].pick : undefined;
 
 /**
  * Parse "James Cook 8" or "james cook = 8" into a name and a pick.
