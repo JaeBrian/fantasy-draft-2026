@@ -1,4 +1,6 @@
 import { SLP } from "../sleeper";
+import { NEWS } from "../news";
+import { topNews } from "../lib/news";
 import { SLEEPER_ICON } from "../brand";
 import { useRef, useState, type ReactNode } from "react";
 import { TAGS, TAGCLASS, VLBL, type Pos, type Verdict } from "../data";
@@ -215,5 +217,101 @@ export function TrendChip({ name }: { name: string }) {
       <img src={SLEEPER_ICON} width={9} height={9} alt="Sleeper" className="rounded-[2px] opacity-70" />
       {t > 0 ? `\u{1F525}${k}k` : `\u{1F9CA}${k}k`}
     </span>
+  );
+}
+
+/** Stacked priority chevrons, the way an issue tracker marks severity — one arrow for a
+ *  nudge, three for drop-what-you-are-doing. Stacked vertically rather than strung out
+ *  sideways because at a glance you read the HEIGHT of the stack rather than counting glyphs,
+ *  and a draft board is somewhere you are always glancing. */
+export function Chevrons({ n, dir, title }: { n: 1 | 2 | 3; dir: "up" | "down"; title?: string }) {
+  const h = 4 + n * 3.2;
+  return (
+    <svg
+      viewBox={`0 0 10 ${h}`}
+      width={9}
+      height={h * 0.9}
+      className="inline-block shrink-0 align-middle"
+      aria-hidden="true"
+      focusable="false"
+    >
+      {title && <title>{title}</title>}
+      {Array.from({ length: n }, (_, i) => {
+        /* stack away from the point, so the tip stays put as the stack grows */
+        const y = dir === "up" ? 1.6 + i * 3.2 : h - 1.6 - i * 3.2;
+        const tip = dir === "up" ? y - 1.6 : y + 1.6;
+        return (
+          <polyline
+            key={i}
+            points={`1,${y} 5,${tip} 9,${y}`}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.9"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            opacity={1 - i * 0.12}
+          />
+        );
+      })}
+    </svg>
+  );
+}
+
+/* ---- the wire ---------------------------------------------------------------------------
+ * Sleeper's per-player news, filtered to items that trace back to a named reporter or a
+ * direct quote. Worth its own place on the board for one reason: the season projections do
+ * not move. Pulling them two days apart shifted exactly zero players. So between now and the
+ * draft the wire is the only input that changes, and a projection built on a workhorse
+ * assumption cannot tell you that the coach has said he will not use one. */
+
+/** How much a tag should change what you do, and what it looks like. */
+const NEWS_TAGS: Record<string, { label: string; cls: string; rank: number }> = {
+  out:       { label: "OUT",       cls: "border-avoid/70 bg-avoid/15 text-avoid",   rank: 0 },
+  miss:      { label: "WILL MISS", cls: "border-avoid/70 bg-avoid/15 text-avoid",   rank: 1 },
+  suspended: { label: "SUSP",      cls: "border-avoid/70 bg-avoid/15 text-avoid",   rank: 2 },
+  committee: { label: "COMMITTEE", cls: "border-risky/70 bg-risky/15 text-risky",   rank: 3 },
+  workload:  { label: "WORKLOAD",  cls: "border-risky/70 bg-risky/15 text-risky",   rank: 4 },
+  demoted:   { label: "DEMOTED",   cls: "border-risky/70 bg-risky/15 text-risky",   rank: 5 },
+  holdout:   { label: "HOLDOUT",   cls: "border-risky/70 bg-risky/15 text-risky",   rank: 6 },
+  hurt:      { label: "HURT",      cls: "border-risky/60 text-risky",               rank: 7 },
+  promoted:  { label: "PROMOTED",  cls: "border-value/70 bg-value/15 text-value",   rank: 8 },
+  back:      { label: "BACK",      cls: "border-value/60 text-value",               rank: 9 },
+  hype:      { label: "BUZZ",      cls: "border-ink-3/50 text-ink-3",               rank: 10 },
+};
+
+const ago = (t: number): string => {
+  const d = Math.floor((Date.now() / 1000 - t) / 86400);
+  return d <= 0 ? "today" : d === 1 ? "yesterday" : `${d}d ago`;
+};
+
+/** Board-row badge. Only draws for news that bears on the pick — buzz stays silent. */
+export function NewsChip({ name }: { name: string }) {
+  const top = topNews(name);
+  if (!top || !top.g) return null;
+  const meta = NEWS_TAGS[top.g];
+  if (meta.rank >= 10) return null;
+  const items = NEWS[name] || [];
+  return (
+    <Tip
+      tip={
+        <span className="block max-w-[22rem] text-left">
+          {items.slice(0, 3).map((n, i) => (
+            <span key={i} className="mb-1.5 block last:mb-0">
+              <span className="text-[0.66rem] text-ink-3">
+                {ago(n.t)} &middot; {n.a}
+              </span>
+              <span className="block text-ink">{n.d}</span>
+            </span>
+          ))}
+          <span className="mt-1 block border-t border-ink-3/25 pt-1 text-[0.64rem] text-ink-3">
+            Sourced items only &mdash; reporting the wire relayed, not its own analysis.
+          </span>
+        </span>
+      }
+    >
+      <span className={`inline-flex items-center rounded-sm border px-1 font-mono text-[0.58rem] font-bold tracking-tight ${meta.cls}`}>
+        {meta.label}
+      </span>
+    </Tip>
   );
 }
