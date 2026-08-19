@@ -1,5 +1,6 @@
 import type { Pos, Verdict } from "../data";
 import { SLP } from "../sleeper";
+import { CEIL } from "../ceilings";
 
 /* One definition of how uncertain a player is, shared by the advisor and every simulation so
  * the two cannot drift apart.
@@ -34,10 +35,30 @@ export interface Risk {
 export function riskOf(name: string, pos: Pos, verdict: Verdict): Risk {
   const s = SLP[name] ?? {};
   let cv = BASE_CV[pos] ?? 0.4;
+  const flagsFromData: string[] = [];
+
+  /* Where a player has a real 2025 game log, use his measured week-to-week spread instead of
+   * the position assumption — shrunk toward the baseline by sample size, because a six-game
+   * distribution is not worth the same as a seventeen-game one. n/(n+8) puts a full season at
+   * about two-thirds measured.
+   *
+   * This corrected the assumption in both directions and neither was small: McCaffrey was
+   * being charged 0.65 for age and a risk verdict when he actually ran at 0.37, one of the
+   * steadiest players in football, while Gibbs was assumed 0.44 and measured 0.66. */
+  const m = CEIL[name];
+  if (m && m.games >= 6) {
+    const w = m.games / (m.games + 8);
+    cv = w * m.cv + (1 - w) * cv;
+    if (m.boom >= 0.28) flagsFromData.push(`wins a week on his own ${Math.round(m.boom * 100)}% of the time`);
+    if (m.boom <= 0.05 && m.games >= 10) flagsFromData.push("no ceiling — never cleared 1.5x his own median in 2025");
+    if (m.bust >= 0.28) flagsFromData.push(`disappeared in ${Math.round(m.bust * 100)}% of his 2025 games`);
+  }
   let pMiss = BASE_MISS[pos] ?? 0.25;
   const flags: string[] = [];
 
-  cv *= VERDICT_CV[verdict] ?? 1;
+  /* the verdict still moves availability, but only nudges spread once we have measured it —
+     the measurement already contains whatever made us call him risky */
+  cv *= m && m.games >= 6 ? 1 + ((VERDICT_CV[verdict] ?? 1) - 1) * 0.4 : (VERDICT_CV[verdict] ?? 1);
   pMiss *= VERDICT_MISS[verdict] ?? 1;
 
   /* live injury designation */
@@ -70,11 +91,11 @@ export function riskOf(name: string, pos: Pos, verdict: Verdict): Risk {
   const age = s.age;
   if (age !== undefined) {
     if (pos === "RB" && age >= 31) {
-      cv *= 1.3;
+      if (!m) cv *= 1.3;
       pMiss *= 1.45;
       flags.push(`${age} years old — well past the running-back cliff`);
     } else if (pos === "RB" && age >= 29) {
-      cv *= 1.15;
+      if (!m) cv *= 1.15;
       pMiss *= 1.25;
       flags.push(`${age} years old for a running back`);
     } else if (pos !== "RB" && age >= 32) {
@@ -90,5 +111,5 @@ export function riskOf(name: string, pos: Pos, verdict: Verdict): Risk {
     flags.push("rookie — widest range on the board");
   }
 
-  return { cv, pMiss: Math.min(0.75, pMiss), flags };
+  return { cv, pMiss: Math.min(0.75, pMiss), flags: [...flags, ...flagsFromData] };
 }

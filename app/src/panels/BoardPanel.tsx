@@ -5,6 +5,7 @@ import { advise, mktADP, needText, rosterSlots, PLAINPOS, type DraftState } from
 import { fillToMyTurn, gradeDraft } from "../lib/mock";
 import { usePersistent } from "../lib/store";
 import { SLP } from "../sleeper";
+import { CEIL } from "../ceilings";
 
 type SleeperPick = { pick_no: number; draft_slot: number; metadata?: { first_name?: string; last_name?: string; team?: string } };
 const normName = (s: string) =>
@@ -248,6 +249,27 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked }: { DS: DraftState; mySl
               </div>
             ))}
             <p className="m-0 max-w-[70ch] pl-7 text-[0.92rem] leading-relaxed text-ink-2">{suggestion.why}</p>
+            {(() => {
+              /* What the projection is made of, rather than just how big it is. A player who
+                 wins you a week outright a third of the time is a different asset from one who
+                 never does, even at the same average — and points from touchdowns are the least
+                 repeatable thing in football, so a high share is a fragile projection. */
+              const top = suggestion.list[0];
+              if (!top) return null;
+              const c = CEIL[top.now.r[0]];
+              if (!c || c.games < 6) return null;
+              const bits: string[] = [];
+              bits.push(`wins you a week outright ${Math.round(c.boom * 100)}% of the time, disappears ${Math.round(c.bust * 100)}%`);
+              bits.push(`a good week is ${c.p90.toFixed(0)} pts, a bad one ${c.p10.toFixed(0)}`);
+              if (c.tdShare !== null && c.tdShare >= 0.3) bits.push(`${Math.round(c.tdShare * 100)}% of his points come from touchdowns — the part that regresses hardest`);
+              else if (c.tdShare !== null && c.tdShare <= 0.22) bits.push(`only ${Math.round(c.tdShare * 100)}% from touchdowns, so it rests on volume rather than scoring luck`);
+              if (c.touches) bits.push(`${c.touches} projected touches`);
+              return (
+                <p className="m-0 max-w-[70ch] pl-7 text-[0.84rem] leading-relaxed text-ink-3">
+                  <b className="text-ink-2">{top.now.r[0]} in 2025:</b> {bits.join(" · ")}.
+                </p>
+              );
+            })()}
             {(a.qb === 0 || a.te === 0) && a.myCount >= 4 && (
               <p className="m-0 max-w-[70ch] pl-7 text-[0.86rem] leading-relaxed text-ink-3">
                 {a.qb === 0 && a.te === 0

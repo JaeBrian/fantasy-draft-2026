@@ -1,0 +1,120 @@
+/* Regenerates src/ceilings.ts — each board player's REAL week-to-week distribution from 2025.
+ *
+ * Until now every spread number in the model was assumed. Running backs got a coefficient of
+ * variation of 0.44 because that felt about right, adjusted by our own risk verdict. Nobody
+ * measured it. Brian asked whether we had actually researched ceilings rather than working off
+ * base numbers, and we had not.
+ *
+ * Sleeper publishes 2025 week-by-week actuals, so measure it:
+ *
+ *   cv     his real week-to-week coefficient of variation
+ *   p90    a good week — the 90th percentile of what he actually scored
+ *   p10    a bad week
+ *   boom   share of weeks he cleared 1.5x his own median. This is what "ceiling" means in a
+ *          league decided by weekly head-to-head: not his best game, but how often he wins you
+ *          a week on his own.
+ *   bust   share of weeks under half his median
+ *
+ * Caveats worth keeping in view. Rookies and anyone whose role changed have no usable history,
+ * so they fall back to the position baseline. And last year's variance predicts this year's
+ * imperfectly — a back who splits carries is volatile every season, but a receiver whose
+ * quarterback changed is a different player. It is still measurement rather than assumption.
+ *
+ * Run from app/:  node scripts/fetch-ceilings.mjs                                            */
+import { readFileSync, writeFileSync } from "node:fs";
+
+const norm = (s) => s.toLowerCase().replace(/[.'-]/g, " ")
+  .replace(/\b(jr|sr|ii|iii|iv|v)\b/g, "").replace(/\s+/g, " ").trim();
+
+const dataTs = readFileSync(new URL("../src/data.ts", import.meta.url), "utf8");
+const boardNames = [...dataTs.matchAll(/^\["((?:[^"\\]|\\.)*)",/gm)].map((m) => m[1]);
+const players = await (await fetch("https://api.sleeper.app/v1/players/nfl")).json();
+
+/* resolve a board name to the id our board means — skill player, on a team, most experienced
+   when a name collides (there are two Justin Jeffersons) */
+const idByName = new Map();
+for (const [id, p] of Object.entries(players)) {
+  if (!p || !p.full_name || !["QB", "RB", "WR", "TE"].includes(p.position)) continue;
+  const k = norm(p.full_name);
+  const prev = idByName.get(k);
+  if (!prev || (p.years_exp ?? 0) > (players[prev].years_exp ?? 0)) idByName.set(k, id);
+}
+
+const weeks = {};
+for (let wk = 1; wk <= 18; wk++) {
+  const rows = await (await fetch(`https://api.sleeper.app/v1/stats/nfl/regular/2025/${wk}`)).json();
+  let n = 0;
+  for (const [id, st] of Object.entries(rows)) {
+    const pts = st?.pts_half_ppr;
+    if (typeof pts !== "number") continue;
+    if (!st.gp) continue;                       // did not play — not a low score, no score
+    (weeks[id] ??= []).push(pts);
+    n++;
+  }
+  process.stdout.write(`  week ${wk}: ${n} lines\r`);
+}
+console.log(`\ncollected 2025 game logs for ${Object.keys(weeks).length} players`);
+
+/* How fragile is the projection itself? Points from touchdowns swing hard year to year —
+ * goal-line work is luck-adjacent and does not repeat — while yards and catches are close to a
+ * function of opportunity. Two players projected for identical points are not identical bets if
+ * one gets a third of them from the end zone. Volume is the other half of the same question:
+ * touches are what a coach controls, and they carry over far better than the scoring does. */
+const proj = await (await fetch("https://api.sleeper.com/projections/nfl/2026?season_type=regular")).json();
+const projById = {};
+for (const r of proj) if (r?.stats?.pts_half_ppr > 0) projById[r.player_id] = r.stats;
+
+const pct = (a, q) => a.slice().sort((x, y) => x - y)[Math.max(0, Math.floor(q * (a.length - 1)))];
+const out = {};
+let hit = 0;
+for (const name of boardNames) {
+  const id = idByName.get(norm(name));
+  const g = id ? weeks[id] : undefined;
+  if (!g || g.length < 6) continue;             // fewer than six games is not a distribution
+  const mean = g.reduce((a, b) => a + b, 0) / g.length;
+  if (mean <= 0) continue;
+  const sd = Math.sqrt(g.reduce((a, b) => a + (b - mean) ** 2, 0) / (g.length - 1));
+  const med = pct(g, 0.5);
+  const r2 = (x) => Math.round(x * 100) / 100;
+  const st = projById[id];
+  const tdPts = st ? 6 * ((st.rush_td || 0) + (st.rec_td || 0)) + 4 * (st.pass_td || 0) : 0;
+  const touches = st ? Math.round((st.rush_att || 0) + (st.rec || 0)) : 0;
+  out[name] = {
+    tdShare: st && st.pts_half_ppr ? r2(tdPts / st.pts_half_ppr) : null,
+    touches: touches || null,
+    cv: r2(sd / mean),
+    p10: r2(pct(g, 0.1)),
+    p90: r2(pct(g, 0.9)),
+    boom: r2(g.filter((x) => x >= med * 1.5).length / g.length),
+    bust: r2(g.filter((x) => x <= med * 0.5).length / g.length),
+    games: g.length,
+  };
+  hit++;
+}
+console.log(`matched ${hit}/${boardNames.length} board players with a 2025 distribution`);
+
+const stamp = new Date().toISOString().slice(0, 16).replace("T", " ");
+writeFileSync(
+  new URL("../src/ceilings.ts", import.meta.url),
+  `/** Generated by scripts/fetch-ceilings.mjs — each player's MEASURED 2025 week-to-week\n` +
+  ` *  distribution, from Sleeper game logs. Refreshed ${stamp} UTC.\n` +
+  ` *\n` +
+  ` *  Replaces assumed variance with observed variance. Weeks he did not play are excluded —\n` +
+  ` *  a missed game is not a bad game, and mixing them conflates availability with volatility.\n` +
+  ` *\n` +
+  ` *    cv     week-to-week coefficient of variation\n` +
+  ` *    p10    a bad week · p90 a good one, in half-PPR points\n` +
+  ` *    boom   share of weeks above 1.5x his own median — how often he wins you a week alone\n` +
+  ` *    bust   share of weeks below half his median\n` +
+  ` *    games  weeks the distribution is built from; under 6 is omitted entirely\n` +
+  ` *\n` +
+  ` *  And how fragile the 2026 projection is:\n` +
+  ` *    tdShare  share of projected points that comes from touchdowns. Scoring regresses hard\n` +
+  ` *             year to year; yards and catches barely do. A high share means the projection\n` +
+  ` *             rests on the least repeatable thing a player does.\n` +
+  ` *    touches  projected carries plus receptions — opportunity, which a coach controls and\n` +
+  ` *             which carries over far better than production. */\n` +
+  `export type Ceiling = { tdShare: number | null; touches: number | null; cv: number; p10: number; p90: number; boom: number; bust: number; games: number };\n` +
+  `export const CEIL: Record<string, Ceiling> = ${JSON.stringify(out, null, 0)};\n`,
+);
+console.log(`wrote src/ceilings.ts — ${hit} players`);
