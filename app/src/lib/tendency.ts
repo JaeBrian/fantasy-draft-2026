@@ -71,12 +71,34 @@ export function setRbLean(v: RbLean) {
 
 /** Picks to shave off a back's market price when modelling what this room does.
  *
- *  Applied only in the FIRST TWO ROUNDS. That is the whole claim: a room described as
- *  "RB-heavy" is one that reaches for backs at the top, not one that keeps doing it in the
- *  eleventh round, where everybody is taking backs anyway and the roster-need rules already
- *  cover it. Widening it past round 2 would double-count. */
-export const rbShift = (pick: number): number =>
-  pick <= 24 ? RB_LEAN[LEAN].shift : 0;
+ *  Two bounds, and the second one was wrong on the first attempt.
+ *
+ *  Applied only in the FIRST TWO ROUNDS, because a room described as "RB-heavy" is one that
+ *  reaches for backs at the top, not one that keeps doing it in the eleventh round where
+ *  everybody takes backs anyway and the roster-need rules already cover it.
+ *
+ *  And NOT AT THE VERY TOP. A flat shift let the RB12 leapfrog a consensus top-3 player, which
+ *  measured out as Ja'Marr Chase going 12.5 instead of 3.1 in an RB-heavy room. No room does
+ *  that. Nobody passes on Chase because they like running backs — a league's positional
+ *  philosophy shows up in how it chooses between COMPARABLE options, and at picks 1-5 there is
+ *  no choice to make. The market says the same thing in its own numbers: ADP spread at the top
+ *  is 0.7-0.9 picks, meaning near-total agreement, against 3-4 by the end of round two.
+ *
+ *  So: nothing through pick 5, ramping to full by pick 12. Measured effect at "Very RB-heavy"
+ *  (scripts/sim-tendency.mjs) — the top holds, the middle moves, which is the point:
+ *
+ *      Ja'Marr Chase    3.1 -> 3.1     Jaxon Smith-Njigba   7.1 -> 13.3
+ *      Puka Nacua       4.1 -> 4.1     Amon-Ra St. Brown    8.1 -> 15.6
+ *      Jonathan Taylor  5.8 -> 5.7     CeeDee Lamb         10.5 -> 18.6
+ */
+const FREE = 5;    // picks nobody deviates on
+const FULL = 12;   // by here the room's habit is fully expressed
+
+export const rbShift = (pick: number): number => {
+  const base = RB_LEAN[LEAN].shift;
+  if (!base || pick > 24 || pick <= FREE) return 0;
+  return pick >= FULL ? base : base * ((pick - FREE) / (FULL - FREE));
+};
 
 /** For the panel that has to explain itself. */
 export const leanSummary = (): string =>

@@ -29,6 +29,15 @@ const gauss = (rnd) => { let u = 0, v = 0; while (!u) u = rnd(); while (!v) v = 
   return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
 const snap = (pk) => { const r = Math.ceil(pk / 12), i = pk - (r - 1) * 12; return r % 2 ? i : 13 - i; };
 
+/* Must match rbShift() in src/lib/tendency.ts exactly, or this study measures a different
+ * setting than the app ships. Nothing through pick 5 — a consensus top-5 player goes where he
+ * goes whatever the room believes about positions — ramping to full by pick 12. */
+const FREE = 5, FULL = 12;
+const shiftAt = (base, pk) => {
+  if (!base || pk > 24 || pk <= FREE) return 0;
+  return pk >= FULL ? base : base * ((pk - FREE) / (FULL - FREE));
+};
+
 /** one draft to `upto`, returning who went and who is left */
 function draft(shift, seed, upto) {
   const rnd = mul(seed);
@@ -44,7 +53,7 @@ function draft(shift, seed, upto) {
       if (p.pos === 'TE' && c[t].TE >= 1) s += 50;
       if (p.pos === 'RB' && c[t].RB >= 5) s += 25;
       if (p.pos === 'WR' && c[t].WR >= 5) s += 25;
-      if (p.pos === 'RB' && pk <= 24) s -= shift;   // the room's early-round appetite
+      if (p.pos === 'RB') s -= shiftAt(shift, pk);  // the room's early-round appetite
       if (s < bs) { bs = s; best = p; }
     }
     if (!best) break;
@@ -91,3 +100,39 @@ for (const r of rows)
   console.log(`  ${r.p.name.padEnd(20)} ${r.p.pos.padEnd(5)} ${r.p.adp.toFixed(1).padStart(5)}  ${(r.m * 100).toFixed(0).padStart(5)}%  ${(r.h * 100).toFixed(0).padStart(5)}%  ${(r.x * 100).toFixed(0).padStart(5)}%   ${r.d > 0 ? '+' : ''}${(r.d * 100).toFixed(0)} pts`);
 console.log('\n  Positive = the setting makes him MORE likely to reach you (the room is busy taking');
 console.log('  backs). Negative = less likely, because the room is taking him.\n');
+
+/* ---------------------------------------------------------------------------------------
+ * 3. REGRESSION GUARD: the top of the board is not negotiable.
+ *
+ * The first version of this setting applied a flat shift at every pick, which let the RB12
+ * leapfrog a consensus top-3 player: Ja'Marr Chase came out going 12.5 instead of 3.1 in an
+ * RB-heavy room. Nobody drafts that way, and nothing in the app would have complained.
+ * So it complains here. */
+console.log('\n3. TOP OF THE BOARD HOLDS (Very RB-heavy vs Market, mean pick)\n');
+function meanPick(shift, W = 4000) {
+  const at = {}, cnt = {};
+  for (let w = 0; w < W; w++) {
+    const { taken } = draft(shift, 3300 + w, 30);
+    taken.forEach((p, i) => { at[p.name] = (at[p.name] || 0) + (i + 1); cnt[p.name] = (cnt[p.name] || 0) + 1; });
+  }
+  const o = {};
+  for (const k of Object.keys(at)) if (cnt[k] > W * 0.5) o[k] = at[k] / cnt[k];
+  return o;
+}
+const mk = meanPick(0), hv = meanPick(15);
+const TOP5 = POOL.slice().sort((a, b) => a.adp - b.adp).slice(0, 5);
+let bad = 0;
+console.log('  player                adp    market   very RB-heavy    drift');
+console.log('  ' + '-'.repeat(62));
+for (const p of TOP5) {
+  const a = mk[p.name], b = hv[p.name];
+  if (a === undefined || b === undefined) continue;
+  const d = b - a;
+  const fail = Math.abs(d) > 1.5;
+  if (fail) bad++;
+  console.log(`  ${p.name.padEnd(21)} ${p.adp.toFixed(1).padStart(4)}   ${a.toFixed(1).padStart(5)}   ${b.toFixed(1).padStart(11)}    ${d >= 0 ? '+' : ''}${d.toFixed(1)}${fail ? '   <== FAIL' : ''}`);
+}
+console.log(bad
+  ? `\n  ${bad} consensus top-5 player(s) moved more than 1.5 picks. The room lean is reaching\n  into the untouchable tier — check FREE/FULL in src/lib/tendency.ts.\n`
+  : '\n  PASS — no consensus top-5 player moves more than 1.5 picks at any setting.\n');
+if (bad) process.exitCode = 1;
