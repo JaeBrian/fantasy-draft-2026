@@ -98,10 +98,36 @@ const tagOf = (text, subject, others) => {
     /* guard 1b — negation flips the meaning; better no flag than a backwards one */
     if (NEGATED.test(text.slice(s, i))) continue;
 
-    /* guard 1c — a tear being RECOVERED FROM is not a tear being suffered. Zach Charbonnet
-     * "could be in a close race to return for Week 1 as he recovers from a torn ACL" was
-     * filed as out for the season, which is the opposite of what it says. */
-    if (tag === "out" && /\b(return|recover(s|ing|y|ed)?|cleared|rehab|comeback|(way |is |be )?back (by|for|from)|expected back|continues to|offseason surgery|physically unable)\b/i.test(sent)) continue;
+    /* guard 1c — an injury being RECOVERED FROM is not an injury being suffered. Two of these
+     * shipped before the guard covered both severities:
+     *   Charbonnet, "in a close race to return for Week 1 as he recovers from a torn ACL"
+     *     -> filed as out for the season
+     *   Makai Lemon, "after being sidelined for more than two weeks ... will get his first
+     *     taste of NFL competition" -> filed as about to miss three weeks, on a story about
+     *     him coming BACK
+     * The tell is always the same: a duration in the past tense next to a return.
+     *
+     * Keep the pattern SPECIFIC. An earlier draft included a bare "after being", which reads
+     * the recovery in "after being sidelined ... will get his first taste" but also reads it
+     * in "sidelined for at least a month AFTER BEING DIAGNOSED with a sprained MCL" — and
+     * quietly downgraded Alvin Kamara's month on the shelf to a camp knock. A diagnosis is not
+     * a comeback. The Lemon story is still caught, by "first taste" and "practicing". */
+    if ((tag === "out" || tag === "miss") &&
+        /\b(return(s|ing|ed)?|recover(s|ing|y|ed)?|cleared|rehab|comeback|(way |is |be )?back (by|for|from)|expected back|continues to|offseason surgery|physically unable|first taste|practicing|limited participant|full participant|activated)\b/i.test(sent)) continue;
+
+    /* guard 1d — a ROLE claim has to be reported, not speculated. Jordan Mason was tagged as
+     * being in a committee by a sentence reading "37 RB in RotoBaller's rankings, but ... the
+     * potential to outperform that rating IF HE CAN CLAIM a larger portion of the timeshare".
+     * That is a ranking blurb wondering aloud, not a coach describing a plan, and it reached
+     * the board because a name elsewhere in the item cleared the attribution gate.
+     *
+     * Availability tags are left alone: "expected to miss" is exactly how a real report of an
+     * absence is worded, and stripping conditionals there would throw away the good ones. */
+    if (["committee", "workload", "demoted", "promoted"].includes(tag)) {
+      if (/\b(if he|if they|could|potential to|projected|may |might |should he|assuming|hopes to|looking to|in line to compete|ranking|rankings|draft(ing)? (him|target)|fantasy managers)\b/i.test(sent)) continue;
+      /* and the aggregator quoting its own product is not reporting */
+      if (/\b(rotoballer|rotowire)\b/i.test(sent)) continue;
+    }
 
     /* guard 2 — whose injury is it? Presence is not enough: "Harvey took on a bigger role
        after Dobbins' season-ending foot injury" names Harvey. Go by PROXIMITY — whichever
@@ -149,6 +175,21 @@ const ATTRIB = [
   /* named insiders stand on their own */
   /\b(Adam Schefter|Ian Rapoport|Tom Pelissero|Mike Garafolo|Jeremy Fowler|Dianna Russini|Albert Breer|Jordan Schultz)\b/,
 ];
+
+/* Who these people actually work for. The generic "<Name> of <Outlet>" rule reads whichever
+ * outlet sits next to the name, and wire copy loves "Ian Rapoport of ESPN and NFL Network",
+ * which produced "Ian Rapoport, ESPN" — a real journalist filed under the wrong employer.
+ * Since we print the attribution as provenance, get it right. */
+const INSIDER_OUTLET = {
+  "Adam Schefter": "ESPN",
+  "Ian Rapoport": "NFL Network",
+  "Tom Pelissero": "NFL Network",
+  "Mike Garafolo": "NFL Network",
+  "Jeremy Fowler": "ESPN",
+  "Dianna Russini": "The Athletic",
+  "Albert Breer": "Sports Illustrated",
+  "Jordan Schultz": "Fox Sports",
+};
 /* a real quote: quotation marks near a said-verb from a person, not a paraphrase */
 const QUOTED = /"[^"]{25,}"[^.]{0,80}\b(said|told|says|explained|added|noted)\b|\b(said|told)\b[^.]{0,60}"[^"]{25,}"/i;
 
@@ -176,9 +217,11 @@ const attribOf = (text) => {
     let a = clean(m[1]), b = clean(m[2]);
     if (NOTNAME.test(a) && !b) continue;              // "NFL Insider Adam" — not a name
     if (a && NOTNAME.test(a) && b) a = "";
-    if (!b) return NOTNAME.test(a) ? null : a;
+    if (!b) return NOTNAME.test(a) ? null : (INSIDER_OUTLET[a] ? `${a}, ${INSIDER_OUTLET[a]}` : a);
     if (!a) return b;
-    return /^[A-Z][\w'.-]+ [A-Z]/.test(a) ? `${a}, ${b}` : `${b}, ${a}`;
+    const [name, outlet] = /^[A-Z][\w'.-]+ [A-Z]/.test(a) ? [a, b] : [b, a];
+    /* a known insider's employer is a fact, not something to read off the sentence */
+    return `${name}, ${INSIDER_OUTLET[name] ?? outlet}`;
   }
   return QUOTED.test(text) ? "direct quote" : null;
 };

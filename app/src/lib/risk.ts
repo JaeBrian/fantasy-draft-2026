@@ -19,6 +19,23 @@ import { topNews } from "./news";
  * real per-player facts rather than to everyone at a position equally. Where the data is
  * missing (1 of 170 players) everything falls back to the position baseline. */
 
+/* How long is he out for? Wire copy writes durations in words as often as digits — "expected
+ * to miss about a week" — and the first version only read digits, fell through to a three-week
+ * default, and tripled a knock the same sentence called no danger for Week 1.
+ *
+ * Built once at module load rather than per call: riskOf runs a few hundred thousand times
+ * inside a single simulation, and compiling these on every one of them halved the throughput. */
+const NUM: Record<string, number> = {
+  a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6,
+  several: 3, couple: 2, few: 3, multiple: 3,
+};
+const val = (s: string) => NUM[s.toLowerCase()] ?? Number(s);
+const N = "a|an|one|two|three|four|five|six|several|couple|few|multiple|\\d+";
+const HEDGE = "(?:about |around |roughly |at least )?";
+const WK_RANGE = new RegExp(`\\b(${N})\\s*(?:-|–|to)\\s*(${N})\\s*weeks?`, "i");
+const WK_ONE = new RegExp(`\\b${HEDGE}(${N})\\s*weeks?`, "i");
+const MONTHS = new RegExp(`\\b${HEDGE}(${N})\\s*months?`, "i");
+
 const BASE_CV: Record<string, number> = { QB: 0.26, RB: 0.44, WR: 0.40, TE: 0.42 };
 const BASE_MISS: Record<string, number> = { QB: 0.14, RB: 0.30, WR: 0.22, TE: 0.24 };
 const VERDICT_CV: Record<string, number> = { buy: 0.95, solid: 1.0, risk: 1.22, avoid: 1.32 };
@@ -126,16 +143,23 @@ export function riskOf(name: string, pos: Pos, verdict: Verdict): Risk {
    * Kamara read "Q" on the morning Schefter reported a month on the shelf. */
   const top = topNews(name);
   if (top?.g) {
-    const wk = /\b(\d+)\s*[-–to]{1,3}\s*(\d+)\s*week/i.exec(top.d) || /\b(\d+)\s*week/i.exec(top.d);
-    const mo = /\b(a|one|two|three|\d+)\s*month/i.exec(top.d);
-    const NUM: Record<string, number> = { a: 1, one: 1, two: 2, three: 3 };
+    /* Wire copy writes durations in words as often as digits, and the first version of this
+     * only read digits. "expected to miss about a week" matched no pattern, fell through to a
+     * three-week default, and tripled a knock that the same sentence said left Week 1 "not in
+     * any danger". So read the words too, and when nothing at all parses assume the smaller
+     * number — an unreadable report is not evidence of a long absence. */
+    /* a range takes its upper bound: "2-3 weeks" is three */
+    const wkRange = WK_RANGE.exec(top.d);
+    const wk = wkRange ?? WK_ONE.exec(top.d);
+    const mo = MONTHS.exec(top.d);
+
     /* turn the report into games missed out of a 17-week season */
     let miss = 0;
     if (top.g === "out") miss = 17;
     else if (top.g === "miss") {
-      if (mo) miss = 4.3 * (NUM[mo[1].toLowerCase()] ?? Number(mo[1]) ?? 1);
-      else if (wk) miss = Number(wk[2] ?? wk[1]);
-      else miss = 3;
+      if (mo) miss = 4.3 * (val(mo[1]) || 1);
+      else if (wk) miss = val(wkRange ? wkRange[2] : wk[1]) || 1;
+      else miss = 1;
     }
     /* `hurt` is deliberately NOT priced. It fires on any mention of a knock — "limited in
      * practice", "left the game" — and in August that is thirty-odd players, most of whom

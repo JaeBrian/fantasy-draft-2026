@@ -1,5 +1,29 @@
 # Update log
 
+## 2026-08-20 — data refresh, and a claim from yesterday retracted
+**Refreshed.** Sleeper ADP, projections, injury designations, depth charts, trending, and the news wire.
+
+**Correction: the projections are not frozen.** Yesterday's entry said they were, on the strength of an Aug 17 → Aug 19 pull in which not one player moved by 0.25 pts/wk. Today a batch moved together — Mahomes +1.95, Rodgers +1.57, Shough +1.24, Purdy +1.01, mostly quarterbacks — and Jayden Higgins dropped out of the feed entirely, the day after his ACL tear. They republish in steps, apparently after preseason games, and are flat between. That two-day window fell in a gap. Refresh them; expect no change most days; never read "nothing moved" as confirmation that nothing happened. README and the news page corrected.
+
+**Injury flags** 34 → 37. New: Quinshon Judkins Q, Tyler Warren Q, Sam LaPorta Q, Khalil Shakir Q. Cleared: Jameson Williams.
+
+**Four wire-tagging bugs, all caught by reading the new batch by hand:**
+
+| player | what the wire said | what we recorded |
+|---|---|---|
+| Tyler Warren | "miss about **a week**, Week 1 not in danger" | ~3 weeks |
+| Makai Lemon | *returning* after a two-week absence | ~3 weeks out |
+| Jordan Mason | a ranking blurb: "**if he can claim** a larger portion of the timeshare" | `COMMITTEE` |
+| — | "Ian Rapoport of ESPN **and NFL Network**" | "Ian Rapoport, ESPN" |
+
+Fixes: the duration parser now reads worded durations ("a week", "a couple of weeks", "several") and defaults to **one** week rather than three when nothing parses, because an unreadable report is not evidence of a long absence. The recovery guard now covers `miss` as well as `out`. Role tags (`committee`/`workload`/`demoted`/`promoted`) no longer fire on conditionals — "if he", "could", "potential to", "fantasy managers" — or on sentences citing the aggregator's own rankings. Known insiders' outlets are now looked up rather than read off the sentence.
+
+That last change also caught an over-correction of my own: an early draft of the recovery guard matched a bare "after being", which reads the comeback in "after being sidelined … will get his first taste" but *also* reads it in "sidelined for at least a month **after being diagnosed** with a sprained MCL" — quietly demoting Alvin Kamara's month on the shelf to a camp knock. Pattern tightened; Kamara restored.
+
+Committee tags fell 6 → 2, and the two that survive are both real reports of a coach's plan (Hampton's "hot hand", Stevenson sharing with Henderson) rather than analysts speculating about a timeshare.
+
+`riskOf` regexes are now built once at module load instead of per call — compiling them inside a function that runs hundreds of thousands of times per simulation had halved throughput.
+
 ## 2026-08-19 — live news wire, measured teammate correlation, lineup band fix
 **Data refreshed.** Sleeper ADP, weekly projections, injury designations, depth charts and 24h trending all re-pulled. Finding worth recording: **the season projections are frozen** — pulled Aug 17 and again Aug 19, not one player moved by even 0.25 pts/wk. ADP drifts, injury flags flip, the projection does not. Between now and the draft the news wire is the only input that changes.
 

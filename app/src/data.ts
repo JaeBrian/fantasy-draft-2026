@@ -262,6 +262,19 @@ export const MKT: Record<string, [number, number, number, number]> = {"Jahmyr Gi
 export type NewsItem = { text: string; player?: string; dir?: "up" | "down" };
 export const NEWS: { when: string; items: NewsItem[] }[] = [
   {
+    when: "Aug 20, 2026 \u00b7 2:15 PM PT",
+    items: [
+      { player: "Jayden Higgins", dir: "down", text: "Sleeper has now zeroed his projection outright \u2014 he is off the board, not just flagged. Torn ACL, out for the year." },
+      { player: "Tyler Warren", dir: "down", text: "Groin, about a week (Ian Rapoport). Week 1 against the Ravens is explicitly not in danger \u2014 a dip to buy, not a reason to pass." },
+      { player: "Patrick Mahomes", dir: "up", text: "Sleeper republished its projections and moved him +1.95 pts/wk, the largest jump on the board." },
+      { player: "Aaron Rodgers", dir: "up", text: "+1.57 pts/wk on the same republish; Tyler Shough +1.24 and Brock Purdy +1.01." },
+      { player: "Alvin Kamara", dir: "down", text: "Still a month out with the MCL sprain (Adam Schefter) \u2014 unchanged, but now his projection has ticked up, so the price may not reflect it." },
+      { player: "Carnell Tate", dir: "down", text: "ADP slipping, 62.5 \u2192 65.9 over the last day." },
+      { text: "Projections are NOT frozen \u2014 correcting what this log said yesterday. They republish in batches, seemingly after preseason games, and sit flat in between. Two days of no movement was a gap between updates, not a standing fact." },
+      { text: "Four wire-tagging bugs fixed: \"expected to miss about a week\" was being read as three weeks; a story about a player RETURNING was filed as an absence; a ranking blurb speculating about a timeshare was tagged as a reported committee; and Ian Rapoport was credited to ESPN." },
+    ],
+  },
+  {
     when: "Aug 19, 2026 \u00b7 3:30 PM PT",
     items: [
       { player: "Jayden Higgins", dir: "down", text: "Torn ACL in Tuesday practice \u2014 out for the season (Ian Rapoport, NFL Network). Tank Dell and Jaylin Noel absorb the targets." },
