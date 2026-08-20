@@ -34,7 +34,9 @@ Eighteen separate weekly pulls, summed. Feeds every points number in the app: ca
 
 Pulled per week rather than as a season total on purpose — the season endpoint's game count doesn't match reality, and dividing by a flat 18 understated players who miss time. Justin Jefferson came out at 11.41 pts/wk that way against a true 13.84.
 
-> ⚠️ **These do not move.** Pulled Aug 17 and again Aug 19, not one player shifted by even 0.25 pts/wk. They're a preseason baseline, not a live number. Everything August throws at you — a coach's comment, a torn ACL — is invisible here. That's why the news feed below exists.
+> ⚠️ **These move in steps, not daily.** Pulled Aug 17 and again Aug 19: not one player shifted by even 0.25 pts/wk. Pulled again Aug 20 and a batch moved together — Mahomes +1.95, Rodgers +1.57, Shough +1.24, Purdy +1.01, mostly quarterbacks, and Jayden Higgins dropped out of the feed entirely the day after his ACL tear.
+>
+> So they are not frozen — an earlier version of this file said they were, on the strength of a two-day window that happened to fall between updates. They are **republished periodically**, seemingly after preseason games, and are flat in between. Refresh them, but do not expect a change most days, and do not read one as confirmation that nothing has happened. Between republishes the news feed below is the only thing that moves.
 
 ### Sleeper — 2025 weekly game logs
 
