@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ARBITRAGE, CLIFF_MAP, DRAFT_TREE, PAIRED_SIM, RISK_DIAL, SIM_PLANS, TOOL_USERS } from "../data";
+import { ARBITRAGE, CLIFF_MAP, DRAFT_TREE, PAIRED_SIM, RB_LOSS, RISK_DIAL, SIM_PLANS, TOOL_USERS } from "../data";
 import { Card, Eyebrow, Intro, Noob } from "../components/ui";
 
 
@@ -51,6 +51,109 @@ const HEAD_TO_HEAD = [
   { who: "Emily", slot: 10, avg: 100.2, best: 23 },
 ];
 
+
+/** "The room takes all the backs before I'm on the clock — is it still worth taking one?"
+ *  Answered by forcing each opening shape and playing the season out. */
+function RbLoss({ seat }: { seat: number }) {
+  const [room, setRoom] = useState<"loss" | "market">("loss");
+  const entry = Object.values(RB_LOSS).find((e) => e.seat === seat);
+  const [worst, market] = ["Very RB-heavy (RB LOSS — worst case)", "Market"];
+  if (!entry) return null;
+  const rows = entry.rooms[room === "loss" ? worst : market];
+  if (!rows?.length) return null;
+
+  const best = rows[0];
+  const zero = rows.find((r) => r.k === "WR-WR-WR-WR");
+  const lossRows = entry.rooms[worst];
+  const mktRows = entry.rooms[market];
+  const costOfRun = lossRows && mktRows ? lossRows[0].ppg - mktRows[0].ppg : null;
+
+  return (
+    <Card>
+      <Eyebrow>If the backs go early — seat {entry.seat}</Eyebrow>
+      <p className="m-0 text-[0.85rem] leading-relaxed text-ink-2">
+        The worry: the room empties the running backs before your turn, and every back still on the board is one ADP
+        says belongs a round later. Is it worth taking him anyway, or do you let the position go?
+      </p>
+      <p className="m-0 mt-2 text-[0.85rem] leading-relaxed text-ink-2">
+        Each row forces a <b className="text-ink">shape</b> across your first four picks — picks{" "}
+        <span className="font-mono text-ink">{entry.picks.slice(0, 4).join(", ")}</span> — then lets the normal policy
+        fill the rest and plays the season out. Shapes, not named players: naming a player would only count the drafts
+        where he happened to fall to you, which compares different leagues rather than different decisions.
+      </p>
+
+      {zero && (
+        <p className="mt-3 rounded border border-avoid/50 bg-avoid/5 px-3 py-2 text-[0.88rem] leading-relaxed text-ink-2">
+          <b className="text-avoid">Abandoning the position is the worst thing you can do.</b> Even in the room that
+          drafts backs hardest, going all-receiver costs{" "}
+          <b className="text-ink">{Math.abs(zero.delta).toFixed(2)} pts/wk</b> against the best shape. The run makes
+          backs <i>more</i> expensive, not less worth having — you still take one, you just pay above ADP for him.
+        </p>
+      )}
+
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        {([["loss", "RB LOSS — worst case"], ["market", "Market room"]] as const).map(([k, lbl]) => (
+          <button
+            key={k}
+            type="button"
+            className={`btn ${room === k ? "on" : ""}`}
+            onClick={() => setRoom(k)}
+          >
+            {lbl}
+          </button>
+        ))}
+        {costOfRun !== null && (
+          <span className="text-[0.78rem] text-ink-3">
+            the run itself is worth {costOfRun >= 0 ? "+" : ""}{costOfRun.toFixed(2)} pts/wk to this seat
+          </span>
+        )}
+      </div>
+
+      <div className="mt-3 overflow-x-auto">
+        <table className="w-full min-w-[640px] border-collapse text-[0.85rem]">
+          <thead>
+            <tr className="border-b border-line-soft text-left text-[0.72rem] uppercase tracking-wide text-ink-3">
+              <th className="py-1.5 pr-3 font-semibold">Opening</th>
+              <th className="py-1.5 pr-3 text-right font-semibold">Pts/wk</th>
+              <th className="py-1.5 pr-3 text-right font-semibold">Floor</th>
+              <th className="py-1.5 pr-3 text-right font-semibold">Ceiling</th>
+              <th className="py-1.5 pr-3 text-right font-semibold">vs best</th>
+              <th className="py-1.5 font-semibold">Who you typically land</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => {
+              const isBest = r === rows[0];
+              return (
+                <tr key={r.k} className="border-b border-line-soft/60 last:border-0">
+                  <td className={`py-1.5 pr-3 font-mono ${isBest ? "font-bold text-value" : "text-ink"}`}>{r.k}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono tabular-nums text-ink">
+                    {r.ppg.toFixed(2)}
+                    <span className="text-[0.7rem] text-ink-3"> ±{r.se.toFixed(2)}</span>
+                  </td>
+                  <td className="py-1.5 pr-3 text-right font-mono tabular-nums text-ink-3">{r.floor.toFixed(0)}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono tabular-nums text-ink-3">{r.ceil.toFixed(0)}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono tabular-nums">
+                    {isBest ? <span className="font-bold text-value">best</span>
+                      : r.tied ? <span className="text-ink-3">tied</span>
+                      : <span className="text-avoid">{r.delta.toFixed(2)}</span>}
+                  </td>
+                  <td className="py-1.5 text-[0.78rem] text-ink-3">{r.common.join(" · ")}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p className="m-0 mt-2 text-[0.75rem] leading-relaxed text-ink-3">
+        &ldquo;tied&rdquo; means the gap does not clear two combined standard errors — treat those as the same answer.
+        Best shape here is <b className="text-ink">{best.k}</b>. Percentages are how often that exact player was the one
+        available at that pick.
+      </p>
+    </Card>
+  );
+}
+
 export function SimPanel({ noob }: { noob: boolean }) {
   const [seat, setSeat] = useState<number>(6);
   const [branch, setBranch] = useState<string>("");
@@ -73,6 +176,8 @@ export function SimPanel({ noob }: { noob: boolean }) {
         two strategies meet the identical draft and the identical season, which is the only way a difference this small
         means anything. When these figures move, it is because ADP or the projections moved, not the dice.
       </Intro>
+
+      <RbLoss seat={seat} />
 
       <Card>
         <Eyebrow>What these numbers count</Eyebrow>

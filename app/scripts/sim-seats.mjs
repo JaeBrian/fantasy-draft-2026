@@ -42,12 +42,19 @@ P.forEach((r) => {
     proj: PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6, cv: rk.cv, pMiss: rk.pMiss,
     mkt, sig: Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * mkt), bye: BYE[r[2]] || 0 });
 });
+/* Value the way the SEASON is scored, not the way the projection reads. Sleeper projects
+ * points in games a player PLAYS; the season loop rolls his miss rate every week. A policy
+ * drafting on the raw number is buying healthy weeks and being paid in real ones — the same
+ * mismatch fixed in advisor.ts in PR #44 and not propagated here until now. It mattered:
+ * De'Von Achane projects 15.61, the best back on the board, on a 45% miss rate our own board
+ * calls "avoid"; adjusted he is 12.80 and Chase Brown is 13.02 on 30%. */
+const adj = (p) => p.proj * (1 - 0.4 * p.pMiss);
 const REPL = {};
 for (const pos of ['QB','RB','WR','TE']) {
-  const v = POOL.filter(p => p.pos === pos).map(p => p.proj).sort((a,b) => b-a);
+  const v = POOL.filter(p => p.pos === pos).map(adj).sort((a,b) => b-a);
   REPL[pos] = v[Math.min(REPL_RANK[pos] - 1, v.length - 1)] || 0;
 }
-POOL.forEach(p => { p.vorp = Math.max(0.2, p.proj - REPL[p.pos]); });
+POOL.forEach(p => { p.vorp = Math.max(0.2, adj(p) - REPL[p.pos]); });
 
 const snap = (pk) => { const r = Math.ceil(pk / TEAMS), i = pk - (r - 1) * TEAMS; return r % 2 ? i : TEAMS + 1 - i; };
 const mul = (a) => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
