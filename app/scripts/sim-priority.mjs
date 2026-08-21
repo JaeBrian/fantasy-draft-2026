@@ -20,7 +20,7 @@
  * Jefferson is the case in point: he reaches seat 10 every single time and survives to pick 15
  * every single time, so taking him at 10 spends a pick on a player nobody was going to take. */
 import { createRequire } from 'node:module';
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, readFileSync } from 'node:fs';
 const require = createRequire(import.meta.url);
 const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
@@ -226,7 +226,12 @@ function shortlist(seat, lean, pick, nextPick, fixed, n) {
 }
 
 const OUT = {};
-for (const [who, seat] of [['Emily', 10], ['Brian JK', 6]]) {
+/* Seats can be limited from the command line so one seat can be regenerated without
+   recomputing the others — the full three-seat run takes the best part of an hour.
+     node scripts/sim-priority.mjs 1200 Ashley                                            */
+const ONLY = process.argv[3];
+const ALL_SEATS = [['Ashley', 1], ['Emily', 10], ['Brian JK', 6]];
+for (const [who, seat] of ALL_SEATS.filter(([n]) => !ONLY || n === ONLY)) {
   const mine = picksOf(seat);
   const [p1, p2] = mine;
   OUT[who] = { seat, p1, p2, rooms: {} };
@@ -259,5 +264,11 @@ for (const [who, seat] of [['Emily', 10], ['Brian JK', 6]]) {
     }
   }
 }
-writeFileSync(CACHE + 'priority.json', JSON.stringify(OUT, null, 2));
+/* merge, never overwrite: a single-seat run must not wipe the other two */
+let merged = OUT;
+try {
+  const prev = JSON.parse(readFileSync(CACHE + 'priority.json', 'utf8'));
+  merged = { ...prev, ...OUT };
+} catch { /* no previous file — first run */ }
+writeFileSync(CACHE + 'priority.json', JSON.stringify(merged, null, 2));
 console.log(`\n\nwrote .simcache/priority.json   (${W.toLocaleString()} worlds per option)\n`);
