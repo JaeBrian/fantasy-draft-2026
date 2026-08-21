@@ -30,17 +30,44 @@ const BASE_CV = { QB: 0.26, RB: 0.44, WR: 0.40, TE: 0.42 };
 const RISK_CV = { buy: 0.95, solid: 1.0, risk: 1.22, avoid: 1.32 };
 const BASE_MISS = { QB: 0.14, RB: 0.30, WR: 0.22, TE: 0.24 };
 
+/* This script had drifted badly behind the rest of the app, in four ways at once — it is the
+ * one that feeds the "if this, then that" cards on the board, so it was the most visible
+ * thing running on the oldest numbers:
+ *
+ *   1. it ranked candidates by ourRank, which is BOARD ORDER — the position of the row in
+ *      data.ts. That is a hand-curated opinion, not a measurement, and it is the same
+ *      proxy-for-value mistake found and fixed everywhere else this month. It is why the
+ *      cards led with Justin Jefferson at pick 10, whom the paired head-to-head puts LAST of
+ *      ten options (-2.50 in an RB-heavy room, -4.32 in a market one).
+ *   2. pMiss was recomputed locally from position baselines, so the news wire never reached
+ *      it — a player reported out for the season still looked healthy here.
+ *   3. the ADP sigma floor was 2.2, lowered to 0.5 elsewhere once we had measured spreads.
+ *   4. projections were multiplied by a verdict factor AND an injury factor, double-counting
+ *      what riskOf already accounts for.
+ *
+ * Now: one shared risk model, and value measured the way the season is scored. */
 const POOL = [];
-{ const c = { QB:0,RB:0,WR:0,TE:0 };
-  P.forEach((r, i) => { if (c[r[1]] === undefined) return;
-    const pr = ++c[r[1]], ffc = MKT[r[0]] ? MKT[r[0]][0] : r[3], s = SLP[r[0]] || {};
-    const mkt = s.adp !== undefined ? 0.75*s.adp + 0.25*ffc : ffc;
-    const hurt = ['O','IR','PUP','SUS'].includes(s.inj) ? 0.85 : s.inj === 'D' ? 0.95 : 1;
-    POOL.push({ name: r[0], pos: r[1], team: r[2], ourRank: i+1, idx: POOL.length,
-      proj: (PROJ[r[0]] !== undefined ? PROJ[r[0]] : PPG[r[1]](pr)) * (RISK[r[4]] || 1) * hurt,
-      cv: riskOf(r[0], r[1], r[4]).cv,
-      pMiss: BASE_MISS[r[1]] * (r[4]==='risk'?1.3:r[4]==='avoid'?1.5:1) * (s.inj ? 1.4 : 1),
-      mkt, sig: Math.max(2.2, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13*mkt), bye: BYE[r[2]] || 0 }); }); }
+P.forEach((r) => {
+  if (!['QB','RB','WR','TE'].includes(r[1])) return;
+  const ffc = MKT[r[0]] ? MKT[r[0]][0] : r[3], s = SLP[r[0]] || {};
+  const mkt = s.adp !== undefined ? 0.75*s.adp + 0.25*ffc : ffc;
+  const rk = riskOf(r[0], r[1], r[4]);
+  POOL.push({ name: r[0], pos: r[1], team: r[2], idx: POOL.length,
+    proj: PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6,
+    cv: rk.cv, pMiss: rk.pMiss,
+    mkt, sig: Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13*mkt), bye: BYE[r[2]] || 0 });
+});
+/* value over replacement, on availability-adjusted points and a measured replacement rank */
+const REPL_RANK = { QB: 12, RB: 31, WR: 40, TE: 13 };
+const adj = (p) => p.proj * (1 - 0.4 * p.pMiss);
+const REPL = {};
+for (const pos of ['QB','RB','WR','TE']) {
+  const v = POOL.filter(p => p.pos === pos).map(adj).sort((a,b) => b-a);
+  REPL[pos] = v[Math.min(REPL_RANK[pos]-1, v.length-1)] || 0;
+}
+POOL.forEach(p => { p.vorp = Math.max(0.2, adj(p) - REPL[p.pos]); });
+/* kept so the old sort sites read the same way, but it is value now, not board position */
+POOL.slice().sort((a,b) => b.vorp - a.vorp).forEach((p, i) => { p.ourRank = i + 1; });
 const IDX = new Map(POOL.map(p => [p.name, p]));
 
 const snap = p => { const r = Math.ceil(p/12), i = p-(r-1)*12; return r%2 ? i : 13-i; };
