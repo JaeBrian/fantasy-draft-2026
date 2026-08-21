@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ARBITRAGE, CLIFF_MAP, DRAFT_TREE, PAIRED_SIM, RB_LOSS, RISK_DIAL, SIM_PLANS, TOOL_USERS } from "../data";
+import { ARBITRAGE, CLIFF_MAP, DRAFT_TREE, PAIRED_SIM, PRIORITY, RB_LOSS, RISK_DIAL, SIM_PLANS, TOOL_USERS } from "../data";
 import { Card, Eyebrow, Intro, Noob } from "../components/ui";
 
 
@@ -154,6 +154,119 @@ function RbLoss({ seat }: { seat: number }) {
   );
 }
 
+
+/** Priority order for the first two picks, with the survival column that changes decisions. */
+function PriorityBoard({ seat }: { seat: number }) {
+  const [room, setRoom] = useState<"RB LOSS" | "Market">("Market");
+  const [took, setTook] = useState<string | null>(null);
+  const entry = Object.values(PRIORITY).find((e) => e.seat === seat);
+  const data = entry?.rooms[room];
+  if (!entry || !data?.round1?.length) return null;
+
+  const r1 = data.round1;
+  const chosen = took && data.round2[took]?.length ? took : r1[0].name;
+  const r2 = data.round2[chosen] ?? [];
+
+  const Row = ({ r, i, showSurv }: { r: typeof r1[number]; i: number; showSurv: boolean }) => {
+    const lasts = showSurv && (r.survives ?? 0) >= 85;
+    return (
+      <tr className="border-b border-line-soft/60 last:border-0">
+        <td className="py-1.5 pr-2 text-right font-mono text-ink-3">{i + 1}</td>
+        <td className={`py-1.5 pr-3 ${lasts ? "text-ink-3" : "text-ink"}`}>
+          <b>{r.name}</b> <span className="font-mono text-[0.7rem] text-ink-3">{r.pos}</span>
+        </td>
+        <td className="py-1.5 pr-3 text-right font-mono tabular-nums text-ink-3">{r.adp.toFixed(1)}</td>
+        <td className="py-1.5 pr-3 text-right font-mono tabular-nums text-ink-3">{r.there}%</td>
+        {showSurv && (
+          <td className={`py-1.5 pr-3 text-right font-mono tabular-nums ${lasts ? "font-bold text-risky" : "text-ink-3"}`}>
+            {r.survives ?? 0}%
+          </td>
+        )}
+        <td className="py-1.5 pr-3 text-right font-mono tabular-nums text-ink">
+          {r.delta === null ? "—" : `${r.delta >= 0 ? "+" : ""}${r.delta.toFixed(2)}`}
+          {r.tied && <span className="ml-1 text-[0.7rem] text-ink-3">tied</span>}
+        </td>
+        <td className="py-1.5 text-[0.76rem] text-ink-3">
+          {lasts ? "still there at your next pick — take him later" : ""}
+        </td>
+      </tr>
+    );
+  };
+
+  return (
+    <Card>
+      <Eyebrow>Priority order — seat {entry.seat}</Eyebrow>
+      <p className="m-0 text-[0.85rem] leading-relaxed text-ink-2">
+        Who to want, in order, at pick <b className="text-ink">{entry.p1}</b> — then a fresh order for pick{" "}
+        <b className="text-ink">{entry.p2}</b> based on who you actually got. Ranked by the season you finish with,
+        compared <b className="text-ink">only against the drafts where both players were on the board</b>.
+      </p>
+      <p className="m-0 mt-2 text-[0.85rem] leading-relaxed text-ink-2">
+        Read the <b className="text-risky">lasts to {entry.p2}</b> column before the points. A player who is still
+        there at your next pick should not be taken now however well he grades — you get him anyway, and the pick is
+        spent on someone nobody was going to take.
+      </p>
+
+      <div className="mt-3 flex flex-wrap gap-2">
+        {(["Market", "RB LOSS"] as const).map((k) => (
+          <button key={k} type="button" className={`btn ${room === k ? "on" : ""}`}
+            onClick={() => { setRoom(k); setTook(null); }}>
+            {k === "Market" ? "Market room" : "RB LOSS — backs go early"}
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-3 overflow-x-auto">
+        <table className="w-full min-w-[620px] border-collapse text-[0.85rem]">
+          <thead>
+            <tr className="border-b border-line-soft text-left text-[0.7rem] uppercase tracking-wide text-ink-3">
+              <th className="py-1.5 pr-2 text-right font-semibold">#</th>
+              <th className="py-1.5 pr-3 font-semibold">Pick {entry.p1}</th>
+              <th className="py-1.5 pr-3 text-right font-semibold">ADP</th>
+              <th className="py-1.5 pr-3 text-right font-semibold">There</th>
+              <th className="py-1.5 pr-3 text-right font-semibold">Lasts to {entry.p2}</th>
+              <th className="py-1.5 pr-3 text-right font-semibold">Pts/wk</th>
+              <th className="py-1.5 font-semibold"></th>
+            </tr>
+          </thead>
+          <tbody>{r1.map((r, i) => <Row key={r.name} r={r} i={i} showSurv />)}</tbody>
+        </table>
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <span className="text-[0.8rem] text-ink-3">If you took:</span>
+        {r1.filter((r) => data.round2[r.name]?.length).slice(0, 5).map((r) => (
+          <button key={r.name} type="button"
+            className={`btn ${chosen === r.name ? "on" : ""}`}
+            onClick={() => setTook(r.name)}>
+            {r.name}
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-2 overflow-x-auto">
+        <table className="w-full min-w-[560px] border-collapse text-[0.85rem]">
+          <thead>
+            <tr className="border-b border-line-soft text-left text-[0.7rem] uppercase tracking-wide text-ink-3">
+              <th className="py-1.5 pr-2 text-right font-semibold">#</th>
+              <th className="py-1.5 pr-3 font-semibold">Then at pick {entry.p2}</th>
+              <th className="py-1.5 pr-3 text-right font-semibold">ADP</th>
+              <th className="py-1.5 pr-3 text-right font-semibold">There</th>
+              <th className="py-1.5 pr-3 text-right font-semibold">Pts/wk</th>
+              <th className="py-1.5 font-semibold"></th>
+            </tr>
+          </thead>
+          <tbody>{r2.map((r, i) => <Row key={r.name} r={r} i={i} showSurv={false} />)}</tbody>
+        </table>
+      </div>
+      <p className="m-0 mt-2 text-[0.75rem] leading-relaxed text-ink-3">
+        Points are the gap against a common baseline, not an absolute — only the ordering and the size of the gaps
+        mean anything. &ldquo;tied&rdquo; means it does not clear two standard errors.
+      </p>
+    </Card>
+  );
+}
+
 export function SimPanel({ noob }: { noob: boolean }) {
   const [seat, setSeat] = useState<number>(6);
   const [branch, setBranch] = useState<string>("");
@@ -177,6 +290,7 @@ export function SimPanel({ noob }: { noob: boolean }) {
         means anything. When these figures move, it is because ADP or the projections moved, not the dice.
       </Intro>
 
+      <PriorityBoard seat={seat} />
       <RbLoss seat={seat} />
 
       <Card>

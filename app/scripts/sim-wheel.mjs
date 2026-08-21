@@ -137,7 +137,9 @@ function play(seat, lean, w, plan) {
 const mean = a => a.reduce((s,x)=>s+x,0)/a.length;
 const seOf = a => { const m=mean(a); return Math.sqrt(a.reduce((s,x)=>s+(x-m)**2,0)/(a.length-1)/a.length); };
 
-const SEAT = 10, P1 = 10, P2 = 15;
+const SEAT = Number(process.argv[3] || 10);
+const PICKS = (() => { const a=[]; for(let pk=1;pk<=TEAMS*ROUNDS;pk++) if(snap(pk)===SEAT) a.push(pk); return a; })();
+const P1 = PICKS[0], P2 = PICKS[1];
 console.log(`\nSEAT ${SEAT} — picks ${P1} and ${P2} are five apart. Does a player who lasts to ${P1} also last to ${P2}?\n`);
 
 for (const [roomLbl, lean] of [['RB LOSS (very RB-heavy)', 15], ['Market', 0]]) {
