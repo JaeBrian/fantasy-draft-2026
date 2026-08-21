@@ -3,7 +3,11 @@
  * THE RB LOSS. What happens when the room empties the running backs before you are on the
  * clock, and is it still worth taking a back whose ADP says he belongs a round later?
  *
- * Two seats:
+ * Three seats:
+ *   Ashley, seat  1 — picks 1, 24, 25, 48, 49. The first pick in the draft, then a
+ *                    twenty-three pick wait, then TWO PICKS BACK TO BACK at the turn. A
+ *                    different problem from either of the others: nothing survives the gap,
+ *                    but at 24/25 she takes two players before anyone else takes one.
  *   Emily, seat 10 — picks 10, 15, 34, 39, 58, 63.  Ten and fifteen are five apart, a tight
  *                    turn, then a twenty-pick wait.
  *   Brian, seat  6 — picks  6, 19, 30, 43, 54, 67.  Evenly spaced, no wheel.
@@ -18,6 +22,7 @@
  * different leagues rather than different decisions. Every strategy gets whoever is actually
  * best at that position in that world, and picks five onward run on the normal policy. */
 import { createRequire } from 'node:module';
+import { writeFileSync, readFileSync } from 'node:fs';
 const require = createRequire(import.meta.url);
 const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
@@ -173,10 +178,14 @@ const PLANS = [
   { k: 'WR-TE-RB-WR', p: ['WR','TE','RB','WR'] },
 ];
 
+/* Limit to one seat from the command line so a single seat can be regenerated without
+   recomputing the others:  node scripts/sim-rbrun.mjs 10000 Ashley                       */
+const ONLY = process.argv[3];
 const SEATS = [
-  { who: 'Emily',   seat: 10 },
+  { who: 'Ashley',   seat: 1 },
+  { who: 'Emily',    seat: 10 },
   { who: 'Brian JK', seat: 6 },
-];
+].filter((s) => !ONLY || s.who === ONLY);
 const ROOMS = [
   { label: 'Very RB-heavy (RB LOSS — worst case)', lean: 15 },
   { label: 'Market', lean: 0 },
@@ -225,4 +234,8 @@ for (const { who, seat } of SEATS) {
     OUT[who].rooms[label] = rows;
   }
 }
-console.log('\n\nJSON<<<' + JSON.stringify(OUT) + '>>>JSON\n');
+/* merge, never overwrite — a single-seat run must not wipe the other two */
+let merged = OUT;
+try { merged = { ...JSON.parse(readFileSync(CACHE + 'rbloss.json', 'utf8')), ...OUT }; } catch { /* first run */ }
+writeFileSync(CACHE + 'rbloss.json', JSON.stringify(merged, null, 2));
+console.log('\nwrote .simcache/rbloss.json');
