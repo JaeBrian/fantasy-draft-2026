@@ -246,6 +246,25 @@ export function SimPanel({ noob }: { noob: boolean }) {
 
   return (
     <div className="flex flex-col gap-5">
+
+      {/* First thing on the page, before any prose. Switching seats is the most common thing
+          anyone does on this tab, and it was sitting below an intro and two explainer cards —
+          so you had to scroll past a wall of text to change whose report you were reading, then
+          scroll back. It stays stuck to the top while you read the tables. */}
+      <div className="sticky top-0 z-30 -mx-1 mb-1 flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-line-soft bg-bg/95 px-1 pb-2.5 pt-2 backdrop-blur">
+        <span className="flex flex-wrap gap-1.5">
+          {TOOL_USERS.filter(([, s2]) => SIM_PLANS[s2]).map(([nm, s2]) => (
+            <button key={nm} type="button" className={`btn ${seat === s2 ? "on" : ""}`} onClick={() => setSeat(s2)}>
+              {nm} · pick {s2}
+            </button>
+          ))}
+        </span>
+        <span className="display text-[1.05rem] tracking-wide text-ink">
+          {TOOL_USERS.find(([, s2]) => s2 === seat)?.[0] ?? `Seat ${seat}`}
+        </span>
+        <span className="text-[0.78rem] text-ink-3">— every number below is for this seat</span>
+      </div>
+
       <Intro eyebrow="Simulations" title="We drafted this league a million times">
         Every strategy below was tested by simulating complete 16-round drafts: eleven opponents priced off{" "}
         <b className="text-ink">Sleeper's real half-PPR ADP</b> — the pick each player actually goes at in our exact
@@ -289,25 +308,6 @@ export function SimPanel({ noob }: { noob: boolean }) {
         <i>shape</i> for your draft; let the live board on the Draft tab tell you the actual names.
       </Noob>
 
-      {/* Whose report is this? Every panel below changes with the seat, and until now the only
-          clue was which button happened to be lit. Say it plainly, and keep it stuck to the top
-          of the viewport so it is still answerable after scrolling into the tables. */}
-      <div className="sticky top-0 z-20 -mx-1 flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-b border-b border-line-soft bg-bg/95 px-1 pb-2 pt-2 backdrop-blur">
-        <span className="display text-[1.15rem] tracking-wide text-ink">
-          {TOOL_USERS.find(([, s]) => s === seat)?.[0] ?? `Seat ${seat}`}
-        </span>
-        <span className="font-mono text-[0.8rem] text-clock">pick {seat}</span>
-        <span className="text-[0.78rem] text-ink-3">
-          every number on this page is for this seat
-        </span>
-        <span className="ml-auto flex flex-wrap gap-1.5">
-          {TOOL_USERS.filter(([, s]) => SIM_PLANS[s]).map(([nm, s]) => (
-            <button key={nm} type="button" className={`btn ${seat === s ? "on" : ""}`} onClick={() => setSeat(s)}>
-              {nm} · pick {s}
-            </button>
-          ))}
-        </span>
-      </div>
 
       {plan && (
         <Card>
