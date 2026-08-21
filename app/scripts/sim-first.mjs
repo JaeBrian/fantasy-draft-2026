@@ -24,10 +24,31 @@ const POOL=[]; { const c={QB:0,RB:0,WR:0,TE:0};
     const mkt=s.adp!==undefined?0.75*s.adp+0.25*ffc:ffc;
     const hurt=['O','IR','PUP','SUS'].includes(s.inj)?0.85:s.inj==='D'?0.95:1;
     POOL.push({name:r[0],pos:r[1],ourRank:i+1,idx:POOL.length,
-      proj: (PROJ[r[0]] !== undefined ? PROJ[r[0]] : PPG[r[1]](pr)) * (RISK[r[4]] || 1) * hurt,
+      proj: PROJ[r[0]] !== undefined ? PROJ[r[0]] : PPG[r[1]](pr),   /* riskOf already prices verdict and injury */
       cv: riskOf(r[0], r[1], r[4]).cv,
       pMiss: riskOf(r[0], r[1], r[4]).pMiss,
       mkt,sig:Math.max(0.5,MKT[r[0]]?MKT[r[0]][1]:0,0.13*mkt),bye:BYE[r[2]]||0}); }); }
+
+/* ---- value, not board position ---------------------------------------------------------
+ * `ourRank` used to be the row's index in data.ts — a hand-curated opinion standing in for a
+ * measurement. Every sort site below reads it, so rather than touch them all, it is now
+ * assigned from value over replacement on availability-adjusted points: the same basis the
+ * advisor and the season loop use. Replacement ranks are the measured ones (sim-replacement).
+ *
+ * This is the same proxy-for-value mistake fixed in the advisor, then in sim-seats and
+ * sim-rbrun, then in sim-tree. It survived here because nothing reads these numbers except a
+ * panel nobody was checking against anything. */
+{
+  const REPL_RANK = { QB: 12, RB: 31, WR: 40, TE: 13 };
+  const adj = (p) => p.proj * (1 - 0.4 * (p.pMiss ?? 0.25));
+  const REPL = {};
+  for (const pos of ['QB','RB','WR','TE']) {
+    const v = POOL.filter(p => p.pos === pos).map(adj).sort((a,b) => b-a);
+    REPL[pos] = v[Math.min(REPL_RANK[pos]-1, v.length-1)] || 0;
+  }
+  POOL.forEach(p => { p.vorp = Math.max(0.2, adj(p) - REPL[p.pos]); });
+  POOL.slice().sort((a,b) => b.vorp - a.vorp).forEach((p, i) => { p.ourRank = i + 1; });
+}
 const IDX=new Map(POOL.map(p=>[p.name,p]));
 const snap=p=>{const r=Math.ceil(p/12),i=p-(r-1)*12;return r%2?i:13-i;};
 const mul=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);

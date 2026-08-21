@@ -325,51 +325,18 @@ export const DRAFT_ORDER = ["Ashley","Zach","Jeff","Brandon","Duy","Brian JK","M
 /** The slots of the people who use this tool, for one-tap identity. */
 export const TOOL_USERS: [string, number][] = [["Ashley", 1], ["Brian JK", 6], ["Emily", 10]];
 
-/** Winning opening line per seat from 800 risk-adjusted Monte Carlo drafts
- *  (see app/scripts/draft-sim.mjs). Each pick lists who the sim actually landed,
- *  most likely first — so the 2nd/3rd names are your fallbacks. */
 export type SimPick = { pick: number; opts: [string, number][] };
-export const SIM_PLANS: Record<number, { strategy: string; ppw: number; winPct: number; picks: SimPick[] }> = {
-  1: {
-    strategy: "RB-WR-WR-RB",
-    ppw: 109.4,
-    winPct: 39,
-    picks: [
-      { pick: 1, opts: [["Jahmyr Gibbs", 100]] },
-      { pick: 24, opts: [["George Pickens", 76], ["Nico Collins", 14], ["Malik Nabers", 8]] },
-      { pick: 25, opts: [["Malik Nabers", 57], ["Nico Collins", 33], ["DeVonta Smith", 9]] },
-      { pick: 48, opts: [["D'Andre Swift", 75], ["David Montgomery", 18]] },
-      { pick: 49, opts: [["Colston Loveland", 55], ["Tyler Warren", 42]] },
-      { pick: 72, opts: [["Caleb Williams", 41], ["Jayden Daniels", 33], ["Jalen Hurts", 19]] },
-    ],
-  },
-  6: {
-    strategy: "WR-RB-WR-RB",
-    ppw: 103.6,
-    winPct: 29,
-    picks: [
-      { pick: 6, opts: [["Jaxon Smith-Njigba", 81], ["Amon-Ra St. Brown", 15]] },
-      { pick: 19, opts: [["Kenneth Walker III", 59], ["Breece Hall", 17], ["Omarion Hampton", 11]] },
-      { pick: 30, opts: [["Malik Nabers", 73], ["DeVonta Smith", 23]] },
-      { pick: 43, opts: [["Travis Etienne Jr.", 52], ["D'Andre Swift", 42]] },
-      { pick: 54, opts: [["Tyler Warren", 60], ["Tucker Kraft", 21], ["Colston Loveland", 19]] },
-      { pick: 67, opts: [["Jayden Daniels", 62], ["Jalen Hurts", 23], ["Caleb Williams", 13]] },
-    ],
-  },
-  10: {
-    strategy: "RB-RB-WR-WR",
-    ppw: 101.3,
-    winPct: 32,
-    picks: [
-      { pick: 10, opts: [["Derrick Henry", 74], ["James Cook", 25]] },
-      { pick: 15, opts: [["Saquon Barkley", 45], ["Kenneth Walker III", 34], ["Derrick Henry", 21]] },
-      { pick: 34, opts: [["DeVonta Smith", 53], ["Emeka Egbuka", 28], ["Malik Nabers", 14]] },
-      { pick: 39, opts: [["Emeka Egbuka", 43], ["Zay Flowers", 33], ["Ladd McConkey", 21]] },
-      { pick: 58, opts: [["Tucker Kraft", 51], ["Tyler Warren", 42]] },
-      { pick: 63, opts: [["Jayden Daniels", 78], ["Jalen Hurts", 10]] },
-    ],
-  },
-};
+
+/** Winning opening line per seat, from full simulated leagues on real Sleeper projections,
+ *  real half-PPR ADP and the shared risk model. All twelve teams play the same season, so
+ *  winPct is how often this seat finishes with the most points — not a proxy.
+ *
+ *  Replaces the output of draft-sim.mjs, which had become unreproducible (it no longer ran at
+ *  all) and was last generated from a positional rank CURVE for projections and search_rank
+ *  for market price — the two inputs this project replaced weeks ago.
+ *  Regenerate with app/scripts/sim-plans.mjs */
+export const SIM_PLANS: Record<number, { strategy: string; ppw: number; winPct: number; picks: SimPick[] }> =
+  {"1":{"strategy":"RB-WR-RB-RB","ppw":121.4,"winPct":40,"picks":[{"pick":1,"opts":[["Jahmyr Gibbs",98]]},{"pick":24,"opts":[["George Pickens",46],["Nico Collins",41]]},{"pick":25,"opts":[["George Pickens",29],["Kyren Williams",27],["Brock Bowers",12]]},{"pick":48,"opts":[["David Montgomery",52],["Colston Loveland",32],["Jaylen Waddle",7]]},{"pick":49,"opts":[["Jaylen Warren",31],["Jaylen Waddle",19],["David Montgomery",18]]},{"pick":72,"opts":[["Jayden Reed",74],["Jaylen Warren",16],["Christian Watson",9]]}]},"6":{"strategy":"WR-WR-WR-TE","ppw":118.3,"winPct":21,"picks":[{"pick":6,"opts":[["Jaxon Smith-Njigba",53],["Jonathan Taylor",47]]},{"pick":19,"opts":[["Nico Collins",86],["Chase Brown",13]]},{"pick":30,"opts":[["Tee Higgins",74],["Colston Loveland",7],["Javonte Williams",6]]},{"pick":43,"opts":[["Colston Loveland",70],["David Montgomery",27]]},{"pick":54,"opts":[["Jaylen Warren",52],["David Montgomery",25],["Luther Burden III",9]]},{"pick":67,"opts":[["Christian Watson",36],["Jayden Reed",33],["Jaylen Warren",30]]}]},"10":{"strategy":"RB-WR-RB-TE","ppw":117.7,"winPct":17,"picks":[{"pick":10,"opts":[["James Cook",42],["Chase Brown",42],["De'Von Achane",8]]},{"pick":15,"opts":[["Nico Collins",57],["Chase Brown",35],["De'Von Achane",6]]},{"pick":34,"opts":[["Colston Loveland",35],["Tee Higgins",23],["David Montgomery",22]]},{"pick":39,"opts":[["Colston Loveland",44],["David Montgomery",27],["Tee Higgins",22]]},{"pick":58,"opts":[["Jaylen Warren",67],["Christian Watson",17],["Luther Burden III",7]]},{"pick":63,"opts":[["Christian Watson",55],["Jaylen Warren",26],["Jayden Reed",11]]}]}};
 
 /** Expected best-available projection (pts/wk) by position AT each of your first six picks,
  *  from 500 simulated drafts per seat. The position that falls fastest between two rows is
