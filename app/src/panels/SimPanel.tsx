@@ -6,41 +6,8 @@ import { Card, Eyebrow, Intro, Noob } from "../components/ui";
 /** Forced-first-pick study on the corrected model: 2,500 paired seasons per candidate.
  *  We force the pick, run best-available after it, and play the season out. `avail` is how
  *  often he was still on the board at that seat. Regenerate with app/scripts/sim-first.mjs */
-const FIRST_PICK: Record<number, { name: string; pos: string; pts: number; avail: number }[]> = {
-  1: [
-    { name: "Jahmyr Gibbs", pos: "RB", pts: 106.61, avail: 100 },
-    { name: "Bijan Robinson", pos: "RB", pts: 106.03, avail: 100 },
-    { name: "Jonathan Taylor", pos: "RB", pts: 104.24, avail: 100 },
-    { name: "James Cook", pos: "RB", pts: 102.97, avail: 100 },
-    { name: "Christian McCaffrey", pos: "RB", pts: 102.64, avail: 100 },
-    { name: "Chase Brown", pos: "RB", pts: 101.74, avail: 100 },
-    { name: "Derrick Henry", pos: "RB", pts: 101.17, avail: 100 },
-    { name: "Kenneth Walker III", pos: "RB", pts: 100.85, avail: 100 },
-    { name: "Omarion Hampton", pos: "RB", pts: 100.61, avail: 100 },
-  ],
-  6: [
-    { name: "Jonathan Taylor", pos: "RB", pts: 105.75, avail: 74 },
-    { name: "James Cook", pos: "RB", pts: 104.41, avail: 98 },
-    { name: "Christian McCaffrey", pos: "RB", pts: 104.36, avail: 46 },
-    { name: "Chase Brown", pos: "RB", pts: 103.25, avail: 100 },
-    { name: "Omarion Hampton", pos: "RB", pts: 102.55, avail: 100 },
-    { name: "Derrick Henry", pos: "RB", pts: 102.46, avail: 100 },
-    { name: "Jaxon Smith-Njigba", pos: "WR", pts: 101.87, avail: 83 },
-    { name: "Amon-Ra St. Brown", pos: "WR", pts: 101.37, avail: 88 },
-    { name: "Saquon Barkley", pos: "RB", pts: 101.27, avail: 100 },
-  ],
-  10: [
-    { name: "James Cook", pos: "RB", pts: 104.03, avail: 25 },
-    { name: "Chase Brown", pos: "RB", pts: 102.85, avail: 100 },
-    { name: "Kenneth Walker III", pos: "RB", pts: 102.09, avail: 100 },
-    { name: "Derrick Henry", pos: "RB", pts: 101.81, avail: 100 },
-    { name: "Omarion Hampton", pos: "RB", pts: 101.51, avail: 99 },
-    { name: "Saquon Barkley", pos: "RB", pts: 101.28, avail: 98 },
-    { name: "Justin Jefferson", pos: "WR", pts: 100.61, avail: 97 },
-    { name: "CeeDee Lamb", pos: "WR", pts: 100.57, avail: 87 },
-    { name: "Ashton Jeanty", pos: "RB", pts: 100.45, avail: 91 },
-  ],
-};
+const FIRST_PICK: Record<number, { name: string; pos: string; pts: number; avail: number }[]> =
+  {"1":[{"name":"Jahmyr Gibbs","pos":"RB","pts":115.94,"avail":100},{"name":"Bijan Robinson","pos":"RB","pts":115.32,"avail":100},{"name":"Jonathan Taylor","pos":"RB","pts":113.87,"avail":100},{"name":"Christian McCaffrey","pos":"RB","pts":112.98,"avail":100},{"name":"James Cook","pos":"RB","pts":112.36,"avail":100},{"name":"Chase Brown","pos":"RB","pts":111.02,"avail":100},{"name":"De'Von Achane","pos":"RB","pts":110.85,"avail":100},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":110.42,"avail":100},{"name":"Puka Nacua","pos":"WR","pts":110.33,"avail":100}],"6":[{"name":"Jonathan Taylor","pos":"RB","pts":114.06,"avail":52},{"name":"Christian McCaffrey","pos":"RB","pts":113.22,"avail":58},{"name":"James Cook","pos":"RB","pts":112.9,"avail":99},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":112.78,"avail":92},{"name":"Amon-Ra St. Brown","pos":"WR","pts":112.14,"avail":97},{"name":"Chase Brown","pos":"RB","pts":111.96,"avail":100},{"name":"De'Von Achane","pos":"RB","pts":111.4,"avail":100},{"name":"Derrick Henry","pos":"RB","pts":111.01,"avail":100},{"name":"Kenneth Walker III","pos":"RB","pts":110.95,"avail":100}],"10":[{"name":"James Cook","pos":"RB","pts":113.41,"avail":43},{"name":"De'Von Achane","pos":"RB","pts":112.24,"avail":99},{"name":"Nico Collins","pos":"WR","pts":112.14,"avail":100},{"name":"Chase Brown","pos":"RB","pts":112.02,"avail":100},{"name":"Justin Jefferson","pos":"WR","pts":111.66,"avail":99},{"name":"Derrick Henry","pos":"RB","pts":111.51,"avail":100},{"name":"CeeDee Lamb","pos":"WR","pts":111.48,"avail":74},{"name":"George Pickens","pos":"WR","pts":111.48,"avail":100},{"name":"Omarion Hampton","pos":"RB","pts":111.31,"avail":99}]};
 
 /** All three tool seats drafting the same way in the same league, 4,000 paired seasons.
  *  Note this is a harder test than the per-seat studies: there, only one seat used our board.
@@ -322,12 +289,24 @@ export function SimPanel({ noob }: { noob: boolean }) {
         <i>shape</i> for your draft; let the live board on the Draft tab tell you the actual names.
       </Noob>
 
-      <div className="flex flex-wrap gap-1.5">
-        {TOOL_USERS.filter(([, s]) => SIM_PLANS[s]).map(([nm, s]) => (
-          <button key={nm} type="button" className={`btn ${seat === s ? "on" : ""}`} onClick={() => setSeat(s)}>
-            {nm} · pick {s}
-          </button>
-        ))}
+      {/* Whose report is this? Every panel below changes with the seat, and until now the only
+          clue was which button happened to be lit. Say it plainly, and keep it stuck to the top
+          of the viewport so it is still answerable after scrolling into the tables. */}
+      <div className="sticky top-0 z-20 -mx-1 flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-b border-b border-line-soft bg-bg/95 px-1 pb-2 pt-2 backdrop-blur">
+        <span className="display text-[1.15rem] tracking-wide text-ink">
+          {TOOL_USERS.find(([, s]) => s === seat)?.[0] ?? `Seat ${seat}`}
+        </span>
+        <span className="font-mono text-[0.8rem] text-clock">pick {seat}</span>
+        <span className="text-[0.78rem] text-ink-3">
+          every number on this page is for this seat
+        </span>
+        <span className="ml-auto flex flex-wrap gap-1.5">
+          {TOOL_USERS.filter(([, s]) => SIM_PLANS[s]).map(([nm, s]) => (
+            <button key={nm} type="button" className={`btn ${seat === s ? "on" : ""}`} onClick={() => setSeat(s)}>
+              {nm} · pick {s}
+            </button>
+          ))}
+        </span>
       </div>
 
       {plan && (

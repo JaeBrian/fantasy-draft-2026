@@ -505,38 +505,8 @@ export type PairedRow = {
   label: string; mean: number; floor: number; ceiling: number;
   rb1: number; wr1: number; beats: number[]; note?: string;
 };
-export const PAIRED_SIM: Record<number, { worlds: number; rows: PairedRow[] }> = {
-  1: {
-    worlds: 8000,
-    rows: [
-      { label: "RB-RB-WR-RB", mean: 109.80, floor: 90, ceiling: 131, rb1: 20.4, wr1: 13.9, beats: [55, 50, 53, 0, 82] },
-      { label: "RB-WR-WR-RB", mean: 109.52, floor: 89.9, ceiling: 130.7, rb1: 20.4, wr1: 14.2, beats: [0, 48, 48, 45, 70], note: "best here, and clear of the field by 0.4" },
-      { label: "RB-RB-WR-WR", mean: 109.33, floor: 89.5, ceiling: 130.8, rb1: 20.4, wr1: 14, beats: [52, 0, 50, 43, 83] },
-      { label: "RB-WR-RB-WR", mean: 109.32, floor: 89.6, ceiling: 130.7, rb1: 20.4, wr1: 14, beats: [52, 50, 0, 47, 74] },
-      { label: "WR-RB-RB-WR", mean: 104.97, floor: 86.5, ceiling: 125, rb1: 13.3, wr1: 16.3, beats: [30, 17, 26, 18, 0], note: "opening a WR instead of Gibbs costs 4.5 pts/wk \u2014 the one real mistake at this seat" },
-    ],
-  },
-  6: {
-    worlds: 8000,
-    rows: [
-      { label: "WR-RB-RB-WR", mean: 105.08, floor: 86.4, ceiling: 125.1, rb1: 13.8, wr1: 17.2, beats: [64, 0, 61, 51, 61] },
-      { label: "RB-WR-RB-WR", mean: 104.69, floor: 85.5, ceiling: 125.5, rb1: 17.3, wr1: 13.9, beats: [60, 49, 60, 0, 61] },
-      { label: "WR-RB-WR-RB", mean: 103.52, floor: 85.2, ceiling: 123.5, rb1: 13.7, wr1: 17.2, beats: [0, 35, 45, 40, 53], note: "nominally best, but this seat spans only 0.87 \u2014 the structure barely matters, the opening player does" },
-      { label: "RB-RB-WR-WR", mean: 103.30, floor: 84.2, ceiling: 124.3, rb1: 17.3, wr1: 12.2, beats: [55, 39, 0, 40, 56] },
-      { label: "RB-RB-QB-WR", mean: 102.37, floor: 83.5, ceiling: 123.1, rb1: 17.3, wr1: 12.1, beats: [47, 39, 44, 39, 0], note: "a round-3 QB is no longer the disaster the curve model showed, but it is still last" },
-    ],
-  },
-  10: {
-    worlds: 8000,
-    rows: [
-      { label: "RB-WR-RB-WR", mean: 103.14, floor: 84.7, ceiling: 123.4, rb1: 15.2, wr1: 14, beats: [60, 56, 54, 54, 0] },
-      { label: "WR-RB-RB-WR", mean: 102.70, floor: 84.1, ceiling: 123, rb1: 14.5, wr1: 14.3, beats: [56, 53, 0, 50, 46] },
-      { label: "RB-WR-WR-RB", mean: 102.61, floor: 84.3, ceiling: 122.5, rb1: 15.2, wr1: 14, beats: [56, 55, 50, 0, 46] },
-      { label: "WR-RB-WR-RB", mean: 102.14, floor: 83.8, ceiling: 122.3, rb1: 14.5, wr1: 14.3, beats: [51, 0, 47, 45, 44] },
-      { label: "RB-RB-WR-WR", mean: 101.93, floor: 83.1, ceiling: 122.5, rb1: 15.2, wr1: 12.3, beats: [0, 49, 44, 44, 40], note: "best here, and RB-first is now clear: every WR-first line trails it" },
-    ],
-  },
-};
+export const PAIRED_SIM: Record<number, { worlds: number; rows: PairedRow[] }> =
+  {"1":{"worlds":8000,"rows":[{"label":"RB-WR-WR-RB","mean":117.04,"floor":91,"ceiling":146,"rb1":20.4,"wr1":14.1,"beats":[0,57,57,48,68]},{"label":"RB-RB-WR-RB","mean":116.93,"floor":91.8,"ceiling":144.9,"rb1":20.4,"wr1":14.1,"beats":[52,59,58,0,70]},{"label":"RB-WR-RB-WR","mean":116.61,"floor":90.7,"ceiling":145.5,"rb1":20.4,"wr1":14.1,"beats":[43,50,0,42,69]},{"label":"RB-RB-WR-WR","mean":116.49,"floor":90.9,"ceiling":145.1,"rb1":20.4,"wr1":14.1,"beats":[43,0,49,33,69]},{"label":"WR-RB-RB-WR","mean":112.68,"floor":88.7,"ceiling":139.2,"rb1":13.5,"wr1":17.4,"beats":[32,31,31,30,0]}]},"6":{"worlds":8000,"rows":[{"label":"WR-RB-WR-RB","mean":112.08,"floor":88.4,"ceiling":138.3,"rb1":13.9,"wr1":17.3,"beats":[0,59,53,50,60]},{"label":"RB-WR-RB-WR","mean":111.98,"floor":88.3,"ceiling":138.4,"rb1":17.9,"wr1":14.5,"beats":[50,59,55,0,61]},{"label":"RB-RB-WR-WR","mean":111.49,"floor":87.8,"ceiling":137.8,"rb1":17.9,"wr1":13.8,"beats":[47,55,0,45,60]},{"label":"WR-RB-RB-WR","mean":111.25,"floor":88.3,"ceiling":136.4,"rb1":13.9,"wr1":17.3,"beats":[41,0,45,41,56]},{"label":"RB-RB-QB-WR","mean":109.88,"floor":85.6,"ceiling":136.8,"rb1":17.9,"wr1":12.6,"beats":[40,44,40,39,0]}]},"10":{"worlds":8000,"rows":[{"label":"RB-WR-WR-RB","mean":110.06,"floor":86.6,"ceiling":136.3,"rb1":15.4,"wr1":14.5,"beats":[52,55,56,0,55]},{"label":"RB-WR-RB-WR","mean":109.66,"floor":86.3,"ceiling":135.7,"rb1":15.4,"wr1":14.5,"beats":[49,50,55,44,0]},{"label":"WR-RB-WR-RB","mean":109.5,"floor":86.4,"ceiling":135.5,"rb1":14.9,"wr1":14.7,"beats":[48,0,55,45,50]},{"label":"RB-RB-WR-WR","mean":109.49,"floor":86,"ceiling":135.3,"rb1":15.6,"wr1":13.7,"beats":[0,52,55,48,51]},{"label":"WR-RB-RB-WR","mean":109.1,"floor":85.8,"ceiling":134.6,"rb1":14.9,"wr1":14.7,"beats":[45,45,0,44,45]}]}};
 
 /** The risk dial, run on each seat's best structure: same picks, different appetite for
  *  volatile players. The headline is that it barely moves the ceiling. With nine starters,
