@@ -27,7 +27,7 @@ const { riskOf } = require(CACHE + 'risk.cjs');
 
 const W = Number(process.argv[2] || 4000);
 const TEAMS = 12, ROUNDS = 14;
-const SEATS = [1, 6, 10];
+const SEATS = [1, 2, 10];
 const REPL_RANK = { QB: 12, RB: 31, WR: 40, TE: 13 };
 
 const POOL = [];
@@ -107,12 +107,17 @@ function season(roster, rnd) {
   return tot/17;
 }
 
-const OUT = {};
+const OUT = {}, OUTC = {};
 for (const seat of SEATS) {
   const mine = picksOf(seat).slice(0, 6);
   const landed = mine.map(() => ({}));
   const shapes = {};
   let ppgSum = 0, wins = 0;
+  /* CLIFF_MAP: the best projection still available at each of your picks, by position. The
+     position that falls fastest between two rows is the one to take first — that is the whole
+     point of the panel. It used to come from draft-sim.mjs, which no longer runs; computing it
+     here means it can never drift out of step with SIM_PLANS, since both read the same draft. */
+  const cliff = mine.map(() => ({ RB: [], WR: [], TE: [], QB: [] }));
 
   for (let w=0; w<W; w++) {
     const rnd = mul(11000 + w*7919);
@@ -126,6 +131,10 @@ for (const seat of SEATS) {
       teams[t].push(p); avail.splice(avail.indexOf(p),1);
       const i = mine.indexOf(pk);
       if (t===seat && i >= 0) landed[i][p.name] = (landed[i][p.name]||0)+1;
+      if (t===seat && i >= 0) for (const pos of ['RB','WR','TE','QB']) {
+        const best = avail.filter(x => x.pos === pos).reduce((m,x) => x.proj > (m?.proj ?? -1) ? x : m, null);
+        if (best) cliff[i][pos].push(best.proj);
+      }
     }
     /* every team plays the same season, so winPct means something */
     const scores = [];
@@ -144,6 +153,13 @@ for (const seat of SEATS) {
    * four-pick SEQUENCE gave "RB-RB-RB-TE" for a seat whose own pick-15 row showed a receiver
    * 56% of the time — the joint mode can disagree with every marginal mode, and a header that
    * contradicts the table under it is worse than no header. Position by position instead. */
+  const avg = (a) => a.length ? a.reduce((x,y)=>x+y,0)/a.length : 0;
+  OUTC[seat] = mine.map((pk, i) => ({
+    pick: pk,
+    rb: +avg(cliff[i].RB).toFixed(1), wr: +avg(cliff[i].WR).toFixed(1),
+    te: +avg(cliff[i].TE).toFixed(1), qb: +avg(cliff[i].QB).toFixed(1),
+  }));
+
   const topShape = [0,1,2,3]
     .map(i => Object.entries(shapes[i] || {}).sort((a,b)=>b[1]-a[1])[0]?.[0] || '?')
     .join('-');
@@ -163,4 +179,5 @@ for (const seat of SEATS) {
     console.log(`   pick ${String(p.pick).padStart(3)}:  ${p.opts.map(([n,c])=>`${n} ${c}%`).join('  ·  ') || '—'}`);
 }
 writeFileSync(CACHE + 'plans.json', JSON.stringify(OUT, null, 2));
+writeFileSync(CACHE + 'cliff.json', JSON.stringify(OUTC, null, 2));
 console.log(`\nwrote .simcache/plans.json  (${W.toLocaleString()} leagues per seat, all 12 teams scored)\n`);

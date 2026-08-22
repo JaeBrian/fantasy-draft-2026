@@ -127,12 +127,12 @@ const CANDS = {
   6:  ['Jonathan Taylor','James Cook','Christian McCaffrey','Jaxon Smith-Njigba','Chase Brown','Derrick Henry'],
   10: ['James Cook','Chase Brown','Kenneth Walker III','Derrick Henry','Justin Jefferson','Brock Bowers'],
 };
-const SEATS = { 1:'ASHLEY (1)', 6:'BRIAN JK (6)', 10:'EMILY (10)' };
+const SEATS = { 1:'ASHLEY (1)', 2:'BRIAN JK (2)', 10:'EMILY (10)' };
 let total = 0;
 
 console.log(`\nHIGH-PRECISION FIRST PICK — ${W.toLocaleString()} fresh worlds per candidate`);
 console.log('Seeded outside the published studies, so these are genuinely new drafts.\n');
-for (const slot of [1,6,10]) {
+for (const slot of [1,2,10]) {
   const rows = [];
   for (const n of CANDS[slot]) {
     if (!IDX.has(n)) continue;

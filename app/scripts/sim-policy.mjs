@@ -127,9 +127,9 @@ function run(slot,policy,w){
 const W=4000,mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
 const pct=(a,q)=>a.slice().sort((x,y)=>x-y)[Math.floor(q*(a.length-1))];
 const POLICIES=['adp','board','vorp','scarcity','needs'];
-const SEATS={1:'ASHLEY (1)',6:'BRIAN JK (6)',10:'EMILY (10)'};
+const SEATS={1:'ASHLEY (1)',2:'BRIAN JK (2)',10:'EMILY (10)'};
 
-for(const slot of [1,6,10]){
+for(const slot of [1,2,10]){
   console.log(`\n${'='.repeat(86)}\n${SEATS[slot]} — ${W.toLocaleString()} paired seasons, scored week by week with byes live\n`);
   const res={},open={},h2h={};
   POLICIES.forEach(a=>{h2h[a]={};POLICIES.forEach(b=>h2h[a][b]=0);});

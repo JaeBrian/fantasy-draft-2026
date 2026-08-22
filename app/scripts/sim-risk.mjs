@@ -119,20 +119,24 @@ const FIN = {
   1:  { 'RB-RB-WR-WR': ['RB','RB','WR','WR','TE','QB'], 'RB-WR-RB-WR': ['RB','WR','RB','WR','TE','QB'],
         'RB-WR-WR-RB': ['RB','WR','WR','RB','TE','QB'], 'RB-RB-WR-RB': ['RB','RB','WR','RB','TE','QB'],
         'WR-RB-RB-WR': ['WR','RB','RB','WR','TE','QB'] },
-  6:  { 'RB-RB-WR-WR': ['RB','RB','WR','WR','TE','QB'], 'WR-RB-RB-WR': ['WR','RB','RB','WR','TE','QB'],
-        'WR-RB-WR-RB': ['WR','RB','WR','RB','TE','QB'], 'RB-WR-RB-WR': ['RB','WR','RB','WR','TE','QB'],
-        'RB-RB-QB-WR': ['RB','RB','QB','WR','WR','TE'] },
+  /* seat 2, not 6 — Brian moved. RB-first finalists, since the RB-LOSS study found every
+     RB-first opening at this seat lands within 1.00 pts/wk, plus one WR-first control. */
+  2:  { 'RB-WR-WR-RB': ['RB','WR','WR','RB','TE','QB'], 'RB-WR-RB-WR': ['RB','WR','RB','WR','TE','QB'],
+        'RB-RB-WR-WR': ['RB','RB','WR','WR','TE','QB'], 'RB-WR-WR-WR': ['RB','WR','WR','WR','TE','QB'],
+        'WR-RB-WR-RB': ['WR','RB','WR','RB','TE','QB'] },
   10: { 'RB-WR-WR-RB': ['RB','WR','WR','RB','TE','QB'], 'RB-WR-RB-WR': ['RB','WR','RB','WR','TE','QB'],
         'WR-RB-WR-RB': ['WR','RB','WR','RB','TE','QB'], 'WR-RB-RB-WR': ['WR','RB','RB','WR','TE','QB'],
         'RB-RB-WR-WR': ['RB','RB','WR','WR','TE','QB'] },
 };
 const WORLDS = 6000;
+import { writeFileSync } from 'node:fs';
+const DIAL = {};
 const pct = (a, q) => a.slice().sort((x, y) => x - y)[Math.floor(q * (a.length - 1))];
 const mean = a => a.reduce((x, y) => x + y, 0) / a.length;
 
 /* A league-average team is the yardstick for "did I win my week?" */
-for (const slot of [1, 6, 10]) {
-  const who = slot === 1 ? 'ASHLEY (1)' : slot === 6 ? 'BRIAN JK (6)' : 'EMILY (10)';
+for (const slot of [1, 2, 10]) {
+  const who = slot === 1 ? 'ASHLEY (1)' : slot === 2 ? 'BRIAN JK (2)' : 'EMILY (10)';
   const T = FIN[slot];
   console.log(`\n${'='.repeat(92)}\n${who} — ${WORLDS.toLocaleString()} seasons, real Sleeper half-PPR ADP opponents`);
   console.log(`points are your STARTING LINEUP per week (1QB/2RB/2WR/1TE/2FLEX)\n`);
@@ -154,9 +158,15 @@ for (const slot of [1, 6, 10]) {
   const best = rows[0].label;
   console.log(`\n  RISK DIAL on ${best} — same structure, different appetite for variance:`);
   console.log('  approach            floor(p10)   typical(p50)   ceiling(p90)    mean');
+  DIAL[slot] = { structure: best, rows: [] };
   for (const [name, tilt] of [['safe (steady picks)', -1], ['balanced (our board)', 0], ['swing (high variance)', 1]]) {
     const out = [];
     for (let w = 0; w < WORLDS; w++) out.push(season(slot, T[best], 7000 + w, tilt));
     console.log(`  ${name.padEnd(21)} ${pct(out,0.1).toFixed(1).padStart(7)} ${pct(out,0.5).toFixed(1).padStart(14)} ${pct(out,0.9).toFixed(1).padStart(14)} ${mean(out).toFixed(1).padStart(8)}`);
+    DIAL[slot].rows.push({ approach: name, floor: +pct(out,0.1).toFixed(1), typical: +pct(out,0.5).toFixed(1),
+                           ceiling: +pct(out,0.9).toFixed(1), mean: +mean(out).toFixed(1) });
   }
 }
+
+writeFileSync(new URL('../.simcache/riskdial.json', import.meta.url).pathname, JSON.stringify(DIAL, null, 2));
+console.log('\nwrote .simcache/riskdial.json');

@@ -45,7 +45,7 @@ const noSlp = names.filter(n => !SLP[n] || SLP[n].rk === undefined);
 noSlp.length > 10 ? WARN(`${noSlp.length} without Sleeper rank: ${noSlp.slice(0,5).join(', ')}`) : OK(`Sleeper rank covers ${names.length - noSlp.length}/${names.length}`);
 
 DRAFT_ORDER.length === 12 ? OK('12 names in draft order') : FAIL('draft order length ' + DRAFT_ORDER.length);
-[1, 6, 10].forEach(s => {
+[1, 2, 10].forEach(s => {
   const plan = SIM_PLANS[s];
   if (!plan) return FAIL(`no sim plan for slot ${s}`);
   plan.picks.forEach(sp => {

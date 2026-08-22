@@ -85,12 +85,12 @@ function draft(slot, forcedByRound, seed, toolSeats, weekly){
   return weekly?lineupWeekly(R):lineupFlat(R);}
 
 const W=2500, mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
-const SEATS={1:'ASHLEY (1)',6:'BRIAN JK (6)',10:'EMILY (10)'};
-const OTHER=[1,6,10];
+const SEATS={1:'ASHLEY (1)',2:'BRIAN JK (2)',10:'EMILY (10)'};
+const OTHER=[1,2,10];
 
 /* ---------- A. QB TIMING ---------- */
 console.log('\n' + '='.repeat(78) + '\nA. WHAT ROUND SHOULD YOU TAKE A QUARTERBACK?\n');
-for(const slot of [1,6,10]){
+for(const slot of [1,2,10]){
   const rows=[];
   for(const r of [3,4,5,6,7,8,9,10,11,12,13]){
     const f={}; f[r]='QB';
@@ -107,7 +107,7 @@ for(const slot of [1,6,10]){
 
 /* ---------- B. TE TIMING ---------- */
 console.log('='.repeat(78) + '\nB. WHAT ROUND SHOULD YOU TAKE A TIGHT END?\n');
-for(const slot of [1,6,10]){
+for(const slot of [1,2,10]){
   const rows=[];
   for(const r of [1,2,3,4,5,6,7,8,9,10,11,12]){
     const f={}; f[r]='TE';
@@ -124,7 +124,7 @@ for(const slot of [1,6,10]){
 /* ---------- C. BYE-WEEK COST ---------- */
 console.log('='.repeat(78) + '\nC. WHAT DOES A BYE-WEEK PILE-UP ACTUALLY COST?\n');
 console.log('  (same rosters scored two ways: season-average, then week by week with byes live)');
-for(const slot of [1,6,10]){
+for(const slot of [1,2,10]){
   const flat=[],wk=[];
   for(let w=0;w<W;w++){ flat.push(draft(slot,{},60000+w,null,false)); wk.push(draft(slot,{},60000+w,null,true)); }
   console.log(`  ${SEATS[slot].padEnd(14)} ignoring byes ${mean(flat).toFixed(2)}   week-by-week ${mean(wk).toFixed(2)}   bye drag ${(mean(flat)-mean(wk)).toFixed(2)} pts/wk`);
@@ -132,7 +132,7 @@ for(const slot of [1,6,10]){
 
 /* ---------- D. SEAT INTERFERENCE ---------- */
 console.log('\n' + '='.repeat(78) + '\nD. WHAT DOES IT COST YOU THAT THE OTHER TWO USE THE SAME BOARD?\n');
-for(const slot of [1,6,10]){
+for(const slot of [1,2,10]){
   const alone=[],together=[];
   for(let w=0;w<W;w++){
     alone.push(draft(slot,{},60000+w,null,false));                              // only you use the tool

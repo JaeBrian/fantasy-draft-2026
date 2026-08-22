@@ -66,7 +66,7 @@ const WORLDS = 4000;
 const out = { plans:{}, cliff:{}, h2h:[], arbitrage:{}, runTiming:[] };
 
 /* ---------- A + B: plans and scarcity, from the same runs ---------- */
-for (const slot of [1,6,10]) {
+for (const slot of [1,2,10]) {
   const myPicks=[]; for(let r=1;r<=6;r++) myPicks.push((r-1)*12+(r%2?slot:13-slot));
   const tookAt = myPicks.map(()=>({}));
   const bestBy = myPicks.map(()=>({RB:[],WR:[],TE:[],QB:[]}));

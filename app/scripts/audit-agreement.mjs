@@ -46,7 +46,7 @@ const IDX = new Map(POOL.map((p) => [p.name, p]));
 const REPL = {};
 for (const pos of ["QB", "RB", "WR", "TE"]) {
   const v = POOL.filter((p) => p.pos === pos).map((p) => p.proj).sort((a, b) => b - a);
-  REPL[pos] = v[Math.min({ QB: 14, RB: 32, WR: 34, TE: 13 }[pos] - 1, v.length - 1)] || 0;
+  REPL[pos] = v[Math.min({ QB: 12, RB: 31, WR: 40, TE: 13 }[pos] - 1, v.length - 1)] || 0;
 }
 POOL.forEach((p) => { p.vorp = Math.max(0.2, p.proj - REPL[p.pos]); });
 
@@ -116,7 +116,7 @@ function playFrom(DS, slot, force, w) {
   return weekly(teams[slot].map((p) => ({ ...p, real: realise(p, w) })));
 }
 
-const ORD = ["Ashley","Zach","Jeff","Brandon","Duy","Brian JK","Michelle","Aaron","Matt","Emily","Josh","Brian V"];
+const ORD = ["Ashley","Brian JK","Jeff","Brandon","Duy","Zach","Michelle","Aaron","Matt","Emily","Josh","Brian V"];
 /* 2,500 left several comparisons sitting on the two-standard-error line, where the verdict
    flips between runs and tells you nothing. 7,000 tightens the error bar enough that a
    failure means something. */
@@ -140,8 +140,8 @@ function stateAt(target, slot) {
 
 console.log("\nDoes the advisor recommend what the simulation says is best?\n");
 console.log(`${W.toLocaleString()} seasons per candidate, scored week by week with byes live.\n`);
-for (const slot of [1, 6, 10]) {
-  const who = slot === 1 ? "ASHLEY (1)" : slot === 6 ? "BRIAN JK (6)" : "EMILY (10)";
+for (const slot of [1, 2, 10]) {
+  const who = slot === 1 ? "ASHLEY (1)" : slot === 2 ? "BRIAN JK (2)" : "EMILY (10)";
   for (const round of [1, 3, 6]) {
     const target = (round - 1) * 12 + (round % 2 ? slot : 13 - slot);
     /* Ask the advisor about the SAME board the simulation is about to play from. Round 1 used

@@ -79,7 +79,7 @@ const N = 900;
 const mean = a => a.reduce((x, y) => x + y, 0) / a.length;
 const se = a => { const m = mean(a); return Math.sqrt(a.reduce((s, x) => s + (x - m) ** 2, 0) / (a.length - 1) / a.length); };
 
-for (const slot of [6, 10]) {
+for (const slot of [2, 10]) {
   const who = slot === 6 ? 'BRIAN JK (pick 6)' : 'EMILY (pick 10)';
   console.log(`\n${'='.repeat(74)}\n${who} — A) EXPANDED STRATEGY SET, ${N} drafts each (±  = standard error)`);
   const rows = [];
@@ -121,14 +121,14 @@ console.log(`\n${'='.repeat(74)}\nC) HEAD-TO-HEAD — Ashley(1), Brian(6), Emily
 const bots = { 1: TPL['RB-RB-WR-WR'], 6: TPL['RB-RB-WR-WR'], 10: TPL['RB-WR-WR-RB'] };
 const tally = { 1: [], 6: [], 10: [], field: [] };
 for (let i = 0; i < 700; i++) {
-  const teams = run(1, bots[1], {}, { 6: bots[6], 10: bots[10] });
+  const teams = run(1, bots[1], {}, { 2: bots[2], 10: bots[10] });
   const sc = {}; for (let t = 1; t <= 12; t++) sc[t] = lineup(teams[t]);
-  [1, 6, 10].forEach(s => tally[s].push(sc[s]));
-  for (let t = 1; t <= 12; t++) if (![1, 6, 10].includes(t)) tally.field.push(sc[t]);
+  [1, 2, 10].forEach(s => tally[s].push(sc[s]));
+  for (let t = 1; t <= 12; t++) if (![1, 2, 10].includes(t)) tally.field.push(sc[t]);
 }
 [1, 6, 10].forEach(s => {
   const nm = s === 1 ? 'Ashley  ' : s === 6 ? 'Brian JK' : 'Emily   ';
-  const wins = tally[s].filter((v, i) => v >= Math.max(tally[1][i], tally[6][i], tally[10][i])).length;
+  const wins = tally[s].filter((v, i) => v >= Math.max(tally[1][i], tally[2][i], tally[10][i])).length;
   console.log(`  ${nm} avg ${mean(tally[s]).toFixed(1)}  |  best of the three ${(wins / tally[s].length * 100).toFixed(0)}% of drafts`);
 });
 console.log(`  rest of the league avg ${mean(tally.field).toFixed(1)}`);

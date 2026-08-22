@@ -157,7 +157,7 @@ function availability(slot, forced, worlds) {
 }
 
 const WORLDS = 700;
-const SEATS = { 1: 'ASHLEY (1)', 6: 'BRIAN JK (6)', 10: 'EMILY (10)' };
+const SEATS = { 1: 'ASHLEY (1)', 2: 'BRIAN JK (2)', 10: 'EMILY (10)' };
 const out = {};
 
 for (const slot of Object.keys(SEATS).map(Number)) {

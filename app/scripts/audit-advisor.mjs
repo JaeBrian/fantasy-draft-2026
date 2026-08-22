@@ -62,7 +62,7 @@ function playDraft(slot) {
 }
 
 console.log("\n=== 1. FULL-DRAFT INVARIANTS (advisor drafts for itself, 14 rounds) ===");
-for (const slot of [1, 3, 6, 10, 12]) {
+for (const slot of [1, 2, 3, 10, 12]) {
   const r = playDraft(slot);
   const tag = `seat ${slot}`;
   if (r.problems.length) fail(`${tag}: ${r.problems.length} invariant breaches`, r.problems.slice(0, 3).join(" | "));
