@@ -230,7 +230,7 @@ const OUT = {};
    recomputing the others — the full three-seat run takes the best part of an hour.
      node scripts/sim-priority.mjs 1200 Ashley                                            */
 const ONLY = process.argv[3];
-const ALL_SEATS = [['Ashley', 1], ['Emily', 10], ['Brian JK', 6]];
+const ALL_SEATS = [['Ashley', 1], ['Emily', 10], ['Brian JK', 2]];
 for (const [who, seat] of ALL_SEATS.filter(([n]) => !ONLY || n === ONLY)) {
   const mine = picksOf(seat);
   const [p1, p2] = mine;

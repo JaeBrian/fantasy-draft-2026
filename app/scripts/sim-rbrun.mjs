@@ -10,7 +10,9 @@
  *                    but at 24/25 she takes two players before anyone else takes one.
  *   Emily, seat 10 — picks 10, 15, 34, 39, 58, 63.  Ten and fifteen are five apart, a tight
  *                    turn, then a twenty-pick wait.
- *   Brian, seat  6 — picks  6, 19, 30, 43, 54, 67.  Evenly spaced, no wheel.
+ *   Brian, seat  2 — picks  2, 23, 26, 47, 50, 71.  One of the two best players in football,
+ *                    then the longest wait on the board — twenty-one picks — and a very tight
+ *                    turn at 23/26, only three apart.
  *
  * The room is set to Very RB-heavy — 16.7 of the first 24 picks are backs, measured in
  * sim-tendency.mjs — because that is the scenario being asked about, not the one the market
@@ -184,7 +186,7 @@ const ONLY = process.argv[3];
 const SEATS = [
   { who: 'Ashley',   seat: 1 },
   { who: 'Emily',    seat: 10 },
-  { who: 'Brian JK', seat: 6 },
+  { who: 'Brian JK', seat: 2 },
 ].filter((s) => !ONLY || s.who === ONLY);
 const ROOMS = [
   { label: 'Very RB-heavy (RB LOSS — worst case)', lean: 15 },
