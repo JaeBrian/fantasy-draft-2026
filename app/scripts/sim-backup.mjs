@@ -75,10 +75,10 @@ function season(slot,capQB,capTE,w){
   return tot/17;}
 
 const W=3000,mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
-const SEATS={1:'ASHLEY (1)',6:'BRIAN JK (6)',10:'EMILY (10)'};
+const SEATS={1:'ASHLEY (1)',2:'BRIAN JK (2)',10:'EMILY (10)'};
 console.log('\nIs a backup QB or TE worth a roster spot? Scored week by week, byes live.\n');
 console.log('  seat            1QB+1TE   2QB+1TE   1QB+2TE   2QB+2TE   best');
-for(const slot of [1,6,10]){
+for(const slot of [1,2,10]){
   const r={};
   for(const [label,q,t] of [['1/1',1,1],['2/1',2,1],['1/2',1,2],['2/2',2,2]]){
     const out=[];for(let w=0;w<W;w++)out.push(season(slot,q,t,w));

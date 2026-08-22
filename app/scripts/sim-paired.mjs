@@ -97,9 +97,12 @@ const FIN = {
   1:  { 'RB-WR-WR-RB': ['RB','WR','WR','RB','TE','QB'], 'RB-RB-WR-WR': ['RB','RB','WR','WR','TE','QB'],
         'RB-WR-RB-WR': ['RB','WR','RB','WR','TE','QB'], 'RB-RB-WR-RB': ['RB','RB','WR','RB','TE','QB'],
         'WR-RB-RB-WR': ['WR','RB','RB','WR','TE','QB'] },
-  6:  { 'WR-RB-WR-RB': ['WR','RB','WR','RB','TE','QB'], 'WR-RB-RB-WR': ['WR','RB','RB','WR','TE','QB'],
-        'RB-RB-WR-WR': ['RB','RB','WR','WR','TE','QB'], 'RB-WR-RB-WR': ['RB','WR','RB','WR','TE','QB'],
-        'RB-RB-QB-WR': ['RB','RB','QB','WR','WR','TE'] },
+  /* Seat 2, not 6 — Brian moved. The shapes here are the finalists worth pairing at this seat:
+     the RB-LOSS study found every RB-first opening lands within 1.00 pts/wk of the best from
+     pick 2, so the interesting comparison is among those, plus one WR-first as a control. */
+  2:  { 'RB-WR-WR-RB': ['RB','WR','WR','RB','TE','QB'], 'RB-WR-RB-WR': ['RB','WR','RB','WR','TE','QB'],
+        'RB-RB-WR-WR': ['RB','RB','WR','WR','TE','QB'], 'RB-WR-WR-WR': ['RB','WR','WR','WR','TE','QB'],
+        'WR-RB-WR-RB': ['WR','RB','WR','RB','TE','QB'] },
   10: { 'RB-RB-WR-WR': ['RB','RB','WR','WR','TE','QB'], 'WR-RB-WR-RB': ['WR','RB','WR','RB','TE','QB'],
         'WR-RB-RB-WR': ['WR','RB','RB','WR','TE','QB'], 'RB-WR-WR-RB': ['RB','WR','WR','RB','TE','QB'],
         'RB-WR-RB-WR': ['RB','WR','RB','WR','TE','QB'] },
@@ -109,7 +112,7 @@ const pct=(a,q)=>a.slice().sort((x,y)=>x-y)[Math.floor(q*(a.length-1))];
 const mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
 const out = {};
 
-for (const slot of [1,6,10]) {
+for (const slot of [1,2,10]) {
   const T = FIN[slot], labels = Object.keys(T);
   const res = Object.fromEntries(labels.map(l=>[l,[]]));
   const rb1 = Object.fromEntries(labels.map(l=>[l,[]]));

@@ -143,12 +143,12 @@ function season(slot,tilt,seed){
 }
 
 const W=4000,mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
-const SEATS={1:'ASHLEY (1)',6:'BRIAN JK (6)',10:'EMILY (10)'};
+const SEATS={1:'ASHLEY (1)',2:'BRIAN JK (2)',10:'EMILY (10)'};
 console.log('\nWHAT THE LEAGUE ACTUALLY PAYS OUT ON');
 console.log('12 teams · 14-week season · SEVEN of twelve make the playoffs · bracket weeks 15-17');
 console.log(`${W.toLocaleString()} full seasons per row, weekly scores drawn, byes and injury stretches live.\n`);
 console.log('  seat            approach        pts/wk   playoffs   TITLE');
-for(const slot of [1,6,10]){
+for(const slot of [1,2,10]){
   for(const [label,tilt] of [['steady',-1],['balanced',0],['high-variance',1]]){
     const made=[],won=[],pf=[];
     for(let w=0;w<W;w++){const r=season(slot,tilt,90000+w);

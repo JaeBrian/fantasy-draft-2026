@@ -76,7 +76,7 @@ const FIN={
      'RB-WR-RB-WR':['RB','WR','RB','WR','TE','QB']},
 };
 const W=4000, mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
-for(const slot of [1,6,10]){
+for(const slot of [1,2,10]){
   console.log(`\nseat ${slot}`);
   console.log('  strategy          16 skill rounds   14 skill + K/DEF    diff');
   const res=[];

@@ -117,7 +117,7 @@ function season(slot, K, w) {
 const W = 5000;
 function evaluate(K) {
   const all = [];
-  for (const slot of [1,6,10]) for (let w=0; w<W; w++) all.push(season(slot,K,w));
+  for (const slot of [1,2,10]) for (let w=0; w<W; w++) all.push(season(slot,K,w));
   const m = all.reduce((a,b)=>a+b,0)/all.length;
   const sd = Math.sqrt(all.reduce((a,b)=>a+(b-m)*(b-m),0)/(all.length-1));
   return { m, se: sd/Math.sqrt(all.length) };

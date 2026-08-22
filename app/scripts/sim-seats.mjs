@@ -1,6 +1,6 @@
 /* Run from app/:  node scripts/sim-build.mjs && node scripts/sim-seats.mjs [worlds]
  *
- * Seats 1, 6 and 10, rerun against everything that changed on Aug 19:
+ * Seats 1, 2 and 10, rerun against everything that changed on Aug 19:
  *
  *   - sourced injury news moves availability (Higgins out, Kamara ~4wk, Hall ~3wk, Tyson ~9wk)
  *   - measured replacement level  QB12 / RB31 / WR40 / TE13, not the old assumed QB14/RB32/WR34
@@ -22,7 +22,7 @@ const { PROJ } = require(CACHE + 'projections.cjs');
 const { riskOf } = require(CACHE + 'risk.cjs');
 
 const W = Number(process.argv[2] || 20000);
-const SEATS = [1, 6, 10];
+const SEATS = [1, 2, 10];
 const TEAMS = 12, ROUNDS = 14;
 
 /* measured, scripts/sim-replacement.mjs — not the old assumption */
@@ -155,7 +155,7 @@ function runSeat(seat, force, worlds, seed) {
   };
 }
 
-console.log(`\nSEATS 1 / 6 / 10 — ${W.toLocaleString()} worlds each, fresh Aug 19 data`);
+console.log(`\nSEATS 1 / 2 / 10 — ${W.toLocaleString()} worlds each, fresh Aug 19 data`);
 console.log(`news-adjusted availability, measured replacement QB12/RB31/WR40/TE13, teammate correlation live\n`);
 
 for (const seat of SEATS) {

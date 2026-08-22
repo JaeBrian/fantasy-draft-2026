@@ -7,7 +7,7 @@ import { Card, Eyebrow, Intro, Noob } from "../components/ui";
  *  We force the pick, run best-available after it, and play the season out. `avail` is how
  *  often he was still on the board at that seat. Regenerate with app/scripts/sim-first.mjs */
 const FIRST_PICK: Record<number, { name: string; pos: string; pts: number; avail: number }[]> =
-  {"1":[{"name":"Jahmyr Gibbs","pos":"RB","pts":115.94,"avail":100},{"name":"Bijan Robinson","pos":"RB","pts":115.32,"avail":100},{"name":"Jonathan Taylor","pos":"RB","pts":113.87,"avail":100},{"name":"Christian McCaffrey","pos":"RB","pts":112.98,"avail":100},{"name":"James Cook","pos":"RB","pts":112.36,"avail":100},{"name":"Chase Brown","pos":"RB","pts":111.02,"avail":100},{"name":"De'Von Achane","pos":"RB","pts":110.85,"avail":100},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":110.42,"avail":100},{"name":"Puka Nacua","pos":"WR","pts":110.33,"avail":100}],"6":[{"name":"Jonathan Taylor","pos":"RB","pts":114.06,"avail":52},{"name":"Christian McCaffrey","pos":"RB","pts":113.22,"avail":58},{"name":"James Cook","pos":"RB","pts":112.9,"avail":99},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":112.78,"avail":92},{"name":"Amon-Ra St. Brown","pos":"WR","pts":112.14,"avail":97},{"name":"Chase Brown","pos":"RB","pts":111.96,"avail":100},{"name":"De'Von Achane","pos":"RB","pts":111.4,"avail":100},{"name":"Derrick Henry","pos":"RB","pts":111.01,"avail":100},{"name":"Kenneth Walker III","pos":"RB","pts":110.95,"avail":100}],"10":[{"name":"James Cook","pos":"RB","pts":113.41,"avail":43},{"name":"De'Von Achane","pos":"RB","pts":112.24,"avail":99},{"name":"Nico Collins","pos":"WR","pts":112.14,"avail":100},{"name":"Chase Brown","pos":"RB","pts":112.02,"avail":100},{"name":"Justin Jefferson","pos":"WR","pts":111.66,"avail":99},{"name":"Derrick Henry","pos":"RB","pts":111.51,"avail":100},{"name":"CeeDee Lamb","pos":"WR","pts":111.48,"avail":74},{"name":"George Pickens","pos":"WR","pts":111.48,"avail":100},{"name":"Omarion Hampton","pos":"RB","pts":111.31,"avail":99}]};
+  {"1":[{"name":"Jahmyr Gibbs","pos":"RB","pts":115.94,"avail":100},{"name":"Bijan Robinson","pos":"RB","pts":115.32,"avail":100},{"name":"Jonathan Taylor","pos":"RB","pts":113.87,"avail":100},{"name":"Christian McCaffrey","pos":"RB","pts":112.98,"avail":100},{"name":"James Cook","pos":"RB","pts":112.36,"avail":100},{"name":"Chase Brown","pos":"RB","pts":111.02,"avail":100},{"name":"De'Von Achane","pos":"RB","pts":110.85,"avail":100},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":110.42,"avail":100},{"name":"Puka Nacua","pos":"WR","pts":110.33,"avail":100}],"2":[{"name":"Jahmyr Gibbs","pos":"RB","pts":115.22,"avail":12},{"name":"Bijan Robinson","pos":"RB","pts":114.92,"avail":88},{"name":"Jonathan Taylor","pos":"RB","pts":113.19,"avail":100},{"name":"Christian McCaffrey","pos":"RB","pts":112.39,"avail":100},{"name":"James Cook","pos":"RB","pts":112.13,"avail":100},{"name":"Chase Brown","pos":"RB","pts":110.76,"avail":100},{"name":"De'Von Achane","pos":"RB","pts":110.58,"avail":100},{"name":"Puka Nacua","pos":"WR","pts":110.42,"avail":100},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":110.38,"avail":100}],"10":[{"name":"James Cook","pos":"RB","pts":113.41,"avail":43},{"name":"De'Von Achane","pos":"RB","pts":112.24,"avail":99},{"name":"Nico Collins","pos":"WR","pts":112.14,"avail":100},{"name":"Chase Brown","pos":"RB","pts":112.02,"avail":100},{"name":"Justin Jefferson","pos":"WR","pts":111.66,"avail":99},{"name":"Derrick Henry","pos":"RB","pts":111.51,"avail":100},{"name":"CeeDee Lamb","pos":"WR","pts":111.48,"avail":74},{"name":"George Pickens","pos":"WR","pts":111.48,"avail":100},{"name":"Omarion Hampton","pos":"RB","pts":111.31,"avail":99}]};
 
 /** All three tool seats drafting the same way in the same league, 4,000 paired seasons.
  *  Note this is a harder test than the per-seat studies: there, only one seat used our board.
@@ -253,7 +253,7 @@ export function SimPanel({ noob }: { noob: boolean }) {
           scroll back. It stays stuck to the top while you read the tables. */}
       <div className="sticky top-0 z-30 -mx-1 mb-1 flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-line-soft bg-bg/95 px-1 pb-2.5 pt-2 backdrop-blur">
         <span className="flex flex-wrap gap-1.5">
-          {TOOL_USERS.filter(([, s2]) => SIM_PLANS[s2]).map(([nm, s2]) => (
+          {TOOL_USERS.map(([nm, s2]) => (
             <button key={nm} type="button" className={`btn ${seat === s2 ? "on" : ""}`} onClick={() => setSeat(s2)}>
               {nm} · pick {s2}
             </button>
@@ -264,6 +264,18 @@ export function SimPanel({ noob }: { noob: boolean }) {
         </span>
         <span className="text-[0.78rem] text-ink-3">— every number below is for this seat</span>
       </div>
+
+      {!SIM_PLANS[seat] && (
+        /* Brian moved from pick 6 to pick 2 and every study on this tab vanished, because the
+           seat list was filtered by `SIM_PLANS[seat]` — a seat with no data was removed from
+           the picker rather than shown as empty. Silently dropping a person is a worse failure
+           than showing them an honest gap, so the filter is gone and this says what happened. */
+        <div className="rounded border border-avoid/60 bg-avoid/5 px-3 py-2 text-[0.88rem] text-ink-2">
+          <b className="text-avoid">No simulations for pick {seat} yet.</b> The studies on this tab are
+          generated per seat, and this one has not been run. Regenerate with{" "}
+          <code className="font-mono text-[0.8rem] text-ink">scripts/sim-plans.mjs</code>.
+        </div>
+      )}
 
       <Intro eyebrow="Simulations" title="We drafted this league a million times">
         Every strategy below was tested by simulating complete 16-round drafts: eleven opponents priced off{" "}

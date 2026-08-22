@@ -89,12 +89,12 @@ function draft(slot,mode,seed,toolSeats,weekly){
   return weekly?lineupWeekly(R):lineupFlat(R);}
 
 const W=3000,mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
-const SEATS={1:'ASHLEY (1)',6:'BRIAN JK (6)',10:'EMILY (10)'};
+const SEATS={1:'ASHLEY (1)',2:'BRIAN JK (2)',10:'EMILY (10)'};
 
 console.log('\n' + '='.repeat(82));
 console.log('E. DOES DRAFTING AROUND BYES RECOVER THE ~3 PTS/WK THEY COST?');
 console.log('   both columns scored week by week, byes live. only the draft policy differs.\n');
-for(const slot of [1,6,10]){
+for(const slot of [1,2,10]){
   const a=[],b=[];
   for(let w=0;w<W;w++){a.push(draft(slot,'plain',60000+w,null,true));b.push(draft(slot,'bye',60000+w,null,true));}
   const d=mean(b)-mean(a);
@@ -103,8 +103,8 @@ for(const slot of [1,6,10]){
 console.log('\n' + '='.repeat(82));
 console.log('F. DOES BRIAN GAIN BY DEVIATING FROM THE BOARD THE OTHER TWO ALSO USE?');
 console.log('   all three tool seats active in every run; only the tested seat changes policy.\n');
-const OTHER=[1,6,10];
-for(const slot of [1,6,10]){
+const OTHER=[1,2,10];
+for(const slot of [1,2,10]){
   const a=[],b=[];
   for(let w=0;w<W;w++){
     a.push(draft(slot,'plain',60000+w,OTHER.filter(s=>s!==slot),false));

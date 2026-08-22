@@ -88,7 +88,7 @@ function run(slot,forceName,w){
   take([...rb,...wr,...te].filter(x=>!used.has(x.name)).sort((a,b)=>b.real-a.real),2);
   return pts;}
 const WORLDS=2500, out={};
-for (const slot of [1,6,10]) {
+for (const slot of [1,2,10]) {
   const first=(slot%2?slot:13-slot);
   const cands=POOL.filter(p=>p.mkt<=first+32).sort((a,b)=>a.ourRank-b.ourRank).slice(0,22);
   const rows=[];

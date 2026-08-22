@@ -152,7 +152,7 @@ console.log(`${W.toLocaleString()} drafts per seat. Each roster is scored under 
 console.log(`season draws, so the only thing that can move a number is the rule itself.\n`);
 console.log(`   2RB = 1QB/2RB/2WR/1TE/2FLEX  (this league)      1RB = 1QB/1RB/2WR/1TE/3FLEX\n`);
 
-for (const [who, seat] of [['Ashley', 1], ['Brian JK', 6], ['Emily', 10]]) {
+for (const [who, seat] of [['Ashley', 1], ['Brian JK', 2], ['Emily', 10]]) {
   const mine = picksOf(seat);
   const res = {};
   for (const { k, p } of PLANS) {
