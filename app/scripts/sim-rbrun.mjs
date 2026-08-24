@@ -182,12 +182,20 @@ const PLANS = [
 
 /* Limit to one seat from the command line so a single seat can be regenerated without
    recomputing the others:  node scripts/sim-rbrun.mjs 10000 Ashley                       */
-const ONLY = process.argv[3];
+/* join the rest of argv: a two-word seat name survives losing its quotes */
+const ONLY = process.argv.slice(3).join(" ") || undefined;
 const SEATS = [
   { who: 'Ashley',   seat: 1 },
   { who: 'Emily',    seat: 10 },
   { who: 'Brian JK', seat: 2 },
 ].filter((s) => !ONLY || s.who === ONLY);
+/* fail loudly on a name that matches nothing — see sim-priority.mjs for why: an unquoted
+   "Brian JK" arrives as "Brian", filters to zero seats, and the script rewrites the cache
+   with the old data while reporting success. */
+if (ONLY && !SEATS.length) {
+  console.error(`unknown seat name ${JSON.stringify(ONLY)} — nothing to run`);
+  process.exit(1);
+}
 const ROOMS = [
   { label: 'Very RB-heavy (RB LOSS — worst case)', lean: 15 },
   { label: 'Market', lean: 0 },

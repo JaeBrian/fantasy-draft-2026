@@ -229,8 +229,17 @@ const OUT = {};
 /* Seats can be limited from the command line so one seat can be regenerated without
    recomputing the others — the full three-seat run takes the best part of an hour.
      node scripts/sim-priority.mjs 1200 Ashley                                            */
-const ONLY = process.argv[3];
+/* join the rest of argv: a two-word seat name survives losing its quotes */
+const ONLY = process.argv.slice(3).join(" ") || undefined;
 const ALL_SEATS = [['Ashley', 1], ['Emily', 10], ['Brian JK', 2]];
+/* A name that matches nothing must fail loudly. `... 2000 Brian JK` loses its quotes in
+   some shells, arrives as ONLY="Brian", matches no seat, and the script then runs zero seats
+   and rewrites the cache with the OLD data — reporting success having done nothing. That is
+   how stale seat data survives a regeneration. */
+if (ONLY && !ALL_SEATS.some(([n]) => n === ONLY)) {
+  console.error(`unknown seat name ${JSON.stringify(ONLY)} — expected one of: ${ALL_SEATS.map(([n]) => JSON.stringify(n)).join(', ')}`);
+  process.exit(1);
+}
 for (const [who, seat] of ALL_SEATS.filter(([n]) => !ONLY || n === ONLY)) {
   const mine = picksOf(seat);
   const [p1, p2] = mine;
