@@ -262,6 +262,19 @@ export const MKT: Record<string, [number, number, number, number]> = {"Jahmyr Gi
 export type NewsItem = { text: string; player?: string; dir?: "up" | "down" };
 export const NEWS: { when: string; items: NewsItem[] }[] = [
   {
+    when: "Aug 24, 2026 \u00b7 11:00 AM PT",
+    items: [
+      { player: "Ashton Jeanty", dir: "down", text: "Now listed Questionable. Watch this one \u2014 he is priced at 11.3 and a Q tag six days out is not nothing." },
+      { player: "George Kittle", dir: "up", text: "Upgraded PUP \u2192 Questionable, and Schefter has him ahead of schedule with a chance at Week 1. Our board briefly had him out for the year on a mis-read of his January surgery; that is fixed." },
+      { player: "TreVeyon Henderson", dir: "down", text: "Questionable." },
+      { player: "Jacory Croskey-Merritt", dir: "down", text: "Questionable." },
+      { player: "DeVonta Smith", dir: "up", text: "Cleared \u2014 no longer Questionable. Same for DJ Moore and Carnell Tate." },
+      { player: "Jahmyr Gibbs", dir: "down", text: "Reaches pick 2 only 5% of the time now, down from 11% \u2014 the market has firmed on him going first overall. Bijan Robinson is there 95%." },
+      { text: "Brian drafts from pick 2. Every study on the Simulations tab \u2014 priority order, RB-LOSS shapes, draft tree, plans, risk dial \u2014 regenerated on today's numbers for seats 1, 2 and 10." },
+      { text: "Two bugs caught in the pre-draft pass. A retrospective mention of January surgery was reading as a current season-ending injury; month names now count as historical. And a seat-name argument losing its quotes made two regenerations run zero seats while reporting success \u2014 they now fail loudly instead." },
+    ],
+  },
+  {
     when: "Aug 20, 2026 \u00b7 2:15 PM PT",
     items: [
       { player: "Jayden Higgins", dir: "down", text: "Sleeper has now zeroed his projection outright \u2014 he is off the board, not just flagged. Torn ACL, out for the year." },

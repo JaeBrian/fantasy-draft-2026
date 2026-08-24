@@ -226,7 +226,7 @@ export default function App() {
           (updated Aug 17), ESPN (Field Yates, xTD models, 10-analyst panel), CBS Sports, NBC/Rotoworld, PFF, 4for4
           (Underdog ADP tool, 713 players, Aug 17 pull), Establish The Run, RotoWire, Sharp Football Analysis (implied
           totals &amp; O-line ranks), DraftKings lines via Action-market aggregators, Footballguys, PlayerProfiler,
-          Draft Sharks injury model, team beat coverage, and BDGE's Aug 11 "Official Top 50" video. Data refreshed Aug 20,
+          Draft Sharks injury model, team beat coverage, and BDGE's Aug 11 "Official Top 50" video. Data refreshed Aug 24,
           2026 — verify injury news on draft day. Not betting advice; it's a fantasy draft guide.
         </footer>
       </main>
