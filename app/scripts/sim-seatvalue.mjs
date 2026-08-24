@@ -60,8 +60,8 @@ function oppPick(avail, team, rnd) {
   const c = NEED(team); let b=null, bs=Infinity;
   for (const p of avail) {
     let s = p.mkt + gauss(rnd)*p.sig*0.8;
-    if (p.pos==='QB' && c.QB>=1) s += 60;
-    if (p.pos==='TE' && c.TE>=1) s += 50;
+    if (p.pos==='QB') s += c.QB>=2 ? 900 : c.QB>=1 ? 60 : 0;
+    if (p.pos==='TE') s += c.TE>=2 ? 900 : c.TE>=1 ? 50 : 0;
     if (p.pos==='RB' && c.RB>=5) s += 25;
     if (p.pos==='WR' && c.WR>=5) s += 25;
     if (s<bs){bs=s;b=p;}
@@ -91,7 +91,15 @@ function season(roster, rnd) {
     const real = roster.map((p,i) => {
       if (p.bye===wk || rnd() < p.pMiss/17) return { p, v:0 };
       shock[p.team] ??= gauss(rnd);
-      const load = p.pos==='QB'?0.585 : p.pos==='WR'?0.585 : p.pos==='TE'?0.40 : 0.12;
+      /* Loadings on one shared team shock. The shock IS the quarterback's own deviation, so a
+           receiver's correlation to him is his loading directly, and receiver-to-receiver falls out
+           as the product of two loadings rather than being forced equal to it.
+           Measured targets: QB-WR +0.342, QB-TE +0.236, QB-RB +0.071, WR-WR +0.006.
+           With QB at 1.0 and WR at 0.342, WR-WR lands at 0.117 — still above the measured 0.006,
+           but a third of the 0.342 the old symmetric form produced. A single factor cannot hold a
+           high QB-WR and a near-zero WR-WR at once; two receivers share the quarterback's good day
+           and split his targets, and only a second factor captures both. Documented, not hidden. */
+        const load = p.pos==='QB'?1.0 : p.pos==='WR'?0.342 : p.pos==='TE'?0.236 : 0.071;
       const z = load*shock[p.team] + Math.sqrt(Math.max(0,1-load*load))*gauss(rnd);
       return { p, v: Math.max(0, p.proj + z*sd[i]) };
     });
@@ -106,15 +114,22 @@ function season(roster, rnd) {
   return tot/17;
 }
 
-/** one league; `sharpSeat` drafts on our model, everyone else to market */
-function league(seed, sharpSeat) {
+/** one league; every seat in `sharp` drafts on our model, the rest to market.
+ *
+ *  Brian: "well im talking about emily and me ... you shoulda account for us two".
+ *  Right — and it was overstating his edge. Three people in this league use this tool
+ *  (Ashley at 1, Brian at 2, Emily at 10), so measuring one sharp seat against eleven ADP
+ *  bots answers a question nobody is in. Sharp seats compete for the same undervalued
+ *  players, which both lowers each one's edge and changes who is left for the others. */
+function league(seed, sharp) {
+  const S = new Set(Array.isArray(sharp) ? sharp : [sharp]);
   const rnd = mul(seed);
   const avail = POOL.slice(), teams = {};
   for (let t=1;t<=TEAMS;t++) teams[t]=[];
   for (let pk=1; pk<=TEAMS*ROUNDS; pk++) {
     if (!avail.length) break;
     const t = snap(pk);
-    const p = t === sharpSeat ? ourPick(avail, teams[t], rnd) : oppPick(avail, teams[t], rnd);
+    const p = S.has(t) ? ourPick(avail, teams[t], rnd) : oppPick(avail, teams[t], rnd);
     if (!p) break;
     teams[t].push(p); avail.splice(avail.indexOf(p),1);
   }
@@ -149,6 +164,16 @@ for (let seat=1; seat<=TEAMS; seat++) {
   process.stdout.write(`  seat ${seat} done\r`);
 }
 
+/* ---- REAL: the room as it actually is. Ashley, Brian and Emily all on the tool. ---- */
+const TOOL = [1, 2, 10];
+const real = {};
+for (const seat of TOOL) real[seat] = { ppg: [], wins: 0 };
+for (let w=0; w<W; w++) {
+  const out = league(50000 + w*7919, TOOL);
+  for (const seat of TOOL) real[seat].ppg.push(out.find(x => x.t === seat).s);
+  if (TOOL.includes(out[0].t)) real[out[0].t].wins++;
+}
+
 console.log(`\n\nWHICH DRAFT SLOT IS BEST? — ${W.toLocaleString()} leagues per column.`);
 console.log(`All twelve rosters play the same season, so "wins" is finishing top of the league on points.\n`);
 console.log('  seat   ---- everyone drafts to market ----     ---- you draft on the model ----     edge');
@@ -168,3 +193,17 @@ console.log(`\n  best slot if nobody is sharp:   ${byNaive.slice(0,4).map(r=>`#$
 console.log(`  best slot with the tool:        ${bySharp.slice(0,4).map(r=>`#${r.t}`).join(' > ')}`);
 console.log(`  where the tool is worth most:   ${byEdge.slice(0,4).map(r=>`#${r.t} (+${r.edge.toFixed(2)})`).join('  ')}`);
 console.log(`  where it is worth least:        ${byEdge.slice(-3).map(r=>`#${r.t} (+${r.edge.toFixed(2)})`).join('  ')}\n`);
+
+/* ---- the comparison that matters to the people actually in this league ---- */
+console.log(`\n\nTHE ROOM AS IT REALLY IS — Ashley (1), Brian (2) and Emily (10) all on the tool,`);
+console.log(`the other nine drafting to ADP. ${W.toLocaleString()} leagues.\n`);
+console.log('  seat            alone vs 11 bots        sharing with two others      cost of company');
+console.log('  ' + '-'.repeat(84));
+for (const seat of TOOL) {
+  const a = sharp[seat], b = real[seat];
+  const am = mean(a.ppg), bm = mean(b.ppg);
+  const aw = 100*a.wins/W, bw = 100*b.wins/W;
+  console.log(`   ${String(seat).padStart(2)}   ${am.toFixed(2)} / ${aw.toFixed(1).padStart(4)}% wins      ${bm.toFixed(2)} / ${bw.toFixed(1).padStart(4)}% wins        ${(bm-am).toFixed(2)} pts, ${(bw-aw).toFixed(1)} pts of win rate`);
+}
+console.log(`\n  "alone" is the number this study used to print, and it flatters every one of them:`);
+console.log(`  it assumes nobody else in the league knows what they are doing. Three of twelve do.\n`);
