@@ -68,8 +68,8 @@ function oppPick(avail, team, rnd) {
   const c = NEED(team); let b = null, bs = Infinity;
   for (const p of avail) {
     let s = p.mkt + gauss(rnd) * p.sig * 0.8;
-    if (p.pos === "QB" && c.QB >= 1) s += 60;
-    if (p.pos === "TE" && c.TE >= 1) s += 50;
+    if (p.pos === "QB") s += c.QB >= 2 ? 900 : c.QB >= 1 ? 60 : 0;
+    if (p.pos === "TE") s += c.TE >= 2 ? 900 : c.TE >= 1 ? 50 : 0;
     if (p.pos === "RB" && c.RB >= 5) s += 25;
     if (p.pos === "WR" && c.WR >= 5) s += 25;
     if (s < bs) { bs = s; b = p; }

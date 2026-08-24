@@ -71,8 +71,8 @@ function oppPick(avail, team, rnd, lean, pk) {
   const c = NEED(team); let b=null, bs=Infinity;
   for (const p of avail) {
     let s = p.mkt + gauss(rnd)*p.sig*0.8;
-    if (p.pos==='QB' && c.QB>=1) s += 60;
-    if (p.pos==='TE' && c.TE>=1) s += 50;
+    if (p.pos==='QB') s += c.QB>=2 ? 900 : c.QB>=1 ? 60 : 0;
+    if (p.pos==='TE') s += c.TE>=2 ? 900 : c.TE>=1 ? 50 : 0;
     if (p.pos==='RB' && c.RB>=5) s += 25;
     if (p.pos==='WR' && c.WR>=5) s += 25;
     if (p.pos==='RB') s -= rbShift(lean, pk);
@@ -103,7 +103,15 @@ function season(roster, rnd) {
     const real = roster.map((p,i) => {
       if (p.bye===wk || rnd() < p.pMiss/17) return { p, v:0 };
       shock[p.team] ??= gauss(rnd);
-      const load = p.pos==='QB'?0.585 : p.pos==='WR'?0.585 : p.pos==='TE'?0.40 : 0.12;
+      /* Loadings on one shared team shock. The shock IS the quarterback's own deviation, so a
+           receiver's correlation to him is his loading directly, and receiver-to-receiver falls out
+           as the product of two loadings rather than being forced equal to it.
+           Measured targets: QB-WR +0.342, QB-TE +0.236, QB-RB +0.071, WR-WR +0.006.
+           With QB at 1.0 and WR at 0.342, WR-WR lands at 0.117 — still above the measured 0.006,
+           but a third of the 0.342 the old symmetric form produced. A single factor cannot hold a
+           high QB-WR and a near-zero WR-WR at once; two receivers share the quarterback's good day
+           and split his targets, and only a second factor captures both. Documented, not hidden. */
+        const load = p.pos==='QB'?1.0 : p.pos==='WR'?0.342 : p.pos==='TE'?0.236 : 0.071;
       const z = load*shock[p.team] + Math.sqrt(Math.max(0,1-load*load))*gauss(rnd);
       return { p, v: Math.max(0, p.proj + z*sd[i]) };
     });
