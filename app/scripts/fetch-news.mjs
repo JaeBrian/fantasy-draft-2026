@@ -72,7 +72,7 @@ const RULES = [
  *   2. IS IT HIM?  Purdy's item was tagged because it mentions Ricky Pearsall being out.
  *      Harvey's was tagged for Dobbins' injury. Items name other players all the time. */
 const HISTORICAL =
-  /\b(last (season|year)|in 202[45]|202[45] (season|campaign)|his rookie (season|year)|previous season|a year ago|back in|in \d+ (career )?games|career (high|total|average)|has averaged)\b/i;
+  /\b(last (season|year)|in 202[45]|202[45] (season|campaign)|his rookie (season|year)|previous season|a year ago|back in|in \d+ (career )?games|career (high|total|average)|has averaged|in (january|february|march|april|may|june|july)|(underwent|had|suffered|tore|sustained|injured)[^.]{0,40}\b(january|february|march|april|may|june|july))\b/i;
 
 /* The worst failure mode is not a missing flag, it is an INVERTED one. "Not expected to miss
  * much, if any, practice time" is good news, and the first pass filed it under `miss`.
