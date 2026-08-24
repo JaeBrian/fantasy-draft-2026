@@ -627,13 +627,24 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
        * through unpenalised. That is how Zay Flowers landed on Derrick Henry's week-13 bye with
        * nothing said. Trigger on the pick that creates the clash, not the one that deepens it. */
       const clash = !!(b && byeCount[b] >= 1);
-      /* Bye pile-ups are dearer than this used to price them. Scored week by week with byes
-       * live, they drag a roster by around three points a week — more than any strategy
-       * difference we have measured — because the weeks you field an incomplete lineup are
-       * losses, not averages. A 6% nudge was routinely overridden by a tenth of a point of
-       * projection, which is how Emily ended up with Zay Flowers stacked on Derrick Henry's
-       * week-13 bye. */
-      if (clash) s *= byeCount[b] >= 2 ? 0.78 : 0.88;
+      /* MEASURED, not judged — scripts/sim-byecost.mjs. Identical rosters, identical
+       * projections, only the bye weeks moved, 15,000 seasons each:
+       *
+       *   2 starters on one bye   -0.29 pts/wk
+       *   3 starters              -1.03
+       *   4 starters              -1.73
+       *
+       * So the cost of each extra body on a used week is roughly 0.29, then 0.74, then 0.70 —
+       * it is a hole in the schedule, near enough ABSOLUTE, and not proportional to how good
+       * the player is. The old multipliers (0.88, then 0.78) happened to charge about the
+       * right amount for the second player — 0.25 against a measured 0.29 on a two-point
+       * candidate — but badly under-charged the third: 0.45 against a measured 1.03. Two
+       * Packers is fine; three is the mistake, and the multiplier form hid that.
+       *
+       * Subtract the measured cost instead. On a cheap late-round player a multiplier would
+       * charge almost nothing for a hole that costs the same whoever fills it. */
+      const BYE_COST = [0, 0.29, 1.03, 1.73];
+      if (clash) s -= BYE_COST[Math.min(byeCount[b], BYE_COST.length - 1)];
       const fell = Math.round(takeAt - mktADP(now.r));
       if (fell >= 6) s *= 1.04;
       cands.push({ p: ps, now, later: nb.likely, proj: g.proj, vNow: g.vorp, evLater: nb.ev, gap, pGone, pReach, score: s, clash, bye: b, cuffOf, cliff, tier, stack, antiStack, fell });
