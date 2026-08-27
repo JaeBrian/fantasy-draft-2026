@@ -10,7 +10,7 @@ const fs = require('fs');
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
 const { SLP } = require(CACHE + 'sleeper.cjs');
 const { PROJ } = require(CACHE + 'projections.cjs');
-const { riskOf } = require(CACHE + 'risk.cjs');
+const { riskOf, cuffUplift } = require(CACHE + 'risk.cjs');
 
 
 const PPG = { QB: r=>Math.max(14,23.5-0.32*r), RB: r=>12.5*Math.exp(-(r-1)/20)+5.8,
@@ -24,7 +24,7 @@ const POOL=[]; { const c={QB:0,RB:0,WR:0,TE:0};
     const mkt=s.adp!==undefined?0.75*s.adp+0.25*ffc:ffc;
     const hurt=['O','IR','PUP','SUS'].includes(s.inj)?0.85:s.inj==='D'?0.95:1;
     POOL.push({name:r[0],pos:r[1],ourRank:i+1,idx:POOL.length,
-      proj: PROJ[r[0]] !== undefined ? PROJ[r[0]] : PPG[r[1]](pr),   /* riskOf already prices verdict and injury */
+      proj: (PROJ[r[0]] !== undefined ? PROJ[r[0]] : PPG[r[1]](pr)) + cuffUplift(r[0]),   /* riskOf already prices verdict and injury */
       cv: riskOf(r[0], r[1], r[4]).cv,
       pMiss: riskOf(r[0], r[1], r[4]).pMiss,
       mkt,sig:Math.max(0.5,MKT[r[0]]?MKT[r[0]][1]:0,0.13*mkt),bye:BYE[r[2]]||0}); }); }

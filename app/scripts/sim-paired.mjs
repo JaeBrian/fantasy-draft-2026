@@ -11,7 +11,7 @@ const fs = require('fs');
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
 const { SLP } = require(CACHE + 'sleeper.cjs');
 const { PROJ } = require(CACHE + 'projections.cjs');
-const { riskOf } = require(CACHE + 'risk.cjs');
+const { riskOf, cuffUplift } = require(CACHE + 'risk.cjs');
 
 
 
@@ -29,7 +29,7 @@ const POOL = [];
     const mkt = s.adp !== undefined ? 0.75 * s.adp + 0.25 * ffc : ffc;
     const hurt = ['O','IR','PUP','SUS'].includes(s.inj) ? 0.85 : s.inj === 'D' ? 0.95 : 1;
     POOL.push({ name: r[0], pos: r[1], team: r[2], ourRank: i + 1,
-      proj: PROJ[r[0]] !== undefined ? PROJ[r[0]] : PPG[r[1]](pr),   /* riskOf already prices verdict and injury */
+      proj: (PROJ[r[0]] !== undefined ? PROJ[r[0]] : PPG[r[1]](pr)) + cuffUplift(r[0]),   /* riskOf already prices verdict and injury */
       cv: riskOf(r[0], r[1], r[4]).cv,
       pMiss: riskOf(r[0], r[1], r[4]).pMiss,   /* one shared risk model, so the news wire reaches this too */
       mkt, sig: Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13*mkt), bye: BYE[r[2]] || 0 }); }); }

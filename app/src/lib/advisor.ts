@@ -3,7 +3,7 @@ import { SLP } from "../sleeper";
 import { PROJ } from "../projections";
 import { CEIL } from "../ceilings";
 import { pinnedPick } from "./intel";
-import { riskOf } from "./risk";
+import { cuffUplift, riskOf } from "./risk";
 
 /* ---- measured teammate correlation ------------------------------------------------------
  * scripts/sim-correlation.mjs, 2025 weekly half-PPR logs. 2025 rosters were reconstructed
@@ -156,7 +156,7 @@ const availOf = (name: string, pos: Pos, verdict: Verdict): number =>
   1 - 0.4 * riskOf(name, pos, verdict).pMiss;
 
 const projOf = (name: string, pos: Pos, posRank: number): number =>
-  PROJ[name] !== undefined ? PROJ[name] : PPG[pos](posRank);
+  (PROJ[name] !== undefined ? PROJ[name] : PPG[pos](posRank)) + cuffUplift(name);
 
 /** Replacement level: what the last startable player at each position is actually projected
  *  for, read off the real distribution rather than assumed from a curve. A 12-team lineup
@@ -759,7 +759,7 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
    * boom-bust players can average the same and win very different numbers of weeks. */
   let lineup: Advice["lineup"] = null;
   if (mine.length) {
-    const val = (r: PlayerRow) => (PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6);
+    const val = (r: PlayerRow) => (PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6) + cuffUplift(r[0]);
     const by = (ps: Pos) => mine.filter((r) => r[1] === ps).sort((a, b) => val(b) - val(a));
     const qbs = by("QB"), rbs = by("RB"), wrs = by("WR"), tes = by("TE");
     const used = new Set<string>();

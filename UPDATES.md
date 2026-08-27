@@ -1,5 +1,18 @@
 # Update log
 
+## 2026-08-27 (later) — handcuffs priced for their starter's risk, and the daily runs everything
+Brian, after the Jacobs suspension story: "is it worth drafting the Packers backup RB earlier?" — and then "prices and ADPs should change based off these things, right?"
+
+**Checked what already moves.** Sleeper's ADP does react to news, in proportion to severity: Higgins (torn ACL) 126 → 200 over nine days, Tyson (2 months) 79 → 92, Jeanty (Q) 11.3 → 13.4 in a day. The wire moves availability (Jeanty pMiss 0.39, "~1 week — Rapoport"). So Jeanty was already priced. The 24h waiver-add feed is **not** a signal — players with 5,000+ adds went 1.4 picks *later* at the next snapshot (n=24); adds are waiver moves, not draft picks. It stays out.
+
+**What did not move: the backup.** A handcuff's projection assumed his starter plays, and the advisor only boosted him for the starter's own owner. `scripts/sim-cuffvalue.mjs` measures it on 2025 logs — 28 starter/backup pairs from snap-count fingerprints (pairwise; a union-find over shared fingerprints merged teams on one coincidental collision and put Barkley behind Jonathan Taylor), starter = whoever scores more when both play (season carries alone had Vidal ahead of Hampton). Across 41 starter-less weeks the backup scored **k = 0.65** of the starter's pts/wk more than with him in (per-pair median 0.71). Priced as `0.4 × pMiss(starter) × 0.65 × proj(starter)` in `risk.ts` (`cuffUplift`), read by the advisor and every study. Lloyd +1.5 (3.9 → 5.4), Pacheco +1.6, B. Robinson +1.5, Allgeier +1.4, Bigsby +1.3. Fourteen pairs is a small sample; the number is coarse and applies only to the `CUFFS` list.
+
+**Not priced:** a suspension with no reported length. Jacobs' pMiss is his injury-and-verdict share (0.45); "preparing for a potential suspension" carries no number and inventing one would be worse than saying so.
+
+**`predraft.mjs` now runs everything**: news wire, all eight studies, the four gates, then `load-sims.mjs` when the gates pass. Every study regenerated on the new pricing; seat means moved ±0.5 pts/wk, win rates 3–5 points lower (seat 2: 40%), RB-LOSS unchanged (RB-WR-WR-RB best at seat 2, every RB-first opening within 1.0).
+
+**Gates.** logic 0 FAIL / 2 WARN, advisor 0, forecast 0, agreement **1 FAIL** / 3 WARN — the two round-6 failures from the morning closed; a new one at seat 1 round 3 (sim prefers Jeremiyah Love to Pickens by 1.17 vs a 0.72 bar, Love still Q). Left standing; results loaded by hand under the documented-failure rule.
+
 ## 2026-08-27 — draft-week refresh, and the sims finally run on the fixed room
 **Refreshed.** Sleeper ADP, projections, injury designations, depth charts, trending, and the news wire (Aug 24 → Aug 27). Projections republished again — quarterbacks up across the board (Kyler +2.1, Burrow +2.0, Hurts +1.8), McCaffrey +1.5; Makai Lemon −2.2, Sadiq −2.0. Injury flags 37 → 42: Ja'Marr Chase Q (knee, Ben Baby), Kenneth Walker III, Zay Flowers, Brian Thomas Jr., Josh Downs, Wan'Dale Robinson, Keaton Mitchell. Alec Pierce PUP → Q.
 
