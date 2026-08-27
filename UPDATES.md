@@ -1,5 +1,24 @@
 # Update log
 
+## 2026-08-27 — draft-week refresh, and the sims finally run on the fixed room
+**Refreshed.** Sleeper ADP, projections, injury designations, depth charts, trending, and the news wire (Aug 24 → Aug 27). Projections republished again — quarterbacks up across the board (Kyler +2.1, Burrow +2.0, Hurts +1.8), McCaffrey +1.5; Makai Lemon −2.2, Sadiq −2.0. Injury flags 37 → 42: Ja'Marr Chase Q (knee, Ben Baby), Kenneth Walker III, Zay Flowers, Brian Thomas Jr., Josh Downs, Wan'Dale Robinson, Keaton Mitchell. Alec Pierce PUP → Q.
+
+**Market.** Gibbs 1.1 → 1.9, Bijan 2.7 → 2.4. Gibbs now reaches pick 2 about 27% of the time, up from 5%.
+
+**Three bugs.**
+
+| where | what | effect |
+|---|---|---|
+| `sim-all.mjs` | templates and head-to-head still keyed to seat 6 after Brian moved to 2 | threw on seat 2 — `predraft.mjs` had been stopping at its first study since PR #58, so the Aug 24 run never reached the gates |
+| `risk.ts` | the newest `miss` item won even with no duration in it | Kamara's month (Schefter) silently became one week when a Kendre Miller quote arrived; now the newest miss item **with a number** wins |
+| `fetch-news.mjs` | `hold(-\| )?in` matched "hold**in**g him out of Saturday's game" | Trey McBride tagged as a contract holdout; `\b` added |
+
+**`scripts/load-sims.mjs` added.** Writes every `.simcache/*.json` back into `data.ts` / `SimPanel.tsx` in place, refusing lines that are not the shape it expects. The Aug 24 pass did this by hand with a regex that deleted two datasets.
+
+**All seat studies regenerated** (plans, cliffs, paired, first-pick, tree, risk dial, priority, arbitrage, run timing, head-to-head, RB-LOSS). Seat 2 now wins 43%, was 35%. Attributed by swapping inputs: today's data alone moves it to 37%; the rest is PR #62's opponent-model fix (no more four-QB rosters), which the Aug 24 datasets predate. A first pick who falls too rarely to rank the next pick (Gibbs at seat 2, 26%) is now left out of the draft tree instead of shipping as an empty branch.
+
+**Gates.** logic 0 FAIL / 2 WARN, advisor 0 FAIL, forecast 0 FAIL, agreement **2 FAIL** / 4 WARN — both round 6, both just over the bar (Pierce over Reed at seat 1, 0.87 vs 0.75; Watson over Warren at seat 10, 0.70 vs 0.68). The sim likes Pierce's projection now that he is off PUP; the board says believe it when he practices. Left standing. audit-sim: the known bye-start failure (3.8%, was 4.2%), still documented rather than fixed.
+
 ## 2026-08-20 — data refresh, and a claim from yesterday retracted
 **Refreshed.** Sleeper ADP, projections, injury designations, depth charts, trending, and the news wire.
 

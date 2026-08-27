@@ -22,6 +22,11 @@ export function topNews(name: string): NewsItem | null {
   return tagged.slice().sort((a, b) => NEWS_RANK[a.g!] - NEWS_RANK[b.g!] || b.t - a.t)[0];
 }
 
+/** Every item carrying this tag, newest first. */
+export function newsTagged(name: string, tag: string): NewsItem[] {
+  return (NEWS[name] ?? []).filter((n) => n.g === tag).sort((a, b) => b.t - a.t);
+}
+
 /** How stale is what we know about him? Days, or null if we have nothing sourced. */
 export function newsAge(name: string, now = Date.now()): number | null {
   const items = NEWS[name];

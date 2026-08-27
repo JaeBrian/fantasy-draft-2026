@@ -57,7 +57,7 @@ const RULES = [
   ["demoted",   /\b(demoted|lost the (starting|lead) (job|role)|dropped to (second|backup|the second)|behind .{0,24} on the depth chart|second-team)/i],
   ["promoted",  /\b(named the (starter|lead|primary)|won the (starting|lead) (job|role)|first-team reps|will start|takes over as)/i],
   ["hurt",      /\b(injur|sprain|strain|fracture|surgery|limited in practice|did not practice|dnp\b|carted off|left (practice|the game))/i],
-  ["holdout",   /\b(hold(-| )?out|hold(-| )?in|contract dispute|has not reported|trade request)/i],
+  ["holdout",   /\b(hold(-| )?out|hold(-| )?in\b|contract dispute|has not reported|trade request)/i],  // \b: "holdING him out of Saturday's game" is rest, not a holdout (Trey McBride, Aug 26)
   ["suspended", /\b(suspend|suspension|banned for)/i],
   ["back",      /\b(returned to practice|activated|cleared to (play|practice)|full participant|removed from the injury report)/i],
   ["hype",      /\b(breakout|standout|turning heads|impressed|best (shape|camp)|praised|stood out|dominant|tone(-| )setting)/i],

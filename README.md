@@ -132,6 +132,7 @@ node scripts/fetch-sleeper.mjs       # ADP, injuries, depth charts, trending, + 
 node scripts/fetch-ceilings.mjs      # 2025 game logs → measured spread
 node scripts/fetch-news.mjs          # sourced news wire
 node scripts/predraft.mjs            # rebuild sim cache, run every audit
+node scripts/load-sims.mjs           # write .simcache/*.json back into data.ts / SimPanel.tsx
 ```
 
 `predraft.mjs` is the one entry point before a draft — it gates on the audits and refuses to pass if the advisor and the simulations disagree beyond their combined standard errors.

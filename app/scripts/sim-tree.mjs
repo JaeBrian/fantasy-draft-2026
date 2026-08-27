@@ -199,7 +199,11 @@ for (const slot of Object.keys(SEATS).map(Number)) {
       }
       scored3.sort((a,b)=>b.pts-a.pts);
     }
-    seatOut.push({ first:{ name:F.name, pos:F.pos, avail:availF },
+    /* a first pick who falls only just often enough leaves too few worlds to rank the next
+     * pick in (Gibbs at seat 2: on the board 26%, no second-pick candidate clears 25%) —
+     * an empty branch is not advice, so it is left out */
+    if (!scored2.length) { console.log(`IF YOU GET ${F.name} (${F.pos})  — on the board ${availF}% of the time, too rarely to rank the next pick\n`); continue; }
+    seatOut.push({ first:{ name:F.name, pos:F.pos, pts:0, avail:availF },
       second: scored2.slice(0,6).map(x=>({...x, pts:+x.pts.toFixed(2)})),
       third:  scored3.slice(0,6).map(x=>({...x, pts:+x.pts.toFixed(2)})) });
 

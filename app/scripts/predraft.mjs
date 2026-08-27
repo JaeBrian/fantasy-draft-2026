@@ -50,4 +50,4 @@ if (failed.length) {
 }
 console.log("All gates passed. Fresh results are in app/.simcache/*.json:");
 console.log("  sim_all.json  final_sim.json  first_pick.json  tree.json");
-console.log("Read them into src/data.ts and src/panels/SimPanel.tsx, then re-check the prose.");
+console.log("Run scripts/load-sims.mjs to write them into src/data.ts and src/panels/SimPanel.tsx, then re-check the prose.");
