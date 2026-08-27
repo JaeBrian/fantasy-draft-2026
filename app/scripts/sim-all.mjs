@@ -60,8 +60,10 @@ function lineup(R){const by=pos=>R.filter(x=>x.pos===pos).sort((a,b)=>b.real-a.r
   take([...rb,...wr,...te].filter(x=>!used.has(x.name)).sort((a,b)=>b.real-a.real),2);
   return pts;}
 
-const BEST_TPL = { 1:['RB','WR','WR','RB','TE','QB'], 6:['WR','RB','WR','RB','TE','QB'], 10:['RB','RB','WR','WR','TE','QB'] };
-const BEST_LABEL = { 1:'RB-WR-WR-RB', 6:'WR-RB-WR-RB', 10:'RB-RB-WR-WR' };
+/* Seat 2, not 6 — Brian moved. The loop below was updated for that; these two tables were not,
+ * so this script threw on seat 2 and predraft.mjs stopped at its first study. */
+const BEST_TPL = { 1:['RB','WR','WR','RB','TE','QB'], 2:['RB','WR','WR','RB','TE','QB'], 10:['RB','RB','WR','WR','TE','QB'] };
+const BEST_LABEL = { 1:'RB-WR-WR-RB', 2:'RB-WR-WR-RB', 10:'RB-RB-WR-WR' };
 const WORLDS = 4000;
 const out = { plans:{}, cliff:{}, h2h:[], arbitrage:{}, runTiming:[] };
 
@@ -101,7 +103,7 @@ for (const slot of [1,2,10]) {
 
 /* ---------- C: which seat is actually best, all three drafting identically ---------- */
 {
-  const seats=[1,6,10], scores={1:[],6:[],10:[]}, wins={1:0,6:0,10:0};
+  const seats=[1,2,10], scores={1:[],2:[],10:[]}, wins={1:0,2:0,10:0};
   for(let w=0;w<WORLDS;w++){
     const rnd=mul(31000+w), avail=POOL.slice(), teams={};
     for(let t=1;t<=12;t++)teams[t]=[];
@@ -114,8 +116,8 @@ for (const slot of [1,2,10]) {
     wins[seats.sort((a,b)=>v[b]-v[a])[0]]++;
   }
   const mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
-  const who={1:'Ashley',6:'Brian JK',10:'Emily'};
-  out.h2h=[1,6,10].map(s=>({ who:who[s], slot:s, avg:+mean(scores[s]).toFixed(1), best:Math.round(wins[s]/WORLDS*100) }));
+  const who={1:'Ashley',2:'Brian JK',10:'Emily'};
+  out.h2h=[1,2,10].map(s=>({ who:who[s], slot:s, avg:+mean(scores[s]).toFixed(1), best:Math.round(wins[s]/WORLDS*100) }));
   console.log('\nseat head-to-head (all three drafting the same way, same league):');
   out.h2h.forEach(r=>console.log(`   ${r.who.padEnd(10)} pick ${String(r.slot).padEnd(3)} ${r.avg} pts/wk   best team ${r.best}% of the time`));
 }

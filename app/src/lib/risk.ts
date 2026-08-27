@@ -1,7 +1,7 @@
 import type { Pos, Verdict } from "../data";
 import { SLP } from "../sleeper";
 import { CEIL } from "../ceilings";
-import { topNews } from "./news";
+import { newsTagged, topNews } from "./news";
 
 /* One definition of how uncertain a player is, shared by the advisor and every simulation so
  * the two cannot drift apart.
@@ -149,17 +149,28 @@ export function riskOf(name: string, pos: Pos, verdict: Verdict): Risk {
      * any danger". So read the words too, and when nothing at all parses assume the smaller
      * number — an unreadable report is not evidence of a long absence. */
     /* a range takes its upper bound: "2-3 weeks" is three */
-    const wkRange = WK_RANGE.exec(top.d);
-    const wk = wkRange ?? WK_ONE.exec(top.d);
-    const mo = MONTHS.exec(top.d);
+    const parse = (d: string): number | null => {
+      const wkRange = WK_RANGE.exec(d);
+      const wk = wkRange ?? WK_ONE.exec(d);
+      const mo = MONTHS.exec(d);
+      if (mo) return 4.3 * (val(mo[1]) || 1);
+      if (wk) return val(wkRange ? wkRange[2] : wk[1]) || 1;
+      return null;
+    };
 
     /* turn the report into games missed out of a 17-week season */
-    let miss = 0;
+    let miss = 0, by = top.a;
     if (top.g === "out") miss = 17;
     else if (top.g === "miss") {
-      if (mo) miss = 4.3 * (val(mo[1]) || 1);
-      else if (wk) miss = val(wkRange ? wkRange[2] : wk[1]) || 1;
-      else miss = 1;
+      /* The newest "miss" item is not always the most specific one. Five days after Schefter
+       * put Kamara out "at least a month", a Kendre Miller quote arrived saying Kamara "is
+       * expected to miss time, possibly into the regular season" — no number, so it read as
+       * one week and quietly replaced the month. Use the newest miss item that carries a
+       * duration; one week only when none does. */
+      const dated = [top, ...newsTagged(name, "miss").filter((n) => n !== top)]
+        .map((n) => ({ d: parse(n.d), a: n.a })).find((x) => x.d !== null);
+      miss = dated?.d ?? 1;
+      by = dated?.a ?? top.a;
     }
     /* `hurt` is deliberately NOT priced. It fires on any mention of a knock — "limited in
      * practice", "left the game" — and in August that is thirty-odd players, most of whom
@@ -174,7 +185,7 @@ export function riskOf(name: string, pos: Pos, verdict: Verdict): Risk {
       flags.push(
         top.g === "out"
           ? `reported out for the season — ${top.a}`
-          : `reported to miss ~${miss < 1 ? "time" : `${Math.round(miss)} week${Math.round(miss) === 1 ? "" : "s"}`} — ${top.a}`,
+          : `reported to miss ~${miss < 1 ? "time" : `${Math.round(miss)} week${Math.round(miss) === 1 ? "" : "s"}`} — ${by}`,
       );
     } else if (top.g === "committee" || top.g === "workload" || top.g === "demoted") {
       /* not an availability question — a share-of-work question. Flagged for a human, and
