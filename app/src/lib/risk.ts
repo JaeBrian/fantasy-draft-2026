@@ -1,4 +1,5 @@
-import type { Pos, Verdict } from "../data";
+import { CUFFS, P, type PlayerRow, type Pos, type Verdict } from "../data";
+import { PROJ } from "../projections";
 import { SLP } from "../sleeper";
 import { CEIL } from "../ceilings";
 import { newsTagged, topNews } from "./news";
@@ -197,5 +198,31 @@ export function riskOf(name: string, pos: Pos, verdict: Verdict): Risk {
     }
   }
 
+  const cuff = cuffUplift(name);
+  if (cuff >= 0.2) flags.push(`+${cuff.toFixed(1)} pts/wk as ${STARTER_OF[name]}'s handcuff`);
+
   return { cv, pMiss: Math.min(0.92, pMiss), flags: [...flags, ...flagsFromData] };
+}
+
+/* ---- handcuff uplift -----------------------------------------------------------------
+ * A backup's projection assumes his starter plays. When the starter carries risk, part of that
+ * risk is the backup's upside, and until now nothing priced it — Josh Jacobs' suspension talk
+ * moved Jacobs and nobody else. Measured on 2025 game logs (scripts/sim-cuffvalue.mjs): across
+ * 41 weeks in which a starter sat, his backup scored 0.65 of the starter's own pts/wk MORE than
+ * he did with the starter in (per-pair median 0.71, n=14 pairs — a small sample, so this is a
+ * coarse number and is applied only to the listed handcuffs in CUFFS).
+ *
+ * Expected weeks lost = 0.4 × pMiss, the same arithmetic the advisor and the simulations use
+ * for the starter himself. So the uplift is  0.4 × pMiss(starter) × 0.65 × proj(starter). It
+ * is added to the backup's projection everywhere the model reads one, for every seat — not
+ * only the starter's owner. Suspensions with no reported length are NOT in pMiss, so a "may
+ * be suspended" starter moves his backup only through whatever risk he already carries. */
+export const CUFF_K = 0.65;
+const STARTER_OF: Record<string, string> = Object.fromEntries(Object.entries(CUFFS).map(([st, cf]) => [cf, st]));
+const ROW: Record<string, PlayerRow> = Object.fromEntries(P.map((r) => [r[0], r]));
+export function cuffUplift(name: string): number {
+  const st = STARTER_OF[name];
+  const row = st ? ROW[st] : undefined;
+  if (!row || PROJ[st] === undefined || STARTER_OF[st]) return 0;   // no starter, or a chain
+  return 0.4 * riskOf(st, row[1], row[4]).pMiss * CUFF_K * PROJ[st];
 }

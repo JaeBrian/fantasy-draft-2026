@@ -18,7 +18,7 @@ const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
 const { SLP } = require(CACHE + 'sleeper.cjs');
 const { PROJ } = require(CACHE + 'projections.cjs');
-const { riskOf } = require(CACHE + 'risk.cjs');
+const { riskOf, cuffUplift } = require(CACHE + 'risk.cjs');
 
 const TEAMS = 12, ROUNDS = 14;
 let fail = 0, pass = 0;
@@ -32,7 +32,7 @@ P.forEach((r) => {
   const mkt = s.adp !== undefined ? 0.75 * s.adp + 0.25 * ffc : ffc;
   const rk = riskOf(r[0], r[1], r[4]);
   POOL.push({ name: r[0], pos: r[1], team: r[2],
-    proj: PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6, cv: rk.cv, pMiss: rk.pMiss,
+    proj: (PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6) + cuffUplift(r[0]), cv: rk.cv, pMiss: rk.pMiss,
     mkt, sig: Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * mkt), bye: BYE[r[2]] || 0 });
 });
 const adj = (p) => p.proj * (1 - 0.4 * p.pMiss);

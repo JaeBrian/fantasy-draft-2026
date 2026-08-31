@@ -16,14 +16,16 @@ const run = (label, file, args = []) => {
   execFileSync("node", ["--max-old-space-size=4096", dir + file, ...args], { cwd: app, stdio: "inherit" });
 };
 
-/* 1. fresh market and projections (fetch-sleeper chains fetch-projections) */
+/* 1. fresh market, projections and the news wire (fetch-sleeper chains fetch-projections) */
 run("refreshing Sleeper data and projections", "fetch-sleeper.mjs");
+run("refreshing the news wire", "fetch-news.mjs");
 
 /* 2. compile what the studies read */
 run("building the sim cache", "sim-build.mjs");
 
 /* 3. the studies whose output is published */
-for (const s of ["sim-all", "sim-paired", "sim-first", "sim-tree"]) run(s, `${s}.mjs`);
+for (const s of ["sim-all", "sim-paired", "sim-first", "sim-tree", "sim-plans", "sim-risk", "sim-priority", "sim-rbrun"])
+  run(s, `${s}.mjs`);
 
 /* 4. gates. These decide whether the numbers above are safe to publish, so a failure here
  *    must stop the run rather than be noted and passed over. */
@@ -45,9 +47,10 @@ for (const g of gates) {
 console.log(`\n${"=".repeat(70)}`);
 if (failed.length) {
   console.error(`GATE FAILED: ${failed.join(", ")}`);
-  console.error("Do NOT publish these numbers. Report which gate failed and what it said.");
+  console.error("Nothing written. Fresh results are in app/.simcache/*.json; report which gate failed and what it said,");
+  console.error("and run scripts/load-sims.mjs by hand only if the failure is a known, documented one.");
   process.exit(1);
 }
-console.log("All gates passed. Fresh results are in app/.simcache/*.json:");
-console.log("  sim_all.json  final_sim.json  first_pick.json  tree.json");
-console.log("Run scripts/load-sims.mjs to write them into src/data.ts and src/panels/SimPanel.tsx, then re-check the prose.");
+console.log("All gates passed — writing results into src/data.ts and src/panels/SimPanel.tsx.");
+run("loading results", "load-sims.mjs");
+console.log("Now `npm run build`, and re-check the prose against the fresh numbers.");

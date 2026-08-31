@@ -76,6 +76,14 @@ Tagging is keyword rules over wire copy, not comprehension, so it carries three 
 
 Every tag ships with the sentence that triggered it and who reported it, so the rule's call can be checked by eye. **A tag never silently moves a projection.**
 
+### Sleeper — 2025 game logs, again: what a handcuff is worth
+
+```
+scripts/sim-cuffvalue.mjs
+```
+
+A backup's projection assumes his starter plays. Measured across the 2025 season — 28 starter/backup pairs reconstructed from the snap-count fingerprints, 41 weeks in which a starter sat — the backup scored **0.65 of the starter's own pts/wk more** than he did with the starter in (per-pair median 0.71). So every listed handcuff in `CUFFS` carries `0.4 × pMiss(starter) × 0.65 × proj(starter)` on top of his own projection, everywhere the model reads one and for every seat — not just the starter's owner. Fourteen pairs is a small sample; treat the number as coarse. A suspension with no reported length is not in `pMiss`, so it does not reach the backup.
+
 ### Sleeper — injury designations, depth charts, roster status
 
 ```
