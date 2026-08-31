@@ -1,5 +1,18 @@
 # Update log
 
+## 2026-08-31 — Jacobs to the exempt list, and the weekend repricing
+**Jacobs.** Placed on the Commissioner's Exempt List (Schefter) — cannot play or practice, no end date; two misdemeanor charges, first court date Nov 17 (Demovsky). Sleeper designation O (`DNR` maps to `O` in fetch-sleeper, so the risk model priced it with no code change: pMiss 0.67). ADP 28.5 → 34.6, −42k drops in 24h. The exempt-list wire items carry no keyword tag — there is no rule for it — but the designation is the designed channel for exactly this.
+
+**The market did what the handcuff model said.** Lloyd ADP 179 → 136, +449k adds in 24h, and Schneidman has him "poised to begin the season as Green Bay's lead running back." His uplift flag reads +2.3 pts/wk from Jacobs' risk.
+
+**Also:** Tyson officially to IR (ADP 92 → 104); Charbonnet opens on PUP (formalising the Wk 5–6 return); Jeanty avoids IR and the Raiders are "counting on" him Wk 1; Nacua back at practice and expected to avoid the exempt list (Pelissero); Worthy and Johnston cleared; Jaydon Blue waived and zeroed from projections.
+
+**Studies regenerated** on the new market (seat 2: 39% win, Bijan there 87%, Gibbs 15% — the room re-firmed on Gibbs first overall).
+
+**A real advisor bug, caught by the gate.** On the post-weekend ADP, audit-advisor's seat-1 self-draft finished **QB1 RB6 WR7 TE0** — a roster that fields a zero at tight end every week. Mechanism: the two-pick lookahead kept flipping the first TE to "take him next turn," turn after turn, and at pick 145 the advisor spent its one spare pick on a seventh running back with the last startable TE on the board; by 168 every TE was gone. Thursday's data passed the same audit — a few opponent-ADP shifts (McBride 24.2 → 26 among them) re-ordered the deterministic room and exposed it. Fix: the roster radar's existing "this pick or never" computation (startable shelf empty by your next turn) now **filters the candidate list** instead of merely printing a warning, and once no spare picks remain, only slot-filling players are candidates at all. No new constants — both triggers already existed as warnings. audit-advisor 0 FAIL on all five seats after the fix.
+
+**Gates.** logic 0 FAIL / 2 WARN, advisor 0 (after the fix), forecast 0, agreement **3 FAIL** / 2 WARN — all three marginal value calls just over the noise bar on fresh data (Love over Pickens at seat 1 rd 3, 1.62; Zay Flowers over Loveland at seat 10 rd 3, 0.72 vs 0.66; Watson over Warren rd 6, 0.69 vs 0.65). Left standing per precedent; results loaded under the documented-failure rule. (One earlier gate run also crashed on a `SIMITEM` placeholder briefly left in `data.ts` mid-edit — self-inflicted, no effect on the numbers.)
+
 ## 2026-08-27 (later) — handcuffs priced for their starter's risk, and the daily runs everything
 Brian, after the Jacobs suspension story: "is it worth drafting the Packers backup RB earlier?" — and then "prices and ADPs should change based off these things, right?"
 
