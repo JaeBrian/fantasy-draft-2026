@@ -452,6 +452,7 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
   const starterGap = (qb === 0 ? 1 : 0) + skillUnfilled + 2; /* +2 = K & DST, always your last two picks */
   const warnings: string[] = [];
   const plainWarn: string[] = [];
+  const mustNow = new Set<Pos>();
   if (myCount < 14 && picksLeft > 0) {
     const spare = picksLeft - starterGap;
     if (spare <= 0) {
@@ -474,9 +475,11 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
         }
       });
       if (expNow <= needN) {
+        if (expNow > 0) mustNow.add(ps);
         warnings.push(`${ps}: only ${expNow} startable left and you still need ${needN} — fill it NOW.`);
         plainWarn.push(`you still need a ${PLAINSHORT[ps]} and there are almost none worth starting left — grab one right now`);
       } else if (expNext < needN + 0.7) {
+        mustNow.add(ps);
         warnings.push(`${ps}: startable options likely gone by your next turn (~${expNext.toFixed(1)} left) — this pick or never.`);
         plainWarn.push(`the good ${PLAINSHORT[ps]}s will probably all be taken before your next turn — it's now or never`);
       } else if (expNext < needN + 2) {
@@ -650,6 +653,22 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
       cands.push({ p: ps, now, later: nb.likely, proj: g.proj, vNow: g.vorp, evLater: nb.ev, gap, pGone, pReach, score: s, clash, bye: b, cuffOf, cliff, tier, stack, antiStack, fell });
     });
   });
+  /* A starting slot that can no longer wait overrides every score. Two triggers, both already
+   * computed by the roster radar above: no spare picks remain (every pick must fill a slot),
+   * or a slot is unfilled and its startable shelf is expected to be empty by your NEXT turn —
+   * the "this pick or never" warning, now enforced instead of merely printed. Found by
+   * audit-advisor on Aug 31: small opponent-ADP shifts let the lookahead defer the first TE
+   * turn after turn; the advisor then spent its one spare pick on a seventh runner at pick 145
+   * with the last startable TE on the board, and finished QB1 RB6 WR7 TE0 — a roster that
+   * fields a zero at TE every week, a cost no candidate score can express. */
+  const spareLeft = picksLeft - starterGap;
+  const forced = (["QB", "RB", "WR", "TE"] as Pos[]).filter(
+    (p) => needSlots[p] > 0 && (spareLeft <= 0 || mustNow.has(p)),
+  );
+  if (forced.length) {
+    const keep = cands.filter((c) => forced.includes(c.p) || (spareLeft <= 0 && c.p !== "QB" && flexFilled < 2));
+    if (keep.length) { cands.length = 0; cands.push(...keep); }
+  }
   cands.sort((x, y) => y.score - x.score);
 
   let dream: Advice["dream"] = null;
