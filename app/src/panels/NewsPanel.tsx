@@ -44,7 +44,7 @@ export function NewsPanel({ noob }: { noob: boolean }) {
   const [onlyBig, setOnlyBig] = useState(true);
   const all = wireItems();
   /* "what changes a pick" = an availability or role call, not a camp-buzz note */
-  const big = all.filter((n) => n.g && NEWS_RANK[n.g] <= 6);
+  const big = all.filter((n) => n.g && NEWS_RANK[n.g] <= 7);
   const shown = (onlyBig ? big : all).slice(0, 40);
 
   return (

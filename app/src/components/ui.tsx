@@ -272,16 +272,17 @@ export function Chevrons({ n, dir, title }: { n: 1 | 2 | 3; dir: "up" | "down"; 
 /** How much a tag should change what you do, and what it looks like. */
 const NEWS_TAGS: Record<string, { label: string; cls: string; rank: number }> = {
   out:       { label: "OUT",       cls: "border-avoid/70 bg-avoid/15 text-avoid",   rank: 0 },
-  miss:      { label: "WILL MISS", cls: "border-avoid/70 bg-avoid/15 text-avoid",   rank: 1 },
-  suspended: { label: "SUSP",      cls: "border-avoid/70 bg-avoid/15 text-avoid",   rank: 2 },
-  committee: { label: "COMMITTEE", cls: "border-risky/70 bg-risky/15 text-risky",   rank: 3 },
-  workload:  { label: "WORKLOAD",  cls: "border-risky/70 bg-risky/15 text-risky",   rank: 4 },
-  demoted:   { label: "DEMOTED",   cls: "border-risky/70 bg-risky/15 text-risky",   rank: 5 },
-  holdout:   { label: "HOLDOUT",   cls: "border-risky/70 bg-risky/15 text-risky",   rank: 6 },
-  hurt:      { label: "HURT",      cls: "border-risky/60 text-risky",               rank: 7 },
-  promoted:  { label: "PROMOTED",  cls: "border-value/70 bg-value/15 text-value",   rank: 8 },
-  back:      { label: "BACK",      cls: "border-value/60 text-value",               rank: 9 },
-  hype:      { label: "BUZZ",      cls: "border-ink-3/50 text-ink-3",               rank: 10 },
+  ir:        { label: "IR",        cls: "border-avoid/70 bg-avoid/15 text-avoid",   rank: 1 },
+  miss:      { label: "WILL MISS", cls: "border-avoid/70 bg-avoid/15 text-avoid",   rank: 2 },
+  suspended: { label: "SUSP",      cls: "border-avoid/70 bg-avoid/15 text-avoid",   rank: 3 },
+  committee: { label: "COMMITTEE", cls: "border-risky/70 bg-risky/15 text-risky",   rank: 4 },
+  workload:  { label: "WORKLOAD",  cls: "border-risky/70 bg-risky/15 text-risky",   rank: 5 },
+  demoted:   { label: "DEMOTED",   cls: "border-risky/70 bg-risky/15 text-risky",   rank: 6 },
+  holdout:   { label: "HOLDOUT",   cls: "border-risky/70 bg-risky/15 text-risky",   rank: 7 },
+  hurt:      { label: "HURT",      cls: "border-risky/60 text-risky",               rank: 8 },
+  promoted:  { label: "PROMOTED",  cls: "border-value/70 bg-value/15 text-value",   rank: 9 },
+  back:      { label: "BACK",      cls: "border-value/60 text-value",               rank: 10 },
+  hype:      { label: "BUZZ",      cls: "border-ink-3/50 text-ink-3",               rank: 11 },
 };
 
 const ago = (t: number): string => {
@@ -294,7 +295,7 @@ export function NewsChip({ name }: { name: string }) {
   const top = topNews(name);
   if (!top || !top.g) return null;
   const meta = NEWS_TAGS[top.g];
-  if (meta.rank >= 10) return null;
+  if (meta.rank >= 11) return null;
   const items = NEWS[name] || [];
   return (
     <Tip
