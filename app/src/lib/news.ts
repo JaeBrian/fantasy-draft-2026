@@ -9,8 +9,8 @@ import { NEWS, type NewsItem } from "../news";
 
 /** Ordered by how much it should change what you do. */
 export const NEWS_RANK: Record<string, number> = {
-  out: 0, miss: 1, suspended: 2, committee: 3, workload: 4,
-  demoted: 5, holdout: 6, hurt: 7, promoted: 8, back: 9, hype: 10,
+  out: 0, ir: 1, miss: 2, suspended: 3, committee: 4, workload: 5,
+  demoted: 6, holdout: 7, hurt: 8, promoted: 9, back: 10, hype: 11,
 };
 
 /** The one item that should change your mind about this player, if any. */

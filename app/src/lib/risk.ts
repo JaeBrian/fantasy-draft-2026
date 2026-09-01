@@ -162,7 +162,7 @@ export function riskOf(name: string, pos: Pos, verdict: Verdict): Risk {
     /* turn the report into games missed out of a 17-week season */
     let miss = 0, by = top.a;
     if (top.g === "out") miss = 17;
-    else if (top.g === "miss") {
+    else if (top.g === "miss" || top.g === "ir") {
       /* The newest "miss" item is not always the most specific one. Five days after Schefter
        * put Kamara out "at least a month", a Kendre Miller quote arrived saying Kamara "is
        * expected to miss time, possibly into the regular season" — no number, so it read as
@@ -172,6 +172,8 @@ export function riskOf(name: string, pos: Pos, verdict: Verdict): Risk {
         .map((n) => ({ d: parse(n.d), a: n.a })).find((x) => x.d !== null);
       miss = dated?.d ?? 1;
       by = dated?.a ?? top.a;
+      /* injured reserve after the cutdown is a four-game minimum — longer only if a report says so */
+      if (top.g === "ir") miss = Math.max(4, miss);
     }
     /* `hurt` is deliberately NOT priced. It fires on any mention of a knock — "limited in
      * practice", "left the game" — and in August that is thirty-odd players, most of whom
@@ -186,6 +188,8 @@ export function riskOf(name: string, pos: Pos, verdict: Verdict): Risk {
       flags.push(
         top.g === "out"
           ? `reported out for the season — ${top.a}`
+          : top.g === "ir"
+          ? `on injured reserve — ${Math.round(miss)}+ games — ${by}`
           : `reported to miss ~${miss < 1 ? "time" : `${Math.round(miss)} week${Math.round(miss) === 1 ? "" : "s"}`} — ${by}`,
       );
     } else if (top.g === "committee" || top.g === "workload" || top.g === "demoted") {

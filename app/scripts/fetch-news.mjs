@@ -50,7 +50,8 @@ console.log(`board names: ${board.size}, matched to Sleeper ids: ${Object.keys(i
  * Ordered by how much it should change your draft. The first pattern that hits wins, so
  * "out for the season" beats "expected to split carries" when a story says both. */
 const RULES = [
-  ["out",       /\b(torn (acl|achilles)|out for the season|season-ending|placed on (injured reserve|ir)\b|will miss the (season|year))/i],
+  ["out",       /\b(torn (acl|achilles)|out for the season|season-ending|will miss the (season|year))/i],
+  ["ir",        /\bplaced (on|in) (injured reserve|ir)\b/i],  // after the Aug 30 cutdown IR is a four-game minimum, not the season — Tyson (two months) and Pacheco (back) both read as season-ending, Sept 1
   ["miss",      /\b(expected to miss|out (at least|approximately|roughly)? ?\d+ ?(week|month)|sidelined (for|approximately|about)|multi-week)/i],
   ["committee", /\b(hot hand|committee|timeshare|time-share|split (the )?(carries|touches|work|reps|backfield)|share (the )?(carries|touches|workload|backfield)|rotation at|by committee|1a\/1b|1a and 1b)/i],
   ["workload",  /\b(workload (uncertainty|in question|concerns?)|snap (share|count) (concerns?|questions?)|role (in question|uncertain)|touches? (in question|uncertain))/i],
@@ -112,7 +113,7 @@ const tagOf = (text, subject, others) => {
      * in "sidelined for at least a month AFTER BEING DIAGNOSED with a sprained MCL" — and
      * quietly downgraded Alvin Kamara's month on the shelf to a camp knock. A diagnosis is not
      * a comeback. The Lemon story is still caught, by "first taste" and "practicing". */
-    if ((tag === "out" || tag === "miss") &&
+    if ((tag === "out" || tag === "ir" || tag === "miss") &&
         /\b(return(s|ing|ed)?|recover(s|ing|y|ed)?|cleared|rehab|comeback|(way |is |be )?back (by|for|from)|expected back|continues to|offseason surgery|physically unable|first taste|practicing|limited participant|full participant|activated)\b/i.test(sent)) continue;
 
     /* guard 1d — a ROLE claim has to be reported, not speculated. Jordan Mason was tagged as
