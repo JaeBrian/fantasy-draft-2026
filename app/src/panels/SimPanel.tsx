@@ -380,7 +380,7 @@ export function SimPanel({ noob, initialSeat, onOpenDraft }: { noob: boolean; in
       {cliff && (
         <Card>
           <Eyebrow>Scarcity clock</Eyebrow>
-          <h3 className="display m-0 mb-2 text-[1.2rem] text-ink">What's left at each of your picks</h3>
+          <h3 className="display m-0 mb-2 text-[1.2rem] text-ink">What's left after each of your picks</h3>
           <div className="overflow-x-auto">
             <table className="w-full max-w-[460px] text-[0.88rem]">
               <thead>
@@ -415,7 +415,8 @@ export function SimPanel({ noob, initialSeat, onOpenDraft }: { noob: boolean; in
             </table>
           </div>
           <p className="m-0 mt-2 text-[0.82rem] text-ink-3">
-            Compare the position columns across your next two picks. Larger drops indicate a more expensive wait.
+            Each cell averages the best remaining projection after the policy's selection. Changes include both
+            your picks and opponents' picks. Use the live picker to compare taking a player now with waiting.
           </p>
         </Card>
       )}

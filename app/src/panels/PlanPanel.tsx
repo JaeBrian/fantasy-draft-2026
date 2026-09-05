@@ -90,9 +90,8 @@ function CliffMap({ slot }: { slot: SlotKey }) {
         Where the cliffs are — pick {pick}
       </div>
       <p className="m-0 mt-1 mb-2 text-[0.85rem] text-ink-2">
-        Best player still available at each of your picks (projected pts/wk), from 4,000 simulated drafts. Red
-        ▼ marks a drop of 2.5+ points — that position fell off a cliff since your last turn, so take it{" "}
-        <i>before</i> the drop, not after.
+        Average projection of the best player remaining after each of your picks, from 4,000 simulated drafts.
+        Red ▼ marks a drop of 2.5+ points since your previous turn, including the player you selected.
       </p>
       <div className="overflow-x-auto">
         <table className="w-full max-w-[420px] text-[0.85rem]">
@@ -122,8 +121,10 @@ function CliffMap({ slot }: { slot: SlotKey }) {
         </table>
       </div>
       <p className="m-0 mt-2 text-[0.82rem] text-ink-3">
-        Notice QB barely moves — about 2 points across 60 picks. That is the whole argument for waiting on
-        quarterback: the position you can get late costs you almost nothing, while RB costs you six.
+        From picks {rows[0].pick} to {rows[rows.length - 1].pick}, the remaining QB projection changes by{" "}
+        {(rows[rows.length - 1].qb - rows[0].qb).toFixed(1)} pts/wk and RB by{" "}
+        {(rows[rows.length - 1].rb - rows[0].rb).toFixed(1)}. Use the live picker to compare taking a player
+        now with waiting until your next turn.
       </p>
     </div>
   );
