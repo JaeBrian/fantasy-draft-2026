@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { NEWS } from "./data";
 import { usePersistent } from "./lib/store";
-import type { DraftState, Mark } from "./lib/advisor";
+import { snapTeam, type DraftState, type Mark } from "./lib/advisor";
 import { StartPanel } from "./panels/StartPanel";
 import { NewsPanel } from "./panels/NewsPanel";
 import { SimPanel } from "./panels/SimPanel";
@@ -16,10 +16,10 @@ import { TiersPanel } from "./panels/TiersPanel";
 
 const TABS = [
   ["start", "Start Here"],
-  ["board", "Draft"],
+  ["board", "Draft room"],
   ["adp", "Sleeper ADP"],
   ["news", "News"],
-  ["sims", "Simulations"],
+  ["sims", "Draft lab"],
   ["model", "TD Model"],
   ["tiers", "Position Tiers"],
   ["plan", "Draft Plan"],
@@ -152,6 +152,13 @@ export default function App() {
     setDS({});
   }, [setDS]);
 
+  const selectSlot = (slot: number) => {
+    if (slot === mySlot) return;
+    hist.current = []; setHistSize(0);
+    setMySlot(slot);
+    setDS(Object.fromEntries(ord.map((name, i) => [name, snapTeam(i + 1) === slot ? 'mine' : 'gone'])));
+  };
+
   const switchTab = (t: TabKey) => {
     setTab(t);
     window.scrollTo({ top: 0 });
@@ -159,6 +166,7 @@ export default function App() {
 
   return (
     <>
+      <a href="#main-content" className="skip-link">Skip to content</a>
       <header ref={headerRef} className="sticky top-0 z-40 border-b border-line bg-field/95 backdrop-blur">
         <div className="mx-auto max-w-[1100px] px-5">
           <div className="flex flex-wrap items-center gap-x-3.5 gap-y-1 pt-3.5 pb-1">
@@ -202,11 +210,11 @@ export default function App() {
       </header>
 
 
-      <main className={`mx-auto px-5 pt-7 pb-16 ${tab === "board" ? "max-w-[1560px]" : "max-w-[1100px]"}`}>
+      <main id="main-content" className={`mx-auto px-5 pt-7 pb-16 ${tab === "board" ? "max-w-[1560px]" : "max-w-[1100px]"}`}>
         {tab === "start" && <StartPanel noob={noob} />}
         {tab === "adp" && <AdpPanel noob={noob} />}
         {tab === "news" && <NewsPanel noob={noob} />}
-        {tab === "sims" && <SimPanel noob={noob} />}
+        {tab === "sims" && <SimPanel noob={noob} initialSeat={mySlot} onOpenDraft={seat => { selectSlot(seat); switchTab("board"); }} />}
         {tab === "model" && <ModelPanel noob={noob} />}
         {tab === "board" && (
           <BoardPanel
@@ -220,7 +228,7 @@ export default function App() {
             applySync={applySync}
             canUndo={histSize > 0}
             mySlot={mySlot}
-            setMySlot={setMySlot}
+            setMySlot={selectSlot}
           />
         )}
         {tab === "tiers" && <TiersPanel noob={noob} DS={DS} />}

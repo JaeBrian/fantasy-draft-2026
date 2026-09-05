@@ -135,6 +135,7 @@ export interface Grade {
 
 /** Score the finished practice roster against the eleven rooms it drafted against. */
 export function gradeDraft(ord: string[], mySlot: number): Grade {
+  if (ord.length !== 168) throw new Error('Complete all 168 practice picks before grading');
   const scores: { team: number; pts: number }[] = [];
   for (let t = 1; t <= 12; t++) scores.push({ team: t, pts: lineupPoints(rosterOf(ord, t)) });
   const mine = scores.find((s) => s.team === mySlot)!.pts;
@@ -146,14 +147,14 @@ export function gradeDraft(ord: string[], mySlot: number): Grade {
   if (c.RB < 2) gaps.push("fewer than two running backs");
   if (c.WR < 2) gaps.push("fewer than two receivers");
   if (c.TE === 0) gaps.push("no tight end");
-  if (c.QB === 1) gaps.push("no backup QB — you field nobody there on his bye");
-  if (c.TE === 1) gaps.push("no backup TE — same problem in week " + (myRoster.find((r) => r[1] === "TE") ? "his bye" : "?"));
+  if (c.QB === 1) gaps.push("Plan a waiver pickup or trade to cover your quarterback's bye");
+  if (c.TE === 1) gaps.push("Plan a waiver pickup or trade to cover your tight end's bye");
   return {
     mine,
     rank: sorted.indexOf(mine) + 1,
     field: sorted,
     best: sorted[0],
-    median: sorted[5],
+    median: (sorted[5] + sorted[6]) / 2,
     gaps,
   };
 }

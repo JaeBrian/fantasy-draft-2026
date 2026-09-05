@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {build} from 'esbuild';
+import {createRequire} from 'node:module';
+const app=new URL('../',import.meta.url).pathname,require=createRequire(import.meta.url);
+await build({entryPoints:[app+'src/lib/forecast.ts'],bundle:true,format:'cjs',outfile:app+'.simcache/test-forecast.cjs',logLevel:'silent'});
+const {runForecast}=require(app+'.simcache/test-forecast.cjs');
+const before=new AbortController();before.abort();let updates=0;
+await assert.rejects(runForecast({},[],2,500,()=>updates++,before.signal),{name:'AbortError'});
+assert.equal(updates,0,'an obsolete forecast should do no work');
+const during=new AbortController();updates=0;
+await assert.rejects(runForecast({},[],2,500,()=>{updates++;during.abort();},during.signal),{name:'AbortError'});
+assert.equal(updates,1,'cancel after the first slice, without further progress updates');
+const result=await runForecast({},[],2,100);
+assert.equal(result.sims,100);
+assert.equal(result.picksAhead,1);
+assert.ok(Math.abs(Object.values(result.survive).reduce((n,p)=>n+1-p,0)-1)<1e-8);
+console.log('PASS: obsolete forecasts cancel before and during work; completed forecasts conserve picks');

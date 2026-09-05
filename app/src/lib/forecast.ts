@@ -95,7 +95,9 @@ export function runForecast(
   mySlot: number,
   iters = 5000,
   onProgress?: (done: number, total: number) => void,
+  signal?: AbortSignal,
 ): Promise<Forecast> {
+  if (signal?.aborted) return Promise.reject(new DOMException('Forecast cancelled', 'AbortError'));
   const made = Object.keys(DS).length;
   const cur = made + 1;
   /* Which pick are we forecasting to?
@@ -159,11 +161,12 @@ export function runForecast(
     (["RB", "WR", "TE", "QB"] as Pos[]).forEach((ps) => needs.push({ pos: ps, need: want[ps], of: teams }));
   }
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     let done = 0;
-    const SLICE = 250;
+    const SLICE = 50;
 
     const step = () => {
+      if (signal?.aborted) { reject(new DOMException('Forecast cancelled', 'AbortError')); return; }
       const end = Math.min(iters, done + SLICE);
       for (; done < end; done++) {
         const gone = new Set<string>();

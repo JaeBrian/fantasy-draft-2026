@@ -1,6 +1,8 @@
+import { SeatPicker } from "../components/SeatPicker";
+import { usePersistent } from "../lib/store";
 import { useState } from "react";
-import { ARBITRAGE, CLIFF_MAP, DRAFT_TREE, PAIRED_SIM, PRIORITY, RB_LOSS, RISK_DIAL, SIM_PLANS, TOOL_USERS } from "../data";
-import { Card, Eyebrow, Intro, Noob } from "../components/ui";
+import { ARBITRAGE, CLIFF_MAP, DRAFT_TREE, PAIRED_SIM, PRIORITY, RB_LOSS, RISK_DIAL, SIM_PLANS, TOOL_USERS, type Pos } from "../data";
+import { Card, Eyebrow, Noob, Sticker } from "../components/ui";
 
 
 /** Forced-first-pick study on the corrected model: 2,500 paired seasons per candidate.
@@ -22,211 +24,47 @@ const HEAD_TO_HEAD = [
 /** "The room takes all the backs before I'm on the clock — is it still worth taking one?"
  *  Answered by forcing each opening shape and playing the season out. */
 function RbLoss({ seat }: { seat: number }) {
-  const [room, setRoom] = useState<"loss" | "market">("loss");
-  const entry = Object.values(RB_LOSS).find((e) => e.seat === seat);
-  const [worst, market] = ["Very RB-heavy (RB LOSS — worst case)", "Market"];
-  if (!entry) return null;
-  const rows = entry.rooms[room === "loss" ? worst : market];
+  const [room, setRoom] = useState<'Market' | 'Very RB-heavy (RB LOSS — worst case)'>('Market');
+  const [all, setAll] = useState(false);
+  const entry = Object.values(RB_LOSS).find(e => e.seat === seat);
+  const rows = entry?.rooms[room];
   if (!rows?.length) return null;
-
-  const best = rows[0];
-  const zero = rows.find((r) => r.k === "WR-WR-WR-WR");
-  const lossRows = entry.rooms[worst];
-  const mktRows = entry.rooms[market];
-  const costOfRun = lossRows && mktRows ? lossRows[0].ppg - mktRows[0].ppg : null;
-
-  return (
-    <Card>
-      <Eyebrow>If the backs go early — seat {entry.seat}</Eyebrow>
-      <p className="m-0 text-[0.85rem] leading-relaxed text-ink-2">
-        The worry: the room empties the running backs before your turn, and every back still on the board is one ADP
-        says belongs a round later. Is it worth taking him anyway, or do you let the position go?
-      </p>
-      <p className="m-0 mt-2 text-[0.85rem] leading-relaxed text-ink-2">
-        Each row forces a <b className="text-ink">shape</b> across your first four picks — picks{" "}
-        <span className="font-mono text-ink">{entry.picks.slice(0, 4).join(", ")}</span> — then lets the normal policy
-        fill the rest and plays the season out. Shapes, not named players: naming a player would only count the drafts
-        where he happened to fall to you, which compares different leagues rather than different decisions.
-      </p>
-
-      {zero && (
-        <p className="mt-3 rounded border border-avoid/50 bg-avoid/5 px-3 py-2 text-[0.88rem] leading-relaxed text-ink-2">
-          <b className="text-avoid">Cost of delaying running back.</b> In this scenario, the receiver-heavy opening trails by{" "}
-          <b className="text-ink">{Math.abs(zero.delta).toFixed(2)} pts/wk</b> against the leading tested shape. Compare that cost with the actual players available;
-          the same positional script can produce different rosters.
-        </p>
-      )}
-
-      <div className="mt-3 flex flex-wrap items-center gap-2">
-        {([["loss", "RB LOSS — worst case"], ["market", "Market room"]] as const).map(([k, lbl]) => (
-          <button
-            key={k}
-            type="button"
-            className={`btn ${room === k ? "on" : ""}`}
-            onClick={() => setRoom(k)}
-          >
-            {lbl}
-          </button>
-        ))}
-        {costOfRun !== null && (
-          <span className="text-[0.78rem] text-ink-3">
-            the run itself is worth {costOfRun >= 0 ? "+" : ""}{costOfRun.toFixed(2)} pts/wk to this seat
-          </span>
-        )}
-      </div>
-
-      <div className="mt-3 overflow-x-auto">
-        <table className="w-full min-w-[640px] border-collapse text-[0.85rem]">
-          <thead>
-            <tr className="border-b border-line-soft text-left text-[0.72rem] uppercase tracking-wide text-ink-3">
-              <th className="py-1.5 pr-3 font-semibold">Opening</th>
-              <th className="py-1.5 pr-3 text-right font-semibold">Pts/wk</th>
-              <th className="py-1.5 pr-3 text-right font-semibold">Floor</th>
-              <th className="py-1.5 pr-3 text-right font-semibold">Ceiling</th>
-              <th className="py-1.5 pr-3 text-right font-semibold">vs best</th>
-              <th className="py-1.5 font-semibold">Who you typically land</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => {
-              const isBest = r === rows[0];
-              return (
-                <tr key={r.k} className="border-b border-line-soft/60 last:border-0">
-                  <td className={`py-1.5 pr-3 font-mono ${isBest ? "font-bold text-value" : "text-ink"}`}>{r.k}</td>
-                  <td className="py-1.5 pr-3 text-right font-mono tabular-nums text-ink">
-                    {r.ppg.toFixed(2)}
-                    <span className="text-[0.7rem] text-ink-3"> ±{r.se.toFixed(2)}</span>
-                  </td>
-                  <td className="py-1.5 pr-3 text-right font-mono tabular-nums text-ink-3">{r.floor.toFixed(0)}</td>
-                  <td className="py-1.5 pr-3 text-right font-mono tabular-nums text-ink-3">{r.ceil.toFixed(0)}</td>
-                  <td className="py-1.5 pr-3 text-right font-mono tabular-nums">
-                    {isBest ? <span className="font-bold text-value">best</span>
-                      : r.tied ? <span className="text-ink-3">tied</span>
-                      : <span className="text-avoid">{r.delta.toFixed(2)}</span>}
-                  </td>
-                  <td className="py-1.5 text-[0.78rem] text-ink-3">{r.common.join(" · ")}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-      <p className="m-0 mt-2 text-[0.75rem] leading-relaxed text-ink-3">
-        &ldquo;tied&rdquo; means the gap does not clear two combined standard errors — sampling noise does not distinguish those options.
-        Best shape here is <b className="text-ink">{best.k}</b>. Percentages are how often that exact player was the one
-        available at that pick.
-      </p>
-    </Card>
-  );
+  const minimum = Math.floor(Math.min(...rows.map(r => r.floor)));
+  const maximum = Math.ceil(Math.max(...rows.map(r => r.ceil)));
+  const position = (value: number) => `${100 * (value - minimum) / (maximum - minimum)}%`;
+  return <section className="study-panel">
+    <div className="study-heading"><div><h2>Compare your opening</h2><p>Four picks set the shape. See the trade-off across complete simulated rosters.</p></div><span className="sample-note">20,000 worlds per opening</span></div>
+    <div className="segmented" role="group" aria-label="Opponent scenario">{(['Market', 'Very RB-heavy (RB LOSS — worst case)'] as const).map(k => <button type="button" key={k} aria-pressed={room === k} onClick={() => setRoom(k)}>{k === 'Market' ? 'Market room' : 'Early RB run'}</button>)}</div>
+    <div className="range-legend"><span>Opening: rounds 1–4</span><span>10th–90th percentile range · dot = mean</span></div>
+    <div className="strategy-comparison">{(all ? rows : rows.slice(0, 5)).map((r, i) => <article key={r.k} className={`strategy-row ${i === 0 ? 'leading' : ''}`}><div><div className="opening-shape">{r.k.split('-').map((pos, j) => <Sticker key={j} pos={pos as Pos} />)}</div><p>{i === 0 ? 'Highest modeled mean' : r.tied ? 'Within sampling error of leader' : `${Math.abs(r.delta).toFixed(2)} pts/wk behind leader`}</p></div><div className="range-plot" aria-label={`${r.k}: mean ${r.ppg}, 10th percentile ${r.floor}, 90th percentile ${r.ceil}`}><div className="range-track"><span style={{left: position(r.floor), width: `${100 * (r.ceil - r.floor) / (maximum - minimum)}%`}} /><i style={{left: position(r.ppg)}} /></div><div><span>{r.floor.toFixed(1)}</span><span>{r.ceil.toFixed(1)}</span></div></div><div className="strategy-mean"><b>{r.ppg.toFixed(2)}</b><span>pts/wk ±{r.se.toFixed(2)} SE</span></div></article>)}</div>
+    <button type="button" className="btn" aria-expanded={all} onClick={() => setAll(!all)}>{all ? 'Show top five' : `Compare all ${rows.length} openings`}</button><p className="study-footnote">Ranges describe modeled season outcomes. Small mean differences can change with projections and opponent behavior. These experiments constrain positions; the live picker adapts to the players available.</p>
+  </section>;
 }
 
-
-/** Paired priority comparisons for the first two picks. */
 function PriorityBoard({ seat }: { seat: number }) {
-  const [room, setRoom] = useState<"RB LOSS" | "Market">("Market");
+  const [room, setRoom] = useState<'RB LOSS' | 'Market'>('Market');
   const [took, setTook] = useState<string | null>(null);
-  const entry = Object.values(PRIORITY).find((e) => e.seat === seat);
+  const entry = Object.values(PRIORITY).find(e => e.seat === seat);
   const data = entry?.rooms[room];
-  if (!entry || !data?.round1?.length) return null;
-
+  if (!entry || !data?.round1.length) return null;
   const r1 = data.round1;
-  const chosen = took && data.round2[took]?.length ? took : r1[0].name;
+  const likely = r1.find(r => r.there >= 50 && data.round2[r.name]?.length)?.name ?? r1[0].name;
+  const chosen = took && data.round2[took]?.length ? took : likely;
   const r2 = data.round2[chosen] ?? [];
-
-  const Row = ({ r, i }: { r: typeof r1[number]; i: number }) => {
-    return (
-      <tr className="border-b border-line-soft/60 last:border-0">
-        <td className="py-1.5 pr-2 text-right font-mono text-ink-3">{i + 1}</td>
-        <td className="py-1.5 pr-3 text-ink">
-          <b>{r.name}</b> <span className="font-mono text-[0.7rem] text-ink-3">{r.pos}</span>
-        </td>
-        <td className="py-1.5 pr-3 text-right font-mono tabular-nums text-ink-3">{r.adp.toFixed(1)}</td>
-        <td className="py-1.5 pr-3 text-right font-mono tabular-nums text-ink-3">{r.there}%</td>
-        <td className="py-1.5 pr-3 text-right font-mono tabular-nums text-ink">
-          {r.delta === null ? "—" : `${r.delta >= 0 ? "+" : ""}${r.delta.toFixed(2)}`}
-          {r.tied && <span className="ml-1 text-[0.7rem] text-ink-3">tied</span>}
-        </td>
-
-      </tr>
-    );
-  };
-
-  return (
-    <Card>
-      <Eyebrow>Priority order — seat {entry.seat}</Eyebrow>
-      <p className="m-0 text-[0.85rem] leading-relaxed text-ink-2">
-        Who to want, in order, at pick <b className="text-ink">{entry.p1}</b> — then a fresh order for pick{" "}
-        <b className="text-ink">{entry.p2}</b> based on who you actually got. Ranked by the season you finish with,
-        compared <b className="text-ink">only against the drafts where both players were on the board</b>.
-      </p>
-      <p className="m-0 mt-2 text-[0.85rem] leading-relaxed text-ink-2">
-        Use these paired comparisons alongside the Draft tab's current-board forecast. These tables rank modeled
-        outcomes; they do not estimate a player's chance of returning if you pass on him.
-      </p>
-
-      <div className="mt-3 flex flex-wrap gap-2">
-        {(["Market", "RB LOSS"] as const).map((k) => (
-          <button key={k} type="button" className={`btn ${room === k ? "on" : ""}`}
-            onClick={() => { setRoom(k); setTook(null); }}>
-            {k === "Market" ? "Market room" : "RB LOSS — backs go early"}
-          </button>
-        ))}
-      </div>
-
-      <div className="mt-3 overflow-x-auto">
-        <table className="w-full min-w-[620px] border-collapse text-[0.85rem]">
-          <thead>
-            <tr className="border-b border-line-soft text-left text-[0.7rem] uppercase tracking-wide text-ink-3">
-              <th className="py-1.5 pr-2 text-right font-semibold">#</th>
-              <th className="py-1.5 pr-3 font-semibold">Pick {entry.p1}</th>
-              <th className="py-1.5 pr-3 text-right font-semibold">ADP</th>
-              <th className="py-1.5 pr-3 text-right font-semibold">There</th>
-              <th className="py-1.5 pr-3 text-right font-semibold">Gap pts/wk</th>
-              <th className="py-1.5 font-semibold"></th>
-            </tr>
-          </thead>
-          <tbody>{r1.map((r, i) => <Row key={r.name} r={r} i={i} />)}</tbody>
-        </table>
-      </div>
-
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        <span className="text-[0.8rem] text-ink-3">If you took:</span>
-        {r1.filter((r) => data.round2[r.name]?.length).map((r) => (
-          <button key={r.name} type="button"
-            className={`btn ${chosen === r.name ? "on" : ""}`}
-            onClick={() => setTook(r.name)}>
-            {r.name}
-          </button>
-        ))}
-      </div>
-
-      <div className="mt-2 overflow-x-auto">
-        <table className="w-full min-w-[560px] border-collapse text-[0.85rem]">
-          <thead>
-            <tr className="border-b border-line-soft text-left text-[0.7rem] uppercase tracking-wide text-ink-3">
-              <th className="py-1.5 pr-2 text-right font-semibold">#</th>
-              <th className="py-1.5 pr-3 font-semibold">Then at pick {entry.p2}</th>
-              <th className="py-1.5 pr-3 text-right font-semibold">ADP</th>
-              <th className="py-1.5 pr-3 text-right font-semibold">Both available</th>
-              <th className="py-1.5 pr-3 text-right font-semibold">Gap pts/wk</th>
-              <th className="py-1.5 font-semibold"></th>
-            </tr>
-          </thead>
-          <tbody>{r2.map((r, i) => <Row key={r.name} r={r} i={i} />)}</tbody>
-        </table>
-      </div>
-      <p className="m-0 mt-2 text-[0.75rem] leading-relaxed text-ink-3">
-        The gap compares each option with a common baseline. In the second table, “Both available” is the share of all worlds
-        where your selected first player reached the first pick and this player reached the second. It is joint availability,
-        so rare first-pick falls produce small percentages.  &ldquo;tied&rdquo; means that comparison
-        falls within two standard errors; it does not establish equality with the top-ranked option.
-      </p>
-    </Card>
-  );
+  const render = (rows: typeof r1, second = false) => <ol className="priority-list">{rows.map((r, i) => <li key={r.name} className={second ? '' : chosen === r.name ? 'chosen' : ''}>
+    <span className="priority-rank">{i + 1}</span><div>{second ? <strong>{r.name}</strong> : <button type="button" disabled={!data.round2[r.name]?.length} aria-pressed={chosen === r.name} onClick={() => setTook(r.name)}>{r.name}</button>}<span className="priority-meta"><Sticker pos={r.pos as Pos} />ADP {r.adp.toFixed(1)} · {r.there}% {second ? 'joint availability' : 'available at pick'}</span></div><span className="priority-gap"><b>{r.delta === null ? '—' : `${r.delta >= 0 ? '+' : ''}${r.delta.toFixed(2)}`}</b><small>{r.tied ? 'close to baseline' : 'pts/wk vs baseline'}</small></span>
+  </li>)}</ol>;
+  return <section className="study-panel">
+    <div className="study-heading"><div><h2>Explore your first two picks</h2><p>Select an opening player to see the next choices for your roster.</p></div><span className="sample-note">5,000 worlds per option</span></div>
+    <div className="segmented" role="group" aria-label="Priority room">{(['Market','RB LOSS'] as const).map(k => <button type="button" key={k} aria-pressed={room === k} onClick={() => { setRoom(k); setTook(null); }}>{k === 'Market' ? 'Market room' : 'Early RB run'}</button>)}</div>
+    <div className="priority-columns"><div><h3>Pick {entry.p1}<span>Your first player</span></h3>{render(r1)}</div><div><h3>Pick {entry.p2}<span>After {chosen}</span></h3><label className="branch-select">First pick<select value={chosen} onChange={e => setTook(e.target.value)}>{r1.filter(r => data.round2[r.name]?.length).map(r => <option key={r.name}>{r.name}</option>)}</select></label>{render(r2, true)}</div></div>
+    <details className="draft-disclosure"><summary>How to read the comparisons</summary><p>Ranked by paired differences against a common baseline, using worlds where both options were available. “Close to baseline” means within two standard errors of that baseline, not necessarily the leading player.</p><p>Second-pick percentages count worlds where both the selected first player and this second player were available. They are joint availability across all worlds. Use the Draft room forecast to estimate who reaches your next turn from the current board.</p></details>
+  </section>;
 }
 
-export function SimPanel({ noob }: { noob: boolean }) {
-  const [seat, setSeat] = useState<number>(2);
+export function SimPanel({ noob, initialSeat, onOpenDraft }: { noob: boolean; initialSeat: number; onOpenDraft: (seat: number) => void }) {
+  const [seat, setSeat] = usePersistent('fd26-sim-seat', [1, 2, 10].includes(initialSeat) ? initialSeat : 2, r => [1, 2, 10].includes(Number(r)) ? Number(r) : 2, String);
+  const [view, setView] = useState<'plan' | 'compare' | 'research'>('plan');
   const [branch, setBranch] = useState<string>("");
   const plan = SIM_PLANS[seat];
   const cliff = CLIFF_MAP[seat];
@@ -236,52 +74,16 @@ export function SimPanel({ noob }: { noob: boolean }) {
   const firsts = FIRST_PICK[seat];
 
   return (
-    <div className="flex flex-col gap-5">
-
-      {/* First thing on the page, before any prose. Switching seats is the most common thing
-          anyone does on this tab, and it was sitting below an intro and two explainer cards —
-          so you had to scroll past a wall of text to change whose report you were reading, then
-          scroll back. It stays stuck to the top while you read the tables. */}
-      <div className="sticky top-0 z-30 -mx-1 mb-1 flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-line-soft bg-bg/95 px-1 pb-2.5 pt-2 backdrop-blur">
-        <span className="flex flex-wrap gap-1.5">
-          {TOOL_USERS.map(([nm, s2]) => (
-            <button key={nm} type="button" className={`btn ${seat === s2 ? "on" : ""}`} onClick={() => setSeat(s2)}>
-              {nm} · pick {s2}
-            </button>
-          ))}
-        </span>
-        <span className="display text-[1.05rem] tracking-wide text-ink">
-          {TOOL_USERS.find(([, s2]) => s2 === seat)?.[0] ?? `Seat ${seat}`}
-        </span>
-        <span className="text-[0.78rem] text-ink-3">— every number below is for this seat</span>
-      </div>
-
-      {!SIM_PLANS[seat] && (
-        /* Brian moved from pick 6 to pick 2 and every study on this tab vanished, because the
-           seat list was filtered by `SIM_PLANS[seat]` — a seat with no data was removed from
-           the picker rather than shown as empty. Silently dropping a person is a worse failure
-           than showing them an honest gap, so the filter is gone and this says what happened. */
-        <div className="rounded border border-avoid/60 bg-avoid/5 px-3 py-2 text-[0.88rem] text-ink-2">
-          <b className="text-avoid">No simulations for pick {seat} yet.</b> The studies on this tab are
-          generated per seat, and this one has not been run. Regenerate with{" "}
-          <code className="font-mono text-[0.8rem] text-ink">scripts/sim-plans.mjs</code>.
-        </div>
-      )}
-
-      <Intro eyebrow="Simulations" title="Draft simulations for your league">
-        Updated September 4, 2026. These studies simulate 14 skill-player rounds in your 12-team,
-        half-PPR league: 1 QB, 2 RB, 2 WR, 1 TE and 2 flex. Your final kicker and defense picks are
-        excluded from the scores. Opponents follow Sleeper ADP blended with current mock drafts.
-        Single-seat tables model the other eleven owners from market behavior; a simulated fall can disappear when another manager follows a fixed plan.
-        Seeded runs make the results reproducible for the same inputs and code.
-        The refreshed studies select starters using projected value before reading simulated scores.
-        Treat the results as conditional model estimates. Small differences depend on projections, injury assumptions and opponent behavior.
-        Scoring-rank percentages describe these simulated drafts; they are not championship odds.
-      </Intro>
-
-      <PriorityBoard seat={seat} />
-      <RbLoss seat={seat} />
-
+    <div className="sim-workspace">
+      <div className="workspace-title"><div><span className="section-caption">Saved simulations · Updated September 4</span><h1>Draft lab</h1><p>Explore the choices before you're on the clock.</p></div><button type="button" className="btn primary" onClick={() => onOpenDraft(seat)}>Open draft picker</button></div>
+      <SeatPicker value={seat} onChange={value => { setSeat(value); setBranch(''); }} />
+      <div className="study-navigation" role="group" aria-label="Simulation view">{([['plan','First two picks'],['compare','Compare openings'],['research','Full analysis']] as const).map(([key, name]) => <button type="button" key={key} aria-pressed={view === key} onClick={() => setView(key)}>{name}</button>)}</div>
+      {view === 'plan' && <>
+        <div className="seat-brief"><div><span className="section-caption">{TOOL_USERS.find(([, s]) => s === seat)?.[0]}'s draft</span><h2>{seat === 1 ? 'Start with Gibbs. Keep the turn flexible.' : seat === 2 ? 'Bijan first. Watch Ashley at the turn.' : 'Let the first nine picks shape your opening.'}</h2><p>{seat === 10 ? 'James Cook, Chase Brown and a falling elite receiver offer different routes. Explore the follow-up at pick 15.' : 'Compare available RBs, receivers and elite tight ends at the next turn. Your roster and the room decide the order.'}</p></div><div className="pick-route" aria-label="First six overall picks">{plan?.picks.map((p, i) => <span key={p.pick}><small>Round {i + 1}</small><b>{p.pick}</b></span>)}</div></div>
+        <PriorityBoard key={seat} seat={seat} />
+      </>}
+      {view === 'compare' && <RbLoss key={seat} seat={seat} />}
+      {view === 'research' && <div className="research-sections">
       <Card>
         <Eyebrow>What these numbers count</Eyebrow>
         <p className="m-0 text-[0.85rem] leading-relaxed text-ink-2">
@@ -302,10 +104,9 @@ export function SimPanel({ noob }: { noob: boolean }) {
 
       <Noob show={noob} title="How to read this:">
         The point estimates describe <b className="text-ink">modeled starter production</b>. Compare the{" "}
-        <b className="text-ink">mean</b> column to pick a plan — but look at the "bad yr" and "good yr" columns before
-        you get attached to it. The spread between a bad season and a good one is far bigger than the spread between
-        the plans, which is the honest way of saying: pick the top row, then relax. Use these to choose a{" "}
-        <i>shape</i> for your draft; let the live board on the Draft tab tell you the actual names.
+        <b className="text-ink">mean</b> column alongside the "bad yr" and "good yr" ranges. Small differences between
+        plans can change with projections and opponent behavior. Use these to explore the opening positions;
+        the Draft room recommends players as your roster and the available pool change.
       </Noob>
 
 
@@ -329,7 +130,7 @@ export function SimPanel({ noob }: { noob: boolean }) {
             ))}
           </ul>
           <p className="m-0 mt-2 text-[0.8rem] text-ink-3">
-            Percentages are how often that player was still on the board when the pick came around.
+            Percentages are how often the simulated policy selected that player at the pick.
           </p>
         </Card>
       )}
@@ -637,6 +438,8 @@ export function SimPanel({ noob }: { noob: boolean }) {
           generator did not give every team one game per week.
         </p>
       </Card>
+      </div>}
+      <p className="study-footnote">Studies model 14 skill rounds and eight starters. Projections, injury assumptions and opponent behavior affect the estimates. Scoring-rank percentages describe simulated production, not championship odds.</p>
     </div>
   );
 }
