@@ -41,6 +41,10 @@ const VALUES: [string, string][] = [
     "Bijan is the leading choice when Gibbs goes first. At 23/26, compare the best remaining RB, receiver and elite TE against your actual roster."
   ],
   [
+    "Jeff · pick 8",
+    "Jeff and Aaron traded seats. Compare Jaxon Smith-Njigba, James Cook and Amon-Ra St. Brown at 8, then use the pick-17 branches in Draft lab. An early RB run makes a receiver opening more attractive."
+  ],
+  [
     "Emily · pick 10",
     "Cook or Chase Brown can be attractive if available. An early RB run can leave elite receivers. The best route changes with the first nine picks."
   ]
@@ -111,8 +115,8 @@ export function StartPanel({ noob }: { noob: boolean }) {
     <div className="flex flex-col gap-5">
       <Intro eyebrow="The one-minute version" title="Know your first choice. Prepare for the next turn.">
         Updated for the September 8 draft: current Sleeper prices and league-scored projections,
-        mock-draft market data, sourced news, and refreshed simulations for Ashley, Brian and Emily.
-        Use the Draft tab for recommendations based on the picks that actually happen.
+        mock-draft market data, sourced news, and refreshed simulations for Ashley, Brian, Jeff and Emily.
+        Use Draft room for recommendations based on the picks that actually happen.
       </Intro>
 
       <Noob show={noob} title="New to fantasy? Read this first.">

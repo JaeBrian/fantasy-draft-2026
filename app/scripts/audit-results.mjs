@@ -1,3 +1,4 @@
+import {TOOL_USERS} from './study-seats.mjs';
 // Validate the files consumed by load-sims, including the displayed comparison matrix.
 import assert from 'node:assert/strict';
 import {readFileSync,statSync} from 'node:fs';
@@ -15,7 +16,7 @@ for(const file of files){
  assert.ok(statSync(url).mtimeMs>=since,`${file}: stale result`);
  results[file]=JSON.parse(readFileSync(url,'utf8'));finite(results[file],file);
 }
-for(const seat of [1,2,10]){
+for(const [,seat] of TOOL_USERS){
  for(const file of ['plans','cliff','final_sim','riskdial','tree','first_pick'])assert.ok(results[file][seat],`${file}: missing seat ${seat}`);
  const rows=results.final_sim[seat].rows;
  assert.equal(rows.length,5);
@@ -28,8 +29,15 @@ for(const seat of [1,2,10]){
   }
  }
 }
-for(const name of ['Ashley','Brian JK','Emily'])for(const file of ['priority','rbloss']){
+for(const [name,seat] of TOOL_USERS)for(const file of ['priority','rbloss']){
  assert.ok(results[file][name],`${file}: missing ${name}`);
+ assert.equal(results[file][name].seat,seat,`${file}: wrong seat for ${name}`);
  assert.equal(Object.keys(results[file][name].rooms).length,2,`${file}: missing room`);
 }
-console.log('RESULT: 0 FAIL; nine complete finite studies, three seats, both room scenarios, paired matrix and tie accounting');
+assert.deepEqual(results.sim_all.h2h.map(r=>[r.who,r.slot]),TOOL_USERS,'shared-room results must include every registered user');
+for(const [,seat] of TOOL_USERS){
+ const picks=Array.from({length:6},(_,r)=>r*12+(r%2?13-seat:seat));
+ assert.deepEqual(results.plans[seat].picks.map(p=>p.pick),picks,`plans: wrong snake picks for seat ${seat}`);
+ assert.deepEqual(results.tree[seat].picks,picks.slice(0,3),`tree: wrong snake picks for seat ${seat}`);
+}
+console.log(`RESULT: 0 FAIL; nine complete finite studies, ${TOOL_USERS.length} seats, both room scenarios, paired matrix and tie accounting`);

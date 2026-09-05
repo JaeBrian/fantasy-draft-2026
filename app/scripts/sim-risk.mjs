@@ -1,3 +1,4 @@
+import {studyUsers, studySlots, writeSeatResults} from './study-seats.mjs';
 /* Run from app/:  node scripts/sim-build.mjs && node scripts/sim-risk.mjs
  * sim-build.mjs transpiles src/data.ts and src/sleeper.ts into .simcache/.
  * Opponents are priced off Sleeper's real half-PPR ADP (SLP[name].adp). */
@@ -117,6 +118,7 @@ function season(slot, tpl, seed, tilt) {
 }
 
 const FIN = {
+  8: {"WR-WR-RB-RB": ["WR", "WR", "RB", "RB", "TE", "QB"], "RB-RB-WR-WR": ["RB", "RB", "WR", "WR", "TE", "QB"], "WR-RB-WR-RB": ["WR", "RB", "WR", "RB", "TE", "QB"], "RB-WR-WR-RB": ["RB", "WR", "WR", "RB", "TE", "QB"], "WR-WR-TE-RB": ["WR", "WR", "TE", "RB", "RB", "QB"]},
   1:  { 'RB-RB-WR-WR': ['RB','RB','WR','WR','TE','QB'], 'RB-WR-RB-WR': ['RB','WR','RB','WR','TE','QB'],
         'RB-WR-WR-RB': ['RB','WR','WR','RB','TE','QB'], 'RB-RB-WR-RB': ['RB','RB','WR','RB','TE','QB'],
         'WR-RB-RB-WR': ['WR','RB','RB','WR','TE','QB'] },
@@ -130,14 +132,13 @@ const FIN = {
         'RB-RB-WR-WR': ['RB','RB','WR','WR','TE','QB'] },
 };
 const WORLDS = 6000;
-import { writeFileSync } from 'node:fs';
 const DIAL = {};
 const pct = (a, q) => a.slice().sort((x, y) => x - y)[Math.floor(q * (a.length - 1))];
 const mean = a => a.reduce((x, y) => x + y, 0) / a.length;
 
 /* A league-average team is the yardstick for "did I win my week?" */
-for (const slot of [1, 2, 10]) {
-  const who = slot === 1 ? 'ASHLEY (1)' : slot === 2 ? 'BRIAN JK (2)' : 'EMILY (10)';
+for (const slot of studySlots) {
+  const who = studyUsers.find(([,seat])=>seat===slot)[0];
   const T = FIN[slot];
   console.log(`\n${'='.repeat(92)}\n${who} — ${WORLDS.toLocaleString()} seasons, real Sleeper half-PPR ADP opponents`);
   console.log(`points are your STARTING LINEUP per week (1QB/2RB/2WR/1TE/2FLEX)\n`);
@@ -169,5 +170,5 @@ for (const slot of [1, 2, 10]) {
   }
 }
 
-writeFileSync(new URL('../.simcache/riskdial.json', import.meta.url).pathname, JSON.stringify(DIAL, null, 2));
+writeSeatResults('riskdial.json', DIAL);
 console.log('\nwrote .simcache/riskdial.json');

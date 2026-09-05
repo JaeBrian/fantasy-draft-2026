@@ -46,7 +46,7 @@ export function AdvisorPanel({ DS, ord, mySlot, blocked, lean, manual, finished,
       <div><span className="section-caption">{mySlot ? DRAFT_ORDER[mySlot - 1] : 'Your team'}</span><h2>{finished ? 'Draft complete' : waiting ? 'Plan your next pick' : 'Your pick'}</h2></div>
       {mySlot > 0 && <span className="round-token">{a.myCount}<small> / {rosterSize}</small></span>}
     </div>
-    {!mySlot ? <div className="empty-state"><h3>Choose your seat to begin</h3><p>Select Ashley, Brian JK, Emily, or another seat above. Your targets and roster will appear here.</p></div>
+    {!mySlot ? <div className="empty-state"><h3>Choose your seat to begin</h3><p>Select Ashley, Brian JK, Jeff, Emily, or another seat above. Your targets and roster will appear here.</p></div>
     : finished ? <p className="advisor-summary">Your roster is ready to review below.</p>
     : a.myCount >= 14 && missingSpecial.length ? <div className="pick-special"><h3>Fill your {missingSpecial[0].label === 'K' ? 'kicker' : 'defense'} slot</h3><p>Compare available starters in Sleeper. {manual ? 'Record your selection with the off-board pick form.' : 'Live sync will record your selection.'}</p></div>
     : <>

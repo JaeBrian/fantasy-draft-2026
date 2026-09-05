@@ -1,3 +1,4 @@
+import {studySlots, writeSeatResults} from './study-seats.mjs';
 /* Run from app/:  node scripts/sim-build.mjs && node scripts/sim-plans.mjs [worlds]
  *
  * Replaces draft-sim.mjs, which generated SIM_PLANS and CLIFF_MAP and had become
@@ -17,7 +18,6 @@
  * winPct is honest here too: all twelve teams play the same simulated season and we count how
  * often our seat finishes with the most points. */
 import { createRequire } from 'node:module';
-import { writeFileSync } from 'node:fs';
 const require = createRequire(import.meta.url);
 const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
@@ -27,7 +27,7 @@ const { riskOf, cuffUplift, missShareOf, seasonAvailability, unavailableInWeek }
 
 const W = Number(process.argv[2] || 4000);
 const TEAMS = 12, ROUNDS = 14;
-const SEATS = [1, 2, 10];
+const SEATS = studySlots;
 const REPL_RANK = { QB: 12, RB: 31, WR: 40, TE: 13 };
 
 const POOL = [];
@@ -186,6 +186,6 @@ for (const seat of SEATS) {
   for (const p of OUT[seat].picks)
     console.log(`   pick ${String(p.pick).padStart(3)}:  ${p.opts.map(([n,c])=>`${n} ${c}%`).join('  ·  ') || '—'}`);
 }
-writeFileSync(CACHE + 'plans.json', JSON.stringify(OUT, null, 2));
-writeFileSync(CACHE + 'cliff.json', JSON.stringify(OUTC, null, 2));
+writeSeatResults('plans.json', OUT);
+writeSeatResults('cliff.json', OUTC);
 console.log(`\nwrote .simcache/plans.json  (${W.toLocaleString()} leagues per seat, all 12 teams scored)\n`);
