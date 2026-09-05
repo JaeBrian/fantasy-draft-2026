@@ -1,0 +1,108 @@
+{
+  "source": "https://hashtagfootball.com/fantasy-football-half-ppr-rankings",
+  "normalization": "Full-season totals / 17. Providers have different role, scoring and availability assumptions; this is an external reasonableness check, not truth or a blended forecast.",
+  "matched": 180,
+  "byPosition": {
+    "QB": {
+      "matchedBeforeAndAfter": 24,
+      "beforeMAE": 3.36,
+      "afterMAE": 0.69
+    },
+    "RB": {
+      "matchedBeforeAndAfter": 52,
+      "beforeMAE": 0.85,
+      "afterMAE": 0.85
+    },
+    "WR": {
+      "matchedBeforeAndAfter": 59,
+      "beforeMAE": 1.09,
+      "afterMAE": 1.09
+    },
+    "TE": {
+      "matchedBeforeAndAfter": 17,
+      "beforeMAE": 0.96,
+      "afterMAE": 0.96
+    }
+  },
+  "largestRemainingDifferences": [
+    {
+      "name": "Kenyon Sadiq",
+      "pos": "TE",
+      "before": 51.8,
+      "after": 51.5,
+      "external": 103.4,
+      "differencePer17Weeks": -3.05
+    },
+    {
+      "name": "Jayden Reed",
+      "pos": "WR",
+      "before": 187.2,
+      "after": 187.1,
+      "external": 135.6,
+      "differencePer17Weeks": 3.03
+    },
+    {
+      "name": "Josh Jacobs",
+      "pos": "RB",
+      "before": 209.5,
+      "after": 209.6,
+      "external": 158.5,
+      "differencePer17Weeks": 3.01
+    },
+    {
+      "name": "Ja'Kobi Lane",
+      "pos": "WR",
+      "before": 46.3,
+      "after": 46.5,
+      "external": 97.2,
+      "differencePer17Weeks": -2.98
+    },
+    {
+      "name": "Christian McCaffrey",
+      "pos": "RB",
+      "before": 334.8,
+      "after": 335.1,
+      "external": 290.5,
+      "differencePer17Weeks": 2.62
+    },
+    {
+      "name": "Mike Washington",
+      "pos": "RB",
+      "after": 45.5,
+      "external": 88.2,
+      "differencePer17Weeks": -2.51
+    },
+    {
+      "name": "Jalen Coker",
+      "pos": "WR",
+      "before": 165.5,
+      "after": 165.1,
+      "external": 124.5,
+      "differencePer17Weeks": 2.39
+    },
+    {
+      "name": "Alec Pierce",
+      "pos": "WR",
+      "before": 180.1,
+      "after": 179.9,
+      "external": 140.1,
+      "differencePer17Weeks": 2.34
+    },
+    {
+      "name": "Nico Collins",
+      "pos": "WR",
+      "before": 247.8,
+      "after": 247.9,
+      "external": 208.8,
+      "differencePer17Weeks": 2.3
+    },
+    {
+      "name": "Zach Charbonnet",
+      "pos": "RB",
+      "before": 49.9,
+      "after": 49.5,
+      "external": 88.3,
+      "differencePer17Weeks": -2.28
+    }
+  ]
+}

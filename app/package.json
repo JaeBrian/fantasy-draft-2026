@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build && cp dist/index.html ../index.html",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node scripts/sim-build.mjs && node scripts/league-scoring.test.mjs && node scripts/availability.test.mjs && node scripts/round-robin.test.mjs && node scripts/audit-model-inputs.mjs && node scripts/sleeper-draft.test.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",
@@ -17,6 +18,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.0.5",
+    "esbuild": "^0.28.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
     "vite": "^8.2.1",

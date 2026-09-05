@@ -1,5 +1,13 @@
 # Update log
 
+## 2026-09-04 — league scoring, draft tracker and full simulation audit
+
+Corrected component scoring, injury availability, hindsight lineup selection, paired comparisons and late-round depth. Refreshed Sleeper projections, market ADP and attributed news. Fixed atomic live-pick catch-up, K/DEF and off-board tracking, and availability calibration. Failed gates and stale result files now stop publication.
+
+The rerun includes 1.44 million RB-run/paired draft-strategy trials plus six other studies, 900 shared-room advisor tests and 36 full 192-pick drafts. Ashley opens Gibbs, Brian opens Bijan, and Emily uses the available RB/WR tier and room behavior. Close alternatives and source uncertainty are documented in the [September 4 report](analysis/2026-09-04/REPORT.md).
+
+Earlier entries below are historical. Their numerical recommendations, injury estimates and manual failed-gate override policy are superseded by this audit.
+
 ## 2026-09-01 — Pacheco to IR, the Packers backfield after the Kaleb Johnson trade, and an IR tagger bug
 Brian: "any new updates? scrape the web and find any news that might make drafting different." Web sweep (ESPN, NBC, Yahoo, RotoWire, team beats) on top of the Sleeper wire, Aug 31 → Sep 1.
 

@@ -1,0 +1,523 @@
+{
+  "worldsPerRoom": 300,
+  "totalDrafts": 900,
+  "advisorCalls": 37800,
+  "averageMilliseconds": 2.5698641734127072,
+  "maxMilliseconds": 81.9207499999975,
+  "failures": [],
+  "results": {
+    "market": {
+      "worlds": 300,
+      "frequencies": {
+        "1": [
+          {
+            "Jahmyr Gibbs": 300
+          },
+          {
+            "Kyren Williams": 153,
+            "Omarion Hampton": 10,
+            "Drake London": 21,
+            "A.J. Brown": 11,
+            "George Pickens": 9,
+            "Brock Bowers": 76,
+            "Kenneth Walker III": 13,
+            "Javonte Williams": 7
+          },
+          {
+            "George Pickens": 128,
+            "Brock Bowers": 122,
+            "Kyren Williams": 20,
+            "Chris Olave": 24,
+            "A.J. Brown": 2,
+            "Kenneth Walker III": 3,
+            "Omarion Hampton": 1
+          },
+          {
+            "Jameson Williams": 125,
+            "Christian Watson": 28,
+            "Jaylen Waddle": 42,
+            "Quinshon Judkins": 61,
+            "Jaylen Warren": 13,
+            "David Montgomery": 25,
+            "Terry McLaurin": 4,
+            "Tyler Warren": 2
+          },
+          {
+            "Quinshon Judkins": 117,
+            "Jameson Williams": 73,
+            "Jaylen Warren": 48,
+            "Tyler Warren": 34,
+            "Christian Watson": 28
+          },
+          {
+            "Brock Purdy": 167,
+            "Jalen Hurts": 37,
+            "Rico Dowdle": 13,
+            "Caleb Williams": 30,
+            "Jayden Daniels": 3,
+            "Jayden Reed": 41,
+            "Tucker Kraft": 5,
+            "Sam LaPorta": 3,
+            "Mike Evans": 1
+          }
+        ],
+        "2": [
+          {
+            "Bijan Robinson": 300
+          },
+          {
+            "Nico Collins": 114,
+            "Kyren Williams": 92,
+            "Drake London": 61,
+            "Brock Bowers": 4,
+            "A.J. Brown": 15,
+            "Kenneth Walker III": 14
+          },
+          {
+            "Chris Olave": 130,
+            "George Pickens": 128,
+            "Trey McBride": 11,
+            "Kyren Williams": 21,
+            "Javonte Williams": 5,
+            "Omarion Hampton": 5
+          },
+          {
+            "Jaylen Waddle": 137,
+            "David Montgomery": 85,
+            "Jameson Williams": 31,
+            "Jaylen Warren": 17,
+            "Quinshon Judkins": 17,
+            "Colston Loveland": 11,
+            "Zay Flowers": 1,
+            "Cam Skattebo": 1
+          },
+          {
+            "Jaylen Warren": 125,
+            "Tyler Warren": 113,
+            "Quinshon Judkins": 33,
+            "Jameson Williams": 16,
+            "D'Andre Swift": 7,
+            "Terry McLaurin": 4,
+            "Christian Watson": 1,
+            "Travis Etienne Jr.": 1
+          },
+          {
+            "Jalen Hurts": 52,
+            "Caleb Williams": 38,
+            "Sam LaPorta": 52,
+            "Tucker Kraft": 27,
+            "Rico Dowdle": 60,
+            "Brock Purdy": 45,
+            "Jayden Daniels": 20,
+            "Jayden Reed": 5,
+            "Joe Burrow": 1
+          }
+        ],
+        "10": [
+          {
+            "Amon-Ra St. Brown": 19,
+            "Chase Brown": 140,
+            "James Cook": 123,
+            "Jaxon Smith-Njigba": 18
+          },
+          {
+            "Chase Brown": 148,
+            "Nico Collins": 147,
+            "James Cook": 1,
+            "CeeDee Lamb": 4
+          },
+          {
+            "David Montgomery": 92,
+            "Chris Olave": 5,
+            "Colston Loveland": 105,
+            "Javonte Williams": 69,
+            "Trey McBride": 10,
+            "Jeremiyah Love": 6,
+            "Tee Higgins": 6,
+            "DeVonta Smith": 2,
+            "Zay Flowers": 5
+          },
+          {
+            "Colston Loveland": 159,
+            "Tee Higgins": 16,
+            "David Montgomery": 47,
+            "Zay Flowers": 72,
+            "Javonte Williams": 4,
+            "DeVonta Smith": 1,
+            "Trey McBride": 1
+          },
+          {
+            "Christian Watson": 221,
+            "Jaylen Warren": 18,
+            "Jayden Reed": 28,
+            "Quinshon Judkins": 3,
+            "Terry McLaurin": 19,
+            "Jameson Williams": 8,
+            "Tyler Warren": 2,
+            "Tucker Kraft": 1
+          },
+          {
+            "Rico Dowdle": 216,
+            "Christian Watson": 4,
+            "Jaylen Warren": 64,
+            "Jayden Reed": 8,
+            "Tucker Kraft": 6,
+            "Jameson Williams": 1,
+            "Tyler Warren": 1
+          }
+        ]
+      }
+    },
+    "early-rb-run": {
+      "worlds": 300,
+      "frequencies": {
+        "1": [
+          {
+            "Jahmyr Gibbs": 300
+          },
+          {
+            "Drake London": 272,
+            "A.J. Brown": 13,
+            "CeeDee Lamb": 6,
+            "Justin Jefferson": 9
+          },
+          {
+            "Brock Bowers": 289,
+            "A.J. Brown": 10,
+            "George Pickens": 1
+          },
+          {
+            "Zay Flowers": 28,
+            "Jaylen Waddle": 153,
+            "Jaylen Warren": 105,
+            "Tetairoa McMillan": 4,
+            "Jameson Williams": 7,
+            "Tee Higgins": 1,
+            "DeVonta Smith": 2
+          },
+          {
+            "Jaylen Warren": 181,
+            "Tee Higgins": 2,
+            "Jameson Williams": 97,
+            "Quinshon Judkins": 7,
+            "Christian Watson": 4,
+            "Tyler Warren": 5,
+            "Rico Dowdle": 2,
+            "Tetairoa McMillan": 1,
+            "Jaylen Waddle": 1
+          },
+          {
+            "Brock Purdy": 255,
+            "Jayden Reed": 13,
+            "Jalen Hurts": 10,
+            "Jayden Daniels": 3,
+            "Christian Watson": 3,
+            "Caleb Williams": 15,
+            "Sam LaPorta": 1
+          }
+        ],
+        "2": [
+          {
+            "Bijan Robinson": 300
+          },
+          {
+            "Nico Collins": 297,
+            "Drake London": 3
+          },
+          {
+            "A.J. Brown": 243,
+            "George Pickens": 41,
+            "Drake London": 15,
+            "Chris Olave": 1
+          },
+          {
+            "Tee Higgins": 82,
+            "Colston Loveland": 71,
+            "Zay Flowers": 41,
+            "Jaylen Waddle": 103,
+            "Jaylen Warren": 2,
+            "DeVonta Smith": 1
+          },
+          {
+            "Jaylen Waddle": 29,
+            "Jameson Williams": 78,
+            "Tee Higgins": 16,
+            "Tyler Warren": 157,
+            "Tetairoa McMillan": 10,
+            "Rico Dowdle": 4,
+            "Jaylen Warren": 6
+          },
+          {
+            "Jayden Daniels": 71,
+            "Caleb Williams": 32,
+            "Brock Purdy": 26,
+            "Rhamondre Stevenson": 4,
+            "Jalen Hurts": 112,
+            "Jayden Reed": 13,
+            "Christian Watson": 15,
+            "Sam LaPorta": 15,
+            "Tucker Kraft": 8,
+            "Joe Burrow": 4
+          }
+        ],
+        "10": [
+          {
+            "Jaxon Smith-Njigba": 300
+          },
+          {
+            "Amon-Ra St. Brown": 300
+          },
+          {
+            "David Montgomery": 213,
+            "Chris Olave": 53,
+            "George Pickens": 28,
+            "Trey McBride": 6
+          },
+          {
+            "Colston Loveland": 217,
+            "Trey McBride": 31,
+            "Chris Olave": 29,
+            "David Montgomery": 18,
+            "DeVonta Smith": 3,
+            "Zay Flowers": 2
+          },
+          {
+            "Christian Watson": 186,
+            "Tyler Warren": 32,
+            "Jameson Williams": 76,
+            "Terry McLaurin": 5,
+            "Rico Dowdle": 1
+          },
+          {
+            "Rico Dowdle": 265,
+            "Christian Watson": 8,
+            "Rhamondre Stevenson": 11,
+            "Tucker Kraft": 1,
+            "Chuba Hubbard": 5,
+            "Tony Pollard": 2,
+            "Terry McLaurin": 5,
+            "Joe Burrow": 2,
+            "Jalen Hurts": 1
+          }
+        ]
+      }
+    },
+    "value-aware": {
+      "worlds": 300,
+      "frequencies": {
+        "1": [
+          {
+            "Jahmyr Gibbs": 300
+          },
+          {
+            "Omarion Hampton": 82,
+            "George Pickens": 103,
+            "Javonte Williams": 65,
+            "Kyren Williams": 12,
+            "Saquon Barkley": 38
+          },
+          {
+            "George Pickens": 95,
+            "Chris Olave": 188,
+            "Javonte Williams": 10,
+            "Trey McBride": 5,
+            "Omarion Hampton": 1,
+            "Saquon Barkley": 1
+          },
+          {
+            "Quinshon Judkins": 20,
+            "D'Andre Swift": 40,
+            "Tyler Warren": 11,
+            "Travis Etienne Jr.": 68,
+            "Jaylen Warren": 36,
+            "Tucker Kraft": 35,
+            "Terry McLaurin": 26,
+            "Jayden Reed": 39,
+            "Christian Watson": 22,
+            "Jameson Williams": 2,
+            "Ladd McConkey": 1
+          },
+          {
+            "Travis Etienne Jr.": 64,
+            "Sam LaPorta": 27,
+            "Rico Dowdle": 15,
+            "Terry McLaurin": 9,
+            "D'Andre Swift": 122,
+            "Tucker Kraft": 37,
+            "Garrett Wilson": 3,
+            "Jayden Reed": 4,
+            "Jaylen Warren": 9,
+            "Tyler Warren": 1,
+            "Quinshon Judkins": 7,
+            "Christian Watson": 2
+          },
+          {
+            "Alec Pierce": 145,
+            "Ladd McConkey": 8,
+            "Luther Burden III": 31,
+            "Drake Maye": 7,
+            "Mike Evans": 31,
+            "Josh Downs": 19,
+            "Garrett Wilson": 12,
+            "Jayden Daniels": 1,
+            "TreVeyon Henderson": 2,
+            "Rhamondre Stevenson": 15,
+            "Malik Nabers": 8,
+            "Kyle Pitts Sr.": 4,
+            "Dak Prescott": 5,
+            "Jayden Reed": 5,
+            "Brock Purdy": 1,
+            "Emeka Egbuka": 1,
+            "Davante Adams": 1,
+            "Jaxson Dart": 2,
+            "Caleb Williams": 2
+          }
+        ],
+        "2": [
+          {
+            "Bijan Robinson": 300
+          },
+          {
+            "Saquon Barkley": 108,
+            "Omarion Hampton": 54,
+            "George Pickens": 29,
+            "A.J. Brown": 23,
+            "Kenneth Walker III": 21,
+            "Kyren Williams": 58,
+            "Drake London": 3,
+            "Justin Jefferson": 1,
+            "Derrick Henry": 3
+          },
+          {
+            "Chris Olave": 57,
+            "Trey McBride": 112,
+            "Colston Loveland": 6,
+            "David Montgomery": 29,
+            "George Pickens": 7,
+            "Zay Flowers": 57,
+            "Saquon Barkley": 4,
+            "Omarion Hampton": 14,
+            "Javonte Williams": 13,
+            "Tee Higgins": 1
+          },
+          {
+            "Terry McLaurin": 109,
+            "Travis Etienne Jr.": 47,
+            "D'Andre Swift": 4,
+            "Tetairoa McMillan": 25,
+            "Ladd McConkey": 5,
+            "Christian Watson": 25,
+            "Jameson Williams": 26,
+            "Jaylen Warren": 37,
+            "Tyler Warren": 6,
+            "Quinshon Judkins": 9,
+            "Rashee Rice": 1,
+            "Cam Skattebo": 4,
+            "Sam LaPorta": 2
+          },
+          {
+            "D'Andre Swift": 60,
+            "Rico Dowdle": 86,
+            "Lamar Jackson": 16,
+            "Sam LaPorta": 94,
+            "Travis Etienne Jr.": 7,
+            "Tucker Kraft": 5,
+            "Garrett Wilson": 14,
+            "Ladd McConkey": 9,
+            "Tyler Warren": 1,
+            "Jayden Reed": 4,
+            "Terry McLaurin": 4
+          },
+          {
+            "Mike Evans": 88,
+            "Garrett Wilson": 52,
+            "Jayden Reed": 5,
+            "Luther Burden III": 64,
+            "Ladd McConkey": 39,
+            "Alec Pierce": 27,
+            "Rhamondre Stevenson": 1,
+            "Malik Nabers": 11,
+            "Dak Prescott": 4,
+            "Caleb Williams": 1,
+            "Jaxson Dart": 2,
+            "Jayden Daniels": 2,
+            "Bhayshul Tuten": 2,
+            "Brock Purdy": 1,
+            "Bucky Irving": 1
+          }
+        ],
+        "10": [
+          {
+            "Chase Brown": 293,
+            "Puka Nacua": 1,
+            "Ja'Marr Chase": 1,
+            "James Cook": 4,
+            "Amon-Ra St. Brown": 1
+          },
+          {
+            "Justin Jefferson": 132,
+            "Drake London": 68,
+            "CeeDee Lamb": 78,
+            "Nico Collins": 19,
+            "Derrick Henry": 3
+          },
+          {
+            "Javonte Williams": 13,
+            "Ashton Jeanty": 86,
+            "Zay Flowers": 40,
+            "Breece Hall": 39,
+            "David Montgomery": 28,
+            "DeVonta Smith": 63,
+            "Jeremiyah Love": 29,
+            "Rashee Rice": 1,
+            "Jaylen Waddle": 1
+          },
+          {
+            "DeVonta Smith": 64,
+            "Josh Allen": 78,
+            "Tetairoa McMillan": 22,
+            "Cam Skattebo": 24,
+            "Jaylen Waddle": 48,
+            "Rashee Rice": 15,
+            "Quinshon Judkins": 28,
+            "Zay Flowers": 6,
+            "Ashton Jeanty": 4,
+            "Jaylen Warren": 4,
+            "Breece Hall": 2,
+            "Tee Higgins": 2,
+            "Travis Etienne Jr.": 1,
+            "Jeremiyah Love": 1,
+            "David Montgomery": 1
+          },
+          {
+            "Garrett Wilson": 53,
+            "Jayden Reed": 65,
+            "Ladd McConkey": 79,
+            "Rico Dowdle": 47,
+            "Mike Evans": 11,
+            "Sam LaPorta": 3,
+            "Luther Burden III": 20,
+            "Bucky Irving": 21,
+            "D'Andre Swift": 1
+          },
+          {
+            "Bucky Irving": 77,
+            "Luther Burden III": 18,
+            "Jalen Hurts": 6,
+            "Garrett Wilson": 39,
+            "Rhamondre Stevenson": 46,
+            "Ladd McConkey": 69,
+            "Jayden Reed": 15,
+            "Jayden Daniels": 4,
+            "Mike Evans": 8,
+            "TreVeyon Henderson": 1,
+            "Rico Dowdle": 8,
+            "Caleb Williams": 5,
+            "Brock Purdy": 1,
+            "Joe Burrow": 3
+          }
+        ]
+      }
+    }
+  }
+}

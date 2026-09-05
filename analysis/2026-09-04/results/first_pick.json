@@ -1,0 +1,170 @@
+{
+  "1": [
+    {
+      "name": "Jahmyr Gibbs",
+      "pos": "RB",
+      "pts": 100.94,
+      "avail": 100
+    },
+    {
+      "name": "Bijan Robinson",
+      "pos": "RB",
+      "pts": 100.07,
+      "avail": 100
+    },
+    {
+      "name": "Christian McCaffrey",
+      "pos": "RB",
+      "pts": 99.01,
+      "avail": 100
+    },
+    {
+      "name": "Jonathan Taylor",
+      "pos": "RB",
+      "pts": 98.64,
+      "avail": 100
+    },
+    {
+      "name": "James Cook",
+      "pos": "RB",
+      "pts": 97.32,
+      "avail": 100
+    },
+    {
+      "name": "Jaxon Smith-Njigba",
+      "pos": "WR",
+      "pts": 97.21,
+      "avail": 100
+    },
+    {
+      "name": "Puka Nacua",
+      "pos": "WR",
+      "pts": 96.74,
+      "avail": 100
+    },
+    {
+      "name": "Amon-Ra St. Brown",
+      "pos": "WR",
+      "pts": 96.58,
+      "avail": 100
+    },
+    {
+      "name": "Ja'Marr Chase",
+      "pos": "WR",
+      "pts": 96.25,
+      "avail": 100
+    }
+  ],
+  "2": [
+    {
+      "name": "Bijan Robinson",
+      "pos": "RB",
+      "pts": 100.16,
+      "avail": 97
+    },
+    {
+      "name": "Christian McCaffrey",
+      "pos": "RB",
+      "pts": 99.05,
+      "avail": 99
+    },
+    {
+      "name": "Jonathan Taylor",
+      "pos": "RB",
+      "pts": 98.64,
+      "avail": 100
+    },
+    {
+      "name": "James Cook",
+      "pos": "RB",
+      "pts": 97.37,
+      "avail": 100
+    },
+    {
+      "name": "Jaxon Smith-Njigba",
+      "pos": "WR",
+      "pts": 96.95,
+      "avail": 100
+    },
+    {
+      "name": "Puka Nacua",
+      "pos": "WR",
+      "pts": 96.43,
+      "avail": 100
+    },
+    {
+      "name": "Amon-Ra St. Brown",
+      "pos": "WR",
+      "pts": 96.29,
+      "avail": 100
+    },
+    {
+      "name": "Chase Brown",
+      "pos": "RB",
+      "pts": 95.97,
+      "avail": 100
+    },
+    {
+      "name": "Ja'Marr Chase",
+      "pos": "WR",
+      "pts": 95.95,
+      "avail": 98
+    }
+  ],
+  "10": [
+    {
+      "name": "James Cook",
+      "pos": "RB",
+      "pts": 98.87,
+      "avail": 52
+    },
+    {
+      "name": "De'Von Achane",
+      "pos": "RB",
+      "pts": 96.83,
+      "avail": 96
+    },
+    {
+      "name": "Chase Brown",
+      "pos": "RB",
+      "pts": 96.46,
+      "avail": 100
+    },
+    {
+      "name": "Nico Collins",
+      "pos": "WR",
+      "pts": 96.36,
+      "avail": 100
+    },
+    {
+      "name": "CeeDee Lamb",
+      "pos": "WR",
+      "pts": 96.11,
+      "avail": 93
+    },
+    {
+      "name": "Derrick Henry",
+      "pos": "RB",
+      "pts": 96.09,
+      "avail": 100
+    },
+    {
+      "name": "Kenneth Walker III",
+      "pos": "RB",
+      "pts": 96.04,
+      "avail": 100
+    },
+    {
+      "name": "Drake London",
+      "pos": "WR",
+      "pts": 95.79,
+      "avail": 100
+    },
+    {
+      "name": "A.J. Brown",
+      "pos": "WR",
+      "pts": 95.66,
+      "avail": 100
+    }
+  ]
+}

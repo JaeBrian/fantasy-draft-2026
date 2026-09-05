@@ -11,13 +11,15 @@
  *
  * Simulates full seasons: real weekly scores (week-to-week variance, not just season-long),
  * byes live, a round-robin schedule, seeding on record then points, then the bracket. */
+import { roundRobin } from './round-robin.mjs';
+const SCHEDULE = roundRobin(12);
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
 const { SLP } = require(CACHE + 'sleeper.cjs');
 const { PROJ } = require(CACHE + 'projections.cjs');
-const { riskOf } = require(CACHE + 'risk.cjs');
+const { riskOf, cuffUplift, missShareOf, seasonAvailability } = require(CACHE + 'risk.cjs');
 
 
 const PPG={QB:r=>Math.max(14,23.5-0.32*r),RB:r=>12.5*Math.exp(-(r-1)/20)+5.8,
@@ -35,11 +37,11 @@ const POOL=[];{const c={QB:0,RB:0,WR:0,TE:0};
     const ffc=MKT[r[0]]?MKT[r[0]][0]:r[3],s=SLP[r[0]]||{};
     const mkt=s.adp!==undefined?0.75*s.adp+0.25*ffc:ffc;
     const hurt=['O','IR','PUP','SUS'].includes(s.inj)?0.85:s.inj==='D'?0.95:1;
-    const proj=(PROJ[r[0]]!==undefined?PROJ[r[0]]:PPG[r[1]](pr))*(RISK[r[4]]||1)*hurt;
+    const proj=(PROJ[r[0]]!==undefined?PROJ[r[0]]:PPG[r[1]](pr))+cuffUplift(r[0]);
     POOL.push({name:r[0],pos:r[1],ourRank:i+1,idx:POOL.length,proj,
       scv: riskOf(r[0], r[1], r[4]).cv,
       wcv:WEEK_CV[r[1]],
-      pMiss: riskOf(r[0], r[1], r[4]).pMiss,
+      pMiss: riskOf(r[0], r[1], r[4]).pMiss, knownMiss: riskOf(r[0], r[1], r[4]).knownMiss,
       mkt,sig:Math.max(0.5,MKT[r[0]]?MKT[r[0]][1]:0,0.13*mkt),bye:BYE[r[2]]||0});});}
 const REPL={};for(const pos of ['QB','RB','WR','TE']){
   const v=POOL.filter(p=>p.pos===pos).map(p=>p.proj).sort((a,b)=>b-a);
@@ -58,7 +60,7 @@ function ncdf(z){if(z<-8)return 0;if(z>8)return 1;
   return z>0?1-p:p;}
 function oppPick(avail,team,rnd){const c=NEED(team);let b=null,bs=Infinity;
   for(const p of avail){let s=p.mkt+gauss(rnd)*p.sig*0.8;
-    if(p.pos==='QB'&&c.QB>=1)s+=60;if(p.pos==='TE'&&c.TE>=1)s+=50;
+    if(p.pos==='QB')s+=c.QB>=2?900:c.QB>=1?60:0;if(p.pos==='TE')s+=c.TE>=2?900:c.TE>=1?50:0;
     if(p.pos==='RB'&&c.RB>=5)s+=25;if(p.pos==='WR'&&c.WR>=5)s+=25;
     if(s<bs){bs=s;b=p;}}return b;}
 function evLater(avail,pos,cur,nextPick){
@@ -90,12 +92,12 @@ function weekScore(roster,wk,rnd){
   const draw=x=>{const s=Math.sqrt(Math.log(1+x.wcv*x.wcv));
     return x.level*Math.exp(gauss(rnd)*s-(s*s)/2);};
   const scored=live.map(x=>({...x,pts:draw(x)}));
-  const by=pos=>scored.filter(x=>x.pos===pos).sort((a,b)=>b.pts-a.pts);
+  const by=pos=>scored.filter(x=>x.pos===pos).sort((a,b)=>b.proj-a.proj);
   const rb=by('RB'),wr=by('WR'),te=by('TE'),qb=by('QB');
   const used=new Set();let t=0;
   const take=(a,n)=>a.slice(0,n).forEach(x=>{t+=x.pts;used.add(x.name);});
   take(qb,1);take(rb,2);take(wr,2);take(te,1);
-  take([...rb,...wr,...te].filter(x=>!used.has(x.name)).sort((a,b)=>b.pts-a.pts),2);
+  take([...rb,...wr,...te].filter(x=>!used.has(x.name)).sort((a,b)=>b.proj-a.proj),2);
   return t+14;   /* K + DST, near-identical across teams */
 }
 /* full season for all 12 teams -> champion */
@@ -113,18 +115,17 @@ function season(slot,tilt,seed){
   for(let t=1;t<=12;t++) rosters[t]=teams[t].map(p=>{
     const s=Math.sqrt(Math.log(1+p.scv*p.scv));
     const level=p.proj*Math.exp(gauss(rnd)*s-(s*s)/2);
-    let outFrom=0,outTo=0;
-    if(rnd()<p.pMiss){outFrom=1+Math.floor(rnd()*12);outTo=outFrom+2+Math.floor(rnd()*6);}
+    const missed=Math.round(17*(1-seasonAvailability(p,rnd)));
+    const outFrom=missed ? ((p.knownMiss??0)>0 ? 1 : 1+Math.floor(rnd()*(18-missed))) : 0;
+    const outTo=outFrom+missed;
     return {...p,level,outFrom,outTo};});
   /* 14-week regular season, round robin */
   const rec={},pf={};for(let t=1;t<=12;t++){rec[t]=0;pf[t]=0;}
   for(let wk=1;wk<=14;wk++){
     const sc={};for(let t=1;t<=12;t++){sc[t]=weekScore(rosters[t],wk,rnd);pf[t]+=sc[t];}
-    /* rotating pairing so every team meets a spread of opponents */
-    for(let i=0;i<6;i++){
-      const a=1+((wk-1+i)%11), b=1+((11-i+(wk-1))%11);
-      const x=a===b?12:a, y=a===b?11:b===a?12:b;
-      if(x!==y&&sc[x]!==undefined&&sc[y]!==undefined) rec[sc[x]>sc[y]?x:y]++;
+    for (const [x,y] of SCHEDULE[(wk-1)%SCHEDULE.length]) {
+      if (sc[x] === sc[y]) { rec[x] += 0.5; rec[y] += 0.5; }
+      else rec[sc[x]>sc[y]?x:y]++;
     }
   }
   const seeds=Object.keys(rec).map(Number).sort((a,b)=>rec[b]-rec[a]||pf[b]-pf[a]);

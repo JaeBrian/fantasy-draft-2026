@@ -18,7 +18,7 @@ const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
 const { SLP } = require(CACHE + 'sleeper.cjs');
 const { PROJ } = require(CACHE + 'projections.cjs');
-const { riskOf, cuffUplift } = require(CACHE + 'risk.cjs');
+const { riskOf, cuffUplift, missShareOf, seasonAvailability } = require(CACHE + 'risk.cjs');
 
 const TEAMS = 12, ROUNDS = 14;
 let fail = 0, pass = 0;
@@ -32,10 +32,10 @@ P.forEach((r) => {
   const mkt = s.adp !== undefined ? 0.75 * s.adp + 0.25 * ffc : ffc;
   const rk = riskOf(r[0], r[1], r[4]);
   POOL.push({ name: r[0], pos: r[1], team: r[2],
-    proj: (PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6) + cuffUplift(r[0]), cv: rk.cv, pMiss: rk.pMiss,
+    proj: (PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6) + cuffUplift(r[0]), cv: rk.cv, pMiss: rk.pMiss, knownMiss: rk.knownMiss,
     mkt, sig: Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * mkt), bye: BYE[r[2]] || 0 });
 });
-const adj = (p) => p.proj * (1 - 0.4 * p.pMiss);
+const adj = (p) => p.proj * (1 - missShareOf(p));
 const REPL_RANK = { QB: 12, RB: 31, WR: 40, TE: 13 };
 const REPL = {};
 for (const pos of ['QB','RB','WR','TE']) {
@@ -123,14 +123,18 @@ console.log('\n3. LINEUP LEGALITY  (every week of 300 drafted rosters)\n');
     for (let wk=1; wk<=17; wk++) {
       weeks++;
       const real = roster.map((p,i) => ({ p, v: p.bye===wk ? 0 : Math.max(0, p.proj + gauss(rnd)*sd[i]) , onBye: p.bye===wk }));
-      const by = ps => real.filter(x=>x.p.pos===ps).sort((a,b)=>b.v-a.v);
+      const by = ps => real.filter(x=>!x.onBye && x.p.pos===ps).sort((a,b)=>b.v-a.v);
       const used = new Set(); const started = [];
       const take = (a,n) => a.slice(0,n).forEach(x => { started.push(x); used.add(x.p.name); });
       take(by('QB'),LINEUP.QB); take(by('RB'),LINEUP.RB);
       take(by('WR'),LINEUP.WR); take(by('TE'),LINEUP.TE);
-      take(real.filter(x=>!used.has(x.p.name)&&x.p.pos!=='QB').sort((a,b)=>b.v-a.v), LINEUP.FLEX);
+      take(real.filter(x=>!x.onBye&&!used.has(x.p.name)&&x.p.pos!=='QB').sort((a,b)=>b.v-a.v), LINEUP.FLEX);
 
-      if (started.length !== 8) illegalCount++;
+      // Empty mandatory slots are valid when all rostered players at that position have a bye.
+      const available = real.filter(x => !x.onBye);
+      const mandatory = ['QB','RB','WR','TE'].map(pos => Math.min(LINEUP[pos], available.filter(x=>x.p.pos===pos).length));
+      const expected = mandatory.reduce((a,b)=>a+b,0) + Math.min(2, available.filter(x=>x.p.pos!=='QB').length - mandatory.slice(1).reduce((a,b)=>a+b,0));
+      if (started.length !== expected || started.length > 8) illegalCount++;
       if (new Set(started.map(s=>s.p.name)).size !== started.length) doubleUse++;
       /* a QB must never occupy a flex slot */
       const qbs = started.filter(s => s.p.pos === 'QB').length;
@@ -140,10 +144,10 @@ console.log('\n3. LINEUP LEGALITY  (every week of 300 drafted rosters)\n');
       if (started.some(s => s.onBye && s.p.pos !== 'QB')) byePlayed++;
     }
   }
-  ok(illegalCount === 0, 'every week fields exactly 8 starters', `${illegalCount} of ${weeks} weeks wrong`);
+  ok(illegalCount === 0, 'every week fills all available legal slots, up to 8', `${illegalCount} of ${weeks} weeks wrong`);
   ok(doubleUse === 0, 'no player fills two slots in one week', `${doubleUse}`);
   ok(qbInFlex === 0, 'no second quarterback sneaks into flex', `${qbInFlex}`);
-  ok(byePlayed / weeks < 0.02, 'players on bye are essentially never started',
+  ok(byePlayed === 0, 'players on bye are never selected',
      `${(100*byePlayed/weeks).toFixed(2)}% of weeks`);
 }
 

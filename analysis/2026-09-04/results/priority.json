@@ -1,0 +1,5482 @@
+{
+  "Ashley": {
+    "seat": 1,
+    "p1": 1,
+    "p2": 24,
+    "rooms": {
+      "RB LOSS": {
+        "round1": [
+          {
+            "name": "Jahmyr Gibbs",
+            "pos": "RB",
+            "adp": 1.3,
+            "there": 100,
+            "ppg": 105.32,
+            "delta": 0,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Bijan Robinson",
+            "pos": "RB",
+            "adp": 2.9,
+            "there": 100,
+            "ppg": 104.25,
+            "delta": -1.07,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Christian McCaffrey",
+            "pos": "RB",
+            "adp": 4,
+            "there": 100,
+            "ppg": 103.47,
+            "delta": -1.85,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Jonathan Taylor",
+            "pos": "RB",
+            "adp": 5.6,
+            "there": 100,
+            "ppg": 102.78,
+            "delta": -2.54,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "James Cook",
+            "pos": "RB",
+            "adp": 9.9,
+            "there": 100,
+            "ppg": 101.45,
+            "delta": -3.86,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Jaxon Smith-Njigba",
+            "pos": "WR",
+            "adp": 8.4,
+            "there": 100,
+            "ppg": 100.37,
+            "delta": -4.95,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Amon-Ra St. Brown",
+            "pos": "WR",
+            "adp": 7.9,
+            "there": 100,
+            "ppg": 100.12,
+            "delta": -5.2,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Ja'Marr Chase",
+            "pos": "WR",
+            "adp": 3,
+            "there": 100,
+            "ppg": 100.01,
+            "delta": -5.31,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Puka Nacua",
+            "pos": "WR",
+            "adp": 5.8,
+            "there": 100,
+            "ppg": 99.92,
+            "delta": -5.39,
+            "tied": false,
+            "survives": 0
+          }
+        ],
+        "round2": {
+          "Jahmyr Gibbs": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 91,
+              "ppg": 105.34,
+              "delta": 1.2,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 91,
+              "ppg": 105.3,
+              "delta": 1.15,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 99,
+              "ppg": 105.25,
+              "delta": 1.09,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 79,
+              "ppg": 105.19,
+              "delta": 1,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 100,
+              "ppg": 104.59,
+              "delta": 0.43,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 97,
+              "ppg": 104.46,
+              "delta": 0.29,
+              "tied": false
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 100,
+              "ppg": 104.17,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 100,
+              "ppg": 104.16,
+              "delta": -0.01,
+              "tied": true
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 76,
+              "ppg": 102.85,
+              "delta": -1.31,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 100,
+              "ppg": 102.12,
+              "delta": -2.04,
+              "tied": false
+            }
+          ],
+          "Bijan Robinson": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 91,
+              "ppg": 104.63,
+              "delta": 1.11,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 99,
+              "ppg": 104.31,
+              "delta": 0.83,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 91,
+              "ppg": 104.28,
+              "delta": 0.81,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 79,
+              "ppg": 104.25,
+              "delta": 0.77,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 100,
+              "ppg": 103.79,
+              "delta": 0.31,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 97,
+              "ppg": 103.75,
+              "delta": 0.29,
+              "tied": false
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 100,
+              "ppg": 103.49,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 100,
+              "ppg": 103.29,
+              "delta": -0.2,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 76,
+              "ppg": 102.17,
+              "delta": -1.31,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 100,
+              "ppg": 101.34,
+              "delta": -2.14,
+              "tied": false
+            }
+          ],
+          "Christian McCaffrey": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 91,
+              "ppg": 103.38,
+              "delta": 1.08,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 91,
+              "ppg": 103.34,
+              "delta": 1.05,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 79,
+              "ppg": 103.25,
+              "delta": 1,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 99,
+              "ppg": 103.3,
+              "delta": 0.99,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 97,
+              "ppg": 102.61,
+              "delta": 0.31,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 100,
+              "ppg": 102.47,
+              "delta": 0.19,
+              "tied": false
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 100,
+              "ppg": 102.3,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 100,
+              "ppg": 101.98,
+              "delta": -0.32,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 76,
+              "ppg": 100.83,
+              "delta": -1.46,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 100,
+              "ppg": 100.07,
+              "delta": -2.22,
+              "tied": false
+            }
+          ],
+          "Jonathan Taylor": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 91,
+              "ppg": 103.01,
+              "delta": 1.29,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 91,
+              "ppg": 102.8,
+              "delta": 1.04,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 79,
+              "ppg": 102.76,
+              "delta": 1.02,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 99,
+              "ppg": 102.76,
+              "delta": 1,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 97,
+              "ppg": 102.11,
+              "delta": 0.36,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 100,
+              "ppg": 102.05,
+              "delta": 0.3,
+              "tied": false
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 100,
+              "ppg": 101.76,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 100,
+              "ppg": 101.72,
+              "delta": -0.04,
+              "tied": true
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 76,
+              "ppg": 100.55,
+              "delta": -1.24,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 100,
+              "ppg": 99.64,
+              "delta": -2.12,
+              "tied": false
+            }
+          ],
+          "James Cook": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 91,
+              "ppg": 101.72,
+              "delta": 1.24,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 91,
+              "ppg": 101.6,
+              "delta": 1.14,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 99,
+              "ppg": 101.59,
+              "delta": 1.12,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 79,
+              "ppg": 101.52,
+              "delta": 1.03,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 97,
+              "ppg": 100.78,
+              "delta": 0.31,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 100,
+              "ppg": 100.66,
+              "delta": 0.2,
+              "tied": false
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 100,
+              "ppg": 100.47,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 100,
+              "ppg": 100.44,
+              "delta": -0.03,
+              "tied": true
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 76,
+              "ppg": 99.2,
+              "delta": -1.23,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 100,
+              "ppg": 98.37,
+              "delta": -2.1,
+              "tied": false
+            }
+          ],
+          "Jaxon Smith-Njigba": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 91,
+              "ppg": 101.23,
+              "delta": 1.87,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 99,
+              "ppg": 100.37,
+              "delta": 1.02,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 91,
+              "ppg": 100.22,
+              "delta": 0.9,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 97,
+              "ppg": 100.2,
+              "delta": 0.86,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 79,
+              "ppg": 100.13,
+              "delta": 0.74,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 100,
+              "ppg": 99.72,
+              "delta": 0.38,
+              "tied": false
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 100,
+              "ppg": 99.34,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 100,
+              "ppg": 99.32,
+              "delta": -0.02,
+              "tied": true
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 76,
+              "ppg": 98.7,
+              "delta": -0.72,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 100,
+              "ppg": 97.62,
+              "delta": -1.72,
+              "tied": false
+            }
+          ],
+          "Amon-Ra St. Brown": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 91,
+              "ppg": 100.85,
+              "delta": 1.69,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 91,
+              "ppg": 100.16,
+              "delta": 1.03,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 99,
+              "ppg": 100.14,
+              "delta": 0.98,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 97,
+              "ppg": 99.94,
+              "delta": 0.8,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 79,
+              "ppg": 99.97,
+              "delta": 0.72,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 100,
+              "ppg": 99.5,
+              "delta": 0.35,
+              "tied": false
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 100,
+              "ppg": 99.16,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 100,
+              "ppg": 99.12,
+              "delta": -0.04,
+              "tied": true
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 76,
+              "ppg": 98.21,
+              "delta": -1,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 100,
+              "ppg": 97.14,
+              "delta": -2.01,
+              "tied": false
+            }
+          ],
+          "Ja'Marr Chase": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 91,
+              "ppg": 100.83,
+              "delta": 1.67,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 91,
+              "ppg": 100.04,
+              "delta": 0.89,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 99,
+              "ppg": 100.05,
+              "delta": 0.86,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 79,
+              "ppg": 99.91,
+              "delta": 0.72,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 97,
+              "ppg": 99.91,
+              "delta": 0.71,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 100,
+              "ppg": 99.55,
+              "delta": 0.37,
+              "tied": false
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 100,
+              "ppg": 99.19,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 100,
+              "ppg": 99.12,
+              "delta": -0.08,
+              "tied": true
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 76,
+              "ppg": 98.26,
+              "delta": -0.97,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 100,
+              "ppg": 97.13,
+              "delta": -2.06,
+              "tied": false
+            }
+          ],
+          "Puka Nacua": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 91,
+              "ppg": 100.75,
+              "delta": 1.86,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 99,
+              "ppg": 99.86,
+              "delta": 0.94,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 97,
+              "ppg": 99.82,
+              "delta": 0.92,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 91,
+              "ppg": 99.75,
+              "delta": 0.84,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 79,
+              "ppg": 99.63,
+              "delta": 0.63,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 100,
+              "ppg": 99.23,
+              "delta": 0.31,
+              "tied": false
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 100,
+              "ppg": 98.92,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 100,
+              "ppg": 98.83,
+              "delta": -0.09,
+              "tied": true
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 76,
+              "ppg": 98.12,
+              "delta": -0.84,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 100,
+              "ppg": 97.04,
+              "delta": -1.88,
+              "tied": false
+            }
+          ]
+        }
+      },
+      "Market": {
+        "round1": [
+          {
+            "name": "Jahmyr Gibbs",
+            "pos": "RB",
+            "adp": 1.3,
+            "there": 100,
+            "ppg": 104.46,
+            "delta": 0,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Bijan Robinson",
+            "pos": "RB",
+            "adp": 2.9,
+            "there": 100,
+            "ppg": 103.74,
+            "delta": -0.73,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Christian McCaffrey",
+            "pos": "RB",
+            "adp": 4,
+            "there": 100,
+            "ppg": 103.11,
+            "delta": -1.36,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Jonathan Taylor",
+            "pos": "RB",
+            "adp": 5.6,
+            "there": 100,
+            "ppg": 102.3,
+            "delta": -2.16,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "James Cook",
+            "pos": "RB",
+            "adp": 9.9,
+            "there": 100,
+            "ppg": 100.98,
+            "delta": -3.49,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Jaxon Smith-Njigba",
+            "pos": "WR",
+            "adp": 8.4,
+            "there": 100,
+            "ppg": 100.82,
+            "delta": -3.64,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Amon-Ra St. Brown",
+            "pos": "WR",
+            "adp": 7.9,
+            "there": 100,
+            "ppg": 100.82,
+            "delta": -3.64,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Ja'Marr Chase",
+            "pos": "WR",
+            "adp": 3,
+            "there": 100,
+            "ppg": 100.66,
+            "delta": -3.8,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Puka Nacua",
+            "pos": "WR",
+            "adp": 5.8,
+            "there": 100,
+            "ppg": 100.31,
+            "delta": -4.15,
+            "tied": false,
+            "survives": 0
+          }
+        ],
+        "round2": {
+          "Jahmyr Gibbs": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 55,
+              "ppg": 104.72,
+              "delta": 0.61,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 53,
+              "ppg": 104.97,
+              "delta": 0.56,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 10,
+              "ppg": 104.9,
+              "delta": 0.35,
+              "tied": true
+            },
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 85,
+              "ppg": 104.54,
+              "delta": 0.27,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 81,
+              "ppg": 104.22,
+              "delta": 0.02,
+              "tied": true
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 99,
+              "ppg": 104.22,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 76,
+              "ppg": 103.89,
+              "delta": -0.34,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 95,
+              "ppg": 103.67,
+              "delta": -0.51,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 18,
+              "ppg": 102.24,
+              "delta": -1.83,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 98,
+              "ppg": 101.95,
+              "delta": -2.25,
+              "tied": false
+            }
+          ],
+          "Bijan Robinson": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 55,
+              "ppg": 103.77,
+              "delta": 0.8,
+              "tied": false
+            },
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 85,
+              "ppg": 103.76,
+              "delta": 0.74,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 53,
+              "ppg": 104.04,
+              "delta": 0.73,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 10,
+              "ppg": 103.8,
+              "delta": 0.46,
+              "tied": true
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 81,
+              "ppg": 103.28,
+              "delta": 0.26,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 76,
+              "ppg": 103.1,
+              "delta": 0.04,
+              "tied": true
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 99,
+              "ppg": 103.05,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 95,
+              "ppg": 102.85,
+              "delta": -0.2,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 18,
+              "ppg": 101.37,
+              "delta": -1.73,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 97,
+              "ppg": 101.12,
+              "delta": -1.95,
+              "tied": false
+            }
+          ],
+          "Christian McCaffrey": [
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 10,
+              "ppg": 103.16,
+              "delta": 1.25,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 53,
+              "ppg": 103.37,
+              "delta": 1.01,
+              "tied": false
+            },
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 85,
+              "ppg": 103.02,
+              "delta": 0.76,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 55,
+              "ppg": 103,
+              "delta": 0.7,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 81,
+              "ppg": 102.41,
+              "delta": 0.14,
+              "tied": true
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 76,
+              "ppg": 102.37,
+              "delta": 0.13,
+              "tied": true
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 99,
+              "ppg": 102.25,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 95,
+              "ppg": 101.84,
+              "delta": -0.41,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 18,
+              "ppg": 100.57,
+              "delta": -1.78,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 97,
+              "ppg": 100.18,
+              "delta": -2.1,
+              "tied": false
+            }
+          ],
+          "Jonathan Taylor": [
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 53,
+              "ppg": 102.76,
+              "delta": 1.01,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 55,
+              "ppg": 102.36,
+              "delta": 0.72,
+              "tied": false
+            },
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 85,
+              "ppg": 102.36,
+              "delta": 0.69,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 10,
+              "ppg": 102.53,
+              "delta": 0.47,
+              "tied": true
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 81,
+              "ppg": 101.78,
+              "delta": 0.23,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 76,
+              "ppg": 101.61,
+              "delta": 0.01,
+              "tied": true
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 99,
+              "ppg": 101.62,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 95,
+              "ppg": 101.33,
+              "delta": -0.29,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 18,
+              "ppg": 99.82,
+              "delta": -1.62,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 98,
+              "ppg": 99.56,
+              "delta": -2.08,
+              "tied": false
+            }
+          ],
+          "James Cook": [
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 53,
+              "ppg": 101.7,
+              "delta": 1.21,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 10,
+              "ppg": 101.6,
+              "delta": 1.01,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 54,
+              "ppg": 101.26,
+              "delta": 0.93,
+              "tied": false
+            },
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 85,
+              "ppg": 101.05,
+              "delta": 0.68,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 81,
+              "ppg": 100.58,
+              "delta": 0.22,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 76,
+              "ppg": 100.37,
+              "delta": 0.01,
+              "tied": true
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 99,
+              "ppg": 100.37,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 95,
+              "ppg": 100.08,
+              "delta": -0.29,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 18,
+              "ppg": 98.69,
+              "delta": -1.79,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 98,
+              "ppg": 98.34,
+              "delta": -2.04,
+              "tied": false
+            }
+          ],
+          "Jaxon Smith-Njigba": [
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 85,
+              "ppg": 101.59,
+              "delta": 2.08,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 53,
+              "ppg": 100.99,
+              "delta": 1.62,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 55,
+              "ppg": 100.87,
+              "delta": 1.3,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 10,
+              "ppg": 100.04,
+              "delta": 0.7,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 76,
+              "ppg": 99.94,
+              "delta": 0.42,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 81,
+              "ppg": 99.71,
+              "delta": 0.15,
+              "tied": true
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 99,
+              "ppg": 99.52,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 95,
+              "ppg": 99.24,
+              "delta": -0.3,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 18,
+              "ppg": 98.48,
+              "delta": -1.2,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 98,
+              "ppg": 97.58,
+              "delta": -1.96,
+              "tied": false
+            }
+          ],
+          "Amon-Ra St. Brown": [
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 53,
+              "ppg": 101.15,
+              "delta": 2,
+              "tied": false
+            },
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 85,
+              "ppg": 100.98,
+              "delta": 1.51,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 55,
+              "ppg": 100.67,
+              "delta": 1.3,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 10,
+              "ppg": 99.73,
+              "delta": 0.81,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 76,
+              "ppg": 99.9,
+              "delta": 0.54,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 81,
+              "ppg": 99.75,
+              "delta": 0.4,
+              "tied": false
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 99,
+              "ppg": 99.34,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 95,
+              "ppg": 99.19,
+              "delta": -0.16,
+              "tied": true
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 18,
+              "ppg": 98.19,
+              "delta": -0.98,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 98,
+              "ppg": 97.57,
+              "delta": -1.78,
+              "tied": false
+            }
+          ],
+          "Ja'Marr Chase": [
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 53,
+              "ppg": 100.99,
+              "delta": 1.86,
+              "tied": false
+            },
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 85,
+              "ppg": 100.87,
+              "delta": 1.42,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 55,
+              "ppg": 100.6,
+              "delta": 1.13,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 10,
+              "ppg": 99.77,
+              "delta": 0.8,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 76,
+              "ppg": 99.72,
+              "delta": 0.32,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 81,
+              "ppg": 99.53,
+              "delta": 0.15,
+              "tied": true
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 99,
+              "ppg": 99.37,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 95,
+              "ppg": 99.1,
+              "delta": -0.3,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 18,
+              "ppg": 98.4,
+              "delta": -1.01,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 97,
+              "ppg": 97.49,
+              "delta": -1.91,
+              "tied": false
+            }
+          ],
+          "Puka Nacua": [
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 85,
+              "ppg": 101.2,
+              "delta": 2.24,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 53,
+              "ppg": 100.5,
+              "delta": 1.6,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 55,
+              "ppg": 100.31,
+              "delta": 1.16,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 10,
+              "ppg": 99.61,
+              "delta": 0.94,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 76,
+              "ppg": 99.39,
+              "delta": 0.4,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 81,
+              "ppg": 99.21,
+              "delta": 0.26,
+              "tied": false
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 99,
+              "ppg": 98.96,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 95,
+              "ppg": 98.84,
+              "delta": -0.11,
+              "tied": true
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 18,
+              "ppg": 97.91,
+              "delta": -0.95,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 98,
+              "ppg": 97.1,
+              "delta": -1.86,
+              "tied": false
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Emily": {
+    "seat": 10,
+    "p1": 10,
+    "p2": 15,
+    "rooms": {
+      "RB LOSS": {
+        "round1": [
+          {
+            "name": "Amon-Ra St. Brown",
+            "pos": "WR",
+            "adp": 7.9,
+            "there": 91,
+            "ppg": 102.34,
+            "delta": 2.76,
+            "tied": false,
+            "survives": 94
+          },
+          {
+            "name": "Jaxon Smith-Njigba",
+            "pos": "WR",
+            "adp": 8.4,
+            "there": 95,
+            "ppg": 102.38,
+            "delta": 2.67,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "De'Von Achane",
+            "pos": "RB",
+            "adp": 13.1,
+            "there": 44,
+            "ppg": 102.36,
+            "delta": 2.61,
+            "tied": false,
+            "survives": 1
+          },
+          {
+            "name": "Chase Brown",
+            "pos": "RB",
+            "adp": 17.6,
+            "there": 98,
+            "ppg": 102.21,
+            "delta": 2.57,
+            "tied": false,
+            "survives": 28
+          },
+          {
+            "name": "Derrick Henry",
+            "pos": "RB",
+            "adp": 14.2,
+            "there": 71,
+            "ppg": 102.07,
+            "delta": 2.51,
+            "tied": false,
+            "survives": 1
+          },
+          {
+            "name": "Saquon Barkley",
+            "pos": "RB",
+            "adp": 10.8,
+            "there": 33,
+            "ppg": 101.39,
+            "delta": 1.57,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Brock Bowers",
+            "pos": "TE",
+            "adp": 23.9,
+            "there": 100,
+            "ppg": 101.1,
+            "delta": 1.46,
+            "tied": false,
+            "survives": 100
+          },
+          {
+            "name": "Ashton Jeanty",
+            "pos": "RB",
+            "adp": 15.2,
+            "there": 95,
+            "ppg": 100.92,
+            "delta": 1.3,
+            "tied": false,
+            "survives": 30
+          },
+          {
+            "name": "CeeDee Lamb",
+            "pos": "WR",
+            "adp": 11.6,
+            "there": 100,
+            "ppg": 100.58,
+            "delta": 0.94,
+            "tied": false,
+            "survives": 100
+          },
+          {
+            "name": "Justin Jefferson",
+            "pos": "WR",
+            "adp": 11.3,
+            "there": 100,
+            "ppg": 100.27,
+            "delta": 0.62,
+            "tied": false,
+            "survives": 100
+          },
+          {
+            "name": "Drake London",
+            "pos": "WR",
+            "adp": 21.6,
+            "there": 100,
+            "ppg": 100.05,
+            "delta": 0.41,
+            "tied": false,
+            "survives": 100
+          },
+          {
+            "name": "Nico Collins",
+            "pos": "WR",
+            "adp": 22.7,
+            "there": 100,
+            "ppg": 99.65,
+            "delta": 0,
+            "tied": false,
+            "survives": 100
+          }
+        ],
+        "round2": {
+          "Amon-Ra St. Brown": [
+            {
+              "name": "Jaxon Smith-Njigba",
+              "pos": "WR",
+              "adp": 8.4,
+              "there": 86,
+              "ppg": 102.43,
+              "delta": 3.24,
+              "tied": false
+            },
+            {
+              "name": "Chase Brown",
+              "pos": "RB",
+              "adp": 17.6,
+              "there": 23,
+              "ppg": 101.56,
+              "delta": 2.08,
+              "tied": false
+            },
+            {
+              "name": "Kenneth Walker III",
+              "pos": "RB",
+              "adp": 18,
+              "there": 51,
+              "ppg": 100.74,
+              "delta": 1.7,
+              "tied": false
+            },
+            {
+              "name": "Omarion Hampton",
+              "pos": "RB",
+              "adp": 16.5,
+              "there": 34,
+              "ppg": 100.4,
+              "delta": 1.21,
+              "tied": false
+            },
+            {
+              "name": "Ashton Jeanty",
+              "pos": "RB",
+              "adp": 15.2,
+              "there": 26,
+              "ppg": 100.2,
+              "delta": 1.21,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 91,
+              "ppg": 100.16,
+              "delta": 0.98,
+              "tied": false
+            },
+            {
+              "name": "CeeDee Lamb",
+              "pos": "WR",
+              "adp": 11.6,
+              "there": 91,
+              "ppg": 100.06,
+              "delta": 0.89,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 91,
+              "ppg": 99.77,
+              "delta": 0.59,
+              "tied": false
+            },
+            {
+              "name": "Justin Jefferson",
+              "pos": "WR",
+              "adp": 11.3,
+              "there": 91,
+              "ppg": 99.37,
+              "delta": 0.2,
+              "tied": true
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 91,
+              "ppg": 99.18,
+              "delta": 0,
+              "tied": false
+            }
+          ],
+          "Jaxon Smith-Njigba": [
+            {
+              "name": "Amon-Ra St. Brown",
+              "pos": "WR",
+              "adp": 7.9,
+              "there": 86,
+              "ppg": 102.45,
+              "delta": 2.82,
+              "tied": false
+            },
+            {
+              "name": "Chase Brown",
+              "pos": "RB",
+              "adp": 17.6,
+              "there": 26,
+              "ppg": 102.45,
+              "delta": 2.73,
+              "tied": false
+            },
+            {
+              "name": "Kenneth Walker III",
+              "pos": "RB",
+              "adp": 18,
+              "there": 54,
+              "ppg": 101.44,
+              "delta": 1.7,
+              "tied": false
+            },
+            {
+              "name": "Omarion Hampton",
+              "pos": "RB",
+              "adp": 16.5,
+              "there": 36,
+              "ppg": 101.08,
+              "delta": 1.43,
+              "tied": false
+            },
+            {
+              "name": "Ashton Jeanty",
+              "pos": "RB",
+              "adp": 15.2,
+              "there": 28,
+              "ppg": 100.99,
+              "delta": 1.42,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 94,
+              "ppg": 100.95,
+              "delta": 1.3,
+              "tied": false
+            },
+            {
+              "name": "CeeDee Lamb",
+              "pos": "WR",
+              "adp": 11.6,
+              "there": 95,
+              "ppg": 100.62,
+              "delta": 0.97,
+              "tied": false
+            },
+            {
+              "name": "Justin Jefferson",
+              "pos": "WR",
+              "adp": 11.3,
+              "there": 94,
+              "ppg": 100.32,
+              "delta": 0.67,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 95,
+              "ppg": 100.07,
+              "delta": 0.42,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 95,
+              "ppg": 99.65,
+              "delta": 0,
+              "tied": false
+            }
+          ],
+          "De'Von Achane": [
+            {
+              "name": "Jaxon Smith-Njigba",
+              "pos": "WR",
+              "adp": 8.4,
+              "there": 40,
+              "ppg": 102.63,
+              "delta": 2.91,
+              "tied": false
+            },
+            {
+              "name": "Amon-Ra St. Brown",
+              "pos": "WR",
+              "adp": 7.9,
+              "there": 38,
+              "ppg": 101.84,
+              "delta": 2.09,
+              "tied": false
+            },
+            {
+              "name": "CeeDee Lamb",
+              "pos": "WR",
+              "adp": 11.6,
+              "there": 44,
+              "ppg": 100.09,
+              "delta": 0.36,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 44,
+              "ppg": 99.95,
+              "delta": 0.22,
+              "tied": true
+            },
+            {
+              "name": "Ashton Jeanty",
+              "pos": "RB",
+              "adp": 15.2,
+              "there": 6,
+              "ppg": 99.49,
+              "delta": 0.11,
+              "tied": true
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 44,
+              "ppg": 99.77,
+              "delta": 0.04,
+              "tied": true
+            },
+            {
+              "name": "Kenneth Walker III",
+              "pos": "RB",
+              "adp": 18,
+              "there": 15,
+              "ppg": 99.93,
+              "delta": 0.02,
+              "tied": true
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 44,
+              "ppg": 99.73,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Justin Jefferson",
+              "pos": "WR",
+              "adp": 11.3,
+              "there": 44,
+              "ppg": 99.59,
+              "delta": -0.15,
+              "tied": true
+            },
+            {
+              "name": "Omarion Hampton",
+              "pos": "RB",
+              "adp": 16.5,
+              "there": 9,
+              "ppg": 98.91,
+              "delta": -0.63,
+              "tied": false
+            }
+          ],
+          "Chase Brown": [
+            {
+              "name": "Jaxon Smith-Njigba",
+              "pos": "WR",
+              "adp": 8.4,
+              "there": 91,
+              "ppg": 102.39,
+              "delta": 2.79,
+              "tied": false
+            },
+            {
+              "name": "Amon-Ra St. Brown",
+              "pos": "WR",
+              "adp": 7.9,
+              "there": 87,
+              "ppg": 101.6,
+              "delta": 2,
+              "tied": false
+            },
+            {
+              "name": "CeeDee Lamb",
+              "pos": "WR",
+              "adp": 11.6,
+              "there": 98,
+              "ppg": 99.87,
+              "delta": 0.26,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 98,
+              "ppg": 99.77,
+              "delta": 0.15,
+              "tied": true
+            },
+            {
+              "name": "Kenneth Walker III",
+              "pos": "RB",
+              "adp": 18,
+              "there": 31,
+              "ppg": 99.63,
+              "delta": 0.04,
+              "tied": true
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 98,
+              "ppg": 99.61,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 98,
+              "ppg": 99.45,
+              "delta": -0.16,
+              "tied": true
+            },
+            {
+              "name": "Justin Jefferson",
+              "pos": "WR",
+              "adp": 11.3,
+              "there": 97,
+              "ppg": 99.32,
+              "delta": -0.29,
+              "tied": false
+            },
+            {
+              "name": "Ashton Jeanty",
+              "pos": "RB",
+              "adp": 15.2,
+              "there": 13,
+              "ppg": 99.15,
+              "delta": -0.6,
+              "tied": false
+            },
+            {
+              "name": "Omarion Hampton",
+              "pos": "RB",
+              "adp": 16.5,
+              "there": 19,
+              "ppg": 98.89,
+              "delta": -0.8,
+              "tied": false
+            }
+          ],
+          "Derrick Henry": [
+            {
+              "name": "Jaxon Smith-Njigba",
+              "pos": "WR",
+              "adp": 8.4,
+              "there": 65,
+              "ppg": 102.15,
+              "delta": 2.37,
+              "tied": false
+            },
+            {
+              "name": "Amon-Ra St. Brown",
+              "pos": "WR",
+              "adp": 7.9,
+              "there": 62,
+              "ppg": 101.2,
+              "delta": 1.45,
+              "tied": false
+            },
+            {
+              "name": "Chase Brown",
+              "pos": "RB",
+              "adp": 17.6,
+              "there": 7,
+              "ppg": 100,
+              "delta": 0.12,
+              "tied": true
+            },
+            {
+              "name": "CeeDee Lamb",
+              "pos": "WR",
+              "adp": 11.6,
+              "there": 71,
+              "ppg": 99.77,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 71,
+              "ppg": 99.48,
+              "delta": -0.29,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 70,
+              "ppg": 99.31,
+              "delta": -0.45,
+              "tied": false
+            },
+            {
+              "name": "Justin Jefferson",
+              "pos": "WR",
+              "adp": 11.3,
+              "there": 70,
+              "ppg": 99.05,
+              "delta": -0.73,
+              "tied": false
+            },
+            {
+              "name": "Ashton Jeanty",
+              "pos": "RB",
+              "adp": 15.2,
+              "there": 9,
+              "ppg": 98.87,
+              "delta": -0.78,
+              "tied": false
+            },
+            {
+              "name": "Omarion Hampton",
+              "pos": "RB",
+              "adp": 16.5,
+              "there": 12,
+              "ppg": 98.76,
+              "delta": -0.97,
+              "tied": false
+            }
+          ],
+          "Saquon Barkley": [
+            {
+              "name": "Jaxon Smith-Njigba",
+              "pos": "WR",
+              "adp": 8.4,
+              "there": 29,
+              "ppg": 101.38,
+              "delta": 2.43,
+              "tied": false
+            },
+            {
+              "name": "Amon-Ra St. Brown",
+              "pos": "WR",
+              "adp": 7.9,
+              "there": 28,
+              "ppg": 100.66,
+              "delta": 1.82,
+              "tied": false
+            },
+            {
+              "name": "CeeDee Lamb",
+              "pos": "WR",
+              "adp": 11.6,
+              "there": 33,
+              "ppg": 98.95,
+              "delta": 0.07,
+              "tied": true
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 33,
+              "ppg": 98.88,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 33,
+              "ppg": 98.85,
+              "delta": -0.03,
+              "tied": true
+            },
+            {
+              "name": "Justin Jefferson",
+              "pos": "WR",
+              "adp": 11.3,
+              "there": 33,
+              "ppg": 98.62,
+              "delta": -0.26,
+              "tied": true
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 33,
+              "ppg": 98.52,
+              "delta": -0.36,
+              "tied": false
+            },
+            {
+              "name": "Omarion Hampton",
+              "pos": "RB",
+              "adp": 16.5,
+              "there": 6,
+              "ppg": 98.02,
+              "delta": -0.41,
+              "tied": true
+            },
+            {
+              "name": "Kenneth Walker III",
+              "pos": "RB",
+              "adp": 18,
+              "there": 12,
+              "ppg": 98.68,
+              "delta": -0.59,
+              "tied": false
+            },
+            {
+              "name": "Ashton Jeanty",
+              "pos": "RB",
+              "adp": 15.2,
+              "there": 5,
+              "ppg": 98.04,
+              "delta": -0.87,
+              "tied": false
+            }
+          ],
+          "Brock Bowers": [
+            {
+              "name": "Jaxon Smith-Njigba",
+              "pos": "WR",
+              "adp": 8.4,
+              "there": 94,
+              "ppg": 100.9,
+              "delta": 2.94,
+              "tied": false
+            },
+            {
+              "name": "Amon-Ra St. Brown",
+              "pos": "WR",
+              "adp": 7.9,
+              "there": 91,
+              "ppg": 100.17,
+              "delta": 2.24,
+              "tied": false
+            },
+            {
+              "name": "Chase Brown",
+              "pos": "RB",
+              "adp": 17.6,
+              "there": 27,
+              "ppg": 99.85,
+              "delta": 1.95,
+              "tied": false
+            },
+            {
+              "name": "Omarion Hampton",
+              "pos": "RB",
+              "adp": 16.5,
+              "there": 37,
+              "ppg": 98.63,
+              "delta": 0.83,
+              "tied": false
+            },
+            {
+              "name": "CeeDee Lamb",
+              "pos": "WR",
+              "adp": 11.6,
+              "there": 100,
+              "ppg": 98.56,
+              "delta": 0.63,
+              "tied": false
+            },
+            {
+              "name": "Ashton Jeanty",
+              "pos": "RB",
+              "adp": 15.2,
+              "there": 31,
+              "ppg": 98.42,
+              "delta": 0.44,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 100,
+              "ppg": 98.25,
+              "delta": 0.32,
+              "tied": false
+            },
+            {
+              "name": "Justin Jefferson",
+              "pos": "WR",
+              "adp": 11.3,
+              "there": 100,
+              "ppg": 98.1,
+              "delta": 0.18,
+              "tied": true
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 100,
+              "ppg": 97.93,
+              "delta": 0,
+              "tied": false
+            }
+          ],
+          "Ashton Jeanty": [
+            {
+              "name": "Jaxon Smith-Njigba",
+              "pos": "WR",
+              "adp": 8.4,
+              "there": 88,
+              "ppg": 101.11,
+              "delta": 2.88,
+              "tied": false
+            },
+            {
+              "name": "Amon-Ra St. Brown",
+              "pos": "WR",
+              "adp": 7.9,
+              "there": 85,
+              "ppg": 100.26,
+              "delta": 1.99,
+              "tied": false
+            },
+            {
+              "name": "Chase Brown",
+              "pos": "RB",
+              "adp": 17.6,
+              "there": 11,
+              "ppg": 98.86,
+              "delta": 0.88,
+              "tied": false
+            },
+            {
+              "name": "CeeDee Lamb",
+              "pos": "WR",
+              "adp": 11.6,
+              "there": 95,
+              "ppg": 98.66,
+              "delta": 0.42,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 95,
+              "ppg": 98.38,
+              "delta": 0.14,
+              "tied": true
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 95,
+              "ppg": 98.23,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Kenneth Walker III",
+              "pos": "RB",
+              "adp": 18,
+              "there": 31,
+              "ppg": 98.32,
+              "delta": -0.05,
+              "tied": true
+            },
+            {
+              "name": "Justin Jefferson",
+              "pos": "WR",
+              "adp": 11.3,
+              "there": 95,
+              "ppg": 97.98,
+              "delta": -0.25,
+              "tied": false
+            },
+            {
+              "name": "Omarion Hampton",
+              "pos": "RB",
+              "adp": 16.5,
+              "there": 18,
+              "ppg": 97.65,
+              "delta": -0.57,
+              "tied": false
+            }
+          ],
+          "CeeDee Lamb": [
+            {
+              "name": "Jaxon Smith-Njigba",
+              "pos": "WR",
+              "adp": 8.4,
+              "there": 94,
+              "ppg": 100.62,
+              "delta": 3.58,
+              "tied": false
+            },
+            {
+              "name": "Amon-Ra St. Brown",
+              "pos": "WR",
+              "adp": 7.9,
+              "there": 91,
+              "ppg": 100.04,
+              "delta": 3.05,
+              "tied": false
+            },
+            {
+              "name": "Chase Brown",
+              "pos": "RB",
+              "adp": 17.6,
+              "there": 28,
+              "ppg": 99.88,
+              "delta": 2.8,
+              "tied": false
+            },
+            {
+              "name": "Kenneth Walker III",
+              "pos": "RB",
+              "adp": 18,
+              "there": 58,
+              "ppg": 99.04,
+              "delta": 1.94,
+              "tied": false
+            },
+            {
+              "name": "Omarion Hampton",
+              "pos": "RB",
+              "adp": 16.5,
+              "there": 39,
+              "ppg": 98.8,
+              "delta": 1.78,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 100,
+              "ppg": 98.59,
+              "delta": 1.56,
+              "tied": false
+            },
+            {
+              "name": "Ashton Jeanty",
+              "pos": "RB",
+              "adp": 15.2,
+              "there": 30,
+              "ppg": 98.38,
+              "delta": 1.33,
+              "tied": false
+            },
+            {
+              "name": "Justin Jefferson",
+              "pos": "WR",
+              "adp": 11.3,
+              "there": 100,
+              "ppg": 97.8,
+              "delta": 0.77,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 100,
+              "ppg": 97.74,
+              "delta": 0.71,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 100,
+              "ppg": 97.03,
+              "delta": 0,
+              "tied": false
+            }
+          ]
+        }
+      },
+      "Market": {
+        "round1": [
+          {
+            "name": "Jaxon Smith-Njigba",
+            "pos": "WR",
+            "adp": 8.4,
+            "there": 6,
+            "ppg": 101.97,
+            "delta": 1.93,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "James Cook",
+            "pos": "RB",
+            "adp": 9.9,
+            "there": 52,
+            "ppg": 101.37,
+            "delta": 1.54,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Amon-Ra St. Brown",
+            "pos": "WR",
+            "adp": 7.9,
+            "there": 7,
+            "ppg": 100.63,
+            "delta": 0.43,
+            "tied": true,
+            "survives": 0
+          },
+          {
+            "name": "De'Von Achane",
+            "pos": "RB",
+            "adp": 13.1,
+            "there": 95,
+            "ppg": 99.95,
+            "delta": 0.21,
+            "tied": false,
+            "survives": 28
+          },
+          {
+            "name": "Derrick Henry",
+            "pos": "RB",
+            "adp": 14.2,
+            "there": 99,
+            "ppg": 99.9,
+            "delta": 0.12,
+            "tied": true,
+            "survives": 53
+          },
+          {
+            "name": "Chase Brown",
+            "pos": "RB",
+            "adp": 17.6,
+            "there": 100,
+            "ppg": 99.78,
+            "delta": 0,
+            "tied": false,
+            "survives": 67
+          },
+          {
+            "name": "Nico Collins",
+            "pos": "WR",
+            "adp": 22.7,
+            "there": 100,
+            "ppg": 99.72,
+            "delta": -0.07,
+            "tied": true,
+            "survives": 90
+          },
+          {
+            "name": "Brock Bowers",
+            "pos": "TE",
+            "adp": 23.9,
+            "there": 99,
+            "ppg": 99.42,
+            "delta": -0.36,
+            "tied": false,
+            "survives": 97
+          },
+          {
+            "name": "CeeDee Lamb",
+            "pos": "WR",
+            "adp": 11.6,
+            "there": 91,
+            "ppg": 99.36,
+            "delta": -0.42,
+            "tied": false,
+            "survives": 12
+          },
+          {
+            "name": "Saquon Barkley",
+            "pos": "RB",
+            "adp": 10.8,
+            "there": 86,
+            "ppg": 99.1,
+            "delta": -0.68,
+            "tied": false,
+            "survives": 17
+          },
+          {
+            "name": "Justin Jefferson",
+            "pos": "WR",
+            "adp": 11.3,
+            "there": 89,
+            "ppg": 97.63,
+            "delta": -2.17,
+            "tied": false,
+            "survives": 12
+          }
+        ],
+        "round2": {
+          "Jaxon Smith-Njigba": [
+            {
+              "name": "Chase Brown",
+              "pos": "RB",
+              "adp": 17.6,
+              "there": 5,
+              "ppg": 102.61,
+              "delta": 2.36,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 5,
+              "ppg": 101.73,
+              "delta": 1.47,
+              "tied": false
+            },
+            {
+              "name": "Kenneth Walker III",
+              "pos": "RB",
+              "adp": 18,
+              "there": 6,
+              "ppg": 101.62,
+              "delta": 1.36,
+              "tied": false
+            },
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 6,
+              "ppg": 101.15,
+              "delta": 0.91,
+              "tied": false
+            },
+            {
+              "name": "Ashton Jeanty",
+              "pos": "RB",
+              "adp": 15.2,
+              "there": 5,
+              "ppg": 100.96,
+              "delta": 0.71,
+              "tied": true
+            },
+            {
+              "name": "Omarion Hampton",
+              "pos": "RB",
+              "adp": 16.5,
+              "there": 5,
+              "ppg": 100.99,
+              "delta": 0.49,
+              "tied": true
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 6,
+              "ppg": 100.67,
+              "delta": 0.42,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 6,
+              "ppg": 100.24,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 6,
+              "ppg": 100.16,
+              "delta": -0.08,
+              "tied": true
+            }
+          ],
+          "James Cook": [
+            {
+              "name": "Derrick Henry",
+              "pos": "RB",
+              "adp": 14.2,
+              "there": 23,
+              "ppg": 101.55,
+              "delta": 0.53,
+              "tied": false
+            },
+            {
+              "name": "De'Von Achane",
+              "pos": "RB",
+              "adp": 13.1,
+              "there": 11,
+              "ppg": 101.61,
+              "delta": 0.46,
+              "tied": true
+            },
+            {
+              "name": "Chase Brown",
+              "pos": "RB",
+              "adp": 17.6,
+              "there": 49,
+              "ppg": 101.42,
+              "delta": 0.31,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 50,
+              "ppg": 101.17,
+              "delta": 0.09,
+              "tied": true
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 52,
+              "ppg": 101.07,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Saquon Barkley",
+              "pos": "RB",
+              "adp": 10.8,
+              "there": 6,
+              "ppg": 101.41,
+              "delta": -0.11,
+              "tied": true
+            },
+            {
+              "name": "Kenneth Walker III",
+              "pos": "RB",
+              "adp": 18,
+              "there": 50,
+              "ppg": 100.86,
+              "delta": -0.22,
+              "tied": true
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 52,
+              "ppg": 100.75,
+              "delta": -0.32,
+              "tied": false
+            },
+            {
+              "name": "Ashton Jeanty",
+              "pos": "RB",
+              "adp": 15.2,
+              "there": 46,
+              "ppg": 100.41,
+              "delta": -0.63,
+              "tied": false
+            },
+            {
+              "name": "Omarion Hampton",
+              "pos": "RB",
+              "adp": 16.5,
+              "there": 47,
+              "ppg": 100.3,
+              "delta": -0.76,
+              "tied": false
+            }
+          ],
+          "Amon-Ra St. Brown": [
+            {
+              "name": "Chase Brown",
+              "pos": "RB",
+              "adp": 17.6,
+              "there": 7,
+              "ppg": 101.26,
+              "delta": 1.5,
+              "tied": false
+            },
+            {
+              "name": "Omarion Hampton",
+              "pos": "RB",
+              "adp": 16.5,
+              "there": 7,
+              "ppg": 100.51,
+              "delta": 0.68,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 7,
+              "ppg": 100.37,
+              "delta": 0.57,
+              "tied": true
+            },
+            {
+              "name": "Ashton Jeanty",
+              "pos": "RB",
+              "adp": 15.2,
+              "there": 7,
+              "ppg": 100.33,
+              "delta": 0.57,
+              "tied": true
+            },
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 7,
+              "ppg": 100.27,
+              "delta": 0.48,
+              "tied": true
+            },
+            {
+              "name": "Kenneth Walker III",
+              "pos": "RB",
+              "adp": 18,
+              "there": 7,
+              "ppg": 100.21,
+              "delta": 0.46,
+              "tied": true
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 7,
+              "ppg": 99.8,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 7,
+              "ppg": 99.66,
+              "delta": -0.14,
+              "tied": true
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 7,
+              "ppg": 99.46,
+              "delta": -0.34,
+              "tied": true
+            }
+          ],
+          "De'Von Achane": [
+            {
+              "name": "CeeDee Lamb",
+              "pos": "WR",
+              "adp": 11.6,
+              "there": 10,
+              "ppg": 100.05,
+              "delta": 0.29,
+              "tied": true
+            },
+            {
+              "name": "Chase Brown",
+              "pos": "RB",
+              "adp": 17.6,
+              "there": 90,
+              "ppg": 100.43,
+              "delta": 0.21,
+              "tied": false
+            },
+            {
+              "name": "Derrick Henry",
+              "pos": "RB",
+              "adp": 14.2,
+              "there": 43,
+              "ppg": 100.29,
+              "delta": 0.18,
+              "tied": true
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 95,
+              "ppg": 100.15,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 92,
+              "ppg": 99.92,
+              "delta": -0.23,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 95,
+              "ppg": 99.69,
+              "delta": -0.46,
+              "tied": false
+            },
+            {
+              "name": "Justin Jefferson",
+              "pos": "WR",
+              "adp": 11.3,
+              "there": 9,
+              "ppg": 99.92,
+              "delta": -0.67,
+              "tied": false
+            },
+            {
+              "name": "Omarion Hampton",
+              "pos": "RB",
+              "adp": 16.5,
+              "there": 86,
+              "ppg": 99.36,
+              "delta": -0.79,
+              "tied": false
+            },
+            {
+              "name": "Saquon Barkley",
+              "pos": "RB",
+              "adp": 10.8,
+              "there": 14,
+              "ppg": 99.42,
+              "delta": -1.02,
+              "tied": false
+            },
+            {
+              "name": "Ashton Jeanty",
+              "pos": "RB",
+              "adp": 15.2,
+              "there": 86,
+              "ppg": 99.01,
+              "delta": -1.15,
+              "tied": false
+            }
+          ],
+          "Derrick Henry": [
+            {
+              "name": "De'Von Achane",
+              "pos": "RB",
+              "adp": 13.1,
+              "there": 29,
+              "ppg": 100.24,
+              "delta": 0.53,
+              "tied": false
+            },
+            {
+              "name": "CeeDee Lamb",
+              "pos": "WR",
+              "adp": 11.6,
+              "there": 14,
+              "ppg": 100.05,
+              "delta": 0.44,
+              "tied": true
+            },
+            {
+              "name": "Chase Brown",
+              "pos": "RB",
+              "adp": 17.6,
+              "there": 95,
+              "ppg": 99.9,
+              "delta": 0.26,
+              "tied": false
+            },
+            {
+              "name": "Justin Jefferson",
+              "pos": "WR",
+              "adp": 11.3,
+              "there": 13,
+              "ppg": 99.57,
+              "delta": 0.25,
+              "tied": true
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 99,
+              "ppg": 99.62,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 96,
+              "ppg": 99.44,
+              "delta": -0.18,
+              "tied": true
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 99,
+              "ppg": 99.33,
+              "delta": -0.29,
+              "tied": false
+            },
+            {
+              "name": "Saquon Barkley",
+              "pos": "RB",
+              "adp": 10.8,
+              "there": 17,
+              "ppg": 99.36,
+              "delta": -0.34,
+              "tied": true
+            },
+            {
+              "name": "Omarion Hampton",
+              "pos": "RB",
+              "adp": 16.5,
+              "there": 91,
+              "ppg": 98.98,
+              "delta": -0.65,
+              "tied": false
+            },
+            {
+              "name": "Ashton Jeanty",
+              "pos": "RB",
+              "adp": 15.2,
+              "there": 92,
+              "ppg": 98.47,
+              "delta": -1.13,
+              "tied": false
+            }
+          ],
+          "Chase Brown": [
+            {
+              "name": "De'Von Achane",
+              "pos": "RB",
+              "adp": 13.1,
+              "there": 36,
+              "ppg": 100.41,
+              "delta": 0.61,
+              "tied": false
+            },
+            {
+              "name": "CeeDee Lamb",
+              "pos": "WR",
+              "adp": 11.6,
+              "there": 19,
+              "ppg": 100.11,
+              "delta": 0.34,
+              "tied": true
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 97,
+              "ppg": 99.86,
+              "delta": 0.04,
+              "tied": true
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 100,
+              "ppg": 99.83,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Derrick Henry",
+              "pos": "RB",
+              "adp": 14.2,
+              "there": 69,
+              "ppg": 99.87,
+              "delta": -0.04,
+              "tied": true
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 100,
+              "ppg": 99.51,
+              "delta": -0.31,
+              "tied": false
+            },
+            {
+              "name": "Justin Jefferson",
+              "pos": "WR",
+              "adp": 11.3,
+              "there": 18,
+              "ppg": 99.57,
+              "delta": -0.35,
+              "tied": true
+            },
+            {
+              "name": "Saquon Barkley",
+              "pos": "RB",
+              "adp": 10.8,
+              "there": 23,
+              "ppg": 99.11,
+              "delta": -0.65,
+              "tied": false
+            },
+            {
+              "name": "Omarion Hampton",
+              "pos": "RB",
+              "adp": 16.5,
+              "there": 93,
+              "ppg": 99.04,
+              "delta": -0.77,
+              "tied": false
+            },
+            {
+              "name": "Ashton Jeanty",
+              "pos": "RB",
+              "adp": 15.2,
+              "there": 94,
+              "ppg": 98.8,
+              "delta": -1.02,
+              "tied": false
+            }
+          ],
+          "Nico Collins": [
+            {
+              "name": "De'Von Achane",
+              "pos": "RB",
+              "adp": 13.1,
+              "there": 37,
+              "ppg": 100.2,
+              "delta": 3.13,
+              "tied": false
+            },
+            {
+              "name": "Chase Brown",
+              "pos": "RB",
+              "adp": 17.6,
+              "there": 98,
+              "ppg": 99.86,
+              "delta": 2.69,
+              "tied": false
+            },
+            {
+              "name": "Derrick Henry",
+              "pos": "RB",
+              "adp": 14.2,
+              "there": 69,
+              "ppg": 99.41,
+              "delta": 2.33,
+              "tied": false
+            },
+            {
+              "name": "Saquon Barkley",
+              "pos": "RB",
+              "adp": 10.8,
+              "there": 23,
+              "ppg": 99.12,
+              "delta": 1.63,
+              "tied": false
+            },
+            {
+              "name": "Ashton Jeanty",
+              "pos": "RB",
+              "adp": 15.2,
+              "there": 94,
+              "ppg": 98.29,
+              "delta": 1.13,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 97,
+              "ppg": 98.02,
+              "delta": 0.85,
+              "tied": false
+            },
+            {
+              "name": "Justin Jefferson",
+              "pos": "WR",
+              "adp": 11.3,
+              "there": 18,
+              "ppg": 97.63,
+              "delta": 0.43,
+              "tied": false
+            },
+            {
+              "name": "CeeDee Lamb",
+              "pos": "WR",
+              "adp": 11.6,
+              "there": 19,
+              "ppg": 97.25,
+              "delta": 0.04,
+              "tied": true
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 100,
+              "ppg": 97.17,
+              "delta": 0,
+              "tied": false
+            }
+          ],
+          "Brock Bowers": [
+            {
+              "name": "Chase Brown",
+              "pos": "RB",
+              "adp": 17.6,
+              "there": 97,
+              "ppg": 99.82,
+              "delta": 1.66,
+              "tied": false
+            },
+            {
+              "name": "De'Von Achane",
+              "pos": "RB",
+              "adp": 13.1,
+              "there": 36,
+              "ppg": 99.84,
+              "delta": 1.54,
+              "tied": false
+            },
+            {
+              "name": "Derrick Henry",
+              "pos": "RB",
+              "adp": 14.2,
+              "there": 68,
+              "ppg": 99.45,
+              "delta": 1.3,
+              "tied": false
+            },
+            {
+              "name": "Saquon Barkley",
+              "pos": "RB",
+              "adp": 10.8,
+              "there": 22,
+              "ppg": 99.17,
+              "delta": 1,
+              "tied": false
+            },
+            {
+              "name": "Justin Jefferson",
+              "pos": "WR",
+              "adp": 11.3,
+              "there": 17,
+              "ppg": 98.81,
+              "delta": 0.53,
+              "tied": false
+            },
+            {
+              "name": "CeeDee Lamb",
+              "pos": "WR",
+              "adp": 11.6,
+              "there": 18,
+              "ppg": 98.49,
+              "delta": 0.49,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 99,
+              "ppg": 98.51,
+              "delta": 0.36,
+              "tied": false
+            },
+            {
+              "name": "Ashton Jeanty",
+              "pos": "RB",
+              "adp": 15.2,
+              "there": 93,
+              "ppg": 98.41,
+              "delta": 0.27,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 99,
+              "ppg": 98.15,
+              "delta": 0,
+              "tied": false
+            }
+          ],
+          "CeeDee Lamb": [
+            {
+              "name": "De'Von Achane",
+              "pos": "RB",
+              "adp": 13.1,
+              "there": 19,
+              "ppg": 100.37,
+              "delta": 3.45,
+              "tied": false
+            },
+            {
+              "name": "Derrick Henry",
+              "pos": "RB",
+              "adp": 14.2,
+              "there": 40,
+              "ppg": 100.02,
+              "delta": 2.88,
+              "tied": false
+            },
+            {
+              "name": "Chase Brown",
+              "pos": "RB",
+              "adp": 17.6,
+              "there": 85,
+              "ppg": 100,
+              "delta": 2.8,
+              "tied": false
+            },
+            {
+              "name": "Saquon Barkley",
+              "pos": "RB",
+              "adp": 10.8,
+              "there": 12,
+              "ppg": 99.29,
+              "delta": 2.03,
+              "tied": false
+            },
+            {
+              "name": "Omarion Hampton",
+              "pos": "RB",
+              "adp": 16.5,
+              "there": 81,
+              "ppg": 98.89,
+              "delta": 1.71,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 88,
+              "ppg": 98.8,
+              "delta": 1.62,
+              "tied": false
+            },
+            {
+              "name": "Ashton Jeanty",
+              "pos": "RB",
+              "adp": 15.2,
+              "there": 81,
+              "ppg": 98.7,
+              "delta": 1.55,
+              "tied": false
+            },
+            {
+              "name": "Justin Jefferson",
+              "pos": "WR",
+              "adp": 11.3,
+              "there": 8,
+              "ppg": 98.36,
+              "delta": 1.19,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 91,
+              "ppg": 97.98,
+              "delta": 0.81,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 91,
+              "ppg": 97.17,
+              "delta": 0,
+              "tied": false
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Brian JK": {
+    "seat": 2,
+    "p1": 2,
+    "p2": 23,
+    "rooms": {
+      "RB LOSS": {
+        "round1": [
+          {
+            "name": "Jahmyr Gibbs",
+            "pos": "RB",
+            "adp": 1.3,
+            "there": 8,
+            "ppg": 105.41,
+            "delta": 4.97,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Bijan Robinson",
+            "pos": "RB",
+            "adp": 2.9,
+            "there": 97,
+            "ppg": 104.41,
+            "delta": 4.17,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Christian McCaffrey",
+            "pos": "RB",
+            "adp": 4,
+            "there": 99,
+            "ppg": 103.27,
+            "delta": 3.05,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Jonathan Taylor",
+            "pos": "RB",
+            "adp": 5.6,
+            "there": 100,
+            "ppg": 102.9,
+            "delta": 2.67,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "James Cook",
+            "pos": "RB",
+            "adp": 9.9,
+            "there": 100,
+            "ppg": 101.61,
+            "delta": 1.38,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Jaxon Smith-Njigba",
+            "pos": "WR",
+            "adp": 8.4,
+            "there": 100,
+            "ppg": 100.7,
+            "delta": 0.47,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Amon-Ra St. Brown",
+            "pos": "WR",
+            "adp": 7.9,
+            "there": 100,
+            "ppg": 100.3,
+            "delta": 0.07,
+            "tied": true,
+            "survives": 0
+          },
+          {
+            "name": "Puka Nacua",
+            "pos": "WR",
+            "adp": 5.8,
+            "there": 100,
+            "ppg": 100.23,
+            "delta": 0,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Ja'Marr Chase",
+            "pos": "WR",
+            "adp": 3,
+            "there": 98,
+            "ppg": 100.1,
+            "delta": -0.14,
+            "tied": true,
+            "survives": 0
+          }
+        ],
+        "round2": {
+          "Jahmyr Gibbs": [
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 8,
+              "ppg": 105.52,
+              "delta": 0.17,
+              "tied": true
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 8,
+              "ppg": 105.4,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 8,
+              "ppg": 105.31,
+              "delta": -0.09,
+              "tied": true
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 7,
+              "ppg": 105.19,
+              "delta": -0.22,
+              "tied": true
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 8,
+              "ppg": 104.75,
+              "delta": -0.66,
+              "tied": false
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 8,
+              "ppg": 104.47,
+              "delta": -0.93,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 8,
+              "ppg": 104.3,
+              "delta": -1.11,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 8,
+              "ppg": 104.24,
+              "delta": -1.12,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 7,
+              "ppg": 103.09,
+              "delta": -2.4,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 8,
+              "ppg": 102.51,
+              "delta": -2.89,
+              "tied": false
+            }
+          ],
+          "Bijan Robinson": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 93,
+              "ppg": 104.59,
+              "delta": 1.12,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 97,
+              "ppg": 104.4,
+              "delta": 0.92,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 94,
+              "ppg": 104.23,
+              "delta": 0.74,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 90,
+              "ppg": 104.07,
+              "delta": 0.62,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 97,
+              "ppg": 103.82,
+              "delta": 0.35,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 95,
+              "ppg": 103.76,
+              "delta": 0.3,
+              "tied": false
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 97,
+              "ppg": 103.47,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 97,
+              "ppg": 103.3,
+              "delta": -0.17,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 82,
+              "ppg": 102.24,
+              "delta": -1.22,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 97,
+              "ppg": 101.48,
+              "delta": -1.99,
+              "tied": false
+            }
+          ],
+          "Christian McCaffrey": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 94,
+              "ppg": 103.49,
+              "delta": 1.14,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 98,
+              "ppg": 103.45,
+              "delta": 1.1,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 95,
+              "ppg": 103.39,
+              "delta": 1.06,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 91,
+              "ppg": 103.18,
+              "delta": 0.87,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 97,
+              "ppg": 102.65,
+              "delta": 0.31,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 99,
+              "ppg": 102.49,
+              "delta": 0.15,
+              "tied": true
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 99,
+              "ppg": 102.34,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 99,
+              "ppg": 102.07,
+              "delta": -0.27,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 83,
+              "ppg": 100.91,
+              "delta": -1.41,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 99,
+              "ppg": 100.27,
+              "delta": -2.07,
+              "tied": false
+            }
+          ],
+          "Jonathan Taylor": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 95,
+              "ppg": 103.04,
+              "delta": 1.25,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 99,
+              "ppg": 102.88,
+              "delta": 1.1,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 92,
+              "ppg": 102.72,
+              "delta": 0.98,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 96,
+              "ppg": 102.75,
+              "delta": 0.96,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 100,
+              "ppg": 102.14,
+              "delta": 0.37,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 98,
+              "ppg": 102.04,
+              "delta": 0.26,
+              "tied": false
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 100,
+              "ppg": 101.77,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 100,
+              "ppg": 101.61,
+              "delta": -0.16,
+              "tied": true
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 84,
+              "ppg": 100.63,
+              "delta": -1.13,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 100,
+              "ppg": 99.77,
+              "delta": -2,
+              "tied": false
+            }
+          ],
+          "James Cook": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 95,
+              "ppg": 101.75,
+              "delta": 1.29,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 100,
+              "ppg": 101.48,
+              "delta": 1.02,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 97,
+              "ppg": 101.42,
+              "delta": 0.97,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 93,
+              "ppg": 101.27,
+              "delta": 0.83,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 100,
+              "ppg": 100.82,
+              "delta": 0.36,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 98,
+              "ppg": 100.82,
+              "delta": 0.36,
+              "tied": false
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 100,
+              "ppg": 100.46,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 100,
+              "ppg": 100.31,
+              "delta": -0.15,
+              "tied": true
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 84,
+              "ppg": 99.12,
+              "delta": -1.3,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 100,
+              "ppg": 98.41,
+              "delta": -2.05,
+              "tied": false
+            }
+          ],
+          "Jaxon Smith-Njigba": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 96,
+              "ppg": 101.41,
+              "delta": 1.79,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 100,
+              "ppg": 100.55,
+              "delta": 0.92,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 97,
+              "ppg": 100.4,
+              "delta": 0.79,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 98,
+              "ppg": 100.35,
+              "delta": 0.74,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 92,
+              "ppg": 100.21,
+              "delta": 0.59,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 100,
+              "ppg": 99.86,
+              "delta": 0.23,
+              "tied": false
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 100,
+              "ppg": 99.62,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 100,
+              "ppg": 99.4,
+              "delta": -0.22,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 84,
+              "ppg": 98.89,
+              "delta": -0.75,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 100,
+              "ppg": 97.74,
+              "delta": -1.88,
+              "tied": false
+            }
+          ],
+          "Amon-Ra St. Brown": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 96,
+              "ppg": 100.84,
+              "delta": 1.68,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 100,
+              "ppg": 100.42,
+              "delta": 1.26,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 97,
+              "ppg": 100.35,
+              "delta": 1.2,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 92,
+              "ppg": 100.17,
+              "delta": 1.02,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 98,
+              "ppg": 100,
+              "delta": 0.82,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 100,
+              "ppg": 99.62,
+              "delta": 0.46,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 100,
+              "ppg": 99.23,
+              "delta": 0.08,
+              "tied": true
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 100,
+              "ppg": 99.16,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 84,
+              "ppg": 98.24,
+              "delta": -0.94,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 100,
+              "ppg": 97.27,
+              "delta": -1.89,
+              "tied": false
+            }
+          ],
+          "Puka Nacua": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 95,
+              "ppg": 100.86,
+              "delta": 1.73,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 100,
+              "ppg": 100.21,
+              "delta": 1.1,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 97,
+              "ppg": 99.94,
+              "delta": 0.83,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 98,
+              "ppg": 99.87,
+              "delta": 0.78,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 93,
+              "ppg": 99.71,
+              "delta": 0.62,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 100,
+              "ppg": 99.43,
+              "delta": 0.33,
+              "tied": false
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 100,
+              "ppg": 99.1,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 100,
+              "ppg": 99.08,
+              "delta": -0.01,
+              "tied": true
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 84,
+              "ppg": 98.17,
+              "delta": -0.98,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 100,
+              "ppg": 97.29,
+              "delta": -1.81,
+              "tied": false
+            }
+          ],
+          "Ja'Marr Chase": [
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 93,
+              "ppg": 100.84,
+              "delta": 1.67,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 98,
+              "ppg": 100.23,
+              "delta": 1.07,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 95,
+              "ppg": 100.16,
+              "delta": 1.04,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 91,
+              "ppg": 99.93,
+              "delta": 0.79,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 96,
+              "ppg": 99.91,
+              "delta": 0.75,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 98,
+              "ppg": 99.51,
+              "delta": 0.36,
+              "tied": false
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 98,
+              "ppg": 99.15,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 98,
+              "ppg": 99.03,
+              "delta": -0.12,
+              "tied": true
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 82,
+              "ppg": 98.25,
+              "delta": -0.92,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 98,
+              "ppg": 97.19,
+              "delta": -1.96,
+              "tied": false
+            }
+          ]
+        }
+      },
+      "Market": {
+        "round1": [
+          {
+            "name": "Jahmyr Gibbs",
+            "pos": "RB",
+            "adp": 1.3,
+            "there": 8,
+            "ppg": 104.82,
+            "delta": 4.06,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Bijan Robinson",
+            "pos": "RB",
+            "adp": 2.9,
+            "there": 97,
+            "ppg": 103.94,
+            "delta": 3.12,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Christian McCaffrey",
+            "pos": "RB",
+            "adp": 4,
+            "there": 99,
+            "ppg": 103.15,
+            "delta": 2.32,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Jonathan Taylor",
+            "pos": "RB",
+            "adp": 5.6,
+            "there": 100,
+            "ppg": 102.41,
+            "delta": 1.58,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "James Cook",
+            "pos": "RB",
+            "adp": 9.9,
+            "there": 100,
+            "ppg": 101.36,
+            "delta": 0.54,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Jaxon Smith-Njigba",
+            "pos": "WR",
+            "adp": 8.4,
+            "there": 100,
+            "ppg": 101.26,
+            "delta": 0.44,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Amon-Ra St. Brown",
+            "pos": "WR",
+            "adp": 7.9,
+            "there": 100,
+            "ppg": 101,
+            "delta": 0.18,
+            "tied": true,
+            "survives": 0
+          },
+          {
+            "name": "Puka Nacua",
+            "pos": "WR",
+            "adp": 5.8,
+            "there": 100,
+            "ppg": 100.82,
+            "delta": 0,
+            "tied": false,
+            "survives": 0
+          },
+          {
+            "name": "Ja'Marr Chase",
+            "pos": "WR",
+            "adp": 3,
+            "there": 98,
+            "ppg": 100.75,
+            "delta": -0.07,
+            "tied": true,
+            "survives": 0
+          }
+        ],
+        "round2": {
+          "Jahmyr Gibbs": [
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 6,
+              "ppg": 105.4,
+              "delta": 0.91,
+              "tied": false
+            },
+            {
+              "name": "Jeremiyah Love",
+              "pos": "RB",
+              "adp": 27.4,
+              "there": 8,
+              "ppg": 104.73,
+              "delta": 0.35,
+              "tied": true
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 7,
+              "ppg": 104.63,
+              "delta": 0.2,
+              "tied": true
+            },
+            {
+              "name": "Javonte Williams",
+              "pos": "RB",
+              "adp": 32,
+              "there": 8,
+              "ppg": 104.35,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 5,
+              "ppg": 104.17,
+              "delta": -0.09,
+              "tied": true
+            },
+            {
+              "name": "Chris Olave",
+              "pos": "WR",
+              "adp": 29.9,
+              "there": 8,
+              "ppg": 104.12,
+              "delta": -0.2,
+              "tied": true
+            },
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 7,
+              "ppg": 104,
+              "delta": -0.33,
+              "tied": true
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 7,
+              "ppg": 103.53,
+              "delta": -0.86,
+              "tied": false
+            },
+            {
+              "name": "Rashee Rice",
+              "pos": "WR",
+              "adp": 29.6,
+              "there": 8,
+              "ppg": 103.4,
+              "delta": -0.96,
+              "tied": false
+            },
+            {
+              "name": "Malik Nabers",
+              "pos": "WR",
+              "adp": 28,
+              "there": 8,
+              "ppg": 101.69,
+              "delta": -2.66,
+              "tied": false
+            }
+          ],
+          "Bijan Robinson": [
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 71,
+              "ppg": 104.4,
+              "delta": 0.73,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 62,
+              "ppg": 103.91,
+              "delta": 0.38,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 23,
+              "ppg": 103.76,
+              "delta": 0.19,
+              "tied": true
+            },
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 91,
+              "ppg": 103.49,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 9,
+              "ppg": 103.45,
+              "delta": -0.08,
+              "tied": true
+            },
+            {
+              "name": "Kenneth Walker III",
+              "pos": "RB",
+              "adp": 18,
+              "there": 6,
+              "ppg": 103.88,
+              "delta": -0.25,
+              "tied": true
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 89,
+              "ppg": 103.27,
+              "delta": -0.25,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 80,
+              "ppg": 102.84,
+              "delta": -0.62,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 26,
+              "ppg": 101.44,
+              "delta": -1.9,
+              "tied": false
+            }
+          ],
+          "Christian McCaffrey": [
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 71,
+              "ppg": 103.42,
+              "delta": 0.45,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 9,
+              "ppg": 102.91,
+              "delta": 0.12,
+              "tied": true
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 63,
+              "ppg": 102.93,
+              "delta": 0.05,
+              "tied": true
+            },
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 92,
+              "ppg": 102.81,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 23,
+              "ppg": 102.93,
+              "delta": -0.01,
+              "tied": true
+            },
+            {
+              "name": "Kenneth Walker III",
+              "pos": "RB",
+              "adp": 18,
+              "there": 7,
+              "ppg": 102.79,
+              "delta": -0.06,
+              "tied": true
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 90,
+              "ppg": 102.4,
+              "delta": -0.35,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 81,
+              "ppg": 102.13,
+              "delta": -0.61,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 26,
+              "ppg": 100.53,
+              "delta": -2.08,
+              "tied": false
+            }
+          ],
+          "Jonathan Taylor": [
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 72,
+              "ppg": 102.74,
+              "delta": 0.59,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 64,
+              "ppg": 102.33,
+              "delta": 0.48,
+              "tied": false
+            },
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 93,
+              "ppg": 101.98,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 9,
+              "ppg": 101.66,
+              "delta": -0.06,
+              "tied": true
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 23,
+              "ppg": 102.12,
+              "delta": -0.1,
+              "tied": true
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 91,
+              "ppg": 101.72,
+              "delta": -0.26,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 82,
+              "ppg": 101.44,
+              "delta": -0.52,
+              "tied": false
+            },
+            {
+              "name": "Kenneth Walker III",
+              "pos": "RB",
+              "adp": 18,
+              "there": 7,
+              "ppg": 101.33,
+              "delta": -0.66,
+              "tied": true
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 26,
+              "ppg": 99.75,
+              "delta": -2.06,
+              "tied": false
+            }
+          ],
+          "James Cook": [
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 72,
+              "ppg": 101.59,
+              "delta": 0.61,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 9,
+              "ppg": 101.13,
+              "delta": 0.44,
+              "tied": true
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 64,
+              "ppg": 101.09,
+              "delta": 0.21,
+              "tied": true
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 23,
+              "ppg": 101.23,
+              "delta": 0.18,
+              "tied": true
+            },
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 94,
+              "ppg": 100.89,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 91,
+              "ppg": 100.58,
+              "delta": -0.27,
+              "tied": false
+            },
+            {
+              "name": "Kenneth Walker III",
+              "pos": "RB",
+              "adp": 18,
+              "there": 7,
+              "ppg": 100.56,
+              "delta": -0.48,
+              "tied": true
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 82,
+              "ppg": 100.25,
+              "delta": -0.6,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 27,
+              "ppg": 98.68,
+              "delta": -2.11,
+              "tied": false
+            }
+          ],
+          "Jaxon Smith-Njigba": [
+            {
+              "name": "Kenneth Walker III",
+              "pos": "RB",
+              "adp": 18,
+              "there": 7,
+              "ppg": 101.69,
+              "delta": 0.07,
+              "tied": true
+            },
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 94,
+              "ppg": 101.44,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 72,
+              "ppg": 101.29,
+              "delta": -0.19,
+              "tied": true
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 9,
+              "ppg": 100.65,
+              "delta": -0.51,
+              "tied": true
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 64,
+              "ppg": 100.91,
+              "delta": -0.58,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 23,
+              "ppg": 100.64,
+              "delta": -1.06,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 82,
+              "ppg": 100.06,
+              "delta": -1.32,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 91,
+              "ppg": 99.8,
+              "delta": -1.58,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 27,
+              "ppg": 98.48,
+              "delta": -2.79,
+              "tied": false
+            }
+          ],
+          "Amon-Ra St. Brown": [
+            {
+              "name": "Kenneth Walker III",
+              "pos": "RB",
+              "adp": 18,
+              "there": 7,
+              "ppg": 101.01,
+              "delta": 0.31,
+              "tied": true
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 72,
+              "ppg": 101.17,
+              "delta": 0.27,
+              "tied": false
+            },
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 94,
+              "ppg": 100.87,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 64,
+              "ppg": 100.64,
+              "delta": -0.15,
+              "tied": true
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 91,
+              "ppg": 99.82,
+              "delta": -0.93,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 82,
+              "ppg": 99.8,
+              "delta": -0.94,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 23,
+              "ppg": 100.33,
+              "delta": -0.97,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 9,
+              "ppg": 99.44,
+              "delta": -1.39,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 26,
+              "ppg": 98.13,
+              "delta": -2.71,
+              "tied": false
+            }
+          ],
+          "Puka Nacua": [
+            {
+              "name": "Kenneth Walker III",
+              "pos": "RB",
+              "adp": 18,
+              "there": 7,
+              "ppg": 101.19,
+              "delta": 0.14,
+              "tied": true
+            },
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 94,
+              "ppg": 101.02,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 73,
+              "ppg": 100.9,
+              "delta": -0.2,
+              "tied": true
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 64,
+              "ppg": 100.31,
+              "delta": -0.75,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 23,
+              "ppg": 100.1,
+              "delta": -0.99,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 9,
+              "ppg": 100.02,
+              "delta": -1.02,
+              "tied": false
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 82,
+              "ppg": 99.4,
+              "delta": -1.55,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 91,
+              "ppg": 99.27,
+              "delta": -1.69,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 26,
+              "ppg": 97.96,
+              "delta": -2.89,
+              "tied": false
+            }
+          ],
+          "Ja'Marr Chase": [
+            {
+              "name": "Nico Collins",
+              "pos": "WR",
+              "adp": 22.7,
+              "there": 71,
+              "ppg": 101.22,
+              "delta": 0.22,
+              "tied": false
+            },
+            {
+              "name": "Kenneth Walker III",
+              "pos": "RB",
+              "adp": 18,
+              "there": 7,
+              "ppg": 100.99,
+              "delta": 0.16,
+              "tied": true
+            },
+            {
+              "name": "Kyren Williams",
+              "pos": "RB",
+              "adp": 23.7,
+              "there": 92,
+              "ppg": 100.88,
+              "delta": 0,
+              "tied": false
+            },
+            {
+              "name": "Brock Bowers",
+              "pos": "TE",
+              "adp": 23.9,
+              "there": 63,
+              "ppg": 100.67,
+              "delta": -0.21,
+              "tied": true
+            },
+            {
+              "name": "Trey McBride",
+              "pos": "TE",
+              "adp": 26.6,
+              "there": 80,
+              "ppg": 99.84,
+              "delta": -0.91,
+              "tied": false
+            },
+            {
+              "name": "George Pickens",
+              "pos": "WR",
+              "adp": 25.7,
+              "there": 89,
+              "ppg": 99.85,
+              "delta": -0.92,
+              "tied": false
+            },
+            {
+              "name": "Drake London",
+              "pos": "WR",
+              "adp": 21.6,
+              "there": 23,
+              "ppg": 99.98,
+              "delta": -1.27,
+              "tied": false
+            },
+            {
+              "name": "A.J. Brown",
+              "pos": "WR",
+              "adp": 19.2,
+              "there": 9,
+              "ppg": 99.4,
+              "delta": -1.33,
+              "tied": false
+            },
+            {
+              "name": "Josh Allen",
+              "pos": "QB",
+              "adp": 20.8,
+              "there": 26,
+              "ppg": 98.29,
+              "delta": -2.4,
+              "tied": false
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -7,15 +7,15 @@ import { Card, Eyebrow, Intro, Noob } from "../components/ui";
  *  We force the pick, run best-available after it, and play the season out. `avail` is how
  *  often he was still on the board at that seat. Regenerate with app/scripts/sim-first.mjs */
 const FIRST_PICK: Record<number, { name: string; pos: string; pts: number; avail: number }[]> =
-  {"1":[{"name":"Jahmyr Gibbs","pos":"RB","pts":117.94,"avail":100},{"name":"Bijan Robinson","pos":"RB","pts":117.12,"avail":100},{"name":"Christian McCaffrey","pos":"RB","pts":115.83,"avail":100},{"name":"Jonathan Taylor","pos":"RB","pts":115.69,"avail":100},{"name":"James Cook","pos":"RB","pts":114.17,"avail":100},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":113.8,"avail":100},{"name":"Puka Nacua","pos":"WR","pts":113.33,"avail":100},{"name":"Amon-Ra St. Brown","pos":"WR","pts":113.2,"avail":100},{"name":"Chase Brown","pos":"RB","pts":113.15,"avail":100}],"2":[{"name":"Jahmyr Gibbs","pos":"RB","pts":119.28,"avail":17},{"name":"Bijan Robinson","pos":"RB","pts":118.34,"avail":85},{"name":"Christian McCaffrey","pos":"RB","pts":116.9,"avail":100},{"name":"Jonathan Taylor","pos":"RB","pts":116.37,"avail":100},{"name":"James Cook","pos":"RB","pts":115.08,"avail":100},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":114.32,"avail":100},{"name":"Chase Brown","pos":"RB","pts":114.21,"avail":100},{"name":"Puka Nacua","pos":"WR","pts":113.84,"avail":100},{"name":"Amon-Ra St. Brown","pos":"WR","pts":113.77,"avail":100}],"10":[{"name":"James Cook","pos":"RB","pts":115.21,"avail":37},{"name":"De'Von Achane","pos":"RB","pts":113.67,"avail":96},{"name":"Nico Collins","pos":"WR","pts":113.63,"avail":100},{"name":"Chase Brown","pos":"RB","pts":113.53,"avail":100},{"name":"Kenneth Walker III","pos":"RB","pts":113.04,"avail":100},{"name":"Drake London","pos":"WR","pts":113,"avail":100},{"name":"CeeDee Lamb","pos":"WR","pts":112.97,"avail":90},{"name":"Derrick Henry","pos":"RB","pts":112.97,"avail":100},{"name":"A.J. Brown","pos":"WR","pts":112.83,"avail":100}]};
+  {"1":[{"name":"Jahmyr Gibbs","pos":"RB","pts":100.94,"avail":100},{"name":"Bijan Robinson","pos":"RB","pts":100.07,"avail":100},{"name":"Christian McCaffrey","pos":"RB","pts":99.01,"avail":100},{"name":"Jonathan Taylor","pos":"RB","pts":98.64,"avail":100},{"name":"James Cook","pos":"RB","pts":97.32,"avail":100},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":97.21,"avail":100},{"name":"Puka Nacua","pos":"WR","pts":96.74,"avail":100},{"name":"Amon-Ra St. Brown","pos":"WR","pts":96.58,"avail":100},{"name":"Ja'Marr Chase","pos":"WR","pts":96.25,"avail":100}],"2":[{"name":"Bijan Robinson","pos":"RB","pts":100.16,"avail":97},{"name":"Christian McCaffrey","pos":"RB","pts":99.05,"avail":99},{"name":"Jonathan Taylor","pos":"RB","pts":98.64,"avail":100},{"name":"James Cook","pos":"RB","pts":97.37,"avail":100},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":96.95,"avail":100},{"name":"Puka Nacua","pos":"WR","pts":96.43,"avail":100},{"name":"Amon-Ra St. Brown","pos":"WR","pts":96.29,"avail":100},{"name":"Chase Brown","pos":"RB","pts":95.97,"avail":100},{"name":"Ja'Marr Chase","pos":"WR","pts":95.95,"avail":98}],"10":[{"name":"James Cook","pos":"RB","pts":98.87,"avail":52},{"name":"De'Von Achane","pos":"RB","pts":96.83,"avail":96},{"name":"Chase Brown","pos":"RB","pts":96.46,"avail":100},{"name":"Nico Collins","pos":"WR","pts":96.36,"avail":100},{"name":"CeeDee Lamb","pos":"WR","pts":96.11,"avail":93},{"name":"Derrick Henry","pos":"RB","pts":96.09,"avail":100},{"name":"Kenneth Walker III","pos":"RB","pts":96.04,"avail":100},{"name":"Drake London","pos":"WR","pts":95.79,"avail":100},{"name":"A.J. Brown","pos":"WR","pts":95.66,"avail":100}]};
 
 /** All three tool seats drafting the same way in the same league, 4,000 paired seasons.
  *  Note this is a harder test than the per-seat studies: there, only one seat used our board.
  *  Here all three do, so they compete for the same players. */
 const HEAD_TO_HEAD = [
-  { who: "Ashley", slot: 1, avg: 108.9, best: 34 },
-  { who: "Brian JK", slot: 2, avg: 111.2, best: 40 },
-  { who: "Emily", slot: 10, avg: 104.8, best: 26 },
+  { who: "Ashley", slot: 1, avg: 94.8, best: 36 },
+  { who: "Brian JK", slot: 2, avg: 95.1, best: 38 },
+  { who: "Emily", slot: 10, avg: 90.2, best: 26 },
 ];
 
 
@@ -51,10 +51,9 @@ function RbLoss({ seat }: { seat: number }) {
 
       {zero && (
         <p className="mt-3 rounded border border-avoid/50 bg-avoid/5 px-3 py-2 text-[0.88rem] leading-relaxed text-ink-2">
-          <b className="text-avoid">Abandoning the position is the worst thing you can do.</b> Even in the room that
-          drafts backs hardest, going all-receiver costs{" "}
-          <b className="text-ink">{Math.abs(zero.delta).toFixed(2)} pts/wk</b> against the best shape. The run makes
-          backs <i>more</i> expensive, not less worth having — you still take one, you just pay above ADP for him.
+          <b className="text-avoid">Cost of delaying running back.</b> In this scenario, the receiver-heavy opening trails by{" "}
+          <b className="text-ink">{Math.abs(zero.delta).toFixed(2)} pts/wk</b> against the leading tested shape. Compare that cost with the actual players available;
+          the same positional script can produce different rosters.
         </p>
       )}
 
@@ -113,7 +112,7 @@ function RbLoss({ seat }: { seat: number }) {
         </table>
       </div>
       <p className="m-0 mt-2 text-[0.75rem] leading-relaxed text-ink-3">
-        &ldquo;tied&rdquo; means the gap does not clear two combined standard errors — treat those as the same answer.
+        &ldquo;tied&rdquo; means the gap does not clear two combined standard errors — sampling noise does not distinguish those options.
         Best shape here is <b className="text-ink">{best.k}</b>. Percentages are how often that exact player was the one
         available at that pick.
       </p>
@@ -122,7 +121,7 @@ function RbLoss({ seat }: { seat: number }) {
 }
 
 
-/** Priority order for the first two picks, with the survival column that changes decisions. */
+/** Paired priority comparisons for the first two picks. */
 function PriorityBoard({ seat }: { seat: number }) {
   const [room, setRoom] = useState<"RB LOSS" | "Market">("Market");
   const [took, setTook] = useState<string | null>(null);
@@ -134,28 +133,20 @@ function PriorityBoard({ seat }: { seat: number }) {
   const chosen = took && data.round2[took]?.length ? took : r1[0].name;
   const r2 = data.round2[chosen] ?? [];
 
-  const Row = ({ r, i, showSurv }: { r: typeof r1[number]; i: number; showSurv: boolean }) => {
-    const lasts = showSurv && (r.survives ?? 0) >= 85;
+  const Row = ({ r, i }: { r: typeof r1[number]; i: number }) => {
     return (
       <tr className="border-b border-line-soft/60 last:border-0">
         <td className="py-1.5 pr-2 text-right font-mono text-ink-3">{i + 1}</td>
-        <td className={`py-1.5 pr-3 ${lasts ? "text-ink-3" : "text-ink"}`}>
+        <td className="py-1.5 pr-3 text-ink">
           <b>{r.name}</b> <span className="font-mono text-[0.7rem] text-ink-3">{r.pos}</span>
         </td>
         <td className="py-1.5 pr-3 text-right font-mono tabular-nums text-ink-3">{r.adp.toFixed(1)}</td>
         <td className="py-1.5 pr-3 text-right font-mono tabular-nums text-ink-3">{r.there}%</td>
-        {showSurv && (
-          <td className={`py-1.5 pr-3 text-right font-mono tabular-nums ${lasts ? "font-bold text-risky" : "text-ink-3"}`}>
-            {r.survives ?? 0}%
-          </td>
-        )}
         <td className="py-1.5 pr-3 text-right font-mono tabular-nums text-ink">
           {r.delta === null ? "—" : `${r.delta >= 0 ? "+" : ""}${r.delta.toFixed(2)}`}
           {r.tied && <span className="ml-1 text-[0.7rem] text-ink-3">tied</span>}
         </td>
-        <td className="py-1.5 text-[0.76rem] text-ink-3">
-          {lasts ? "still there at your next pick — take him later" : ""}
-        </td>
+
       </tr>
     );
   };
@@ -169,9 +160,8 @@ function PriorityBoard({ seat }: { seat: number }) {
         compared <b className="text-ink">only against the drafts where both players were on the board</b>.
       </p>
       <p className="m-0 mt-2 text-[0.85rem] leading-relaxed text-ink-2">
-        Read the <b className="text-risky">lasts to {entry.p2}</b> column before the points. A player who is still
-        there at your next pick should not be taken now however well he grades — you get him anyway, and the pick is
-        spent on someone nobody was going to take.
+        Use these paired comparisons alongside the Draft tab's current-board forecast. These tables rank modeled
+        outcomes; they do not estimate a player's chance of returning if you pass on him.
       </p>
 
       <div className="mt-3 flex flex-wrap gap-2">
@@ -191,18 +181,17 @@ function PriorityBoard({ seat }: { seat: number }) {
               <th className="py-1.5 pr-3 font-semibold">Pick {entry.p1}</th>
               <th className="py-1.5 pr-3 text-right font-semibold">ADP</th>
               <th className="py-1.5 pr-3 text-right font-semibold">There</th>
-              <th className="py-1.5 pr-3 text-right font-semibold">Lasts to {entry.p2}</th>
-              <th className="py-1.5 pr-3 text-right font-semibold">Pts/wk</th>
+              <th className="py-1.5 pr-3 text-right font-semibold">Gap pts/wk</th>
               <th className="py-1.5 font-semibold"></th>
             </tr>
           </thead>
-          <tbody>{r1.map((r, i) => <Row key={r.name} r={r} i={i} showSurv />)}</tbody>
+          <tbody>{r1.map((r, i) => <Row key={r.name} r={r} i={i} />)}</tbody>
         </table>
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <span className="text-[0.8rem] text-ink-3">If you took:</span>
-        {r1.filter((r) => data.round2[r.name]?.length).slice(0, 5).map((r) => (
+        {r1.filter((r) => data.round2[r.name]?.length).map((r) => (
           <button key={r.name} type="button"
             className={`btn ${chosen === r.name ? "on" : ""}`}
             onClick={() => setTook(r.name)}>
@@ -218,24 +207,26 @@ function PriorityBoard({ seat }: { seat: number }) {
               <th className="py-1.5 pr-2 text-right font-semibold">#</th>
               <th className="py-1.5 pr-3 font-semibold">Then at pick {entry.p2}</th>
               <th className="py-1.5 pr-3 text-right font-semibold">ADP</th>
-              <th className="py-1.5 pr-3 text-right font-semibold">There</th>
-              <th className="py-1.5 pr-3 text-right font-semibold">Pts/wk</th>
+              <th className="py-1.5 pr-3 text-right font-semibold">Both available</th>
+              <th className="py-1.5 pr-3 text-right font-semibold">Gap pts/wk</th>
               <th className="py-1.5 font-semibold"></th>
             </tr>
           </thead>
-          <tbody>{r2.map((r, i) => <Row key={r.name} r={r} i={i} showSurv={false} />)}</tbody>
+          <tbody>{r2.map((r, i) => <Row key={r.name} r={r} i={i} />)}</tbody>
         </table>
       </div>
       <p className="m-0 mt-2 text-[0.75rem] leading-relaxed text-ink-3">
-        Points are the gap against a common baseline, not an absolute — only the ordering and the size of the gaps
-        mean anything. &ldquo;tied&rdquo; means it does not clear two standard errors.
+        The gap compares each option with a common baseline. In the second table, “Both available” is the share of all worlds
+        where your selected first player reached the first pick and this player reached the second. It is joint availability,
+        so rare first-pick falls produce small percentages.  &ldquo;tied&rdquo; means that comparison
+        falls within two standard errors; it does not establish equality with the top-ranked option.
       </p>
     </Card>
   );
 }
 
 export function SimPanel({ noob }: { noob: boolean }) {
-  const [seat, setSeat] = useState<number>(6);
+  const [seat, setSeat] = useState<number>(2);
   const [branch, setBranch] = useState<string>("");
   const plan = SIM_PLANS[seat];
   const cliff = CLIFF_MAP[seat];
@@ -277,15 +268,15 @@ export function SimPanel({ noob }: { noob: boolean }) {
         </div>
       )}
 
-      <Intro eyebrow="Simulations" title="We drafted this league a million times">
-        Every strategy below was tested by simulating complete 16-round drafts: eleven opponents priced off{" "}
-        <b className="text-ink">Sleeper's real half-PPR ADP</b> — the pick each player actually goes at in our exact
-        format — with realistic randomness, our seat following a fixed plan, then playing the season out. Numbers are
-        points per week from your starting lineup, with each player's season drawn rather than assumed, so the spread
-        you see is the spread you'd actually live through.{" "}
-        <b className="text-ink">Every study is seeded</b>, so re-running it returns the same numbers — that is what lets
-        two strategies meet the identical draft and the identical season, which is the only way a difference this small
-        means anything. When these figures move, it is because ADP or the projections moved, not the dice.
+      <Intro eyebrow="Simulations" title="Draft simulations for your league">
+        Updated September 4, 2026. These studies simulate 14 skill-player rounds in your 12-team,
+        half-PPR league: 1 QB, 2 RB, 2 WR, 1 TE and 2 flex. Your final kicker and defense picks are
+        excluded from the scores. Opponents follow Sleeper ADP blended with current mock drafts.
+        Single-seat tables model the other eleven owners from market behavior; a simulated fall can disappear when another manager follows a fixed plan.
+        Seeded runs make the results reproducible for the same inputs and code.
+        The refreshed studies select starters using projected value before reading simulated scores.
+        Treat the results as conditional model estimates. Small differences depend on projections, injury assumptions and opponent behavior.
+        Scoring-rank percentages describe these simulated drafts; they are not championship odds.
       </Intro>
 
       <PriorityBoard seat={seat} />
@@ -300,20 +291,17 @@ export function SimPanel({ noob }: { noob: boolean }) {
         </p>
         <p className="m-0 mt-2 text-[0.85rem] leading-relaxed text-ink-2">
           You start <b className="text-ink">1 QB, 2 RB, 2 WR, 1 TE, 2 flex, 1 K and 1 DST</b>, with 6 bench spots. Every
-          points-per-week figure on this page counts the <b className="text-ink">eight skill starters only</b> — kicker
-          and defense add roughly 16–18 more, but they are close to identical across all twelve teams, so they cannot
-          separate a good draft from a bad one.
+          points-per-week score on this page counts the <b className="text-ink">eight skill starters only</b>.
+          Kicker and defense production is excluded from these comparisons.
         </p>
         <p className="m-0 mt-2 text-[0.8rem] leading-relaxed text-ink-3">
-          Because K and DST take two of your sixteen picks, we re-ran every strategy with only fourteen rounds of skill
-          players to confirm the two spent picks change nothing. The ranking is identical at all three seats: no
-          difference at all at picks 6 and 10, and a flat −0.57 across <i>every</i> strategy at pick 1, which shifts the
-          whole column without reordering it.
+          The published studies use fourteen skill picks per team. The draft tracker separately supports all sixteen rounds,
+          including early kicker or defense selections. These studies do not estimate the scoring impact of those positions.
         </p>
       </Card>
 
       <Noob show={noob} title="How to read this:">
-        Every number is <b className="text-ink">points your starters score in a typical week</b>. Compare the{" "}
+        The point estimates describe <b className="text-ink">modeled starter production</b>. Compare the{" "}
         <b className="text-ink">mean</b> column to pick a plan — but look at the "bad yr" and "good yr" columns before
         you get attached to it. The spread between a bad season and a good one is far bigger than the spread between
         the plans, which is the honest way of saying: pick the top row, then relax. Use these to choose a{" "}
@@ -323,7 +311,7 @@ export function SimPanel({ noob }: { noob: boolean }) {
 
       {plan && (
         <Card>
-          <Eyebrow>The line that won most often</Eyebrow>
+          <Eyebrow>Weekly policy outcomes</Eyebrow>
           <h3 className="display m-0 mb-1 text-[1.2rem] text-ink">
             {plan.strategy} — {plan.ppw} pts/wk, best team in {plan.winPct}% of drafts
           </h3>
@@ -376,9 +364,9 @@ export function SimPanel({ noob }: { noob: boolean }) {
             </table>
           </div>
           <p className="m-0 mt-2 text-[0.82rem] leading-relaxed text-ink-3">
-            Read both columns together. The top name is only the right answer if he's actually there — Jonathan Taylor
-            grades best at pick 6 but is gone a quarter of the time, so know your second choice before you're on the
-            clock. Anyone sitting at 100% will keep, which is a reason to spend the pick on someone who won't.
+            Read both columns together. A high-scoring option matters only if he reaches this pick. Availability here
+            means he was present at this pick in the simulations; it does not mean he will survive another round.
+            Keep alternatives ready and use the current board when your turn arrives.
           </p>
         </Card>
       )}
@@ -391,8 +379,8 @@ export function SimPanel({ noob }: { noob: boolean }) {
           </h3>
           <p className="m-0 mb-2 text-[0.85rem] text-ink-2">
             Every number is <b className="text-ink">points your starting lineup scores in a week</b> — 1 QB, 2 RB, 2 WR,
-            1 TE, 2 flex. Each strategy runs through the <i>same</i> draft and the <i>same</i> season, so the comparison
-            isolates the plan. "Beats the field" is how often it finished ahead of the other four in that shared season.
+            1 TE, 2 flex. Each strategy shares seeded opponent randomness and player outcomes. Different picks can change
+            the later draft path. "Average matchup win rate" averages its head-to-head results against the other four plans, counting an exact tie as half a win.
           </p>
           <p className="m-0 mb-3 rounded-md bg-line-soft/40 px-2.5 py-2 text-[0.8rem] leading-snug text-ink-2">
             <b className="text-ink">Read the spread before the mean.</b> The gap between the best and worst plan here is{" "}
@@ -412,7 +400,7 @@ export function SimPanel({ noob }: { noob: boolean }) {
                   <th className="px-2 py-1 text-right font-semibold">good yr</th>
                   <th className="px-2 py-1 text-right font-semibold">your RB1</th>
                   <th className="px-2 py-1 text-right font-semibold">your WR1</th>
-                  <th className="px-2 py-1 text-right font-semibold">beats the field</th>
+                  <th className="px-2 py-1 text-right font-semibold">average matchup win rate</th>
                 </tr>
               </thead>
               <tbody>
@@ -473,12 +461,9 @@ export function SimPanel({ noob }: { noob: boolean }) {
           )}
         </div>
         <p className="m-0 mt-3 rounded-md bg-line-soft/40 px-2.5 py-2 text-[0.8rem] leading-snug text-ink-2">
-          <b className="text-ink">The pattern is tight ends.</b> Seven of the fourteen biggest overpays we found are
-          TEs — Kelce, Pitts, LaPorta, Kincaid, Fannin, Ferguson, Kittle. Sleeper's rooms reach for the middle TE tier
-          by two to four rounds. But punting the position is not the answer either: forcing the pick round by round, the best round
-          for a tight end is <b className="text-ink">round 5</b> at all three seats. Paying up in round 2 costs 1.8–2.4
-          pts/wk, and waiting until round 10 still costs 1.0–1.3. Round 5 is the whole window. The falls run the other
-          way — quarterbacks and depth receivers keep, so let them.
+          Compare the current tier and your next turn before choosing a quarterback or tight end.
+          Their value depends on who remains available and what your roster needs. The old fixed
+          round-5 tight-end rule came from an earlier scoring model and has been retired.
         </p>
       </Card>
 
@@ -581,13 +566,9 @@ export function SimPanel({ noob }: { noob: boolean }) {
             </table>
           </div>
           <p className="m-0 mt-3 rounded-md bg-line-soft/40 px-2.5 py-2 text-[0.8rem] leading-snug text-ink-2">
-            <b className="text-ink">The answer is no — and that's the useful finding.</b> Chasing volatile players moves the
-            good-year ceiling by{" "}
-            {(risk.rows[0].ceiling - risk.rows[risk.rows.length - 1].ceiling).toFixed(1)} pts/wk, essentially nothing, while
-            costing {(risk.rows[0].mean - risk.rows[risk.rows.length - 1].mean).toFixed(1)} pts/wk of mean. You start eight
-            skill players every week, so one man's boom cancels another's bust before it ever reaches your score. A high team
-            ceiling comes from picks that <i>hit</i>, not from picks that <i>could</i>. Take the best player available and
-            let the upside arrive on its own.
+            Compare both the mean and the range above. These are model scenarios for different
+            draft preferences. A higher individual variance can change which players the policy takes;
+            it does not establish a championship advantage.
           </p>
         </Card>
       )}
@@ -630,15 +611,14 @@ export function SimPanel({ noob }: { noob: boolean }) {
             </table>
           </div>
           <p className="m-0 mt-2 text-[0.82rem] text-ink-3">
-            QB drops about two points across sixty picks; RB drops six. That gap is the entire argument for waiting on
-            quarterback and attacking running back early.
+            Compare the position columns across your next two picks. Larger drops indicate a more expensive wait.
           </p>
         </Card>
       )}
 
       <Card>
         <Eyebrow>All three of you in one league</Eyebrow>
-        <h3 className="display m-0 mb-2 text-[1.2rem] text-ink">700 drafts with everyone using this tool</h3>
+        <h3 className="display m-0 mb-2 text-[1.2rem] text-ink">4,000 drafts with all three following the board</h3>
         <ul className="m-0 flex list-none flex-col gap-1.5 p-0 text-[0.9rem]">
           {HEAD_TO_HEAD.map((h) => (
             <li key={h.who} className="flex flex-wrap items-baseline gap-x-3 text-ink-2">
@@ -652,10 +632,9 @@ export function SimPanel({ noob }: { noob: boolean }) {
           Read these as seat comparisons, not as the tool’s edge over your league. The gap between these
           numbers and a simulated opponent’s depends heavily on how well the opponent model drafts, and ours
           reaches and panics more than real people do — so any “points clear of the league” figure flatters us.
-          The defensible measure is title odds: running full seasons with the real 7-of-12 playoff field and the
-          weeks 15–17 bracket, all three seats land near <b className="text-ink">14–16%</b> against the
-          <b className="text-ink">8.3%</b> a random team gets. Roughly double, which is worth having and is not
-          the same claim as being ten points a week better than everyone.
+          Championship odds require a validated schedule, playoff bracket, waiver model and opponent
+          model. The previous 14–16% championship claim has been withdrawn because the old schedule
+          generator did not give every team one game per week.
         </p>
       </Card>
     </div>

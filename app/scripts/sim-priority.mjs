@@ -14,11 +14,9 @@
  * the one who slides often is judged on a different set of leagues than the one who rarely
  * slides, which is not a comparison.
  *
- * SURVIVAL. Each row carries how often he is there when the pick arrives, and — for round 1 —
- * how often he is STILL there at your next pick. A player who lasts to your next turn should
- * not be taken now however good he is, and that fact is invisible in a points ranking. Justin
- * Jefferson is the case in point: he reaches seat 10 every single time and survives to pick 15
- * every single time, so taking him at 10 spends a pick on a player nobody was going to take. */
+ * The legacy `survives` field measures remaining availability along the policy path,
+ * including the policy's own pick. It is not survival conditional on passing and is not
+ * displayed as draft advice. Round-2 `there` is joint first/second-pick availability. */
 import { createRequire } from 'node:module';
 import { writeFileSync, readFileSync } from 'node:fs';
 const require = createRequire(import.meta.url);
@@ -26,9 +24,9 @@ const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
 const { SLP } = require(CACHE + 'sleeper.cjs');
 const { PROJ } = require(CACHE + 'projections.cjs');
-const { riskOf, cuffUplift } = require(CACHE + 'risk.cjs');
+const { riskOf, cuffUplift, missShareOf, seasonAvailability, unavailableInWeek } = require(CACHE + 'risk.cjs');
 
-const W = Number(process.argv[2] || 1500);
+const W = Number(process.argv[2] || 5000);
 const TEAMS = 12, ROUNDS = 14;
 const REPL_RANK = { QB: 12, RB: 31, WR: 40, TE: 13 };
 /* Wide enough that a real option cannot fall between the two shortlists. At 6 apiece, Derrick
@@ -45,10 +43,10 @@ P.forEach((r) => {
   const mkt = s.adp !== undefined ? 0.75 * s.adp + 0.25 * ffc : ffc;
   const rk = riskOf(r[0], r[1], r[4]);
   POOL.push({ name: r[0], pos: r[1], team: r[2], adp: +(s.adp ?? ffc).toFixed(1),
-    proj: (PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6) + cuffUplift(r[0]), cv: rk.cv, pMiss: rk.pMiss,
+    proj: (PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6) + cuffUplift(r[0]), cv: rk.cv, pMiss: rk.pMiss, knownMiss: rk.knownMiss,
     mkt, sig: Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * mkt), bye: BYE[r[2]] || 0 });
 });
-const adj = (p) => p.proj * (1 - 0.4 * p.pMiss);
+const adj = (p) => p.proj * (1 - missShareOf(p));
 const REPL = {};
 for (const pos of ['QB','RB','WR','TE']) {
   const v = POOL.filter(p => p.pos === pos).map(adj).sort((a,b) => b-a);
@@ -101,7 +99,7 @@ function season(roster, rnd) {
   for (let wk=1; wk<=17; wk++) {
     const shock = {};
     const real = roster.map((p,i) => {
-      if (p.bye===wk || rnd() < p.pMiss/17) return { p, v:0 };
+      if (p.bye===wk || unavailableInWeek(p, wk, rnd)) return { p, v:0, available:false };
       shock[p.team] ??= gauss(rnd);
       /* Loadings on one shared team shock. The shock IS the quarterback's own deviation, so a
            receiver's correlation to him is his loading directly, and receiver-to-receiver falls out
@@ -113,14 +111,14 @@ function season(roster, rnd) {
            and split his targets, and only a second factor captures both. Documented, not hidden. */
         const load = p.pos==='QB'?1.0 : p.pos==='WR'?0.342 : p.pos==='TE'?0.236 : 0.071;
       const z = load*shock[p.team] + Math.sqrt(Math.max(0,1-load*load))*gauss(rnd);
-      return { p, v: Math.max(0, p.proj + z*sd[i]) };
+      return { p, v: Math.max(0, p.proj + z*sd[i]), available:true };
     });
-    const by = ps => real.filter(x=>x.p.pos===ps).sort((a,b)=>b.v-a.v);
+    const by = ps => real.filter(x=>x.available && x.p.pos===ps).sort((a,b)=>b.p.proj-a.p.proj);
     const used = new Set(); let t = 0;
     const take = (a,n) => a.slice(0,n).forEach(x=>{ t += x.v; used.add(x.p.name); });
     take(by('QB'),LINEUP.QB); take(by('RB'),LINEUP.RB);
     take(by('WR'),LINEUP.WR); take(by('TE'),LINEUP.TE);
-    take(real.filter(x=>!used.has(x.p.name)&&x.p.pos!=='QB').sort((a,b)=>b.v-a.v), LINEUP.FLEX);
+    take(real.filter(x=>x.available&&!used.has(x.p.name)&&x.p.pos!=='QB').sort((a,b)=>b.p.proj-a.p.proj), LINEUP.FLEX);
     tot += t;
   }
   return tot/17;
@@ -266,10 +264,10 @@ for (const [who, seat] of ALL_SEATS.filter(([n]) => !ONLY || n === ONLY)) {
     console.log(`\n\n${'='.repeat(92)}`);
     console.log(`  ${who.toUpperCase()} — seat ${seat} — ${roomLbl}   |   pick ${p1}, then pick ${p2}`);
     console.log(`${'='.repeat(92)}`);
-    console.log(`  PRIORITY AT ${p1}      pos   adp   there  lasts to ${p2}   pts/wk   vs baseline`);
+    console.log(`  PRIORITY AT ${p1}      pos   adp   there  policy remainder ${p2}   pts/wk   vs baseline`);
     console.log('  ' + '-'.repeat(88));
     r1.forEach((r, i) => {
-      const warn = r.survives >= 85 ? '  <-- he will still be there; take him later' : '';
+      const warn = ''; // Remaining-path rates do not support pass/wait advice.
       console.log(`  ${String(i+1).padStart(2)}. ${r.name.padEnd(20)} ${r.pos.padEnd(4)} ${String(r.adp).padStart(5)}  ${String(r.there).padStart(4)}%   ${String(r.survives).padStart(8)}%   ${r.ppg.toFixed(2)}  ${r.delta === null ? '' : (r.delta === 0 ? '   —' : `${r.delta >= 0 ? '+' : ''}${r.delta.toFixed(2)}`)}${r.tied ? ' (tied)' : ''}${warn}`);
     });
     for (const top of r1.slice(0, 3)) {
@@ -277,7 +275,7 @@ for (const [who, seat] of ALL_SEATS.filter(([n]) => !ONLY || n === ONLY)) {
       if (!rows.length) continue;
       console.log(`\n    IF YOU TOOK ${top.name}  ->  priority at ${p2}:`);
       rows.slice(0, N2).forEach((r, i) =>
-        console.log(`       ${i+1}. ${r.name.padEnd(20)} ${r.pos.padEnd(4)} there ${String(r.there).padStart(3)}%   ${r.ppg.toFixed(2)}${r.delta ? `  ${r.delta >= 0 ? '+' : ''}${r.delta.toFixed(2)}` : '   —'}${r.tied ? ' (tied)' : ''}`));
+        console.log(`       ${i+1}. ${r.name.padEnd(20)} ${r.pos.padEnd(4)} joint ${String(r.there).padStart(3)}%   ${r.ppg.toFixed(2)}${r.delta ? `  ${r.delta >= 0 ? '+' : ''}${r.delta.toFixed(2)}` : '   —'}${r.tied ? ' (tied)' : ''}`));
     }
   }
 }

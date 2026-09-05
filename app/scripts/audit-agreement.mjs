@@ -26,7 +26,7 @@ const { advise } = require(`${tmp}/adv.cjs`);
 const { P, MKT, BYE } = require(CACHE + "data.cjs");
 const { SLP } = require(CACHE + "sleeper.cjs");
 const { PROJ } = require(CACHE + "projections.cjs");
-const { riskOf, cuffUplift } = require(CACHE + "risk.cjs");
+const { riskOf, cuffUplift, missShareOf, seasonAvailability } = require(CACHE + "risk.cjs");
 
 const POOL = [];
 P.forEach((r, i) => {
@@ -38,7 +38,7 @@ P.forEach((r, i) => {
   POOL.push({
     name: r[0], pos: r[1], ourRank: i + 1, idx: POOL.length,
     proj: (PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6) + cuffUplift(r[0]),
-    cv: rk.cv, pMiss: rk.pMiss,
+    cv: rk.cv, pMiss: rk.pMiss, knownMiss: rk.knownMiss,
     mkt, sig: Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * mkt), bye: BYE[r[2]] || 0,
   });
 });
@@ -61,7 +61,7 @@ function realise(p, w) {
   const k = w * 100000 + p.idx; let v = cache.get(k); if (v !== undefined) return v;
   const rnd = mul(w * 7919 + p.idx * 104729 + 13); rnd(); rnd();
   const s = Math.sqrt(Math.log(1 + p.cv * p.cv));
-  v = p.proj * Math.exp(gauss(rnd) * s - (s * s) / 2) * (rnd() < p.pMiss ? 0.35 + 0.5 * rnd() : 1);
+  v = p.proj * Math.exp(gauss(rnd) * s - (s * s) / 2) * seasonAvailability(p, rnd);
   cache.set(k, v); return v;
 }
 function oppPick(avail, team, rnd) {
@@ -86,22 +86,21 @@ function weekly(R) {
   let tot = 0;
   for (let wk = 1; wk <= 17; wk++) {
     const live = R.filter((x) => x.bye !== wk);
-    const by = (pos) => live.filter((x) => x.pos === pos).sort((a, b) => b.real - a.real);
+    const by = (pos) => live.filter((x) => x.pos === pos).sort((a, b) => (b.proj*(1-missShareOf(b)))-(a.proj*(1-missShareOf(a))));
     const rb = by("RB"), wr = by("WR"), te = by("TE"), qb = by("QB");
     const used = new Set(); let pts = 0;
     const take = (a, n) => a.slice(0, n).forEach((x) => { pts += x.real; used.add(x.name); });
     take(qb, 1); take(rb, 2); take(wr, 2); take(te, 1);
-    take([...rb, ...wr, ...te].filter((x) => !used.has(x.name)).sort((a, b) => b.real - a.real), 2);
+    take([...rb, ...wr, ...te].filter((x) => !used.has(x.name)).sort((a, b) => (b.proj*(1-missShareOf(b)))-(a.proj*(1-missShareOf(a)))), 2);
     tot += pts;
   }
   return tot / 17;
 }
 /* play from a given draft state, forcing our next pick, then best-available */
-function playFrom(DS, slot, force, w) {
+function playFrom(DS, slot, force, w, priorTeams) {
   const rnd = mul(30000 + w);
   const avail = POOL.filter((p) => !DS[p.name]);
-  const teams = {}; for (let t = 1; t <= 12; t++) teams[t] = [];
-  P.forEach((r) => { const st = DS[r[0]]; if (st === "mine") { const p = IDX.get(r[0]); if (p) teams[slot].push(p); } });
+  const teams = {}; for (let t = 1; t <= 12; t++) teams[t] = priorTeams[t].slice();
   let first = true;
   for (let pick = Object.keys(DS).length + 1; pick <= 168; pick++) {
     if (!avail.length) break;
@@ -126,7 +125,7 @@ let fails = 0, warns = 0;
 
 /* build a realistic mid-draft state by letting ADP run to a given pick */
 function stateAt(target, slot) {
-  const DS = {}; const rnd = mul(4242);
+  const DS = {}, ord = []; const rnd = mul(4242);
   const avail = POOL.slice(); const teams = {}; for (let t = 1; t <= 12; t++) teams[t] = [];
   for (let pick = 1; pick < target; pick++) {
     const t = snap(pick);
@@ -134,8 +133,9 @@ function stateAt(target, slot) {
     if (!p) break;
     teams[t].push(p); avail.splice(avail.indexOf(p), 1);
     DS[p.name] = t === slot ? "mine" : "gone";
+    ord.push(p.name);
   }
-  return DS;
+  return { DS, teams, ord };
 }
 
 console.log("\nDoes the advisor recommend what the simulation says is best?\n");
@@ -150,14 +150,14 @@ for (const slot of [1, 2, 10]) {
      * judged on a simulation that ran picks 1-9 first. It duly recommended James Cook, who is
      * gone before pick 10 in four worlds out of five, and the audit recorded a disagreement
      * that was really just the two halves looking at different boards. */
-    const DS = stateAt(target, slot);
-    const a = advise(DS, slot, ORD);
+    const { DS, teams: priorTeams, ord } = stateAt(target, slot);
+    const a = advise(DS, slot, ord);
     const cands = a.cands.slice(0, 5).map((c) => c.now.r[0]);
     if (!cands.length) continue;
     const scored = [];
     for (const n of cands) {
       const out = [];
-      for (let w = 0; w < W; w++) { const v = playFrom(DS, slot, n, w); if (v !== null) out.push(v); }
+      for (let w = 0; w < W; w++) { const v = playFrom(DS, slot, n, w, priorTeams); if (v !== null) out.push(v); }
       if (out.length > W * 0.2) {
         const m = mean(out);
         const sd = Math.sqrt(out.reduce((a, b) => a + (b - m) * (b - m), 0) / (out.length - 1));

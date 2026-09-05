@@ -18,7 +18,7 @@ const require = createRequire(import.meta.url);
 const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 const { P, BYE } = require(CACHE + 'data.cjs');
 const { PROJ } = require(CACHE + 'projections.cjs');
-const { riskOf } = require(CACHE + 'risk.cjs');
+const { riskOf, missShareOf, seasonAvailability } = require(CACHE + 'risk.cjs');
 
 const W = Number(process.argv[2] || 20000);
 const mul = (a) => () => { a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a);
@@ -32,7 +32,7 @@ function season(roster, rnd) {
   let tot = 0;
   for (let wk=1; wk<=17; wk++) {
     const real = roster.map((p,i) => {
-      if (p.bye===wk || rnd() < p.pMiss/17) return { p, v:0 };
+      if (p.bye===wk || rnd() < (missShareOf(p))) return { p, v:0 };
       return { p, v: Math.max(0, p.proj + gauss(rnd)*sd[i]) };
     });
     const by = ps => real.filter(x=>x.p.pos===ps).sort((a,b)=>b.v-a.v);
@@ -50,7 +50,7 @@ function season(roster, rnd) {
 const pick = (pos, n) => P.filter(r => r[1] === pos && PROJ[r[0]] !== undefined)
   .sort((a,b) => PROJ[b[0]] - PROJ[a[0]]).slice(0, n)
   .map(r => { const k = riskOf(r[0], r[1], r[4]);
-    return { name: r[0], pos: r[1], proj: PROJ[r[0]], cv: k.cv, pMiss: k.pMiss, bye: BYE[r[2]] || 0 }; });
+    return { name: r[0], pos: r[1], proj: PROJ[r[0]], cv: k.cv, pMiss: k.pMiss, knownMiss:k.knownMiss, bye: BYE[r[2]] || 0 }; });
 
 const base = [...pick('QB',2), ...pick('RB',5), ...pick('WR',5), ...pick('TE',2)];
 

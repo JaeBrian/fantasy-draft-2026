@@ -1,9 +1,10 @@
+import { offBoardPick } from "./sleeper-draft";
 import { P, BYE, CUFFS, MKT, VEGAS, type PlayerRow, type Pos, type Verdict } from "../data";
 import { SLP } from "../sleeper";
 import { PROJ } from "../projections";
 import { CEIL } from "../ceilings";
 import { pinnedPick } from "./intel";
-import { cuffUplift, riskOf } from "./risk";
+import { cuffUplift, riskOf, missShareOf } from "./risk";
 
 /* ---- measured teammate correlation ------------------------------------------------------
  * scripts/sim-correlation.mjs, 2025 weekly half-PPR logs. 2025 rosters were reconstructed
@@ -153,7 +154,7 @@ const PPG: Record<Pos, (r: number) => number> = {
  * expected multiplier is 1 - 0.4 x pMiss. That is the same arithmetic the simulation performs,
  * moved to where the recommendation is made. */
 const availOf = (name: string, pos: Pos, verdict: Verdict): number =>
-  1 - 0.4 * riskOf(name, pos, verdict).pMiss;
+  1 - missShareOf(riskOf(name, pos, verdict));
 
 const projOf = (name: string, pos: Pos, posRank: number): number =>
   (PROJ[name] !== undefined ? PROJ[name] : PPG[pos](posRank)) + cuffUplift(name);
@@ -264,15 +265,20 @@ function ncdf(z: number): number {
   return z > 0 ? 1 - p : p;
 }
 
-/** P(someone drafts him before `pick`), given he's still on the board with `cur` picks made */
-function pGoneBy(row: PlayerRow, pick: number, cur: number, shift: number): number {
-  const a = mktADP(row) + (shift || 0);
-  const s = sigmaOf(row);
-  const Fk = ncdf((pick - a) / s);
-  const Fc = ncdf((cur - a) / s);
-  const den = 1 - Fc;
-  if (den <= 0.03) return 0.97;
-  return Math.min(0.97, Math.max(0.01, (Fk - Fc) / den));
+/** Evaluate the normal-tail approximation in log space, including far overdue players. */
+function logSurvival(z: number): number {
+  if (z < 0) return Math.log(ncdf(-z));
+  const t = 1 / (1 + 0.2316419 * z);
+  const poly = t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+  return -0.5 * z * z + Math.log(0.3989423 * poly);
+}
+
+/** Conditional probability of selection between the current pick and a later horizon. */
+export function pGoneBy(row: PlayerRow, pick: number, cur: number, shift: number): number {
+  if (pick <= cur) return 0;
+  const a = mktADP(row) + (shift || 0), s = sigmaOf(row);
+  const logRatio = logSurvival((pick - a) / s) - logSurvival((cur - a) / s);
+  return Math.min(0.97, Math.max(0, -Math.expm1(logRatio)));
 }
 
 /** Which of the 12 teams owns an overall pick in a snake draft. */
@@ -397,9 +403,10 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
       followPick = fut[1] ?? fut[0] + 12;
     }
   }
-  const have = (ps: Pos) => mine.filter((r) => r[1] === ps).length;
+  const externalMine = Object.keys(DS).filter(n => DS[n] === "mine").map(offBoardPick).filter(p => p !== null);
+  const have = (ps: Pos) => mine.filter((r) => r[1] === ps).length + externalMine.filter(p => p.pos === ps).length;
   const qb = have("QB"), rb = have("RB"), wr = have("WR"), te = have("TE");
-  const myCount = mine.length;
+  const myCount = Object.values(DS).filter(mark => mark === "mine").length;
   const wrt = rb + wr + te;
   const byeCount: Record<number, number> = {};
   mine.forEach((r) => {
@@ -449,9 +456,13 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
   const flexFilled = Math.max(0, Math.min(2, wrt - dRB - dWR - dTE));
   const skillUnfilled = (2 - dRB) + (2 - dWR) + (1 - dTE) + (2 - flexFilled);
   const picksLeft = 16 - myCount;
-  const starterGap = (qb === 0 ? 1 : 0) + skillUnfilled + 2; /* +2 = K & DST, always your last two picks */
+  const starterGap = (qb === 0 ? 1 : 0) + skillUnfilled + Number(have("K") === 0) + Number(have("DST") === 0);
   const warnings: string[] = [];
   const plainWarn: string[] = [];
+  if (externalMine.some(p => p.pos !== "K" && p.pos !== "DST")) {
+    warnings.push("An off-board pick has no player projection; review that roster spot manually.");
+    plainWarn.push("check your off-board player: his points are absent from the forecast");
+  }
   const mustNow = new Set<Pos>();
   if (myCount < 14 && picksLeft > 0) {
     const spare = picksLeft - starterGap;
@@ -488,9 +499,10 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
       }
     });
   }
-  if (myCount === 14) {
-    warnings.push("Rounds 15–16: kicker and defense — don't leave without them.");
-    plainWarn.push("use your last two picks on a kicker and a defense — every team needs one of each");
+  if (myCount >= 14 && (have("K") === 0 || have("DST") === 0)) {
+    const missing = [have("K") === 0 ? "a kicker" : "", have("DST") === 0 ? "a defense" : ""].filter(Boolean).join(" and ");
+    warnings.push(`Use your remaining picks to fill ${missing}.`);
+    plainWarn.push(`you still need ${missing}`);
   }
   /* a pick at YOUR slot marked "Taken" means your own turn was recorded as someone else's */
   if (mySlot >= 1) {
@@ -864,11 +876,19 @@ export function rosterSlots(DS: DraftState): RosterSlot[] {
   const fill: Record<string, string[]> = { QB: [], RB: [], WR: [], TE: [], FLX: [], K: [], DST: [], BN: [] };
   mine.forEach((r) => {
     const p = r[1];
-    const cap = ({ QB: 1, RB: 2, WR: 2, TE: 1 } as Record<string, number>)[p] || 0;
+    const cap = ({ QB: 1, RB: 2, WR: 2, TE: 1, K: 1, DST: 1 } as Record<string, number>)[p] || 0;
     if (fill[p] && fill[p].length < cap) fill[p].push(r[0]);
     else if (["RB", "WR", "TE"].includes(p) && fill.FLX.length < 2) fill.FLX.push(r[0]);
     else fill.BN.push(r[0]);
   });
+  for (const [key, mark] of Object.entries(DS)) {
+    const p = mark === "mine" ? offBoardPick(key) : null;
+    if (!p) continue;
+    const cap = ({QB:1,RB:2,WR:2,TE:1,K:1,DST:1} as Record<string,number>)[p.pos] ?? 0;
+    if (fill[p.pos] && fill[p.pos].length < cap) fill[p.pos].push(p.name);
+    else if (["RB","WR","TE"].includes(p.pos) && fill.FLX.length < 2) fill.FLX.push(p.name);
+    else fill.BN.push(p.name);
+  }
   const out: RosterSlot[] = [];
   slots.forEach(([s, n]) => {
     for (let k = 0; k < n; k++) {

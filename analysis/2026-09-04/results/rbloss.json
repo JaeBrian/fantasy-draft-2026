@@ -1,0 +1,1043 @@
+{
+  "Ashley": {
+    "seat": 1,
+    "picks": [
+      1,
+      24,
+      25,
+      48,
+      49,
+      72
+    ],
+    "rooms": {
+      "Very RB-heavy (RB LOSS — worst case)": [
+        {
+          "k": "RB-WR-WR-RB",
+          "ppg": 105.39,
+          "se": 0.04,
+          "floor": 98,
+          "ceil": 112.7,
+          "delta": 0,
+          "tied": false,
+          "common": [
+            "Gibbs 100%",
+            "Collins 98%",
+            "London 74%",
+            "Montgomery 54%"
+          ]
+        },
+        {
+          "k": "RB-WR-WR-WR",
+          "ppg": 104.92,
+          "se": 0.04,
+          "floor": 97.5,
+          "ceil": 112.3,
+          "delta": -0.47,
+          "tied": false,
+          "common": [
+            "Gibbs 100%",
+            "Collins 98%",
+            "London 74%",
+            "Williams 44%"
+          ]
+        },
+        {
+          "k": "RB-RB-WR-WR",
+          "ppg": 104.54,
+          "se": 0.04,
+          "floor": 97.5,
+          "ceil": 111.7,
+          "delta": -0.85,
+          "tied": false,
+          "common": [
+            "Gibbs 100%",
+            "Montgomery 64%",
+            "Collins 98%",
+            "Williams 40%"
+          ]
+        },
+        {
+          "k": "RB-WR-RB-WR",
+          "ppg": 104.52,
+          "se": 0.04,
+          "floor": 97.4,
+          "ceil": 111.5,
+          "delta": -0.87,
+          "tied": false,
+          "common": [
+            "Gibbs 100%",
+            "Collins 98%",
+            "Montgomery 64%",
+            "Williams 40%"
+          ]
+        },
+        {
+          "k": "WR-WR-TE-RB",
+          "ppg": 101.88,
+          "se": 0.04,
+          "floor": 95.2,
+          "ceil": 108.6,
+          "delta": -3.51,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Collins 99%",
+            "Bowers 91%",
+            "Montgomery 56%"
+          ]
+        },
+        {
+          "k": "WR-RB-WR-RB",
+          "ppg": 101.58,
+          "se": 0.04,
+          "floor": 95.1,
+          "ceil": 108.1,
+          "delta": -3.81,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Montgomery 65%",
+            "Collins 99%",
+            "Judkins 49%"
+          ]
+        },
+        {
+          "k": "WR-WR-RB-RB",
+          "ppg": 101.57,
+          "se": 0.04,
+          "floor": 95.1,
+          "ceil": 108.1,
+          "delta": -3.82,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Collins 99%",
+            "Montgomery 68%",
+            "Judkins 50%"
+          ]
+        },
+        {
+          "k": "WR-WR-WR-RB",
+          "ppg": 101.11,
+          "se": 0.04,
+          "floor": 94,
+          "ceil": 108.2,
+          "delta": -4.27,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Collins 99%",
+            "London 76%",
+            "Montgomery 54%"
+          ]
+        },
+        {
+          "k": "WR-TE-RB-WR",
+          "ppg": 100.64,
+          "se": 0.04,
+          "floor": 93.9,
+          "ceil": 107.4,
+          "delta": -4.75,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Bowers 91%",
+            "Montgomery 66%",
+            "Williams 41%"
+          ]
+        },
+        {
+          "k": "WR-RB-RB-WR",
+          "ppg": 100.05,
+          "se": 0.04,
+          "floor": 93.5,
+          "ceil": 106.7,
+          "delta": -5.33,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Montgomery 65%",
+            "Skattebo 36%",
+            "Waddle 43%"
+          ]
+        },
+        {
+          "k": "WR-WR-WR-WR",
+          "ppg": 99.68,
+          "se": 0.04,
+          "floor": 92.3,
+          "ceil": 107.2,
+          "delta": -5.71,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Collins 99%",
+            "London 76%",
+            "Williams 39%"
+          ]
+        }
+      ],
+      "Market": [
+        {
+          "k": "RB-WR-RB-WR",
+          "ppg": 104.56,
+          "se": 0.04,
+          "floor": 97.5,
+          "ceil": 111.7,
+          "delta": 0,
+          "tied": false,
+          "common": [
+            "Gibbs 100%",
+            "Collins 51%",
+            "Williams 82%",
+            "Williams 42%"
+          ]
+        },
+        {
+          "k": "RB-RB-WR-WR",
+          "ppg": 104.53,
+          "se": 0.04,
+          "floor": 97.5,
+          "ceil": 111.6,
+          "delta": -0.03,
+          "tied": true,
+          "common": [
+            "Gibbs 100%",
+            "Williams 82%",
+            "Collins 51%",
+            "Williams 42%"
+          ]
+        },
+        {
+          "k": "RB-WR-WR-RB",
+          "ppg": 104.24,
+          "se": 0.04,
+          "floor": 97,
+          "ceil": 111.4,
+          "delta": -0.31,
+          "tied": false,
+          "common": [
+            "Gibbs 100%",
+            "Collins 51%",
+            "Olave 39%",
+            "Montgomery 53%"
+          ]
+        },
+        {
+          "k": "RB-WR-WR-WR",
+          "ppg": 103.75,
+          "se": 0.04,
+          "floor": 96.4,
+          "ceil": 111,
+          "delta": -0.8,
+          "tied": false,
+          "common": [
+            "Gibbs 100%",
+            "Collins 51%",
+            "Olave 39%",
+            "Williams 43%"
+          ]
+        },
+        {
+          "k": "WR-WR-RB-RB",
+          "ppg": 101.67,
+          "se": 0.04,
+          "floor": 95.1,
+          "ceil": 108.2,
+          "delta": -2.89,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Collins 53%",
+            "Williams 81%",
+            "Montgomery 54%"
+          ]
+        },
+        {
+          "k": "WR-RB-WR-RB",
+          "ppg": 101.63,
+          "se": 0.04,
+          "floor": 95.2,
+          "ceil": 108.1,
+          "delta": -2.92,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Williams 81%",
+            "Collins 53%",
+            "Montgomery 54%"
+          ]
+        },
+        {
+          "k": "WR-RB-RB-WR",
+          "ppg": 101.16,
+          "se": 0.04,
+          "floor": 94.6,
+          "ceil": 107.7,
+          "delta": -3.4,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Williams 81%",
+            "Williams 44%",
+            "Williams 42%"
+          ]
+        },
+        {
+          "k": "WR-TE-RB-WR",
+          "ppg": 101.03,
+          "se": 0.04,
+          "floor": 94.4,
+          "ceil": 107.6,
+          "delta": -3.52,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Bowers 54%",
+            "Williams 82%",
+            "Williams 41%"
+          ]
+        },
+        {
+          "k": "WR-WR-TE-RB",
+          "ppg": 100.97,
+          "se": 0.04,
+          "floor": 94.2,
+          "ceil": 107.7,
+          "delta": -3.58,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Collins 53%",
+            "Bowers 54%",
+            "Montgomery 55%"
+          ]
+        },
+        {
+          "k": "WR-WR-WR-RB",
+          "ppg": 100.02,
+          "se": 0.04,
+          "floor": 93,
+          "ceil": 106.9,
+          "delta": -4.53,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Collins 53%",
+            "Olave 41%",
+            "Montgomery 55%"
+          ]
+        },
+        {
+          "k": "WR-WR-WR-WR",
+          "ppg": 98.69,
+          "se": 0.04,
+          "floor": 91.5,
+          "ceil": 106.1,
+          "delta": -5.87,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Collins 53%",
+            "Olave 41%",
+            "Williams 41%"
+          ]
+        }
+      ]
+    }
+  },
+  "Emily": {
+    "seat": 10,
+    "picks": [
+      10,
+      15,
+      34,
+      39,
+      58,
+      63
+    ],
+    "rooms": {
+      "Very RB-heavy (RB LOSS — worst case)": [
+        {
+          "k": "WR-WR-TE-RB",
+          "ppg": 103.03,
+          "se": 0.04,
+          "floor": 96.2,
+          "ceil": 109.9,
+          "delta": 0,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 94%",
+            "Brown 83%",
+            "Loveland 85%",
+            "Montgomery 96%"
+          ]
+        },
+        {
+          "k": "WR-WR-RB-RB",
+          "ppg": 102.92,
+          "se": 0.04,
+          "floor": 96.3,
+          "ceil": 109.5,
+          "delta": -0.11,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 94%",
+            "Brown 83%",
+            "Montgomery 88%",
+            "Skattebo 44%"
+          ]
+        },
+        {
+          "k": "WR-WR-WR-RB",
+          "ppg": 102.67,
+          "se": 0.04,
+          "floor": 95.7,
+          "ceil": 109.5,
+          "delta": -0.36,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 94%",
+            "Brown 83%",
+            "Higgins 70%",
+            "Montgomery 98%"
+          ]
+        },
+        {
+          "k": "RB-WR-WR-RB",
+          "ppg": 102.62,
+          "se": 0.04,
+          "floor": 96.1,
+          "ceil": 109.2,
+          "delta": -0.41,
+          "tied": false,
+          "common": [
+            "Brown 89%",
+            "Smith-Njigba 93%",
+            "Higgins 66%",
+            "Montgomery 97%"
+          ]
+        },
+        {
+          "k": "RB-WR-RB-WR",
+          "ppg": 102.51,
+          "se": 0.04,
+          "floor": 96,
+          "ceil": 109,
+          "delta": -0.52,
+          "tied": false,
+          "common": [
+            "Brown 89%",
+            "Smith-Njigba 93%",
+            "Montgomery 88%",
+            "Higgins 59%"
+          ]
+        },
+        {
+          "k": "WR-RB-WR-RB",
+          "ppg": 101.84,
+          "se": 0.04,
+          "floor": 95.3,
+          "ceil": 108.4,
+          "delta": -1.19,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 94%",
+            "III 40%",
+            "Higgins 72%",
+            "Montgomery 98%"
+          ]
+        },
+        {
+          "k": "WR-RB-RB-WR",
+          "ppg": 101.68,
+          "se": 0.04,
+          "floor": 95.2,
+          "ceil": 108.2,
+          "delta": -1.35,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 94%",
+            "III 40%",
+            "Montgomery 88%",
+            "Higgins 57%"
+          ]
+        },
+        {
+          "k": "WR-TE-RB-WR",
+          "ppg": 101.11,
+          "se": 0.04,
+          "floor": 94.3,
+          "ceil": 107.9,
+          "delta": -1.92,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 94%",
+            "Bowers 100%",
+            "Montgomery 81%",
+            "Higgins 57%"
+          ]
+        },
+        {
+          "k": "RB-WR-WR-WR",
+          "ppg": 101.08,
+          "se": 0.04,
+          "floor": 94.5,
+          "ceil": 107.6,
+          "delta": -1.95,
+          "tied": false,
+          "common": [
+            "Brown 89%",
+            "Smith-Njigba 93%",
+            "Higgins 66%",
+            "Waddle 40%"
+          ]
+        },
+        {
+          "k": "WR-WR-WR-WR",
+          "ppg": 99.37,
+          "se": 0.04,
+          "floor": 91.9,
+          "ceil": 106.8,
+          "delta": -3.66,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 94%",
+            "Brown 83%",
+            "Higgins 70%",
+            "Waddle 40%"
+          ]
+        },
+        {
+          "k": "RB-RB-WR-WR",
+          "ppg": 98.97,
+          "se": 0.03,
+          "floor": 92.7,
+          "ceil": 105.3,
+          "delta": -4.05,
+          "tied": false,
+          "common": [
+            "Brown 89%",
+            "Williams 69%",
+            "Higgins 70%",
+            "Flowers 40%"
+          ]
+        }
+      ],
+      "Market": [
+        {
+          "k": "RB-WR-WR-RB",
+          "ppg": 101.03,
+          "se": 0.04,
+          "floor": 94.4,
+          "ceil": 107.6,
+          "delta": 0,
+          "tied": false,
+          "common": [
+            "Cook 54%",
+            "Collins 98%",
+            "Higgins 77%",
+            "Montgomery 95%"
+          ]
+        },
+        {
+          "k": "RB-WR-RB-WR",
+          "ppg": 100.86,
+          "se": 0.04,
+          "floor": 94.2,
+          "ceil": 107.3,
+          "delta": -0.17,
+          "tied": false,
+          "common": [
+            "Cook 54%",
+            "Collins 98%",
+            "Montgomery 55%",
+            "Higgins 53%"
+          ]
+        },
+        {
+          "k": "WR-RB-WR-RB",
+          "ppg": 100.56,
+          "se": 0.04,
+          "floor": 94,
+          "ceil": 107.1,
+          "delta": -0.47,
+          "tied": false,
+          "common": [
+            "Collins 73%",
+            "Brown 91%",
+            "Higgins 79%",
+            "Montgomery 96%"
+          ]
+        },
+        {
+          "k": "RB-RB-WR-WR",
+          "ppg": 100.49,
+          "se": 0.04,
+          "floor": 93.9,
+          "ceil": 107,
+          "delta": -0.54,
+          "tied": false,
+          "common": [
+            "Cook 54%",
+            "Brown 56%",
+            "Higgins 78%",
+            "Waddle 45%"
+          ]
+        },
+        {
+          "k": "WR-RB-RB-WR",
+          "ppg": 100.44,
+          "se": 0.04,
+          "floor": 94,
+          "ceil": 106.9,
+          "delta": -0.59,
+          "tied": false,
+          "common": [
+            "Collins 73%",
+            "Brown 91%",
+            "Montgomery 53%",
+            "Higgins 55%"
+          ]
+        },
+        {
+          "k": "RB-WR-WR-WR",
+          "ppg": 99.47,
+          "se": 0.04,
+          "floor": 92.9,
+          "ceil": 106,
+          "delta": -1.57,
+          "tied": false,
+          "common": [
+            "Cook 54%",
+            "Collins 98%",
+            "Higgins 77%",
+            "Waddle 46%"
+          ]
+        },
+        {
+          "k": "WR-WR-RB-RB",
+          "ppg": 99.4,
+          "se": 0.04,
+          "floor": 92.9,
+          "ceil": 105.9,
+          "delta": -1.63,
+          "tied": false,
+          "common": [
+            "Collins 73%",
+            "London 44%",
+            "Montgomery 55%",
+            "Montgomery 44%"
+          ]
+        },
+        {
+          "k": "WR-WR-TE-RB",
+          "ppg": 99.07,
+          "se": 0.04,
+          "floor": 92.2,
+          "ceil": 105.9,
+          "delta": -1.96,
+          "tied": false,
+          "common": [
+            "Collins 73%",
+            "London 44%",
+            "Loveland 94%",
+            "Montgomery 95%"
+          ]
+        },
+        {
+          "k": "WR-TE-RB-WR",
+          "ppg": 98.96,
+          "se": 0.04,
+          "floor": 92.3,
+          "ceil": 105.7,
+          "delta": -2.07,
+          "tied": false,
+          "common": [
+            "Collins 73%",
+            "Bowers 97%",
+            "Montgomery 53%",
+            "Higgins 55%"
+          ]
+        },
+        {
+          "k": "WR-WR-WR-RB",
+          "ppg": 98.92,
+          "se": 0.04,
+          "floor": 92.1,
+          "ceil": 105.7,
+          "delta": -2.11,
+          "tied": false,
+          "common": [
+            "Collins 73%",
+            "London 44%",
+            "Higgins 73%",
+            "Montgomery 95%"
+          ]
+        },
+        {
+          "k": "WR-WR-WR-WR",
+          "ppg": 95.59,
+          "se": 0.04,
+          "floor": 88.4,
+          "ceil": 103,
+          "delta": -5.44,
+          "tied": false,
+          "common": [
+            "Collins 73%",
+            "London 44%",
+            "Higgins 73%",
+            "Waddle 44%"
+          ]
+        }
+      ]
+    }
+  },
+  "Brian JK": {
+    "seat": 2,
+    "picks": [
+      2,
+      23,
+      26,
+      47,
+      50,
+      71
+    ],
+    "rooms": {
+      "Very RB-heavy (RB LOSS — worst case)": [
+        {
+          "k": "RB-WR-WR-RB",
+          "ppg": 104.53,
+          "se": 0.04,
+          "floor": 97.6,
+          "ceil": 111.5,
+          "delta": 0,
+          "tied": false,
+          "common": [
+            "Robinson 91%",
+            "Collins 99%",
+            "London 56%",
+            "Montgomery 64%"
+          ]
+        },
+        {
+          "k": "RB-WR-WR-WR",
+          "ppg": 103.79,
+          "se": 0.04,
+          "floor": 96.7,
+          "ceil": 110.9,
+          "delta": -0.74,
+          "tied": false,
+          "common": [
+            "Robinson 91%",
+            "Collins 99%",
+            "London 56%",
+            "Waddle 46%"
+          ]
+        },
+        {
+          "k": "RB-RB-WR-WR",
+          "ppg": 103.75,
+          "se": 0.04,
+          "floor": 96.9,
+          "ceil": 110.6,
+          "delta": -0.78,
+          "tied": false,
+          "common": [
+            "Robinson 91%",
+            "Williams 45%",
+            "Collins 92%",
+            "Waddle 48%"
+          ]
+        },
+        {
+          "k": "RB-WR-RB-WR",
+          "ppg": 103.72,
+          "se": 0.04,
+          "floor": 96.9,
+          "ceil": 110.5,
+          "delta": -0.81,
+          "tied": false,
+          "common": [
+            "Robinson 91%",
+            "Collins 99%",
+            "Montgomery 65%",
+            "Waddle 46%"
+          ]
+        },
+        {
+          "k": "WR-WR-TE-RB",
+          "ppg": 101.94,
+          "se": 0.04,
+          "floor": 95.2,
+          "ceil": 108.7,
+          "delta": -2.59,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Collins 99%",
+            "Bowers 83%",
+            "Montgomery 65%"
+          ]
+        },
+        {
+          "k": "WR-RB-WR-RB",
+          "ppg": 101.71,
+          "se": 0.04,
+          "floor": 95.2,
+          "ceil": 108.3,
+          "delta": -2.83,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Williams 43%",
+            "Collins 91%",
+            "Judkins 43%"
+          ]
+        },
+        {
+          "k": "WR-WR-RB-RB",
+          "ppg": 101.67,
+          "se": 0.04,
+          "floor": 95.2,
+          "ceil": 108.1,
+          "delta": -2.86,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Collins 99%",
+            "Montgomery 64%",
+            "Judkins 51%"
+          ]
+        },
+        {
+          "k": "WR-WR-WR-RB",
+          "ppg": 101.24,
+          "se": 0.04,
+          "floor": 94.4,
+          "ceil": 108.2,
+          "delta": -3.29,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Collins 99%",
+            "London 55%",
+            "Montgomery 65%"
+          ]
+        },
+        {
+          "k": "WR-TE-RB-WR",
+          "ppg": 100.64,
+          "se": 0.04,
+          "floor": 93.9,
+          "ceil": 107.3,
+          "delta": -3.9,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Bowers 94%",
+            "Montgomery 67%",
+            "Waddle 52%"
+          ]
+        },
+        {
+          "k": "WR-RB-RB-WR",
+          "ppg": 100.26,
+          "se": 0.04,
+          "floor": 93.6,
+          "ceil": 106.9,
+          "delta": -4.27,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Williams 43%",
+            "Montgomery 53%",
+            "Waddle 54%"
+          ]
+        },
+        {
+          "k": "WR-WR-WR-WR",
+          "ppg": 99.24,
+          "se": 0.04,
+          "floor": 91.8,
+          "ceil": 106.6,
+          "delta": -5.29,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Collins 99%",
+            "London 55%",
+            "Waddle 47%"
+          ]
+        }
+      ],
+      "Market": [
+        {
+          "k": "RB-WR-RB-WR",
+          "ppg": 103.86,
+          "se": 0.04,
+          "floor": 97,
+          "ceil": 110.7,
+          "delta": 0,
+          "tied": false,
+          "common": [
+            "Robinson 91%",
+            "Collins 70%",
+            "Williams 60%",
+            "Waddle 46%"
+          ]
+        },
+        {
+          "k": "RB-WR-WR-RB",
+          "ppg": 103.81,
+          "se": 0.04,
+          "floor": 97,
+          "ceil": 110.8,
+          "delta": -0.04,
+          "tied": true,
+          "common": [
+            "Robinson 91%",
+            "Collins 70%",
+            "Olave 49%",
+            "Montgomery 65%"
+          ]
+        },
+        {
+          "k": "RB-RB-WR-WR",
+          "ppg": 103.23,
+          "se": 0.04,
+          "floor": 96.5,
+          "ceil": 110.1,
+          "delta": -0.62,
+          "tied": false,
+          "common": [
+            "Robinson 91%",
+            "Williams 84%",
+            "Olave 37%",
+            "Waddle 42%"
+          ]
+        },
+        {
+          "k": "RB-WR-WR-WR",
+          "ppg": 103.08,
+          "se": 0.04,
+          "floor": 96.1,
+          "ceil": 110.1,
+          "delta": -0.78,
+          "tied": false,
+          "common": [
+            "Robinson 91%",
+            "Collins 70%",
+            "Olave 49%",
+            "Waddle 43%"
+          ]
+        },
+        {
+          "k": "WR-WR-RB-RB",
+          "ppg": 102,
+          "se": 0.04,
+          "floor": 95.5,
+          "ceil": 108.5,
+          "delta": -1.86,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Collins 75%",
+            "Williams 58%",
+            "Montgomery 62%"
+          ]
+        },
+        {
+          "k": "WR-RB-WR-RB",
+          "ppg": 101.41,
+          "se": 0.04,
+          "floor": 94.8,
+          "ceil": 108,
+          "delta": -2.45,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Williams 86%",
+            "Olave 36%",
+            "Montgomery 61%"
+          ]
+        },
+        {
+          "k": "WR-WR-TE-RB",
+          "ppg": 101.31,
+          "se": 0.04,
+          "floor": 94.5,
+          "ceil": 108.1,
+          "delta": -2.54,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Collins 75%",
+            "Bowers 42%",
+            "Montgomery 67%"
+          ]
+        },
+        {
+          "k": "WR-RB-RB-WR",
+          "ppg": 101.05,
+          "se": 0.04,
+          "floor": 94.6,
+          "ceil": 107.6,
+          "delta": -2.81,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Williams 86%",
+            "Williams 45%",
+            "Waddle 46%"
+          ]
+        },
+        {
+          "k": "WR-TE-RB-WR",
+          "ppg": 100.91,
+          "se": 0.04,
+          "floor": 94.3,
+          "ceil": 107.6,
+          "delta": -2.94,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Bowers 63%",
+            "Williams 64%",
+            "Waddle 47%"
+          ]
+        },
+        {
+          "k": "WR-WR-WR-RB",
+          "ppg": 100.52,
+          "se": 0.04,
+          "floor": 93.6,
+          "ceil": 107.3,
+          "delta": -3.34,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Collins 75%",
+            "Olave 50%",
+            "Montgomery 63%"
+          ]
+        },
+        {
+          "k": "WR-WR-WR-WR",
+          "ppg": 98.56,
+          "se": 0.04,
+          "floor": 91.4,
+          "ceil": 105.9,
+          "delta": -5.3,
+          "tied": false,
+          "common": [
+            "Smith-Njigba 100%",
+            "Collins 75%",
+            "Olave 50%",
+            "Waddle 46%"
+          ]
+        }
+      ]
+    }
+  }
+}

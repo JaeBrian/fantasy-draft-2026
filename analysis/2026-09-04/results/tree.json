@@ -1,0 +1,1292 @@
+{
+  "1": {
+    "picks": [
+      1,
+      24,
+      25
+    ],
+    "worlds": 700,
+    "branches": [
+      {
+        "first": {
+          "name": "Jahmyr Gibbs",
+          "pos": "RB",
+          "pts": 0,
+          "avail": 100
+        },
+        "second": [
+          {
+            "name": "Nico Collins",
+            "pos": "WR",
+            "pts": 102.42,
+            "avail": 53
+          },
+          {
+            "name": "Jeremiyah Love",
+            "pos": "RB",
+            "pts": 102.02,
+            "avail": 97
+          },
+          {
+            "name": "Trey McBride",
+            "pos": "TE",
+            "pts": 101.97,
+            "avail": 74
+          },
+          {
+            "name": "Chris Olave",
+            "pos": "WR",
+            "pts": 101.85,
+            "avail": 99
+          },
+          {
+            "name": "Kyren Williams",
+            "pos": "RB",
+            "pts": 101.79,
+            "avail": 86
+          },
+          {
+            "name": "Tee Higgins",
+            "pos": "WR",
+            "pts": 101.65,
+            "avail": 100
+          }
+        ],
+        "third": [
+          {
+            "name": "Trey McBride",
+            "pos": "TE",
+            "pts": 102.58,
+            "avail": 36
+          },
+          {
+            "name": "Jeremiyah Love",
+            "pos": "RB",
+            "pts": 102.46,
+            "avail": 51
+          },
+          {
+            "name": "Chris Olave",
+            "pos": "WR",
+            "pts": 102.11,
+            "avail": 53
+          },
+          {
+            "name": "Kyren Williams",
+            "pos": "RB",
+            "pts": 102.03,
+            "avail": 43
+          },
+          {
+            "name": "David Montgomery",
+            "pos": "RB",
+            "pts": 101.71,
+            "avail": 53
+          },
+          {
+            "name": "Zay Flowers",
+            "pos": "WR",
+            "pts": 101.6,
+            "avail": 53
+          }
+        ]
+      },
+      {
+        "first": {
+          "name": "Bijan Robinson",
+          "pos": "RB",
+          "pts": 0,
+          "avail": 100
+        },
+        "second": [
+          {
+            "name": "Nico Collins",
+            "pos": "WR",
+            "pts": 100.44,
+            "avail": 53
+          },
+          {
+            "name": "Jeremiyah Love",
+            "pos": "RB",
+            "pts": 99.95,
+            "avail": 97
+          },
+          {
+            "name": "Chris Olave",
+            "pos": "WR",
+            "pts": 99.8,
+            "avail": 99
+          },
+          {
+            "name": "Tee Higgins",
+            "pos": "WR",
+            "pts": 99.57,
+            "avail": 100
+          },
+          {
+            "name": "Trey McBride",
+            "pos": "TE",
+            "pts": 99.57,
+            "avail": 74
+          },
+          {
+            "name": "George Pickens",
+            "pos": "WR",
+            "pts": 99.42,
+            "avail": 80
+          }
+        ],
+        "third": [
+          {
+            "name": "Jeremiyah Love",
+            "pos": "RB",
+            "pts": 100.48,
+            "avail": 51
+          },
+          {
+            "name": "Trey McBride",
+            "pos": "TE",
+            "pts": 100.3,
+            "avail": 36
+          },
+          {
+            "name": "Chris Olave",
+            "pos": "WR",
+            "pts": 100.13,
+            "avail": 53
+          },
+          {
+            "name": "George Pickens",
+            "pos": "WR",
+            "pts": 99.86,
+            "avail": 39
+          },
+          {
+            "name": "David Montgomery",
+            "pos": "RB",
+            "pts": 99.83,
+            "avail": 53
+          },
+          {
+            "name": "Javonte Williams",
+            "pos": "RB",
+            "pts": 99.64,
+            "avail": 53
+          }
+        ]
+      },
+      {
+        "first": {
+          "name": "Christian McCaffrey",
+          "pos": "RB",
+          "pts": 0,
+          "avail": 100
+        },
+        "second": [
+          {
+            "name": "Nico Collins",
+            "pos": "WR",
+            "pts": 99.56,
+            "avail": 53
+          },
+          {
+            "name": "Jeremiyah Love",
+            "pos": "RB",
+            "pts": 98.8,
+            "avail": 97
+          },
+          {
+            "name": "Chris Olave",
+            "pos": "WR",
+            "pts": 98.72,
+            "avail": 99
+          },
+          {
+            "name": "Tee Higgins",
+            "pos": "WR",
+            "pts": 98.61,
+            "avail": 100
+          },
+          {
+            "name": "George Pickens",
+            "pos": "WR",
+            "pts": 98.27,
+            "avail": 80
+          },
+          {
+            "name": "Brock Bowers",
+            "pos": "TE",
+            "pts": 98.26,
+            "avail": 57
+          }
+        ],
+        "third": [
+          {
+            "name": "Jeremiyah Love",
+            "pos": "RB",
+            "pts": 99.62,
+            "avail": 51
+          },
+          {
+            "name": "Chris Olave",
+            "pos": "WR",
+            "pts": 99.28,
+            "avail": 53
+          },
+          {
+            "name": "George Pickens",
+            "pos": "WR",
+            "pts": 99.01,
+            "avail": 39
+          },
+          {
+            "name": "Zay Flowers",
+            "pos": "WR",
+            "pts": 98.9,
+            "avail": 53
+          },
+          {
+            "name": "Javonte Williams",
+            "pos": "RB",
+            "pts": 98.74,
+            "avail": 53
+          },
+          {
+            "name": "David Montgomery",
+            "pos": "RB",
+            "pts": 98.71,
+            "avail": 53
+          }
+        ]
+      },
+      {
+        "first": {
+          "name": "Jonathan Taylor",
+          "pos": "RB",
+          "pts": 0,
+          "avail": 100
+        },
+        "second": [
+          {
+            "name": "Nico Collins",
+            "pos": "WR",
+            "pts": 99.51,
+            "avail": 53
+          },
+          {
+            "name": "Jeremiyah Love",
+            "pos": "RB",
+            "pts": 99.12,
+            "avail": 97
+          },
+          {
+            "name": "Chris Olave",
+            "pos": "WR",
+            "pts": 99.03,
+            "avail": 99
+          },
+          {
+            "name": "Tee Higgins",
+            "pos": "WR",
+            "pts": 98.79,
+            "avail": 100
+          },
+          {
+            "name": "Kyren Williams",
+            "pos": "RB",
+            "pts": 98.63,
+            "avail": 86
+          },
+          {
+            "name": "George Pickens",
+            "pos": "WR",
+            "pts": 98.38,
+            "avail": 81
+          }
+        ],
+        "third": [
+          {
+            "name": "Jeremiyah Love",
+            "pos": "RB",
+            "pts": 99.99,
+            "avail": 51
+          },
+          {
+            "name": "Chris Olave",
+            "pos": "WR",
+            "pts": 99.69,
+            "avail": 53
+          },
+          {
+            "name": "Trey McBride",
+            "pos": "TE",
+            "pts": 99.13,
+            "avail": 36
+          },
+          {
+            "name": "George Pickens",
+            "pos": "WR",
+            "pts": 99.11,
+            "avail": 39
+          },
+          {
+            "name": "Zay Flowers",
+            "pos": "WR",
+            "pts": 99.05,
+            "avail": 53
+          },
+          {
+            "name": "David Montgomery",
+            "pos": "RB",
+            "pts": 99.01,
+            "avail": 53
+          }
+        ]
+      },
+      {
+        "first": {
+          "name": "Jaxon Smith-Njigba",
+          "pos": "WR",
+          "pts": 0,
+          "avail": 100
+        },
+        "second": [
+          {
+            "name": "Jeremiyah Love",
+            "pos": "RB",
+            "pts": 98.26,
+            "avail": 97
+          },
+          {
+            "name": "Kyren Williams",
+            "pos": "RB",
+            "pts": 97.74,
+            "avail": 86
+          },
+          {
+            "name": "Javonte Williams",
+            "pos": "RB",
+            "pts": 97.57,
+            "avail": 100
+          },
+          {
+            "name": "Nico Collins",
+            "pos": "WR",
+            "pts": 96.65,
+            "avail": 53
+          },
+          {
+            "name": "Brock Bowers",
+            "pos": "TE",
+            "pts": 96.42,
+            "avail": 58
+          },
+          {
+            "name": "Trey McBride",
+            "pos": "TE",
+            "pts": 95.98,
+            "avail": 75
+          }
+        ],
+        "third": [
+          {
+            "name": "Nico Collins",
+            "pos": "WR",
+            "pts": 98.33,
+            "avail": 51
+          },
+          {
+            "name": "Javonte Williams",
+            "pos": "RB",
+            "pts": 97.89,
+            "avail": 97
+          },
+          {
+            "name": "Kyren Williams",
+            "pos": "RB",
+            "pts": 97.87,
+            "avail": 83
+          },
+          {
+            "name": "Chris Olave",
+            "pos": "WR",
+            "pts": 97.79,
+            "avail": 96
+          },
+          {
+            "name": "George Pickens",
+            "pos": "WR",
+            "pts": 97.63,
+            "avail": 77
+          },
+          {
+            "name": "David Montgomery",
+            "pos": "RB",
+            "pts": 97.56,
+            "avail": 97
+          }
+        ]
+      }
+    ]
+  },
+  "2": {
+    "picks": [
+      2,
+      23,
+      26
+    ],
+    "worlds": 700,
+    "branches": [
+      {
+        "first": {
+          "name": "Bijan Robinson",
+          "pos": "RB",
+          "pts": 0,
+          "avail": 97
+        },
+        "second": [
+          {
+            "name": "Nico Collins",
+            "pos": "WR",
+            "pts": 100.74,
+            "avail": 72
+          },
+          {
+            "name": "Jeremiyah Love",
+            "pos": "RB",
+            "pts": 100.58,
+            "avail": 96
+          },
+          {
+            "name": "Colston Loveland",
+            "pos": "TE",
+            "pts": 100.42,
+            "avail": 97
+          },
+          {
+            "name": "Tee Higgins",
+            "pos": "WR",
+            "pts": 100.39,
+            "avail": 97
+          },
+          {
+            "name": "Chris Olave",
+            "pos": "WR",
+            "pts": 100.34,
+            "avail": 96
+          },
+          {
+            "name": "Javonte Williams",
+            "pos": "RB",
+            "pts": 100.1,
+            "avail": 97
+          }
+        ],
+        "third": [
+          {
+            "name": "Jeremiyah Love",
+            "pos": "RB",
+            "pts": 100.65,
+            "avail": 65
+          },
+          {
+            "name": "Chris Olave",
+            "pos": "WR",
+            "pts": 100.63,
+            "avail": 69
+          },
+          {
+            "name": "Trey McBride",
+            "pos": "TE",
+            "pts": 100.44,
+            "avail": 45
+          },
+          {
+            "name": "David Montgomery",
+            "pos": "RB",
+            "pts": 100.22,
+            "avail": 72
+          },
+          {
+            "name": "Javonte Williams",
+            "pos": "RB",
+            "pts": 100.19,
+            "avail": 72
+          },
+          {
+            "name": "Tee Higgins",
+            "pos": "WR",
+            "pts": 100.15,
+            "avail": 72
+          }
+        ]
+      },
+      {
+        "first": {
+          "name": "Christian McCaffrey",
+          "pos": "RB",
+          "pts": 0,
+          "avail": 99
+        },
+        "second": [
+          {
+            "name": "Nico Collins",
+            "pos": "WR",
+            "pts": 99.79,
+            "avail": 73
+          },
+          {
+            "name": "Jeremiyah Love",
+            "pos": "RB",
+            "pts": 99.33,
+            "avail": 98
+          },
+          {
+            "name": "Colston Loveland",
+            "pos": "TE",
+            "pts": 99.25,
+            "avail": 99
+          },
+          {
+            "name": "Chris Olave",
+            "pos": "WR",
+            "pts": 99.21,
+            "avail": 97
+          },
+          {
+            "name": "Kyren Williams",
+            "pos": "RB",
+            "pts": 99.16,
+            "avail": 92
+          },
+          {
+            "name": "Tee Higgins",
+            "pos": "WR",
+            "pts": 99.04,
+            "avail": 99
+          }
+        ],
+        "third": [
+          {
+            "name": "Jeremiyah Love",
+            "pos": "RB",
+            "pts": 99.73,
+            "avail": 67
+          },
+          {
+            "name": "Chris Olave",
+            "pos": "WR",
+            "pts": 99.69,
+            "avail": 69
+          },
+          {
+            "name": "Javonte Williams",
+            "pos": "RB",
+            "pts": 99.51,
+            "avail": 73
+          },
+          {
+            "name": "David Montgomery",
+            "pos": "RB",
+            "pts": 99.3,
+            "avail": 73
+          },
+          {
+            "name": "Tee Higgins",
+            "pos": "WR",
+            "pts": 99.2,
+            "avail": 73
+          },
+          {
+            "name": "Kyren Williams",
+            "pos": "RB",
+            "pts": 98.95,
+            "avail": 43
+          }
+        ]
+      },
+      {
+        "first": {
+          "name": "Jonathan Taylor",
+          "pos": "RB",
+          "pts": 0,
+          "avail": 100
+        },
+        "second": [
+          {
+            "name": "Jeremiyah Love",
+            "pos": "RB",
+            "pts": 99.84,
+            "avail": 99
+          },
+          {
+            "name": "Tee Higgins",
+            "pos": "WR",
+            "pts": 99.61,
+            "avail": 100
+          },
+          {
+            "name": "Chris Olave",
+            "pos": "WR",
+            "pts": 99.61,
+            "avail": 98
+          },
+          {
+            "name": "Colston Loveland",
+            "pos": "TE",
+            "pts": 99.45,
+            "avail": 100
+          },
+          {
+            "name": "Javonte Williams",
+            "pos": "RB",
+            "pts": 99.39,
+            "avail": 100
+          },
+          {
+            "name": "Kyren Williams",
+            "pos": "RB",
+            "pts": 99.37,
+            "avail": 93
+          }
+        ],
+        "third": [
+          {
+            "name": "Chris Olave",
+            "pos": "WR",
+            "pts": 99.77,
+            "avail": 95
+          },
+          {
+            "name": "Brock Bowers",
+            "pos": "TE",
+            "pts": 99.69,
+            "avail": 45
+          },
+          {
+            "name": "Trey McBride",
+            "pos": "TE",
+            "pts": 99.6,
+            "avail": 67
+          },
+          {
+            "name": "Tee Higgins",
+            "pos": "WR",
+            "pts": 99.31,
+            "avail": 99
+          },
+          {
+            "name": "George Pickens",
+            "pos": "WR",
+            "pts": 99.22,
+            "avail": 64
+          },
+          {
+            "name": "Kyren Williams",
+            "pos": "RB",
+            "pts": 98.9,
+            "avail": 69
+          }
+        ]
+      },
+      {
+        "first": {
+          "name": "Jaxon Smith-Njigba",
+          "pos": "WR",
+          "pts": 0,
+          "avail": 100
+        },
+        "second": [
+          {
+            "name": "Jeremiyah Love",
+            "pos": "RB",
+            "pts": 99.13,
+            "avail": 99
+          },
+          {
+            "name": "Kyren Williams",
+            "pos": "RB",
+            "pts": 98.69,
+            "avail": 93
+          },
+          {
+            "name": "Javonte Williams",
+            "pos": "RB",
+            "pts": 98.57,
+            "avail": 100
+          },
+          {
+            "name": "Brock Bowers",
+            "pos": "TE",
+            "pts": 97.96,
+            "avail": 64
+          },
+          {
+            "name": "Colston Loveland",
+            "pos": "TE",
+            "pts": 97.05,
+            "avail": 100
+          },
+          {
+            "name": "Nico Collins",
+            "pos": "WR",
+            "pts": 96.82,
+            "avail": 74
+          }
+        ],
+        "third": [
+          {
+            "name": "Brock Bowers",
+            "pos": "TE",
+            "pts": 99.35,
+            "avail": 45
+          },
+          {
+            "name": "Trey McBride",
+            "pos": "TE",
+            "pts": 98.74,
+            "avail": 67
+          },
+          {
+            "name": "Chris Olave",
+            "pos": "WR",
+            "pts": 98.65,
+            "avail": 94
+          },
+          {
+            "name": "Kyren Williams",
+            "pos": "RB",
+            "pts": 98.45,
+            "avail": 68
+          },
+          {
+            "name": "Javonte Williams",
+            "pos": "RB",
+            "pts": 98.44,
+            "avail": 99
+          },
+          {
+            "name": "George Pickens",
+            "pos": "WR",
+            "pts": 98.33,
+            "avail": 65
+          }
+        ]
+      },
+      {
+        "first": {
+          "name": "Puka Nacua",
+          "pos": "WR",
+          "pts": 0,
+          "avail": 100
+        },
+        "second": [
+          {
+            "name": "Jeremiyah Love",
+            "pos": "RB",
+            "pts": 98.44,
+            "avail": 99
+          },
+          {
+            "name": "Javonte Williams",
+            "pos": "RB",
+            "pts": 98.01,
+            "avail": 100
+          },
+          {
+            "name": "Kyren Williams",
+            "pos": "RB",
+            "pts": 97.91,
+            "avail": 93
+          },
+          {
+            "name": "Brock Bowers",
+            "pos": "TE",
+            "pts": 97.27,
+            "avail": 64
+          },
+          {
+            "name": "Nico Collins",
+            "pos": "WR",
+            "pts": 96.65,
+            "avail": 74
+          },
+          {
+            "name": "Colston Loveland",
+            "pos": "TE",
+            "pts": 96.39,
+            "avail": 100
+          }
+        ],
+        "third": [
+          {
+            "name": "Brock Bowers",
+            "pos": "TE",
+            "pts": 98.49,
+            "avail": 45
+          },
+          {
+            "name": "Trey McBride",
+            "pos": "TE",
+            "pts": 97.93,
+            "avail": 67
+          },
+          {
+            "name": "Nico Collins",
+            "pos": "WR",
+            "pts": 97.88,
+            "avail": 33
+          },
+          {
+            "name": "Chris Olave",
+            "pos": "WR",
+            "pts": 97.72,
+            "avail": 95
+          },
+          {
+            "name": "Kyren Williams",
+            "pos": "RB",
+            "pts": 97.69,
+            "avail": 69
+          },
+          {
+            "name": "Javonte Williams",
+            "pos": "RB",
+            "pts": 97.66,
+            "avail": 99
+          }
+        ]
+      }
+    ]
+  },
+  "10": {
+    "picks": [
+      10,
+      15,
+      34
+    ],
+    "worlds": 700,
+    "branches": [
+      {
+        "first": {
+          "name": "James Cook",
+          "pos": "RB",
+          "pts": 0,
+          "avail": 54
+        },
+        "second": [
+          {
+            "name": "Chase Brown",
+            "pos": "RB",
+            "pts": 100.22,
+            "avail": 51
+          },
+          {
+            "name": "Nico Collins",
+            "pos": "WR",
+            "pts": 99.62,
+            "avail": 54
+          },
+          {
+            "name": "Omarion Hampton",
+            "pos": "RB",
+            "pts": 99.15,
+            "avail": 47
+          },
+          {
+            "name": "Kyren Williams",
+            "pos": "RB",
+            "pts": 98.93,
+            "avail": 54
+          },
+          {
+            "name": "Kenneth Walker III",
+            "pos": "RB",
+            "pts": 98.77,
+            "avail": 52
+          },
+          {
+            "name": "Drake London",
+            "pos": "WR",
+            "pts": 98.63,
+            "avail": 54
+          }
+        ],
+        "third": [
+          {
+            "name": "Tee Higgins",
+            "pos": "WR",
+            "pts": 100.17,
+            "avail": 48
+          },
+          {
+            "name": "Colston Loveland",
+            "pos": "TE",
+            "pts": 99.9,
+            "avail": 49
+          },
+          {
+            "name": "Zay Flowers",
+            "pos": "WR",
+            "pts": 99.18,
+            "avail": 47
+          },
+          {
+            "name": "Jaylen Waddle",
+            "pos": "WR",
+            "pts": 99.04,
+            "avail": 51
+          },
+          {
+            "name": "David Montgomery",
+            "pos": "RB",
+            "pts": 98.99,
+            "avail": 51
+          },
+          {
+            "name": "Jameson Williams",
+            "pos": "WR",
+            "pts": 98.84,
+            "avail": 51
+          }
+        ]
+      },
+      {
+        "first": {
+          "name": "Chase Brown",
+          "pos": "RB",
+          "pts": 0,
+          "avail": 100
+        },
+        "second": [
+          {
+            "name": "De'Von Achane",
+            "pos": "RB",
+            "pts": 98.29,
+            "avail": 39
+          },
+          {
+            "name": "Nico Collins",
+            "pos": "WR",
+            "pts": 96.9,
+            "avail": 100
+          },
+          {
+            "name": "Kyren Williams",
+            "pos": "RB",
+            "pts": 96.13,
+            "avail": 100
+          },
+          {
+            "name": "Derrick Henry",
+            "pos": "RB",
+            "pts": 96.09,
+            "avail": 70
+          },
+          {
+            "name": "Drake London",
+            "pos": "WR",
+            "pts": 95.81,
+            "avail": 100
+          },
+          {
+            "name": "A.J. Brown",
+            "pos": "WR",
+            "pts": 95.8,
+            "avail": 99
+          }
+        ],
+        "third": [
+          {
+            "name": "Tee Higgins",
+            "pos": "WR",
+            "pts": 99.1,
+            "avail": 36
+          },
+          {
+            "name": "Colston Loveland",
+            "pos": "TE",
+            "pts": 98.67,
+            "avail": 38
+          },
+          {
+            "name": "Jaylen Waddle",
+            "pos": "WR",
+            "pts": 98.63,
+            "avail": 39
+          },
+          {
+            "name": "Jameson Williams",
+            "pos": "WR",
+            "pts": 97.83,
+            "avail": 39
+          },
+          {
+            "name": "Zay Flowers",
+            "pos": "WR",
+            "pts": 97.83,
+            "avail": 36
+          },
+          {
+            "name": "David Montgomery",
+            "pos": "RB",
+            "pts": 97.37,
+            "avail": 39
+          }
+        ]
+      },
+      {
+        "first": {
+          "name": "Nico Collins",
+          "pos": "WR",
+          "pts": 0,
+          "avail": 100
+        },
+        "second": [
+          {
+            "name": "De'Von Achane",
+            "pos": "RB",
+            "pts": 98.07,
+            "avail": 39
+          },
+          {
+            "name": "Derrick Henry",
+            "pos": "RB",
+            "pts": 96.9,
+            "avail": 71
+          },
+          {
+            "name": "Chase Brown",
+            "pos": "RB",
+            "pts": 96.76,
+            "avail": 98
+          },
+          {
+            "name": "Kyren Williams",
+            "pos": "RB",
+            "pts": 95.87,
+            "avail": 100
+          },
+          {
+            "name": "Kenneth Walker III",
+            "pos": "RB",
+            "pts": 95.82,
+            "avail": 98
+          },
+          {
+            "name": "Omarion Hampton",
+            "pos": "RB",
+            "pts": 95.28,
+            "avail": 92
+          }
+        ],
+        "third": [
+          {
+            "name": "Cam Skattebo",
+            "pos": "RB",
+            "pts": 98.32,
+            "avail": 38
+          },
+          {
+            "name": "Colston Loveland",
+            "pos": "TE",
+            "pts": 98.09,
+            "avail": 38
+          },
+          {
+            "name": "David Montgomery",
+            "pos": "RB",
+            "pts": 98.06,
+            "avail": 39
+          },
+          {
+            "name": "Tee Higgins",
+            "pos": "WR",
+            "pts": 97.95,
+            "avail": 36
+          },
+          {
+            "name": "Quinshon Judkins",
+            "pos": "RB",
+            "pts": 97.18,
+            "avail": 39
+          },
+          {
+            "name": "Christian Watson",
+            "pos": "WR",
+            "pts": 96.6,
+            "avail": 39
+          }
+        ]
+      },
+      {
+        "first": {
+          "name": "De'Von Achane",
+          "pos": "RB",
+          "pts": 0,
+          "avail": 96
+        },
+        "second": [
+          {
+            "name": "Nico Collins",
+            "pos": "WR",
+            "pts": 97.12,
+            "avail": 96
+          },
+          {
+            "name": "Chase Brown",
+            "pos": "RB",
+            "pts": 97.06,
+            "avail": 91
+          },
+          {
+            "name": "Derrick Henry",
+            "pos": "RB",
+            "pts": 96.77,
+            "avail": 46
+          },
+          {
+            "name": "Kyren Williams",
+            "pos": "RB",
+            "pts": 96.15,
+            "avail": 96
+          },
+          {
+            "name": "Drake London",
+            "pos": "WR",
+            "pts": 96.11,
+            "avail": 96
+          },
+          {
+            "name": "Kenneth Walker III",
+            "pos": "RB",
+            "pts": 95.98,
+            "avail": 93
+          }
+        ],
+        "third": [
+          {
+            "name": "Javonte Williams",
+            "pos": "RB",
+            "pts": 97.71,
+            "avail": 45
+          },
+          {
+            "name": "Breece Hall",
+            "pos": "RB",
+            "pts": 97.63,
+            "avail": 47
+          },
+          {
+            "name": "Cam Skattebo",
+            "pos": "RB",
+            "pts": 96.96,
+            "avail": 92
+          },
+          {
+            "name": "Colston Loveland",
+            "pos": "TE",
+            "pts": 96.82,
+            "avail": 94
+          },
+          {
+            "name": "David Montgomery",
+            "pos": "RB",
+            "pts": 96.74,
+            "avail": 96
+          },
+          {
+            "name": "Tee Higgins",
+            "pos": "WR",
+            "pts": 96.27,
+            "avail": 90
+          }
+        ]
+      },
+      {
+        "first": {
+          "name": "CeeDee Lamb",
+          "pos": "WR",
+          "pts": 0,
+          "avail": 91
+        },
+        "second": [
+          {
+            "name": "Derrick Henry",
+            "pos": "RB",
+            "pts": 97.88,
+            "avail": 39
+          },
+          {
+            "name": "Chase Brown",
+            "pos": "RB",
+            "pts": 96.49,
+            "avail": 86
+          },
+          {
+            "name": "Omarion Hampton",
+            "pos": "RB",
+            "pts": 95.53,
+            "avail": 80
+          },
+          {
+            "name": "Kenneth Walker III",
+            "pos": "RB",
+            "pts": 95.38,
+            "avail": 88
+          },
+          {
+            "name": "Kyren Williams",
+            "pos": "RB",
+            "pts": 95.36,
+            "avail": 91
+          },
+          {
+            "name": "Nico Collins",
+            "pos": "WR",
+            "pts": 93.74,
+            "avail": 91
+          }
+        ],
+        "third": [
+          {
+            "name": "David Montgomery",
+            "pos": "RB",
+            "pts": 98.13,
+            "avail": 39
+          },
+          {
+            "name": "Colston Loveland",
+            "pos": "TE",
+            "pts": 97.8,
+            "avail": 38
+          },
+          {
+            "name": "Tee Higgins",
+            "pos": "WR",
+            "pts": 97.59,
+            "avail": 37
+          },
+          {
+            "name": "Cam Skattebo",
+            "pos": "RB",
+            "pts": 97.56,
+            "avail": 37
+          },
+          {
+            "name": "Christian Watson",
+            "pos": "WR",
+            "pts": 97.08,
+            "avail": 39
+          },
+          {
+            "name": "Jameson Williams",
+            "pos": "WR",
+            "pts": 97.03,
+            "avail": 39
+          }
+        ]
+      }
+    ]
+  }
+}

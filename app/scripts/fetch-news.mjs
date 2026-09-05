@@ -39,10 +39,15 @@ const dataTs = readFileSync(app + "src/data.ts", "utf8");
 const board = new Set([...dataTs.matchAll(/^\["((?:[^"\\]|\\.)*)",/gm)].map((m) => m[1]));
 
 const players = await (await fetch("https://api.sleeper.app/v1/players/nfl")).json();
+import { playerNameKey as norm } from "./player-name.mjs";
+const boardByName = new Map([...board].map(n => [norm(n), n]));
 const idOf = {};
 for (const [pid, p] of Object.entries(players)) {
-  const n = p.full_name || `${p.first_name || ""} ${p.last_name || ""}`.trim();
-  if (board.has(n) && !idOf[n]) idOf[n] = pid;
+  if (!['QB','RB','WR','TE'].includes(p.position)) continue;
+  const name = boardByName.get(norm(p.full_name || `${p.first_name || ''} ${p.last_name || ''}`));
+  if (!name) continue;
+  const previous = players[idOf[name]];
+  if (!previous || (p.years_exp ?? 0) > (previous.years_exp ?? 0)) idOf[name] = pid;
 }
 console.log(`board names: ${board.size}, matched to Sleeper ids: ${Object.keys(idOf).length}`);
 
