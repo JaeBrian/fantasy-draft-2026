@@ -12,6 +12,16 @@ Published studies simulate **14 skill-player rounds** and exclude kicker/defense
 
 The advisor considers value over replacement, the actual picks before the next turn, roster needs, availability, market prices, handcuffs, and bye weeks. Recommendations respond to the live draft. Statistical ties and projection-sensitive choices deserve alternatives rather than a fixed script.
 
+## Draft-day workflow
+
+Choose Ashley, Brian JK, or Emily in **Draft room**. The clock shows whose turn it is; the recommendation cards compare three targets with projected points, roster fit, and availability. Use **Your targets** and **Player pool** to jump between recommendations and the searchable board. Phone layouts show player cards with large pick controls.
+
+**Room settings** contains live/manual tracking, opponent tendencies, known upcoming picks, and reset. Live mode reads Sleeper picks. Manual mode records Draft/Taken actions; the off-board form handles kickers and defenses. Search shortcuts are `/` to focus, Enter to mark taken, Shift+Enter for your pick, and Escape to clear.
+
+**Practice draft** saves your current draft, pauses live sync, and simulates opponents through fourteen skill rounds. Choose available players on your turn; Undo returns to your previous decision. **Return to draft** restores your original picks and seat, including after a refresh. Practice allows Shift+Enter for your own pick and leaves opponent picks to the simulation.
+
+**Draft lab** separates first-two-pick branches, opening-strategy comparisons, and the full analysis. Select a seat, compare market and early-RB-run rooms, and open the draft picker with that seat selected. Availability, joint availability, selection frequencies, and outcome ranges have distinct labels. These screens use the September 4 saved studies; the Draft room runs fresh availability forecasts as picks change and cancels obsolete forecasts.
+
 ## Data sources
 
 | Source | Input and use |
