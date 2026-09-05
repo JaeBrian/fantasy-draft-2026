@@ -1,3 +1,4 @@
+import {studySlots, writeSeatResults} from './study-seats.mjs';
 /* Run from app/:  node scripts/sim-build.mjs && node scripts/sim-paired.mjs
  * sim-build.mjs transpiles src/data.ts and src/sleeper.ts into .simcache/.
  * Opponents are priced off Sleeper's real half-PPR ADP (SLP[name].adp). */
@@ -7,7 +8,6 @@ const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 /* Final study on the corrected model: real Sleeper half-PPR ADP opponents + season variance.
    Emits the exact shape the Simulations page renders. Paired: every strategy shares the seed,
    so it faces the same draft AND the same season luck as its rivals. */
-const fs = require('fs');
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
 const { SLP } = require(CACHE + 'sleeper.cjs');
 const { PROJ } = require(CACHE + 'projections.cjs');
@@ -98,6 +98,7 @@ function run(slot, tpl, seed) {
 }
 
 const FIN = {
+  8: {"WR-WR-RB-RB": ["WR", "WR", "RB", "RB", "TE", "QB"], "RB-RB-WR-WR": ["RB", "RB", "WR", "WR", "TE", "QB"], "WR-RB-WR-RB": ["WR", "RB", "WR", "RB", "TE", "QB"], "RB-WR-WR-RB": ["RB", "WR", "WR", "RB", "TE", "QB"], "WR-WR-TE-RB": ["WR", "WR", "TE", "RB", "RB", "QB"]},
   1:  { 'RB-WR-WR-RB': ['RB','WR','WR','RB','TE','QB'], 'RB-RB-WR-WR': ['RB','RB','WR','WR','TE','QB'],
         'RB-WR-RB-WR': ['RB','WR','RB','WR','TE','QB'], 'RB-RB-WR-RB': ['RB','RB','WR','RB','TE','QB'],
         'WR-RB-RB-WR': ['WR','RB','RB','WR','TE','QB'] },
@@ -116,7 +117,7 @@ const pct=(a,q)=>a.slice().sort((x,y)=>x-y)[Math.floor(q*(a.length-1))];
 const mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
 const out = {};
 
-for (const slot of [1,2,10]) {
+for (const slot of studySlots) {
   const T = FIN[slot], labels = Object.keys(T);
   const res = Object.fromEntries(labels.map(l=>[l,[]]));
   const rb1 = Object.fromEntries(labels.map(l=>[l,[]]));
@@ -141,5 +142,5 @@ for (const slot of [1,2,10]) {
   const bf = rows[0], spread = rows[0].mean - rows[rows.length-1].mean;
   console.log(`   floor ${bf.floor} / ceiling ${bf.ceiling}; strategy spread ${spread.toFixed(2)}; season swing ${(bf.ceiling-bf.floor).toFixed(1)}`);
 }
-fs.writeFileSync(CACHE + 'final_sim.json', JSON.stringify(out, null, 2));
+writeSeatResults('final_sim.json', out);
 console.log('\nwrote final_sim.json');

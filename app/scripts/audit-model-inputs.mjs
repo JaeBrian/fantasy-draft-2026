@@ -46,7 +46,9 @@ for (const file of ['sim-plans', 'sim-priority', 'sim-rbrun']) {
 // A mid-draft comparison must preserve the opponents' already-drafted positions.
 {
   const body = readFileSync(new URL('./audit-agreement.mjs', import.meta.url), 'utf8');
-  const start = body.indexOf('function playFrom('), end = body.indexOf('const ORD', start);
+  const start = body.indexOf('function playFrom(');
+  let end = body.indexOf('{', start), depth = 1;
+  for (end++; depth; end++) { if (body[end] === '{') depth++; if (body[end] === '}') depth--; }
   let seen = -1;
   const player = {name:'Remaining', pos:'RB'};
   const play = vm.runInNewContext(body.slice(start,end) + ';playFrom', {

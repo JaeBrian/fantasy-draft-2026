@@ -1,4 +1,5 @@
-// Exercise the real browser advisor for all three users in the same stochastic room.
+import {TOOL_USERS} from './study-seats.mjs';
+// Exercise the real browser advisor for all tool users in the same stochastic room.
 import {execFileSync} from 'node:child_process';
 import {createRequire} from 'node:module';
 import {writeFileSync} from 'node:fs';
@@ -14,7 +15,7 @@ const snap=p=>{const r=Math.ceil(p/12),i=p-(r-1)*12;return r%2?i:13-i;};
 const mul=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
 const gauss=r=>Math.sqrt(-2*Math.log(Math.max(1e-12,r())))*Math.cos(2*Math.PI*r());
 const counts=team=>Object.fromEntries(['QB','RB','WR','TE'].map(p=>[p,team.filter(x=>x.pos===p).length]));
-const worlds=Number(process.argv[2]??100),seats=[1,2,10],results={},failures=[];
+const worlds=Number(process.argv[2]??100),seats=TOOL_USERS.map(([,seat])=>seat),results={},failures=[];
 let calls=0,maxMs=0,totalMs=0;
 for(const room of ['market','early-rb-run','value-aware']){
  const frequencies=Object.fromEntries(seats.map(s=>[s,Array.from({length:6},()=>({}))]));
@@ -52,7 +53,7 @@ for(const room of ['market','early-rb-run','value-aware']){
   if(new Set(ord).size!==168)failures.push(`${room} world${w}: duplicate or incomplete draft`);
   for(const seat of seats){const c=counts(teams[seat]);if(teams[seat].length!==14||c.QB<1||c.RB<2||c.WR<2||c.TE<1)failures.push(`${room} world${w} seat${seat}: unfilled starting positions`);}
  }
- results[room]={worlds,frequencies};console.log(`${room}: ${worlds} full drafts with all three using the real advisor; ${failures.length} failures so far`);
+ results[room]={worlds,frequencies};console.log(`${room}: ${worlds} full drafts with all ${seats.length} using the real advisor; ${failures.length} failures so far`);
 }
 writeFileSync(cache+'draftday-audit.json',JSON.stringify({worldsPerRoom:worlds,totalDrafts:3*worlds,advisorCalls:calls,averageMilliseconds:totalMs/calls,maxMilliseconds:maxMs,failures,results},null,2));
 console.log(`RESULT: ${failures.length} FAIL; ${calls} live advisor decisions; average ${(totalMs/calls).toFixed(1)} ms`);

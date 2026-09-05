@@ -1,3 +1,4 @@
+import {studySlots, writeSeatResults} from './study-seats.mjs';
 /* Run from app/:  node scripts/sim-build.mjs && node scripts/sim-first.mjs
  * sim-build.mjs transpiles src/data.ts and src/sleeper.ts into .simcache/.
  * Opponents are priced off Sleeper's real half-PPR ADP (SLP[name].adp). */
@@ -6,7 +7,6 @@ const require = createRequire(import.meta.url);
 const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 /* Which first pick, on the corrected model? Force each candidate, best-available after,
    play the season out with paired per-player seasons. */
-const fs = require('fs');
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
 const { SLP } = require(CACHE + 'sleeper.cjs');
 const { PROJ } = require(CACHE + 'projections.cjs');
@@ -88,8 +88,8 @@ function run(slot,forceName,w){
   take([...rb,...wr,...te].filter(x=>!used.has(x.name)).sort((a,b)=>(b.proj*(1-missShareOf(b)))-(a.proj*(1-missShareOf(a)))),2);
   return pts;}
 const WORLDS=2500, out={};
-for (const slot of [1,2,10]) {
-  const first=(slot%2?slot:13-slot);
+for (const slot of studySlots) {
+  const first=slot;
   const cands=POOL.filter(p=>p.mkt<=first+32).sort((a,b)=>a.ourRank-b.ourRank).slice(0,22);
   const rows=[];
   for(const F of cands){ let sum=0,n=0;
@@ -100,4 +100,4 @@ for (const slot of [1,2,10]) {
   console.log(`\nslot ${slot}:`);
   out[slot].forEach(r=>console.log(`   ${r.name.padEnd(24)} ${r.pos}  ${r.pts.toFixed(2)}  there ${r.avail}%`));
 }
-fs.writeFileSync(CACHE + 'first_pick.json', JSON.stringify(out,null,2));
+writeSeatResults('first_pick.json', out);

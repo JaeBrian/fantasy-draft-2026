@@ -5,19 +5,20 @@ import { ARBITRAGE, CLIFF_MAP, DRAFT_TREE, PAIRED_SIM, PRIORITY, RB_LOSS, RISK_D
 import { Card, Eyebrow, Noob, Sticker } from "../components/ui";
 
 
-/** Forced-first-pick study on the corrected model: 2,500 paired seasons per candidate.
+/** Forced-first-pick study on the corrected model: 2,500 seeded worlds per candidate.
  *  We force the pick, run best-available after it, and play the season out. `avail` is how
  *  often he was still on the board at that seat. Regenerate with app/scripts/sim-first.mjs */
 const FIRST_PICK: Record<number, { name: string; pos: string; pts: number; avail: number }[]> =
-  {"1":[{"name":"Jahmyr Gibbs","pos":"RB","pts":100.94,"avail":100},{"name":"Bijan Robinson","pos":"RB","pts":100.07,"avail":100},{"name":"Christian McCaffrey","pos":"RB","pts":99.01,"avail":100},{"name":"Jonathan Taylor","pos":"RB","pts":98.64,"avail":100},{"name":"James Cook","pos":"RB","pts":97.32,"avail":100},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":97.21,"avail":100},{"name":"Puka Nacua","pos":"WR","pts":96.74,"avail":100},{"name":"Amon-Ra St. Brown","pos":"WR","pts":96.58,"avail":100},{"name":"Ja'Marr Chase","pos":"WR","pts":96.25,"avail":100}],"2":[{"name":"Bijan Robinson","pos":"RB","pts":100.16,"avail":97},{"name":"Christian McCaffrey","pos":"RB","pts":99.05,"avail":99},{"name":"Jonathan Taylor","pos":"RB","pts":98.64,"avail":100},{"name":"James Cook","pos":"RB","pts":97.37,"avail":100},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":96.95,"avail":100},{"name":"Puka Nacua","pos":"WR","pts":96.43,"avail":100},{"name":"Amon-Ra St. Brown","pos":"WR","pts":96.29,"avail":100},{"name":"Chase Brown","pos":"RB","pts":95.97,"avail":100},{"name":"Ja'Marr Chase","pos":"WR","pts":95.95,"avail":98}],"10":[{"name":"James Cook","pos":"RB","pts":98.87,"avail":52},{"name":"De'Von Achane","pos":"RB","pts":96.83,"avail":96},{"name":"Chase Brown","pos":"RB","pts":96.46,"avail":100},{"name":"Nico Collins","pos":"WR","pts":96.36,"avail":100},{"name":"CeeDee Lamb","pos":"WR","pts":96.11,"avail":93},{"name":"Derrick Henry","pos":"RB","pts":96.09,"avail":100},{"name":"Kenneth Walker III","pos":"RB","pts":96.04,"avail":100},{"name":"Drake London","pos":"WR","pts":95.79,"avail":100},{"name":"A.J. Brown","pos":"WR","pts":95.66,"avail":100}]};
+  {"1":[{"name":"Jahmyr Gibbs","pos":"RB","pts":100.94,"avail":100},{"name":"Bijan Robinson","pos":"RB","pts":100.07,"avail":100},{"name":"Christian McCaffrey","pos":"RB","pts":99.01,"avail":100},{"name":"Jonathan Taylor","pos":"RB","pts":98.64,"avail":100},{"name":"James Cook","pos":"RB","pts":97.32,"avail":100},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":97.21,"avail":100},{"name":"Puka Nacua","pos":"WR","pts":96.74,"avail":100},{"name":"Amon-Ra St. Brown","pos":"WR","pts":96.58,"avail":100},{"name":"Ja'Marr Chase","pos":"WR","pts":96.25,"avail":100}],"2":[{"name":"Bijan Robinson","pos":"RB","pts":100.16,"avail":97},{"name":"Christian McCaffrey","pos":"RB","pts":99.05,"avail":99},{"name":"Jonathan Taylor","pos":"RB","pts":98.64,"avail":100},{"name":"James Cook","pos":"RB","pts":97.37,"avail":100},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":96.95,"avail":100},{"name":"Puka Nacua","pos":"WR","pts":96.43,"avail":100},{"name":"Amon-Ra St. Brown","pos":"WR","pts":96.29,"avail":100},{"name":"Chase Brown","pos":"RB","pts":95.97,"avail":100},{"name":"Ja'Marr Chase","pos":"WR","pts":95.95,"avail":98}],"8":[{"name":"James Cook","pos":"RB","pts":97.42,"avail":95},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":97.33,"avail":63},{"name":"Amon-Ra St. Brown","pos":"WR","pts":96.56,"avail":61},{"name":"De'Von Achane","pos":"RB","pts":95.93,"avail":100},{"name":"Chase Brown","pos":"RB","pts":95.45,"avail":100},{"name":"Derrick Henry","pos":"RB","pts":95.21,"avail":100},{"name":"Nico Collins","pos":"WR","pts":95.1,"avail":100},{"name":"Kyren Williams","pos":"RB","pts":94.98,"avail":100},{"name":"Kenneth Walker III","pos":"RB","pts":94.93,"avail":100}],"10":[{"name":"James Cook","pos":"RB","pts":98.87,"avail":52},{"name":"De'Von Achane","pos":"RB","pts":96.83,"avail":96},{"name":"Chase Brown","pos":"RB","pts":96.46,"avail":100},{"name":"Nico Collins","pos":"WR","pts":96.36,"avail":100},{"name":"CeeDee Lamb","pos":"WR","pts":96.11,"avail":93},{"name":"Derrick Henry","pos":"RB","pts":96.09,"avail":100},{"name":"Kenneth Walker III","pos":"RB","pts":96.04,"avail":100},{"name":"Drake London","pos":"WR","pts":95.79,"avail":100},{"name":"A.J. Brown","pos":"WR","pts":95.66,"avail":100}]};
 
-/** All three tool seats drafting the same way in the same league, 4,000 paired seasons.
+/** All tool seats using their opening templates in one league, 4,000 paired seasons.
  *  Note this is a harder test than the per-seat studies: there, only one seat used our board.
- *  Here all three do, so they compete for the same players. */
+ *  Here all four do, so they compete for the same players. */
 const HEAD_TO_HEAD = [
-  { who: "Ashley", slot: 1, avg: 94.8, best: 36 },
-  { who: "Brian JK", slot: 2, avg: 95.1, best: 38 },
-  { who: "Emily", slot: 10, avg: 90.2, best: 26 },
+  { who: "Ashley", slot: 1, avg: 94.5, best: 28 },
+  { who: "Brian JK", slot: 2, avg: 94.3, best: 27 },
+  { who: "Jeff", slot: 8, avg: 93.2, best: 25 },
+  { who: "Emily", slot: 10, avg: 90, best: 20 },
 ];
 
 
@@ -63,7 +64,8 @@ function PriorityBoard({ seat }: { seat: number }) {
 }
 
 export function SimPanel({ noob, initialSeat, onOpenDraft }: { noob: boolean; initialSeat: number; onOpenDraft: (seat: number) => void }) {
-  const [seat, setSeat] = usePersistent('fd26-sim-seat', [1, 2, 10].includes(initialSeat) ? initialSeat : 2, r => [1, 2, 10].includes(Number(r)) ? Number(r) : 2, String);
+  const seats = TOOL_USERS.map(([, seat]) => seat);
+  const [seat, setSeat] = usePersistent('fd26-sim-seat', seats.includes(initialSeat) ? initialSeat : 2, r => seats.includes(Number(r)) ? Number(r) : 2, String);
   const [view, setView] = useState<'plan' | 'compare' | 'research'>('plan');
   const [branch, setBranch] = useState<string>("");
   const plan = SIM_PLANS[seat];
@@ -79,7 +81,7 @@ export function SimPanel({ noob, initialSeat, onOpenDraft }: { noob: boolean; in
       <SeatPicker value={seat} onChange={value => { setSeat(value); setBranch(''); }} />
       <div className="study-navigation" role="group" aria-label="Simulation view">{([['plan','First two picks'],['compare','Compare openings'],['research','Full analysis']] as const).map(([key, name]) => <button type="button" key={key} aria-pressed={view === key} onClick={() => setView(key)}>{name}</button>)}</div>
       {view === 'plan' && <>
-        <div className="seat-brief"><div><span className="section-caption">{TOOL_USERS.find(([, s]) => s === seat)?.[0]}'s draft</span><h2>{seat === 1 ? 'Start with Gibbs. Keep the turn flexible.' : seat === 2 ? 'Bijan first. Watch Ashley at the turn.' : 'Let the first nine picks shape your opening.'}</h2><p>{seat === 10 ? 'James Cook, Chase Brown and a falling elite receiver offer different routes. Explore the follow-up at pick 15.' : 'Compare available RBs, receivers and elite tight ends at the next turn. Your roster and the room decide the order.'}</p></div><div className="pick-route" aria-label="First six overall picks">{plan?.picks.map((p, i) => <span key={p.pick}><small>Round {i + 1}</small><b>{p.pick}</b></span>)}</div></div>
+        <div className="seat-brief"><div><span className="section-caption">{TOOL_USERS.find(([, s]) => s === seat)?.[0]}'s draft</span><h2>{seat === 1 ? 'Start with Gibbs. Keep the turn flexible.' : seat === 2 ? 'Bijan first. Watch Ashley at the turn.' : seat === 8 ? 'Compare the elite players who reach pick 8.' : 'Let the first nine picks shape your opening.'}</h2><p>{seat === 8 ? 'Jeff traded seats with Aaron. Explore an elite receiver or running back at 8, then adapt at pick 17.' : seat === 10 ? 'James Cook, Chase Brown and a falling elite receiver offer different routes. Explore the follow-up at pick 15.' : 'Compare available RBs, receivers and elite tight ends at the next turn. Your roster and the room decide the order.'}</p></div><div className="pick-route" aria-label="First six overall picks">{plan?.picks.map((p, i) => <span key={p.pick}><small>Round {i + 1}</small><b>{p.pick}</b></span>)}</div></div>
         <PriorityBoard key={seat} seat={seat} />
       </>}
       {view === 'compare' && <RbLoss key={seat} seat={seat} />}
@@ -165,7 +167,8 @@ export function SimPanel({ noob, initialSeat, onOpenDraft }: { noob: boolean; in
             </table>
           </div>
           <p className="m-0 mt-2 text-[0.82rem] leading-relaxed text-ink-3">
-            Read both columns together. A high-scoring option matters only if he reaches this pick. Availability here
+            Means use the worlds where each candidate reaches this pick, so candidates can face different rooms.
+            Use the First two picks view for paired pick comparisons. Availability here
             means he was present at this pick in the simulations; it does not mean he will survive another round.
             Keep alternatives ready and use the current board when your turn arrives.
           </p>
@@ -189,7 +192,7 @@ export function SimPanel({ noob, initialSeat, onOpenDraft }: { noob: boolean; in
             gap between a bad season and a good one on the <i>same</i> plan is{" "}
             <b className="text-ink">{(paired.rows[0].ceiling - paired.rows[0].floor).toFixed(0)} pts/wk</b> — roughly{" "}
             {Math.round((paired.rows[0].ceiling - paired.rows[0].floor) / Math.max(0.1, paired.rows[0].mean - paired.rows[paired.rows.length - 1].mean))}× larger.
-            Pick the top row, then stop worrying: how your players perform matters far more than which order you took them in.
+            Use these as candidate openings and adapt to the available players as the draft unfolds.
           </p>
           <div className="overflow-x-auto">
             <table className="w-full text-[0.86rem]">
@@ -418,14 +421,14 @@ export function SimPanel({ noob, initialSeat, onOpenDraft }: { noob: boolean; in
       )}
 
       <Card>
-        <Eyebrow>All three of you in one league</Eyebrow>
-        <h3 className="display m-0 mb-2 text-[1.2rem] text-ink">4,000 drafts with all three following the board</h3>
+        <Eyebrow>All four of you in one league</Eyebrow>
+        <h3 className="display m-0 mb-2 text-[1.2rem] text-ink">4,000 drafts with all four using their modeled openings</h3>
         <ul className="m-0 flex list-none flex-col gap-1.5 p-0 text-[0.9rem]">
           {HEAD_TO_HEAD.map((h) => (
             <li key={h.who} className="flex flex-wrap items-baseline gap-x-3 text-ink-2">
               <span className="w-24 shrink-0 font-semibold text-ink">{h.who}</span>
               <span className="font-mono tabular-nums">{h.avg.toFixed(1)} pts/wk</span>
-              <span className="text-ink-3">best of the three in {h.best}% of drafts</span>
+              <span className="text-ink-3">best of the four in {h.best}% of drafts</span>
             </li>
           ))}
         </ul>

@@ -541,12 +541,12 @@ progress::-moz-progress-bar { background: var(--color-clock); }
   .workspace-title p { font-size: .86rem; }
   .mode-badge { font-size: .72rem; padding: 5px 8px; }
   .draft-workspace, .sim-workspace { gap: 16px; }
-  .seat-picker { gap: 6px; }
+  .seat-picker { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px; }
   .seat-option { min-width: 0; flex: 1; padding: 9px 8px; gap: 7px; }
   .seat-option > span:last-child { font-size: .8rem; }
   .seat-option small { font-size: .63rem; }
   .seat-number { width: 24px; height: 30px; font-size: 1.1rem; }
-  .other-seat { margin: 0; width: 100%; }
+  .other-seat { grid-column: 1 / -1; margin: 0; width: 100%; }
   .other-seat > span { flex-shrink: 0; }
   .other-seat select { padding: 7px 10px; }
   .draft-clock { display: grid; grid-template-columns: auto minmax(0,1fr) auto; gap: 10px; padding: 12px; }

@@ -1,3 +1,4 @@
+import {TOOL_USERS} from './study-seats.mjs';
 /* Run from app/:  node scripts/sim-build.mjs && node scripts/sim-all.mjs
  * sim-build.mjs transpiles src/data.ts and src/sleeper.ts into .simcache/.
  * Opponents are priced off Sleeper's real half-PPR ADP (SLP[name].adp). */
@@ -62,13 +63,13 @@ function lineup(R){const by=pos=>R.filter(x=>x.pos===pos).sort((a,b)=>(b.proj*(1
 
 /* Seat 2, not 6 — Brian moved. The loop below was updated for that; these two tables were not,
  * so this script threw on seat 2 and predraft.mjs stopped at its first study. */
-const BEST_TPL = { 1:['RB','WR','WR','RB','TE','QB'], 2:['RB','WR','WR','RB','TE','QB'], 10:['RB','RB','WR','WR','TE','QB'] };
-const BEST_LABEL = { 1:'RB-WR-WR-RB', 2:'RB-WR-WR-RB', 10:'RB-RB-WR-WR' };
+const BEST_TPL = { 8:['WR','WR','RB','RB','TE','QB'], 1:['RB','WR','WR','RB','TE','QB'], 2:['RB','WR','WR','RB','TE','QB'], 10:['RB','RB','WR','WR','TE','QB'] };
+const BEST_LABEL = { 8:'WR-WR-RB-RB', 1:'RB-WR-WR-RB', 2:'RB-WR-WR-RB', 10:'RB-RB-WR-WR' };
 const WORLDS = 4000;
 const out = { plans:{}, cliff:{}, h2h:[], arbitrage:{}, runTiming:[] };
 
 /* ---------- A + B: plans and scarcity, from the same runs ---------- */
-for (const slot of [1,2,10]) {
+for (const [,slot] of TOOL_USERS) {
   const myPicks=[]; for(let r=1;r<=6;r++) myPicks.push((r-1)*12+(r%2?slot:13-slot));
   const tookAt = myPicks.map(()=>({}));
   const bestBy = myPicks.map(()=>({RB:[],WR:[],TE:[],QB:[]}));
@@ -101,14 +102,14 @@ for (const slot of [1,2,10]) {
   out.plans[slot].picks.forEach(p=>console.log(`   #${String(p.pick).padEnd(4)}${p.opts.map(o=>o[0]+' '+o[1]+'%').join('  ·  ')}`));
 }
 
-/* ---------- C: which seat is actually best, all three drafting identically ---------- */
+/* ---------- C: which seat is actually best, all tool seats drafting identically ---------- */
 {
-  const seats=[1,2,10], scores={1:[],2:[],10:[]}, wins={1:0,2:0,10:0};
+  const seats=TOOL_USERS.map(([,seat])=>seat), scores=Object.fromEntries(seats.map(s=>[s,[]])), wins=Object.fromEntries(seats.map(s=>[s,0]));
   for(let w=0;w<WORLDS;w++){
     const rnd=mul(31000+w), avail=POOL.slice(), teams={};
     for(let t=1;t<=12;t++)teams[t]=[];
     for(let pick=1;pick<=168;pick++){ if(!avail.length)break; const t=snap(pick);
-      /* our three seats all use the same board-first policy; the other nine use ADP */
+      /* our tool seats all use the same board-first policy; the remaining seats use ADP */
       const p = seats.includes(t) ? tplPick(avail,teams[t],BEST_TPL[t],Math.ceil(pick/12))
                                   : oppPick(avail,teams[t],rnd);
       if(!p)break; teams[t].push(p); avail.splice(avail.indexOf(p),1); }
@@ -116,9 +117,9 @@ for (const slot of [1,2,10]) {
     wins[seats.sort((a,b)=>v[b]-v[a])[0]]++;
   }
   const mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
-  const who={1:'Ashley',2:'Brian JK',10:'Emily'};
-  out.h2h=[1,2,10].map(s=>({ who:who[s], slot:s, avg:+mean(scores[s]).toFixed(1), best:Math.round(wins[s]/WORLDS*100) }));
-  console.log('\nseat head-to-head (all three drafting the same way, same league):');
+  const who=Object.fromEntries(TOOL_USERS.map(([name,seat])=>[seat,name]));
+  out.h2h=TOOL_USERS.map(([,seat])=>seat).map(s=>({ who:who[s], slot:s, avg:+mean(scores[s]).toFixed(1), best:Math.round(wins[s]/WORLDS*100) }));
+  console.log('\nseat head-to-head (all tool seats drafting the same way, same league):');
   out.h2h.forEach(r=>console.log(`   ${r.who.padEnd(10)} pick ${String(r.slot).padEnd(3)} ${r.avg} pts/wk   best team ${r.best}% of the time`));
 }
 

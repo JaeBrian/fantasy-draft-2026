@@ -1,3 +1,4 @@
+import {studyUsers} from './study-seats.mjs';
 /* Run from app/:  node scripts/sim-build.mjs && node scripts/sim-rbrun.mjs [worlds]
  *
  * THE RB LOSS. What happens when the room empties the running backs before you are on the
@@ -192,11 +193,7 @@ const PLANS = [
    recomputing the others:  node scripts/sim-rbrun.mjs 10000 Ashley                       */
 /* join the rest of argv: a two-word seat name survives losing its quotes */
 const ONLY = process.argv.slice(3).join(" ") || undefined;
-const SEATS = [
-  { who: 'Ashley',   seat: 1 },
-  { who: 'Emily',    seat: 10 },
-  { who: 'Brian JK', seat: 2 },
-].filter((s) => !ONLY || s.who === ONLY);
+const SEATS = studyUsers.map(([who,seat])=>({who,seat})).filter((s) => !ONLY || s.who === ONLY);
 /* fail loudly on a name that matches nothing — see sim-priority.mjs for why: an unquoted
    "Brian JK" arrives as "Brian", filters to zero seats, and the script rewrites the cache
    with the old data while reporting success. */

@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { CLIFF_MAP } from "../data";
+import { CLIFF_MAP, SIM_PLANS } from "../data";
 import { Card, Eyebrow, Intro, KV, Noob } from "../components/ui";
 
 type SlotKey = "s13" | "s46" | "s79" | "s1012";
@@ -46,11 +46,9 @@ const PLANS: Record<SlotKey, ReactNode> = {
   ),
   s79: (
     <>
-      <Round rn="Not simulated">Slots 1, 6 and 10 are the seats we simulate, because those are the three being drafted from. Treat this as a read-across rather than a measured plan.</Round>
-      <Round rn="Round 1">Best available of Taylor, Cook or Henry. At 7–9 the elite RB tier is thinning but not gone.</Round>
-      <Round rn="Round 2"><b>Second bellcow or the best WR left</b> — Walker III, Chase Brown, Saquon, or an A.J. Brown-tier receiver.</Round>
-      <Round rn="Rounds 3–8">Attack WR: the shelf holds far longer than RB. Tight end in round 5 is the measured optimum at every seat we tested.</Round>
-      <Round rn="Rounds 9–16">Quarterback around round 10–12 — waiting costs almost nothing and taking one in round 3 costs 2+ pts/wk. Then a backup QB and TE, K/DST last.</Round>
+      <Round rn="Jeff · pick 8">Jeff and Aaron traded positions. Jeff picks 8, 17, 32, 41, 56 and 65 in the first six rounds. Draft lab compares the players and opening strategies for this exact seat.</Round>
+      {SIM_PLANS[8]?.picks.map((pick, i) => <Round key={pick.pick} rn={`Round ${i + 1} · #${pick.pick}`}>{pick.opts.map(([name, frequency]) => `${name} ${frequency}%`).join(' · ')}</Round>)}
+      <Round rn="Read the frequencies">These percentages count selections across 4,000 modeled drafts. The live targets adapt to the actual players available and your roster.</Round>
     </>
   ),
   s1012: (
@@ -69,7 +67,7 @@ const PLANS: Record<SlotKey, ReactNode> = {
 };
 
 
-const SLOT_TO_PICK: Record<SlotKey, number | null> = { s13: 1, s46: 6, s79: null, s1012: 10 };
+const SLOT_TO_PICK: Record<SlotKey, number | null> = { s13: 1, s46: 6, s79: 8, s1012: 10 };
 
 /** Where each position falls off a cliff — for this exact seat. */
 function CliffMap({ slot }: { slot: SlotKey }) {
@@ -92,7 +90,7 @@ function CliffMap({ slot }: { slot: SlotKey }) {
         Where the cliffs are — pick {pick}
       </div>
       <p className="m-0 mt-1 mb-2 text-[0.85rem] text-ink-2">
-        Best player still available at each of your picks (projected pts/wk), from 500 simulated drafts. Red
+        Best player still available at each of your picks (projected pts/wk), from 4,000 simulated drafts. Red
         ▼ marks a drop of 2.5+ points — that position fell off a cliff since your last turn, so take it{" "}
         <i>before</i> the drop, not after.
       </p>

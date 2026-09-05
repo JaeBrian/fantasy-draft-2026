@@ -4,6 +4,8 @@ A draft guide, live tracker, practice room, and pick advisor for a 12-team half-
 
 The September 4 audit and rerun for Ashley (seat 1), Brian JK (seat 2), and Emily (seat 10) are documented in [the analysis report](analysis/2026-09-04/REPORT.md). The board contains 235 distinct skill players: 170 curated rows and 65 source-backed depth options. The additional depth lets all twelve teams finish legal rosters.
 
+Jeff and Aaron subsequently traded their full draft positions: **Jeff is seat 8; Aaron is seat 3**, as confirmed by Brian. Jeff's first six picks are 8, 17, 32, 41, 56 and 65. His simulations and comparison details are in [the Jeff report](analysis/2026-09-04-jeff/REPORT.md).
+
 ## League and model
 
 The live league has 16 rounds: 1 QB, 2 RB, 2 WR, 1 TE, 2 FLEX, 1 K, 1 DEF, and six bench spots. Receiving scores 0.5 per catch; passing touchdowns score four points. The refresh verifies the league format through Sleeper before computing projections.
@@ -14,7 +16,7 @@ The advisor considers value over replacement, the actual picks before the next t
 
 ## Draft-day workflow
 
-Choose Ashley, Brian JK, or Emily in **Draft room**. The clock shows whose turn it is; the recommendation cards compare three targets with projected points, roster fit, and availability. Use **Your targets** and **Player pool** to jump between recommendations and the searchable board. Phone layouts show player cards with large pick controls.
+Choose Ashley, Brian JK, Jeff, or Emily in **Draft room**. The clock shows whose turn it is; the recommendation cards compare three targets with projected points, roster fit, and availability. Use **Your targets** and **Player pool** to jump between recommendations and the searchable board. Phone layouts show player cards with large pick controls.
 
 **Room settings** contains live/manual tracking, opponent tendencies, known upcoming picks, and reset. Live mode reads Sleeper picks. Manual mode records Draft/Taken actions; the off-board form handles kickers and defenses. Search shortcuts are `/` to focus, Enter to mark taken, Shift+Enter for your pick, and Escape to clear.
 
@@ -75,7 +77,7 @@ node scripts/audit-draftday.mjs 300
 node scripts/audit-full-draft.mjs
 ```
 
-`audit-full-draft` verifies 36 complete 192-pick drafts, with all twelve seats using the advisor and early/late kicker and defense choices. `audit-draftday` drives the real browser advisor for all three users in the same room, across market, early-RB-run, and value-aware opponents. `audit-sensitivity.mjs <external.json>` compares identical states under five projection scenarios; its input is a JSON array containing `{name,total}` season projections.
+`audit-full-draft` verifies 36 complete 192-pick drafts, with all twelve seats using the advisor and early/late kicker and defense choices. `audit-draftday` drives the real browser advisor for all four users in the same room, across market, early-RB-run, and value-aware opponents. `audit-sensitivity.mjs <external.json>` compares identical states under five projection scenarios; its input is a JSON array containing `{name,total}` season projections.
 
 The eight published studies are `sim-all`, `sim-paired`, `sim-first`, `sim-tree`, `sim-plans`, `sim-risk`, `sim-priority`, and `sim-rbrun`. Other `sim-*` files are research experiments; their output is not automatically published or certified by this refresh.
 
@@ -84,3 +86,23 @@ The eight published studies are `sim-all`, `sim-paired`, `sim-first`, `sim-tree`
 Vite, React, TypeScript, and Tailwind live in `app/`. Run `npm run dev` there. `npm run build` type-checks and regenerates the root `index.html`; never hand-edit that artifact.
 
 Board data and commentary live in `app/src/data.ts`. Generated data lives in `sleeper.ts`, `projections.ts`, `ceilings.ts`, and `news.ts`. Panels live in `app/src/panels/`. Draft state and optional league intel persist in localStorage under `fd26-*` keys. A PR updates the source and build artifact; merging/deployment is a separate action.
+
+Target one registered seat while preserving other seats' cached results:
+
+```sh
+cd app
+node scripts/sim-build.mjs
+SIM_SEAT=8 node scripts/sim-plans.mjs 4000
+SIM_SEAT=8 node scripts/sim-first.mjs
+SIM_SEAT=8 node scripts/sim-tree.mjs
+SIM_SEAT=8 node scripts/sim-paired.mjs
+SIM_SEAT=8 node scripts/sim-risk.mjs
+SIM_SEAT=8 node scripts/sim-priority.mjs 5000 Jeff
+SIM_SEAT=8 node scripts/sim-rbrun.mjs 20000 Jeff
+node scripts/sim-all.mjs
+node scripts/audit-results.mjs
+node scripts/load-sims.mjs
+npm run build
+```
+
+The shared-room study always reruns all registered users together. `TOOL_USERS` is the seat registry for the UI and study runners. Invalid `SIM_SEAT` values fail explicitly; targeted numeric results merge with existing cached seats. Player inputs retain their own refresh dates.

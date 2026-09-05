@@ -1,3 +1,4 @@
+import {studyUsers} from './study-seats.mjs';
 /* Run from app/:  node scripts/sim-build.mjs && node scripts/sim-priority.mjs [worlds]
  *
  * A PRIORITY ORDER for your first two picks. Not a shape, not a position — a list of names in
@@ -237,7 +238,7 @@ const OUT = {};
      node scripts/sim-priority.mjs 1200 Ashley                                            */
 /* join the rest of argv: a two-word seat name survives losing its quotes */
 const ONLY = process.argv.slice(3).join(" ") || undefined;
-const ALL_SEATS = [['Ashley', 1], ['Emily', 10], ['Brian JK', 2]];
+const ALL_SEATS = studyUsers;
 /* A name that matches nothing must fail loudly. `... 2000 Brian JK` loses its quotes in
    some shells, arrives as ONLY="Brian", matches no seat, and the script then runs zero seats
    and rewrites the cache with the OLD data — reporting success having done nothing. That is

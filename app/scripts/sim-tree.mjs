@@ -1,3 +1,4 @@
+import {studyUsers, writeSeatResults} from './study-seats.mjs';
 /* Run from app/:  node scripts/sim-build.mjs && node scripts/sim-tree.mjs
  * sim-build.mjs transpiles src/data.ts and src/sleeper.ts into .simcache/.
  * Opponents are priced off Sleeper's real half-PPR ADP (SLP[name].adp). */
@@ -15,7 +16,6 @@ const CACHE = new URL('../.simcache/', import.meta.url).pathname;
  * given player has the IDENTICAL season in every branch of the tree. Comparisons between
  * branches therefore differ only by the picks, never by luck.
  */
-const fs = require('fs');
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
 const { SLP } = require(CACHE + 'sleeper.cjs');
 const { PROJ } = require(CACHE + 'projections.cjs');
@@ -157,7 +157,7 @@ function availability(slot, forced, worlds) {
 }
 
 const WORLDS = 700;
-const SEATS = { 1: 'ASHLEY (1)', 2: 'BRIAN JK (2)', 10: 'EMILY (10)' };
+const SEATS = Object.fromEntries(studyUsers.map(([name,seat])=>[seat,`${name} (${seat})`]));
 const out = {};
 
 for (const slot of Object.keys(SEATS).map(Number)) {
@@ -218,5 +218,5 @@ for (const slot of Object.keys(SEATS).map(Number)) {
   }
   out[slot] = { picks: myPicks.slice(0,3), worlds: WORLDS, branches: seatOut };
 }
-fs.writeFileSync(CACHE + 'tree.json', JSON.stringify(out, null, 2));
+writeSeatResults('tree.json', out);
 console.log('wrote tree.json');

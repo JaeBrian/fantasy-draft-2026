@@ -1,3 +1,4 @@
+import {studyUsers, studySlots} from './study-seats.mjs';
 /* Run from app/:  node scripts/sim-build.mjs && node scripts/audit-agreement.mjs
  *
  * Does the draft algorithm actually recommend what the simulation says is best?
@@ -115,7 +116,6 @@ function playFrom(DS, slot, force, w, priorTeams) {
   return weekly(teams[slot].map((p) => ({ ...p, real: realise(p, w) })));
 }
 
-const ORD = ["Ashley","Brian JK","Jeff","Brandon","Duy","Zach","Michelle","Aaron","Matt","Emily","Josh","Brian V"];
 /* 2,500 left several comparisons sitting on the two-standard-error line, where the verdict
    flips between runs and tells you nothing. 7,000 tightens the error bar enough that a
    failure means something. */
@@ -140,8 +140,8 @@ function stateAt(target, slot) {
 
 console.log("\nDoes the advisor recommend what the simulation says is best?\n");
 console.log(`${W.toLocaleString()} seasons per candidate, scored week by week with byes live.\n`);
-for (const slot of [1, 2, 10]) {
-  const who = slot === 1 ? "ASHLEY (1)" : slot === 2 ? "BRIAN JK (2)" : "EMILY (10)";
+for (const slot of studySlots) {
+  const who = studyUsers.find(([,seat])=>seat===slot)[0];
   for (const round of [1, 3, 6]) {
     const target = (round - 1) * 12 + (round % 2 ? slot : 13 - slot);
     /* Ask the advisor about the SAME board the simulation is about to play from. Round 1 used
