@@ -19,7 +19,7 @@ const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
 const { SLP } = require(CACHE + 'sleeper.cjs');
 const { PROJ } = require(CACHE + 'projections.cjs');
-const { riskOf } = require(CACHE + 'risk.cjs');
+const { riskOf, missShareOf, seasonAvailability } = require(CACHE + 'risk.cjs');
 
 const W = Number(process.argv[2] || 20000);
 const SEATS = [1, 2, 10];
@@ -39,7 +39,7 @@ P.forEach((r) => {
   const mkt = s.adp !== undefined ? 0.75 * s.adp + 0.25 * ffc : ffc;
   const rk = riskOf(r[0], r[1], r[4]);
   POOL.push({ name: r[0], pos: r[1], team: r[2], idx: POOL.length,
-    proj: PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6, cv: rk.cv, pMiss: rk.pMiss,
+    proj: PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6, cv: rk.cv, pMiss: rk.pMiss, knownMiss: rk.knownMiss,
     mkt, sig: Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * mkt), bye: BYE[r[2]] || 0 });
 });
 /* Value the way the SEASON is scored, not the way the projection reads. Sleeper projects
@@ -48,7 +48,7 @@ P.forEach((r) => {
  * mismatch fixed in advisor.ts in PR #44 and not propagated here until now. It mattered:
  * De'Von Achane projects 15.61, the best back on the board, on a 45% miss rate our own board
  * calls "avoid"; adjusted he is 12.80 and Chase Brown is 13.02 on 30%. */
-const adj = (p) => p.proj * (1 - 0.4 * p.pMiss);
+const adj = (p) => p.proj * (1 - missShareOf(p));
 const REPL = {};
 for (const pos of ['QB','RB','WR','TE']) {
   const v = POOL.filter(p => p.pos === pos).map(adj).sort((a,b) => b-a);
@@ -104,7 +104,7 @@ function seasonWeeks(roster, rnd) {
     const shock = {};
     const real = roster.map((p, i) => {
       if (p.bye === wk) return { p, v: 0 };
-      if (rnd() < p.pMiss / 17) return { p, v: 0 };
+      if (rnd() < (missShareOf(p))) return { p, v: 0 };
       shock[p.team] ??= gauss(rnd);
       const load = p.pos === 'QB' ? 0.585 : p.pos === 'WR' ? 0.585 : p.pos === 'TE' ? 0.40 : 0.12;
       const z = load * shock[p.team] + Math.sqrt(Math.max(0, 1 - load * load)) * gauss(rnd);

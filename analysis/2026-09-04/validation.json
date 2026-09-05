@@ -1,0 +1,238 @@
+{
+  "auditDate": "2026-09-04",
+  "timezone": "America/Los_Angeles",
+  "draftDate": "2026-09-08",
+  "baseCommit": "8212f08",
+  "branch": "fix/draftday-simulation-audit",
+  "runStarted": {
+    "started": 1788568184287,
+    "date": "2026-09-05T00:29:44.287Z"
+  },
+  "status": "complete",
+  "league": {
+    "draftId": "1389372699129700353",
+    "leagueId": "1389372699129700352",
+    "teams": 12,
+    "rounds": 16,
+    "positions": [
+      "QB",
+      "RB",
+      "RB",
+      "WR",
+      "WR",
+      "TE",
+      "FLEX",
+      "FLEX",
+      "K",
+      "DEF",
+      "BN",
+      "BN",
+      "BN",
+      "BN",
+      "BN",
+      "BN"
+    ],
+    "seats": {
+      "Ashley": 1,
+      "Brian JK": 2,
+      "Emily": 10
+    }
+  },
+  "completedChecks": {
+    "npm test": "pass",
+    "audit-model-inputs": "0 FAIL",
+    "audit-sim": "0 FAIL, 24 PASS",
+    "audit-logic": "0 FAIL, 2 WARN",
+    "audit-advisor": "0 FAIL, 0 WARN",
+    "audit-forecast": "0 FAIL, 0 WARN",
+    "audit-agreement": "0 FAIL, 3 WARN",
+    "audit-draftday": {
+      "drafts": 900,
+      "advisorCalls": 37800,
+      "failures": 0
+    },
+    "audit-full-draft": {
+      "drafts": 36,
+      "picksPerDraft": 192,
+      "advisorCalls": 6912,
+      "failures": 0
+    },
+    "audit-sensitivity": {
+      "states": 270,
+      "scenarios": 5,
+      "recommendations": 1350,
+      "failures": 0
+    },
+    "stale-loader-negative-test": "rejected old priority.json with --since run start",
+    "audit-results": "0 FAIL; all nine files newer than run start, finite values, seat/room coverage, paired matrix accounting",
+    "load-sims": "all nine result files embedded with --since 1788568184287",
+    "final npm test": "pass after embedding",
+    "final npm run build": "pass after embedding",
+    "browser": "verified all three seat results (104.7,104.1,100.9), default seat2, full branch access, corrected labels; manual kicker and Undo verified earlier",
+    "review": "independent read-only review; corrected projection-coverage wording and withdrew policy-path survival inference"
+  },
+  "warnings": [
+    "48 players lack mock-market ADP",
+    "21 market prices differ from Sleeper by over 12 picks",
+    "Emily agreement alternatives at rounds 1, 3, 6 remain within two combined standard errors"
+  ],
+  "studySettings": {
+    "sim-all": {
+      "worldsPerCondition": 4000
+    },
+    "sim-paired": {
+      "worldsPerShape": 8000,
+      "shapes": 5,
+      "seats": 3,
+      "draftStrategyTrials": 120000
+    },
+    "sim-first": {
+      "worldsPerCandidate": 2500
+    },
+    "sim-tree": {
+      "worldsPerBranch": 700
+    },
+    "sim-plans": {
+      "worldsPerSeat": 4000,
+      "seats": 3
+    },
+    "sim-risk": {
+      "worldsPerCase": 6000
+    },
+    "sim-priority": {
+      "worldsPerOption": 5000,
+      "rooms": 2,
+      "seats": 3
+    },
+    "sim-rbrun": {
+      "worldsPerShapeRoomSeat": 20000,
+      "shapes": 11,
+      "rooms": 2,
+      "seats": 3,
+      "draftStrategyTrials": 1320000
+    }
+  },
+  "counting": "The 1,440,000 conservative trial count includes paired and RB-run studies only. Worlds are reused across strategies; counts are not independent real leagues. Interrupted and exploratory runs are excluded.",
+  "reproduction": "From app/: npm ci; npm test; run the eight sim scripts with these settings; run audit gates; node scripts/audit-results.mjs; node scripts/load-sims.mjs; npm run build. Seeds are fixed in the committed scripts. Running predraft.mjs fetches new data and intentionally produces a new snapshot. The optional sensitivity audit requires a separately captured external array of {name,total}; run audit-sensitivity.mjs with that path. The original array is excluded from the repository.",
+  "sourceSnapshots": {
+    "league-settings.json": {
+      "sha256": "1577f00b776cacf3193f8d99b0f64e6d05a05b171ed4af99b239dfcf895e287d",
+      "committed": false,
+      "source": "https://api.sleeper.app/v1/league/1389372699129700352"
+    },
+    "live-order.json": {
+      "sha256": "784c5b83a37dbfe995c054d9c8991389291f5b20e88221a0dab293714f3d287f",
+      "committed": false,
+      "source": "https://api.sleeper.app/v1/draft/1389372699129700353"
+    },
+    "week1-raw.json": {
+      "sha256": "ac1c8cb712cd14ed78db5d4488a7ec4b482fe353b29c325feea468c62e47e5a5",
+      "committed": false,
+      "source": "https://api.sleeper.com/projections/nfl/2026/1?season_type=regular"
+    },
+    "ffc.json": {
+      "sha256": "35a0da158150c7ddd8dcdc041267156cf91d77bde878fff524414281ecb35ccc",
+      "committed": false,
+      "source": "https://fantasyfootballcalculator.com/api/v1/adp/half-ppr?teams=12&year=2026"
+    },
+    "external-projection-values.json": {
+      "sha256": "ff0212c10f6d537c0e3b1e5be007049ff2cf23bd3c1bd9866100b4ea65c091c7",
+      "committed": false,
+      "source": "https://hashtagfootball.com/fantasy-football-half-ppr-rankings"
+    }
+  },
+  "checksums": {
+    "app/src/projections.ts": "27c7073e8f459cd58de3526947e2208edad128b8548dce72458e2c877eb38ddf",
+    "app/src/sleeper.ts": "79d381b49620f1ff5e704410d535cf7462a146d64a066cf46cc3a3dd014216bc",
+    "app/src/ceilings.ts": "de775db51d13ee06c5535fb4369eb9c16a1cb782f43b97996ab5fd9049a5df16",
+    "app/src/news.ts": "65edd98d5c5ab19163be22fcff763723f2762e98e83dbe99a82c0827764ea078",
+    "app/src/lib/risk.ts": "4127e454159261ed869ea205f88340342568a0dd8ba4a424bfa8b6051e1497c8",
+    "app/src/data.ts": "4d0b7952e77efceb93ae168c0c7b44bff33c2996cc66818239e0ca58b61e9c90",
+    "app/src/lib/advisor.ts": "44f371e639f9c0f503b64034212c24440cef78dd9ae8a9f9e4308a3a3d826a33",
+    "app/src/lib/sleeper-draft.ts": "951a9950e09d26e881b0feca192ee0cea16aa85f2342bbad2438a6cfc268c99c",
+    "index.html": "3cb60a8844849652416dac1777077436f7d83a8fe615a70bd8e3228b3162ada9",
+    "app/scripts/audit-advisor.mjs": "f26ded665b13fdcb476ba5eb8ed3556f0c010d583588cf8a33c564db465e19a0",
+    "app/scripts/audit-agreement.mjs": "13b0dc13fd62ede4c99aa77b309ba80ba11f380c83a08f5f26fe93f7914243d6",
+    "app/scripts/audit-draftday.mjs": "b0575be3fc8f3482a523fe802b302d3be946183c8656590632b1122414728ec7",
+    "app/scripts/audit-forecast.mjs": "b710fc5d81ca5e4613795f93e8f69f827b612a76d85e26816d1b718644a1666e",
+    "app/scripts/audit-full-draft.mjs": "d7e72db3bf203b751cb101d321fb63d8ff2d02fff600c4fadcf7ca2f568756a1",
+    "app/scripts/audit-intel.mjs": "f56a68f2a0ad10312846725c3428e41a3997085ce10b7f770afa2eb8d507f7ae",
+    "app/scripts/audit-league.mjs": "6c6b4617941e0d3f1d2b44c28b41ff11dac88dc62b617be82ca41ff5c8b47b93",
+    "app/scripts/audit-live-sync.mjs": "347373327fec7440424fe7e5291de3cb49e2274c31eddf854661fbc5ef46352a",
+    "app/scripts/audit-logic.mjs": "9368d74658458ff5481ce5846e6303631fa695d58bdffc2c9ed8ca9c86f9a7aa",
+    "app/scripts/audit-model-inputs.mjs": "4dca6e5c0190713b591bb73f9778914a4badf69a2c0a6045fa0c090563843445",
+    "app/scripts/audit-results.mjs": "55cb926c7a49381879ac82b76aeb8866cd547f64931bd96b0b30dc1486ad23eb",
+    "app/scripts/audit-roster.mjs": "dc72f2ff8646e8982d7529a475e8ba24d2e897315ae03c91b4d1b390accb5d1f",
+    "app/scripts/audit-sensitivity.mjs": "4a814a35ea71db2dbdc4db75e93e91091d2b95127e65cbdc467e1e8776d9adc7",
+    "app/scripts/audit-sim.mjs": "901e7f423e7436357f459ae90a7575329d2e5011361d0147af77289fe0e83762",
+    "app/scripts/audit-sync.mjs": "332e1778b66b26968fdfc9d9ed521ab07e7958f98faaf4f77d737ce8f2a2eeb2",
+    "app/scripts/audit.mjs": "01c90ce58fab73bbb678070f80a3d26da94e9783bba7d09edf99f4e0097cbe29",
+    "app/scripts/availability.test.mjs": "0750f57637d3f5bb58f7511fce85b30854590cd34e72739feb8ea83e594ae345",
+    "app/scripts/draft-sim.mjs": "37a7d0c73880e8e73f9150c1ae4949fb59e0e221fefe471aa6bc1f7d80620349",
+    "app/scripts/fetch-ceilings.mjs": "d4edb13c2db53f6072d67af1eb23f1723a57fd6ead82f2f2a3357cf86e35a6f3",
+    "app/scripts/fetch-depth.mjs": "296415c880c04b8c5d0cb52dec6b5c6ecc91eeb0681c0b0d4c391cb05c40fb25",
+    "app/scripts/fetch-logos.mjs": "04d85f1ec996b38f101342b5bef3276fe1333bc7834eb5d423882cb8b5ac303e",
+    "app/scripts/fetch-market.mjs": "bc1cf3335a581559421835702add1d3d13cad48cb4bc90fba04c4eb575a76f0b",
+    "app/scripts/fetch-news.mjs": "44ec04bd27c4e5bb6b5fa5835e050d5206efc234f84b1f9c01d7e6f4283ba43f",
+    "app/scripts/fetch-projections.mjs": "ee9ca50dccffec6a247efcd888b3e61d1c3aea9da5201bafef267f926679e5b3",
+    "app/scripts/fetch-sleeper.mjs": "b56a7d23cc144b58709de4331e2009eaaaf7aa981e0699c1adbbc71df77525a5",
+    "app/scripts/league-scoring.mjs": "e765cb124e37d5e39b7d9c8f5ad4438e515f317993847bb3b1a9666d6d0b874a",
+    "app/scripts/league-scoring.test.mjs": "ed2dd767cb43d9c78961a135d8e2d9957610bc1d1435315c82d473311840c153",
+    "app/scripts/load-sims.mjs": "9ad4914729c2f4d310fa38a6a5b4111c4c30ccfd48ddde53af756f4ef2c72b6b",
+    "app/scripts/player-name.mjs": "78856fe35ad42a67fa7a220c1db773ae86a540c90beb65d5b62aa6dbdd8ad654",
+    "app/scripts/predraft.mjs": "4451df53f22aaca86454c95ba0e3ce2aee48202d7c7d06ca15623c9f18ed784e",
+    "app/scripts/regen-all.mjs": "8c6e51b75b114fdf32b0213998f01f7ce0c0d90a32a7a8ea56ec2488cd7f5267",
+    "app/scripts/round-robin.mjs": "d37ee941bf60b6609ab24d3e55dece52293ed7d059f6e231c90edbb6d36cf931",
+    "app/scripts/round-robin.test.mjs": "2724dfd3ef240036d97c4ae53389687d5c9974790169ee30d7874dcf772a9f00",
+    "app/scripts/sim-all.mjs": "2c46f5013d5ddf2394b8051445ac61df431c53c6dd0ac9825e4ad7ae4f34cb6a",
+    "app/scripts/sim-backup.mjs": "358efa2930178cbadeaf3631d9fcbfb5a623a3248f2437c311f3200cf927aa58",
+    "app/scripts/sim-best1.mjs": "495102a3a0f8aab05bd5119b7f44b628e87be15f59a69c73dbaae87876be6640",
+    "app/scripts/sim-build.mjs": "7c7dfed5d59c2a3b84bd4bd7a36aa6bf157075a423e253478542c4240ffecb01",
+    "app/scripts/sim-byecost.mjs": "9ba9e132c536a06cee308b29084313f92df8152a49f7c80e90e2d17f858e9acc",
+    "app/scripts/sim-correlation.mjs": "efa11607cc462e86bacb00cc7a38f8d50d8ef68b468ed05cba8a8e52544d12e5",
+    "app/scripts/sim-cuffvalue.mjs": "f7fc7e626285c3aaabf7140279c4144d5893a3da4d90032e89c56b832d2e1d9e",
+    "app/scripts/sim-deep.mjs": "02d9bf16bead84cee12b8bb4ca757fd2e84555839eec79a046074d8fb7e52064",
+    "app/scripts/sim-emily.mjs": "3fa5b96da7a0b73f328a38b94a18afcc7d0e35cced24f625ab78bcaf1af9f54b",
+    "app/scripts/sim-first.mjs": "7c913dcd66ca33930d237f0f6f5b3df218335b25206afc78fd83a60170a39ff1",
+    "app/scripts/sim-followup.mjs": "068e9f1893d6f004d4b7b86177488350fab5f71f291371d4de9fc3eb38b48880",
+    "app/scripts/sim-headtohead.mjs": "a28949d5abf39f65b567205dec3326a80d0417618bcfb5ce0f857fc6d84c9e44",
+    "app/scripts/sim-kdef-check.mjs": "d631cbb1f61dd26dd462614169f7e46b1f0753c3822b1fdaa204b5933dbeba3e",
+    "app/scripts/sim-pair10.mjs": "43a79aa87175c4a4fc55ca99e7b61c755c77a05ae699a13b9c9f3bacb9857194",
+    "app/scripts/sim-paired.mjs": "6facdb3c2a4c877b2a105e9f4de60dc2e4ce5efdd24b202c70ed2601d5dc6dd8",
+    "app/scripts/sim-plans.mjs": "147556facd1d999787b6b3ebf8ff9204bdecdd03f63c853b6c504597887a5904",
+    "app/scripts/sim-policy.mjs": "976e90797ee3dab3fef0e2687ec038ea61069676afb93cdef5b60405dfbb5417",
+    "app/scripts/sim-precision.mjs": "871a6bb4125f16eeaca6c508df1f26fa9755f9546e264b27675106e26e27397d",
+    "app/scripts/sim-priority.mjs": "812c9e438dd92d2470a14a9d9460fe4038e0239684a989795c8996a2adebc740",
+    "app/scripts/sim-rbrun.mjs": "e206d242b70f05a61dcdf511ac76569f14abc8a6adc27e2be87b19a95ef64307",
+    "app/scripts/sim-rbslots.mjs": "c52f0a64c3cc2c189f59a64cded965488fe31825349887a2949711ed18218ad4",
+    "app/scripts/sim-replacement.mjs": "8a38b8c148a74d9eab9c272a1cf97bc2ae34270bdeeec2b50e8b0b7ea2f7be07",
+    "app/scripts/sim-risk.mjs": "3f7f0a7656ca0c3562d5bb2151dbf8378c3aebe6e59114c23ac51cf81ac53974",
+    "app/scripts/sim-seat2-r2.mjs": "989da98bd008bd7508f1df5a2b8a80885e9fcf7ee9615fa97132318b26a9792d",
+    "app/scripts/sim-seat2.mjs": "c44966234f3c1ccb663fa145716afcb9796b4f18978f99e9a594cc2dea83698b",
+    "app/scripts/sim-seats.mjs": "65916c89be1ccc5ee1fdad93ea0306a07e47cfc76e040fb819708cec1c5bc377",
+    "app/scripts/sim-seatvalue.mjs": "dfb39d1050335ef5933a59eaffdd6a2c05d92a4d59ef9ceadd8c50f3c4597e05",
+    "app/scripts/sim-tendency.mjs": "f1d079887866729159e254a0dbc21db160d743454cd3cfb61961688a88d1a286",
+    "app/scripts/sim-timing.mjs": "d0ca1464392c02582ccc9f9cf8569be2967034e3042a30e2f34501718faa8d76",
+    "app/scripts/sim-title.mjs": "e1a6c3aadc39fbeb087f467a16b209111351844c353e6dd7c6d4ce389fc665a8",
+    "app/scripts/sim-tree.mjs": "979d9731e6efbf671d1b4b5658f495886e5aa9a9369aeccc501c0145f58de868",
+    "app/scripts/sim-tune.mjs": "6364f1d8c9cc8fff94fe1a6904970a440c14903988369591f94f5b7fd97bf419",
+    "app/scripts/sim-wheel.mjs": "e09f1265416711c686254967259455cdaa9f8f503b798156c7cb297eb6e4c39b",
+    "app/scripts/sleeper-draft.test.mjs": "d498f03660ead1c8880e40616949529056c5d15bbf3816a68527e9ba2fa01db3",
+    "app/scripts/td-model.mjs": "874107c1bb5b81c3eeb3c60df2dae0242984bd95464d679d97a50e1f9992a638",
+    "analysis/2026-09-04/results/cliff.json": "7d79d29288b6e57ccb2871de42edf071b98e41c2a3f647267b6ee5f1c6149b03",
+    "analysis/2026-09-04/results/draftday-audit.json": "b896cab092bffdf132763b6fe14c6f3ee5341d300cf743e30432deca94d8c4c1",
+    "analysis/2026-09-04/results/final_sim.json": "f3448080bebdaabfe7bdd97fd54c4fc52e7c618006c81dc1d09f84ba1b8acf32",
+    "analysis/2026-09-04/results/first_pick.json": "b9af5b77e3020cc8dee5c552d273a5bfaa153787940f71489d1853d409aaca39",
+    "analysis/2026-09-04/results/full-draft-audit.json": "188a16926fbc1be7a51dd64caee8a37fc13c9f9876325ffb8656475d76a1bbb7",
+    "analysis/2026-09-04/results/plans.json": "9df0cbf8f1b73aeaf794296fecb84f5c0b6c45a51d2a450eb5a450953d48e572",
+    "analysis/2026-09-04/results/priority.json": "51d3c03c66910efcf9c9e767ce2f69ab4a7a6c34b69cbe25da1787e5dbd20455",
+    "analysis/2026-09-04/results/rbloss.json": "2b257eda5498ca321b940b52ce52f95eff8b955195abc54489b8353265e3c93f",
+    "analysis/2026-09-04/results/riskdial.json": "fc26ce2e12e96511ccf027bb509b49ecab316c15dd297cdb59c6b50fe43e7251",
+    "analysis/2026-09-04/results/sensitivity.json": "b0af86a28e2eb652aa28daa1027005dad0b9b2154bd5e8e9812e0a75be928b8b",
+    "analysis/2026-09-04/results/sim_all.json": "5dbff25e3e7f4e729e1046bf6ec26dc2c16a42f81b3562632d8841f52f49353e",
+    "analysis/2026-09-04/results/tree.json": "62b1dbb4b81fe665319c415926ec21904abc4a49922e849c4fa605e755238e4c"
+  },
+  "completedAt": "2026-09-05T01:24:58.207863+00:00",
+  "legacyField": "priority.json survives is policy-path remaining availability, including the policy own pick. It is not conditional-on-passing survival and is excluded from the UI.",
+  "codeTiming": "Numerical published-study inputs were frozen at run start. Later advisor corrections were followed by fresh advisor, agreement, sensitivity and full-draft checks. Subsequent study comment/output-label changes do not change numerical results."
+}

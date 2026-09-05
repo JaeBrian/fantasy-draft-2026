@@ -138,6 +138,13 @@ export default function App() {
     [DS, setDS],
   );
 
+  const applySync = useCallback((state: DraftState, order: string[]) => {
+    setDS(previous => JSON.stringify(previous) === JSON.stringify(state) ? previous : state);
+    setOrd(previous => JSON.stringify(previous) === JSON.stringify(order) ? previous : order);
+    hist.current = [];
+    setHistSize(0);
+  }, [setDS]);
+
   const reset = useCallback(() => {
     hist.current = [];
     setHistSize(0);
@@ -210,6 +217,7 @@ export default function App() {
             undo={undo}
             reset={reset}
             applyRun={applyRun}
+            applySync={applySync}
             canUndo={histSize > 0}
             mySlot={mySlot}
             setMySlot={setMySlot}
@@ -222,12 +230,10 @@ export default function App() {
         {tab === "vegas" && <VegasPanel noob={noob} />}
 
         <footer className="mt-10 border-t border-line pt-6 text-[0.8rem] leading-relaxed text-ink-3">
-          Sources: Sleeper public API — real half-PPR ADP, per-player weekly projections, 2025 game logs, live injury designations, depth charts, 24h trending, and the per-player news wire (filtered to named reporters and direct quotes; 57% of it discarded). FantasyPros (live half-PPR expert consensus + tiers, pulled Aug 17), Justin Boone's Yahoo top-300
-          (updated Aug 17), ESPN (Field Yates, xTD models, 10-analyst panel), CBS Sports, NBC/Rotoworld, PFF, 4for4
-          (Underdog ADP tool, 713 players, Aug 17 pull), Establish The Run, RotoWire, Sharp Football Analysis (implied
-          totals &amp; O-line ranks), DraftKings lines via Action-market aggregators, Footballguys, PlayerProfiler,
-          Draft Sharks injury model, team beat coverage, and BDGE's Aug 11 "Official Top 50" video. Data refreshed Sep 1,
-          2026 — verify injury news on draft day. Not betting advice; it's a fantasy draft guide.
+          Refreshed September 4, 2026: Sleeper half-PPR ADP, component projections scored under this league’s rules,
+          2025 game logs, player status and attributed news; FantasyFootballCalculator mock ADP; official team reports.
+          Hashtag Football projections provide an independent reasonableness and sensitivity check.
+          Older expert commentary, implied totals and player profiles are background context. Verify injury news on draft day.
         </footer>
       </main>
     </>

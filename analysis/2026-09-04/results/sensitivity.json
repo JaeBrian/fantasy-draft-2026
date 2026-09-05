@@ -1,0 +1,470 @@
+{
+  "method": "270 identical states from 30 seeded drafts. External season-total ratios clipped to +/-20%; role and availability assumptions differ. This measures decision stability, not forecast accuracy.",
+  "results": {
+    "baseline": {
+      "states": 270,
+      "changed": 0,
+      "rows": {
+        "seat1-round1": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Jahmyr Gibbs": 30
+          }
+        },
+        "seat2-round1": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Bijan Robinson": 30
+          }
+        },
+        "seat10-round1": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Chase Brown": 24,
+            "James Cook": 6
+          }
+        },
+        "seat1-round3": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Chris Olave": 19,
+            "George Pickens": 10,
+            "Brock Bowers": 1
+          }
+        },
+        "seat2-round3": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "George Pickens": 8,
+            "Chris Olave": 11,
+            "Javonte Williams": 6,
+            "Trey McBride": 5
+          }
+        },
+        "seat10-round3": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "David Montgomery": 19,
+            "Zay Flowers": 2,
+            "Colston Loveland": 5,
+            "Trey McBride": 2,
+            "Javonte Williams": 2
+          }
+        },
+        "seat10-round6": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Rico Dowdle": 22,
+            "Jaylen Warren": 5,
+            "Jayden Reed": 2,
+            "Tucker Kraft": 1
+          }
+        },
+        "seat2-round6": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Brock Purdy": 13,
+            "Jayden Daniels": 2,
+            "Jalen Hurts": 3,
+            "Tucker Kraft": 1,
+            "Rico Dowdle": 8,
+            "Caleb Williams": 2,
+            "Sam LaPorta": 1
+          }
+        },
+        "seat1-round6": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Sam LaPorta": 5,
+            "Caleb Williams": 9,
+            "Brock Purdy": 5,
+            "Jalen Hurts": 6,
+            "Jayden Reed": 3,
+            "Tucker Kraft": 1,
+            "Jayden Daniels": 1
+          }
+        }
+      }
+    },
+    "external-clipped": {
+      "states": 270,
+      "changed": 109,
+      "rows": {
+        "seat1-round1": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Jahmyr Gibbs": 30
+          }
+        },
+        "seat2-round1": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Bijan Robinson": 30
+          }
+        },
+        "seat10-round1": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Chase Brown": 24,
+            "James Cook": 6
+          }
+        },
+        "seat1-round3": {
+          "states": 30,
+          "changed": 10,
+          "choices": {
+            "Chris Olave": 29,
+            "Brock Bowers": 1
+          }
+        },
+        "seat2-round3": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "George Pickens": 8,
+            "Chris Olave": 11,
+            "Javonte Williams": 6,
+            "Trey McBride": 5
+          }
+        },
+        "seat10-round3": {
+          "states": 30,
+          "changed": 25,
+          "choices": {
+            "Quinshon Judkins": 15,
+            "Zay Flowers": 5,
+            "Trey McBride": 2,
+            "Javonte Williams": 2,
+            "DeVonta Smith": 6
+          }
+        },
+        "seat10-round6": {
+          "states": 30,
+          "changed": 26,
+          "choices": {
+            "Jalen Hurts": 13,
+            "Bhayshul Tuten": 6,
+            "Luther Burden III": 2,
+            "Jaylen Warren": 4,
+            "Rhamondre Stevenson": 3,
+            "Drake Maye": 1,
+            "Joe Burrow": 1
+          }
+        },
+        "seat2-round6": {
+          "states": 30,
+          "changed": 25,
+          "choices": {
+            "Jayden Daniels": 12,
+            "Rhamondre Stevenson": 4,
+            "Jalen Hurts": 9,
+            "Courtland Sutton": 2,
+            "Parker Washington": 3
+          }
+        },
+        "seat1-round6": {
+          "states": 30,
+          "changed": 23,
+          "choices": {
+            "Rhamondre Stevenson": 6,
+            "Jayden Daniels": 11,
+            "Courtland Sutton": 2,
+            "Jalen Hurts": 6,
+            "Parker Washington": 5
+          }
+        }
+      }
+    },
+    "RB-minus-10-percent": {
+      "states": 270,
+      "changed": 22,
+      "rows": {
+        "seat1-round1": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Jahmyr Gibbs": 30
+          }
+        },
+        "seat2-round1": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Bijan Robinson": 30
+          }
+        },
+        "seat10-round1": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Chase Brown": 24,
+            "James Cook": 6
+          }
+        },
+        "seat1-round3": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Chris Olave": 19,
+            "George Pickens": 10,
+            "Brock Bowers": 1
+          }
+        },
+        "seat2-round3": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "George Pickens": 8,
+            "Chris Olave": 11,
+            "Javonte Williams": 6,
+            "Trey McBride": 5
+          }
+        },
+        "seat10-round3": {
+          "states": 30,
+          "changed": 19,
+          "choices": {
+            "Colston Loveland": 24,
+            "Zay Flowers": 2,
+            "Trey McBride": 2,
+            "Javonte Williams": 2
+          }
+        },
+        "seat10-round6": {
+          "states": 30,
+          "changed": 1,
+          "choices": {
+            "Rico Dowdle": 21,
+            "Jayden Reed": 3,
+            "Jaylen Warren": 5,
+            "Tucker Kraft": 1
+          }
+        },
+        "seat2-round6": {
+          "states": 30,
+          "changed": 2,
+          "choices": {
+            "Brock Purdy": 13,
+            "Jayden Daniels": 2,
+            "Jalen Hurts": 5,
+            "Tucker Kraft": 1,
+            "Rico Dowdle": 6,
+            "Caleb Williams": 2,
+            "Sam LaPorta": 1
+          }
+        },
+        "seat1-round6": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Sam LaPorta": 5,
+            "Caleb Williams": 9,
+            "Brock Purdy": 5,
+            "Jalen Hurts": 6,
+            "Jayden Reed": 3,
+            "Tucker Kraft": 1,
+            "Jayden Daniels": 1
+          }
+        }
+      }
+    },
+    "WR-minus-10-percent": {
+      "states": 270,
+      "changed": 23,
+      "rows": {
+        "seat1-round1": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Jahmyr Gibbs": 30
+          }
+        },
+        "seat2-round1": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Bijan Robinson": 30
+          }
+        },
+        "seat10-round1": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Chase Brown": 24,
+            "James Cook": 6
+          }
+        },
+        "seat1-round3": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Chris Olave": 19,
+            "George Pickens": 10,
+            "Brock Bowers": 1
+          }
+        },
+        "seat2-round3": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "George Pickens": 8,
+            "Chris Olave": 11,
+            "Javonte Williams": 6,
+            "Trey McBride": 5
+          }
+        },
+        "seat10-round3": {
+          "states": 30,
+          "changed": 20,
+          "choices": {
+            "Colston Loveland": 25,
+            "Zay Flowers": 1,
+            "Trey McBride": 2,
+            "Javonte Williams": 2
+          }
+        },
+        "seat10-round6": {
+          "states": 30,
+          "changed": 2,
+          "choices": {
+            "Rico Dowdle": 24,
+            "Jaylen Warren": 5,
+            "Tucker Kraft": 1
+          }
+        },
+        "seat2-round6": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Brock Purdy": 13,
+            "Jayden Daniels": 2,
+            "Jalen Hurts": 3,
+            "Tucker Kraft": 1,
+            "Rico Dowdle": 8,
+            "Caleb Williams": 2,
+            "Sam LaPorta": 1
+          }
+        },
+        "seat1-round6": {
+          "states": 30,
+          "changed": 1,
+          "choices": {
+            "Sam LaPorta": 5,
+            "Caleb Williams": 9,
+            "Brock Purdy": 5,
+            "Jalen Hurts": 6,
+            "Jayden Reed": 2,
+            "Jayden Daniels": 2,
+            "Tucker Kraft": 1
+          }
+        }
+      }
+    },
+    "QB-plus-10-percent": {
+      "states": 270,
+      "changed": 3,
+      "rows": {
+        "seat1-round1": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Jahmyr Gibbs": 30
+          }
+        },
+        "seat2-round1": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Bijan Robinson": 30
+          }
+        },
+        "seat10-round1": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Chase Brown": 24,
+            "James Cook": 6
+          }
+        },
+        "seat1-round3": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Chris Olave": 19,
+            "George Pickens": 10,
+            "Brock Bowers": 1
+          }
+        },
+        "seat2-round3": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "George Pickens": 8,
+            "Chris Olave": 11,
+            "Javonte Williams": 6,
+            "Trey McBride": 5
+          }
+        },
+        "seat10-round3": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "David Montgomery": 19,
+            "Zay Flowers": 2,
+            "Colston Loveland": 5,
+            "Trey McBride": 2,
+            "Javonte Williams": 2
+          }
+        },
+        "seat10-round6": {
+          "states": 30,
+          "changed": 0,
+          "choices": {
+            "Rico Dowdle": 22,
+            "Jaylen Warren": 5,
+            "Jayden Reed": 2,
+            "Tucker Kraft": 1
+          }
+        },
+        "seat2-round6": {
+          "states": 30,
+          "changed": 2,
+          "choices": {
+            "Brock Purdy": 13,
+            "Jayden Daniels": 2,
+            "Jalen Hurts": 5,
+            "Tucker Kraft": 1,
+            "Rico Dowdle": 6,
+            "Caleb Williams": 2,
+            "Sam LaPorta": 1
+          }
+        },
+        "seat1-round6": {
+          "states": 30,
+          "changed": 1,
+          "choices": {
+            "Sam LaPorta": 5,
+            "Caleb Williams": 9,
+            "Brock Purdy": 5,
+            "Jalen Hurts": 6,
+            "Jayden Reed": 2,
+            "Jayden Daniels": 2,
+            "Tucker Kraft": 1
+          }
+        }
+      }
+    }
+  }
+}

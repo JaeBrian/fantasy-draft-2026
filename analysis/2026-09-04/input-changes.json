@@ -1,0 +1,160 @@
+{
+  "boardPlayers": 235,
+  "projected": 230,
+  "sleeperADP": 234,
+  "marketADP": 187,
+  "projectionChanges": [
+    {
+      "name": "Sam Darnold",
+      "before": 20.03,
+      "after": 16.4,
+      "delta": -3.63
+    },
+    {
+      "name": "Baker Mayfield",
+      "before": 19.56,
+      "after": 16.17,
+      "delta": -3.39
+    },
+    {
+      "name": "Aaron Rodgers",
+      "before": 17.27,
+      "after": 13.91,
+      "delta": -3.36
+    },
+    {
+      "name": "Brock Purdy",
+      "before": 22.11,
+      "after": 18.8,
+      "delta": -3.31
+    },
+    {
+      "name": "Bo Nix",
+      "before": 20.44,
+      "after": 17.2,
+      "delta": -3.24
+    },
+    {
+      "name": "Matthew Stafford",
+      "before": 19.53,
+      "after": 16.33,
+      "delta": -3.2
+    },
+    {
+      "name": "Tyler Shough",
+      "before": 19.63,
+      "after": 16.49,
+      "delta": -3.14
+    },
+    {
+      "name": "Joe Burrow",
+      "before": 22.25,
+      "after": 19.13,
+      "delta": -3.12
+    },
+    {
+      "name": "Dak Prescott",
+      "before": 21.47,
+      "after": 18.38,
+      "delta": -3.09
+    },
+    {
+      "name": "Jaxson Dart",
+      "before": 21.41,
+      "after": 18.34,
+      "delta": -3.07
+    },
+    {
+      "name": "Drake Maye",
+      "before": 21.05,
+      "after": 17.99,
+      "delta": -3.06
+    },
+    {
+      "name": "Jordan Love",
+      "before": 20.02,
+      "after": 16.96,
+      "delta": -3.06
+    },
+    {
+      "name": "Trevor Lawrence",
+      "before": 20.08,
+      "after": 17.03,
+      "delta": -3.05
+    },
+    {
+      "name": "C.J. Stroud",
+      "before": 18.98,
+      "after": 16.03,
+      "delta": -2.95
+    },
+    {
+      "name": "Patrick Mahomes",
+      "before": 20.61,
+      "after": 17.67,
+      "delta": -2.94
+    },
+    {
+      "name": "Daniel Jones",
+      "before": 18.52,
+      "after": 15.6,
+      "delta": -2.92
+    },
+    {
+      "name": "Jared Goff",
+      "before": 20.5,
+      "after": 17.65,
+      "delta": -2.85
+    },
+    {
+      "name": "Josh Allen",
+      "before": 23.07,
+      "after": 20.29,
+      "delta": -2.78
+    },
+    {
+      "name": "Kyler Murray",
+      "before": 19.51,
+      "after": 16.81,
+      "delta": -2.7
+    },
+    {
+      "name": "Jalen Hurts",
+      "before": 21.7,
+      "after": 19.01,
+      "delta": -2.69
+    },
+    {
+      "name": "Malik Willis",
+      "before": 18.75,
+      "after": 16.09,
+      "delta": -2.66
+    },
+    {
+      "name": "Justin Herbert",
+      "before": 19.76,
+      "after": 17.17,
+      "delta": -2.59
+    },
+    {
+      "name": "Caleb Williams",
+      "before": 21.21,
+      "after": 18.64,
+      "delta": -2.57
+    },
+    {
+      "name": "Jayden Daniels",
+      "before": 21.12,
+      "after": 18.68,
+      "delta": -2.44
+    },
+    {
+      "name": "Lamar Jackson",
+      "before": 21.84,
+      "after": 19.55,
+      "delta": -2.29
+    }
+  ],
+  "projectedDefinition": "Count with rounded per-week projection greater than zero; weekly source coverage is 231, including one rounded-zero player.",
+  "weeklyProjectionCoverage": 231
+}

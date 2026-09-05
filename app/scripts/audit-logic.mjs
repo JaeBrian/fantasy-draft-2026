@@ -42,7 +42,7 @@ console.log('\n=== 2. VALUE MODEL: are the PPG curves calibrated to real product
 {
   const fs = require('node:fs');
   let stats = null;
-  try { stats = JSON.parse(fs.readFileSync('/Users/brianlee/.claude/jobs/142115c6/tmp/stats2025.json','utf8')); } catch {}
+  try { stats = JSON.parse(fs.readFileSync(CACHE + 'stats2025.json','utf8')); } catch {}
   if (!stats) { warn('2025 stats snapshot not available here', 'skipping calibration check'); }
   else {
     const norm=s=>s.toLowerCase().replace(/[.'-]/g,' ').replace(/\b(jr|sr|ii|iii|iv|v)\b/g,'').replace(/\s+/g,' ').trim();

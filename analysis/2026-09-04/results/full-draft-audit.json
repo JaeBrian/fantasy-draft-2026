@@ -1,0 +1,12 @@
+{
+  "drafts": 36,
+  "rounds": 16,
+  "picksPerDraft": 192,
+  "advisorCalls": 6912,
+  "scenarios": [
+    "late-kdef",
+    "early-k",
+    "early-kdef"
+  ],
+  "failures": 0
+}

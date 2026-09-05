@@ -1,0 +1,8 @@
+*
+!.gitignore
+!REPORT.md
+!validation.json
+!input-changes.json
+!projection-check.json
+!results/
+!results/**

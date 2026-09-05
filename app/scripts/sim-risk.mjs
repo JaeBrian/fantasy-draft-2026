@@ -16,6 +16,8 @@ const CACHE = new URL('../.simcache/', import.meta.url).pathname;
  */
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
 const { SLP } = require(CACHE + 'sleeper.cjs');
+const { PROJ } = require(CACHE + 'projections.cjs');
+const { riskOf, cuffUplift, missShareOf, seasonAvailability } = require(CACHE + 'risk.cjs');
 
 const PPG = {
   QB: r => Math.max(14, 23.5 - 0.32 * r),
@@ -47,9 +49,9 @@ const POOL = [];
     const tag = r[4];
     POOL.push({
       name: r[0], pos: r[1], team: r[2], ourRank: i + 1,
-      proj: PPG[r[1]](pr) * (RISK[tag] || 1) * hurt,
-      cv: BASE_CV[r[1]] * (RISK_CV[tag] || 1) * (s.inj ? 1.15 : 1),
-      pMiss: BASE_MISS[r[1]] * (tag === 'risk' ? 1.3 : tag === 'avoid' ? 1.5 : 1) * (s.inj ? 1.4 : 1),
+      proj: (PROJ[r[0]] ?? PPG[r[1]](pr)) + cuffUplift(r[0]),
+      cv: riskOf(r[0], r[1], tag).cv,
+      pMiss: riskOf(r[0], r[1], tag).pMiss, knownMiss: riskOf(r[0], r[1], tag).knownMiss,
       mkt, sig: Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * mkt), bye: BYE[r[2]] || 0,
     });
   });
@@ -66,8 +68,7 @@ const NEED = t => { const c = { QB: 0, RB: 0, WR: 0, TE: 0 }; t.forEach(x => c[x
 function realise(p, rnd) {
   const s = Math.sqrt(Math.log(1 + p.cv * p.cv));
   const ppg = p.proj * Math.exp(gauss(rnd) * s - (s * s) / 2);
-  let share = 1;
-  if (rnd() < p.pMiss) share = 0.35 + 0.5 * rnd();   // missed time: 35-85% of the season
+  let share = seasonAvailability(p, rnd);   // missed time: 35-85% of the season
   return ppg * share;
 }
 function oppPick(avail, team, rnd) {
@@ -106,12 +107,12 @@ function season(slot, tpl, seed, tilt) {
     teams[t].push(p); avail.splice(avail.indexOf(p), 1);
   }
   const mine = teams[slot].map(p => ({ ...p, real: realise(p, rnd) }));
-  const by = pos => mine.filter(x => x.pos === pos).sort((a, b) => b.real - a.real);
+  const by = pos => mine.filter(x => x.pos === pos).sort((a, b) => (b.proj*(1-missShareOf(b)))-(a.proj*(1-missShareOf(a))));
   const qb = by('QB'), rb = by('RB'), wr = by('WR'), te = by('TE');
   const used = new Set(); let pts = 0;
   const take = (a, n) => a.slice(0, n).forEach(x => { pts += x.real; used.add(x.name); });
   take(qb, 1); take(rb, 2); take(wr, 2); take(te, 1);
-  take([...rb, ...wr, ...te].filter(x => !used.has(x.name)).sort((a, b) => b.real - a.real), 2);
+  take([...rb, ...wr, ...te].filter(x => !used.has(x.name)).sort((a, b) => (b.proj*(1-missShareOf(b)))-(a.proj*(1-missShareOf(a)))), 2);
   return pts;
 }
 

@@ -21,10 +21,12 @@
  * quarterback changed is a different player. It is still measurement rather than assumption.
  *
  * Run from app/:  node scripts/fetch-ceilings.mjs                                            */
-import { readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
-const norm = (s) => s.toLowerCase().replace(/[.'-]/g, " ")
-  .replace(/\b(jr|sr|ii|iii|iv|v)\b/g, "").replace(/\s+/g, " ").trim();
+import { scoreStats, leagueScoring } from "./league-scoring.mjs";
+const scoring = await leagueScoring();
+const snapshot = {};
+import { playerNameKey as norm } from "./player-name.mjs";
 
 const dataTs = readFileSync(new URL("../src/data.ts", import.meta.url), "utf8");
 const boardNames = [...dataTs.matchAll(/^\["((?:[^"\\]|\\.)*)",/gm)].map((m) => m[1]);
@@ -45,14 +47,19 @@ for (let wk = 1; wk <= 18; wk++) {
   const rows = await (await fetch(`https://api.sleeper.app/v1/stats/nfl/regular/2025/${wk}`)).json();
   let n = 0;
   for (const [id, st] of Object.entries(rows)) {
-    const pts = st?.pts_half_ppr;
+    const pts = st ? scoreStats(st, scoring) : undefined;
     if (typeof pts !== "number") continue;
     if (!st.gp) continue;                       // did not play — not a low score, no score
     (weeks[id] ??= []).push(pts);
+    snapshot[id] ??= {gp:0,pts_half_ppr:0};
+    snapshot[id].gp++;
+    snapshot[id].pts_half_ppr += pts;
     n++;
   }
   process.stdout.write(`  week ${wk}: ${n} lines\r`);
 }
+mkdirSync(new URL('../.simcache/', import.meta.url), {recursive:true});
+writeFileSync(new URL('../.simcache/stats2025.json', import.meta.url), JSON.stringify(snapshot));
 console.log(`\ncollected 2025 game logs for ${Object.keys(weeks).length} players`);
 
 /* How fragile is the projection itself? Points from touchdowns swing hard year to year —
@@ -62,7 +69,7 @@ console.log(`\ncollected 2025 game logs for ${Object.keys(weeks).length} players
  * touches are what a coach controls, and they carry over far better than the scoring does. */
 const proj = await (await fetch("https://api.sleeper.com/projections/nfl/2026?season_type=regular")).json();
 const projById = {};
-for (const r of proj) if (r?.stats?.pts_half_ppr > 0) projById[r.player_id] = r.stats;
+for (const r of proj) if (r?.stats && scoreStats(r.stats, scoring) > 0) projById[r.player_id] = { ...r.stats, pts_half_ppr: scoreStats(r.stats, scoring) };
 
 const pct = (a, q) => a.slice().sort((x, y) => x - y)[Math.max(0, Math.floor(q * (a.length - 1)))];
 const out = {};

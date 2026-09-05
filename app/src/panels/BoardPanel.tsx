@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { P, OT, BYE, DRAFT_ORDER, SIM_PLANS, TOOL_USERS, VEGAS, type Pos } from "../data";
+import { P, OT, BYE, MKT, DRAFT_ORDER, SIM_PLANS, TOOL_USERS, VEGAS, type Pos } from "../data";
 import { snapTeam } from "../lib/advisor";
 import { advise, needText, rosterSlots, PLAINPOS, PLAINSHORT, type DraftState } from "../lib/advisor";
 import { fillToMyTurn, gradeDraft } from "../lib/mock";
@@ -10,9 +10,7 @@ import { valueOf, valueTier } from "../lib/value";
 import { runForecast, type Forecast } from "../lib/forecast";
 import { getPins, setPin, togglePin, parseIntel, pinnedPick } from "../lib/intel";
 
-type SleeperPick = { pick_no: number; draft_slot: number; metadata?: { first_name?: string; last_name?: string; team?: string } };
-const normName = (s: string) =>
-  s.toLowerCase().replace(/[.'-]/g, " ").replace(/\b(jr|sr|ii|iii|iv|v)\b/g, "").replace(/\s+/g, " ").trim();
+import { sleeperSnapshot, offBoardPick, externalPickKey, type SleeperPick } from "../lib/sleeper-draft";
 import { Call, Chevrons, Info, InjChip, NewsChip, Noob, SleeperMark, Sticker, TagChips, TeamIcon, TrendChip } from "../components/ui";
 import { RB_LEAN, rbLean, setRbLean, type RbLean } from "../lib/tendency";
 
@@ -42,6 +40,7 @@ interface BoardProps {
   undo: () => void;
   reset: () => void;
   applyRun: (names: string[]) => void;
+  applySync: (state: DraftState, order: string[]) => void;
   canUndo: boolean;
   mySlot: number;
   setMySlot: (n: number) => void;
@@ -81,7 +80,7 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked, lean }: { DS: DraftState
     if (!DS[r[0]] && !next[r[1]]) next[r[1]] = { n: r[0], i };
   });
 
-  const waiting = !a.onClock && a.nextPick !== null && a.myCount < 14;
+  const waiting = !a.onClock && a.nextPick !== null && a.myCount < 16;
   /* one-phrase reason for the 2nd/3rd choices */
   const shortWhy = (c: (typeof a.cands)[number]) =>
     c.cuffOf ? `handcuffs your ${c.cuffOf}`
@@ -93,16 +92,19 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked, lean }: { DS: DraftState
     `rounded border px-1.5 py-0.5 font-mono text-[0.72rem] font-semibold ${
       n >= 70 ? "border-value/50 text-value" : n >= 40 ? "border-clock/50 text-clock" : "border-avoid/50 text-avoid"
     }`;
+  const slots = rosterSlots(DS);
+  const hasK = slots.some(s => s.label === "K" && s.player);
+  const hasDST = slots.some(s => s.label === "DST" && s.player);
   let suggestion: { list: typeof a.cands; why: ReactNode } | null = null;
   let special: string | null = null;
   let plain: ReactNode = null;
   if (a.myCount >= 16) special = "Roster complete.";
-  else if (a.myCount >= 14) {
+  else if (a.myCount >= 14 && (!hasK || !hasDST)) {
     special =
-      a.myCount === 14
-        ? "Take your defense — best remaining of Seahawks / Texans / Rams / Steelers. (K and DST always go with your last two picks.)"
-        : "Take your kicker — best remaining of Aubrey / Fairbairn / Dicker / Boswell. (K and DST always go with your last two picks.)";
-    plain = <>You're almost done! Use your last picks on a kicker and a defense — the ones suggested here are all fine. Click <b>Pick</b> next to a name when you take someone.</>;
+      !hasDST
+        ? "Fill your defense slot using the available defenses and current Week 1 matchups."
+        : "Fill your kicker slot using the available starters in Sleeper.";
+    plain = <>Fill the kicker or defense slot still open on your roster. Live sync records these picks automatically. In manual mode, use the off-board pick form.</>;
   } else if (a.cands.length) {
     const t = a.cands[0];
     /* one readable sentence: what he fills, plus at most two supporting reasons */
@@ -137,7 +139,7 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked, lean }: { DS: DraftState
       <>
         It's not your turn yet — your next pick is <b>#{a.nextPick}</b> ({a.nextPick! - a.cur} picks away). Click{" "}
         <b>Taken</b> for each player other teams draft. When your turn comes, aim for <b>{t.now.r[0]}</b>, the best{" "}
-        {PLAINPOS[t.p]} likely to still be there (~{Math.round(t.pReach * 100)}% chance).
+        {PLAINPOS[t.p]} likely to still be there (~{Math.round((fc?.survive[t.now.r[0]] ?? t.pReach) * 100)}% chance).
         {a.cands.length > 1 && <> If he's gone, next in line: {a.cands.slice(1, 3).map((c) => c.now.r[0]).join(", then ")}.</>}
         {a.plainWarn.length > 0 && <> Also: {a.plainWarn.join("; ")}.</>}
       </>
@@ -176,8 +178,6 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked, lean }: { DS: DraftState
       </>
     );
   }
-
-  const slots = rosterSlots(DS);
 
   return (
     <div
@@ -472,7 +472,7 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked, lean }: { DS: DraftState
             <summary className="cursor-pointer list-none text-ink-2">
               <b className="text-ink">Your simulated best line</b>{" "}
               <span className="text-ink-3">
-                — {SIM_PLANS[mySlot].strategy} · won {SIM_PLANS[mySlot].winPct}% of 800 sims
+                — {SIM_PLANS[mySlot].strategy} · led {SIM_PLANS[mySlot].winPct}% of 4,000 simulated leagues by average starter points
               </span>
             </summary>
             <ul className="m-0 mt-1.5 flex list-none flex-col gap-0.5 p-0">
@@ -494,9 +494,8 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked, lean }: { DS: DraftState
               })}
             </ul>
             <p className="m-0 mt-1.5 text-[0.76rem] leading-snug text-ink-3">
-              {SIM_PLANS[mySlot].ppw} pts/wk of starters. The % is how often that player was still on the board at that
-              pick across 800 drafts — so the second name is your fallback, not a downgrade. A plan, not a script: the
-              panel above always reflects the real board.
+              {SIM_PLANS[mySlot].ppw} pts/wk of starters. Each player percentage is how often the simulated policy selected him at that pick across 4,000 drafts.
+              The panel above reflects the current board and roster.
             </p>
           </details>
         )}
@@ -525,9 +524,22 @@ function AdvisorStrip({ DS, mySlot, ord, noob, blocked, lean }: { DS: DraftState
   );
 }
 
-export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo, mySlot, setMySlot }: BoardProps) {
+export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, applySync, canUndo, mySlot, setMySlot }: BoardProps) {
   const [pos, setPos] = useState<"ALL" | Pos>("ALL");
   const [q, setQ] = useState("");
+  const [offName, setOffName] = useState("");
+  const [offPos, setOffPos] = useState<Pos>("K");
+  const [offError, setOffError] = useState("");
+  function addOffboard(want: "gone" | "mine") {
+    const name = offName.trim();
+    if (!name) return;
+    if (Object.keys(DS).some(k => (offBoardPick(k)?.name ?? k).toLowerCase() === name.toLowerCase())) {
+      setOffError("This player is already drafted. Use Undo to correct the previous pick."); return;
+    }
+    const row = P.find(r => r[0].toLowerCase() === name.toLowerCase());
+    try { mark(row?.[0] ?? externalPickKey(ord.length + 1, offPos, name), want); setOffName(""); setOffError(""); }
+    catch (error) { setOffError(String(error)); }
+  }
   const [hideDrafted, setHideDrafted] = useState(false);
   const [resetArmed, setResetArmed] = useState(false);
   const [openTiers, setOpenTiers] = useState<number[]>([]);
@@ -618,28 +630,6 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
       return;
     }
     const id = idMatch[1];
-    const lookup = new Map(P.map((r) => [normName(r[0]), r[0]]));
-    /* nickname fallback: Sleeper says "Kenny Gainwell", our board says "Kenneth".
-       Accept a UNIQUE last-name + first-initial match when the full name misses. */
-    const byLast = new Map<string, string[]>();
-    P.forEach((r) => {
-      const parts = normName(r[0]).split(" ");
-      const key = parts[parts.length - 1] + "|" + parts[0][0];
-      byLast.set(key, [...(byLast.get(key) ?? []), r[0]]);
-    });
-    const teamOf = new Map(P.map((r) => [r[0], r[2]]));
-    const resolve = (raw: string, team?: string) => {
-      const k = normName(raw);
-      const exact = lookup.get(k);
-      if (exact) return exact;
-      /* fallback only fires for a UNIQUE last-name + first-initial match on the SAME team,
-         so an obscure namesake can never mark a real player as drafted */
-      const parts = k.split(" ");
-      if (parts.length < 2 || !parts[0] || !team) return undefined;
-      const cand = byLast.get(parts[parts.length - 1] + "|" + parts[0][0]);
-      if (!cand || cand.length !== 1) return undefined;
-      return teamOf.get(cand[0]) === team ? cand[0] : undefined;
-    };
     let stop = false;
     const tick = async () => {
       try {
@@ -659,19 +649,9 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
           return 60000;
         }
         if (!stop) setStaleMarks(0);
-        let offBoard = 0;
-        picks
-          .sort((x, y) => x.pick_no - y.pick_no)
-          .forEach((pk) => {
-            const nm = resolve(`${pk.metadata?.first_name ?? ""} ${pk.metadata?.last_name ?? ""}`, pk.metadata?.team);
-            if (!nm) {
-              offBoard++;
-              return;
-            }
-            const want = pk.draft_slot === slotRef.current ? "mine" : "gone";
-            /* also self-heal: if you picked your identity after picks were synced, re-attribute them */
-            if (!DSRef.current[nm] || DSRef.current[nm] !== want) mark(nm, want);
-          });
+        const snapshot = sleeperSnapshot(picks, slotRef.current, P);
+        const { offBoard } = snapshot;
+        if (!stop) applySync(snapshot.DS, snapshot.ord);
         if (!stop)
           setSyncMsg(
             `Live: ${picks.length} picks synced${offBoard ? ` (${offBoard} off-board)` : ""} · ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" })}`
@@ -692,7 +672,7 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
       stop = true;
       if (timer !== undefined) clearTimeout(timer);
     };
-  }, [syncOn, sleeperId, mark]);
+  }, [syncOn, sleeperId, applySync, mySlot]);
 
   /* "/" from anywhere focuses the search box for rapid-fire pick marking */
   useEffect(() => {
@@ -897,12 +877,12 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
           })()}
           {SLP[n]?.adp !== undefined && (
             <span className="block text-[0.66rem] leading-tight text-ink-3 min-[1400px]:hidden" title="mock-draft market ADP">
-              mock {adp.toFixed(0)}
+              mock {MKT[n] ? MKT[n][0].toFixed(1) : "—"}
             </span>
           )}
         </td>
         <td className="num hidden min-[1400px]:table-cell">
-          {SLP[n]?.adp !== undefined ? adp.toFixed(1) : <span className="text-ink-3">—</span>}
+          {MKT[n] ? MKT[n][0].toFixed(1) : <span className="text-ink-3">—</span>}
         </td>
         <td className="num">
           {(() => {
@@ -969,10 +949,24 @@ export function BoardPanel({ noob, DS, ord, mark, undo, reset, applyRun, canUndo
           <li><b>Do this one thing:</b> tap your name under <b>I am</b> (Ashley / Brian JK / Emily). That's it — our league's Sleeper draft is already connected, so every pick marks itself as it happens. You never touch <b>Taken</b> or <b>Pick</b> unless the sync is off.</li>
           <li>Then just read the panel: it shows your <b>next three targets in order</b>, each with the odds he's still there when your turn comes. Take #1 if he's there, else #2, else #3.</li>
           <li>Chips: <Call v="buy" /> better than his price · <Call v="solid" /> fairly priced · <Call v="risk" /> only at a discount · <Call v="avoid" /> the price ignores a real problem. Hover any small tag for its meaning.</li>
-          <li><b>Value</b> is a price tag: how good he is against what the room pays. <b className="text-value">Green</b> = on sale, he'll come back to you — don't reach. <b className="text-avoid">Red</b> = marked up, let someone else pay. <b>ADP</b> comes straight from real Sleeper half-PPR drafts, so it is what this room actually pays.</li>
+          <li><b>Value</b> is a price tag: how good he is against what the room pays. <b className="text-value">Green</b> = projects above his market price; check the chance he reaches your next pick. <b className="text-avoid">Red</b> = marked up, let someone else pay. <b>ADP</b> comes straight from real Sleeper half-PPR drafts, so it helps estimate what the room may pay.</li>
           <li>Drafting somewhere other than Sleeper? Turn sync off and mark picks yourself: type a name in the search box and press <b>Enter</b> (someone else took him) or <b>Shift+Enter</b> (you took him). Press <b>/</b> to jump to the search box.</li>
         </ul>
       </Noob>
+
+      {!syncOn && !practice && <fieldset className="rounded border border-line p-3">
+        <legend className="px-1 font-semibold">Off-board pick</legend>
+        <p className="mb-2 text-sm text-ink-3">Record kickers, defenses, or players missing from this board.</p>
+        <div className="flex flex-wrap items-center gap-2">
+          <input aria-label="Off-board player name" placeholder="Player or defense name" value={offName} onChange={e => setOffName(e.target.value)} className="rounded border border-line bg-paper px-3 py-2" />
+          <select aria-label="Off-board position" value={offPos} onChange={e => setOffPos(e.target.value as Pos)} className="rounded border border-line bg-paper px-3 py-2">
+            {(["QB", "RB", "WR", "TE", "K", "DST"] as Pos[]).map(p => <option key={p}>{p}</option>)}
+          </select>
+          <button type="button" className="btn" disabled={!offName.trim()} onClick={() => addOffboard("gone")}>Taken off-board</button>
+          <button type="button" className="btn" disabled={!offName.trim() || !mySlot} onClick={() => addOffboard("mine")}>Pick off-board</button>
+        </div>
+        {offError && <p role="alert" className="mt-2 text-avoid">{offError}</p>}
+      </fieldset>}
 
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex gap-1.5" role="group" aria-label="Filter by position">

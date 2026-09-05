@@ -20,7 +20,7 @@ const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 const { P, MKT, BYE, VEGAS } = require(CACHE + 'data.cjs');
 const { SLP } = require(CACHE + 'sleeper.cjs');
 const { PROJ } = require(CACHE + 'projections.cjs');
-const { riskOf } = require(CACHE + 'risk.cjs');
+const { riskOf, missShareOf, seasonAvailability } = require(CACHE + 'risk.cjs');
 
 const W = Number(process.argv[2] || 4000);
 const TEAMS = 12, ROUNDS = 14, SEAT = 1;
@@ -34,10 +34,10 @@ P.forEach((r) => {
   const mkt = s.adp !== undefined ? 0.75 * s.adp + 0.25 * ffc : ffc;
   const rk = riskOf(r[0], r[1], r[4]);
   POOL.push({ name: r[0], pos: r[1], team: r[2], adp: +(s.adp ?? ffc).toFixed(1), verdict: r[4],
-    proj: PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6, cv: rk.cv, pMiss: rk.pMiss, flags: rk.flags,
+    proj: PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6, cv: rk.cv, pMiss: rk.pMiss, knownMiss: rk.knownMiss, flags: rk.flags,
     mkt, sig: Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * mkt), bye: BYE[r[2]] || 0 });
 });
-const adj = (p) => p.proj * (1 - 0.4 * p.pMiss);
+const adj = (p) => p.proj * (1 - missShareOf(p));
 const REPL = {};
 for (const pos of ['QB','RB','WR','TE']) {
   const v = POOL.filter(p => p.pos === pos).map(adj).sort((a,b) => b-a);
@@ -85,7 +85,7 @@ function season(roster, rnd) {
   for (let wk=1; wk<=17; wk++) {
     const shock = {};
     const real = roster.map((p,i) => {
-      if (p.bye===wk || rnd() < p.pMiss/17) return { p, v:0 };
+      if (p.bye===wk || rnd() < (missShareOf(p))) return { p, v:0 };
       shock[p.team] ??= gauss(rnd);
       /* Loadings on one shared team shock. The shock IS the quarterback's own deviation, so a
            receiver's correlation to him is his loading directly, and receiver-to-receiver falls out

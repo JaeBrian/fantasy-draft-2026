@@ -4,13 +4,7 @@
 // Run: node scripts/fetch-sleeper.mjs
 import { readFileSync, writeFileSync } from "node:fs";
 
-const norm = (s) =>
-  s
-    .toLowerCase()
-    .replace(/[.'-]/g, " ")
-    .replace(/\b(jr|sr|ii|iii|iv|v)\b/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
+import { playerNameKey as norm } from "./player-name.mjs";
 
 const dataTs = readFileSync(new URL("../src/data.ts", import.meta.url), "utf8");
 const boardNames = [...dataTs.matchAll(/^\["((?:[^"\\]|\\.)*)",/gm)].map((m) => m[1]);

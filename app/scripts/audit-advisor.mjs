@@ -57,7 +57,7 @@ function playDraft(slot) {
     }
   }
   const a = advise(DS, slot, ord);
-  const unexpected = a.warnings.filter(w => !/kicker and defense/i.test(w));
+  const unexpected = a.warnings.filter(w => !/kicker and (?:a )?defense/i.test(w));
   return { problems, myPicks, roster: { qb: a.qb, rb: a.rb, wr: a.wr, te: a.te }, unexpected };
 }
 

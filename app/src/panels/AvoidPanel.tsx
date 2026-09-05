@@ -72,20 +72,17 @@ export function AvoidPanel({ noob }: { noob: boolean }) {
           <div className="rounded-md border border-avoid/25 bg-avoid/6 p-4">
             <h3 className="display m-0 text-[1.25rem] text-ink">Puka Nacua · WR · LAR</h3>
             <p className="mt-1.5 mb-0 text-[0.93rem] text-ink-2">
-              Facing a possible NFL suspension (civil suit + personal-conduct review; Schefter: a ban is "within the
-              range of outcomes"). No ruling as of Aug 17. Also nursing minor groin soreness (that part's fine).{" "}
-              <b className="text-ink">He's the #2 WR in football when active</b> — the play is: draft him top-6 only if you can
-              absorb a 1–3 game hole, and check for the ruling the morning of your draft. If the NFL clears him
-              pre-draft, move him back to #4 overall.
+              Check the current NFL conduct ruling and groin-injury report before paying an early-round price.
+              His production when active is valuable, but the duration of any absence remains uncertain.
+              Compare healthy alternatives and the depth needed to cover missed games.
             </p>
           </div>
           <div className="rounded-md border border-avoid/25 bg-avoid/6 p-4">
             <h3 className="display m-0 text-[1.25rem] text-ink">Josh Jacobs · RB · GB</h3>
             <p className="mt-1.5 mb-0 text-[0.93rem] text-ink-2">
-              Open felony investigation (May arrest; DA case active, NFL reviewing) <i>plus</i> a groin injury that's
-              kept him out of camp. A suspension could land mid-season with zero warning. At his round 3–4 price, that's
-              a landmine — the RBs around him (Skattebo, Etienne, Swift) carry none of it. If he slides to round 6+, the
-              math flips. Handcuff: MarShawn Lloyd.
+              Placed on the commissioner’s exempt list August 30. He cannot play while that designation remains,
+              and Green Bay has given no confirmed return date. Treat an early pick as a substantial availability
+              risk. Compare MarShawn Lloyd and Kaleb Johnson’s current roles and prices for exposure to this backfield.
             </p>
           </div>
         </div>

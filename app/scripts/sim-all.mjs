@@ -8,7 +8,7 @@ const fs = require('fs');
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
 const { SLP } = require(CACHE + 'sleeper.cjs');
 const { PROJ } = require(CACHE + 'projections.cjs');
-const { riskOf, cuffUplift } = require(CACHE + 'risk.cjs');
+const { riskOf, cuffUplift, missShareOf, seasonAvailability } = require(CACHE + 'risk.cjs');
 
 
 
@@ -25,9 +25,9 @@ const POOL=[]; { const c={QB:0,RB:0,WR:0,TE:0};
     const hurt=['O','IR','PUP','SUS'].includes(s.inj)?0.85:s.inj==='D'?0.95:1;
     POOL.push({name:r[0],pos:r[1],team:r[2],ourRank:i+1,idx:POOL.length,posRank:pr,
       sadp: s.adp, ffc,
-      proj: (PROJ[r[0]] !== undefined ? PROJ[r[0]] : PPG[r[1]](pr)) * (RISK[r[4]] || 1) * hurt + cuffUplift(r[0]),
+      proj: (PROJ[r[0]] !== undefined ? PROJ[r[0]] : PPG[r[1]](pr)) + cuffUplift(r[0]),
       cv: riskOf(r[0], r[1], r[4]).cv,
-      pMiss: riskOf(r[0], r[1], r[4]).pMiss,
+      pMiss: riskOf(r[0], r[1], r[4]).pMiss, knownMiss: riskOf(r[0], r[1], r[4]).knownMiss,
       mkt,sig:Math.max(0.5,MKT[r[0]]?MKT[r[0]][1]:0,0.13*mkt),bye:BYE[r[2]]||0,tag:r[4]}); }); }
 
 const snap=p=>{const r=Math.ceil(p/12),i=p-(r-1)*12;return r%2?i:13-i;};
@@ -40,11 +40,11 @@ const cache=new Map();
 function realiseFor(p,w){const k=w*100000+p.idx; let v=cache.get(k); if(v!==undefined)return v;
   const rnd=mul(w*7919+p.idx*104729+13); rnd();rnd();
   const s=Math.sqrt(Math.log(1+p.cv*p.cv));
-  v=p.proj*Math.exp(gauss(rnd)*s-(s*s)/2)*(rnd()<p.pMiss?0.35+0.5*rnd():1);
+  v=p.proj*Math.exp(gauss(rnd)*s-(s*s)/2)*seasonAvailability(p, rnd);
   cache.set(k,v); return v; }
 function oppPick(avail,team,rnd){const c=NEED(team);let b=null,bs=Infinity;
   for(const p of avail){let s=p.mkt+gauss(rnd)*p.sig*0.8;
-    if(p.pos==='QB'&&c.QB>=1)s+=60; if(p.pos==='TE'&&c.TE>=1)s+=50;
+    if(p.pos==='QB')s+=c.QB>=2?900:c.QB>=1?60:0; if(p.pos==='TE')s+=c.TE>=2?900:c.TE>=1?50:0;
     if(p.pos==='RB'&&c.RB>=5)s+=25; if(p.pos==='WR'&&c.WR>=5)s+=25;
     if(s<bs){bs=s;b=p;}} return b;}
 function tplPick(avail,team,tpl,round){const c=NEED(team),want=tpl[round-1];
@@ -52,12 +52,12 @@ function tplPick(avail,team,tpl,round){const c=NEED(team),want=tpl[round-1];
   const ok=['RB','WR','TE','QB'].filter(pos=>pos==='QB'?c.QB<2:pos==='TE'?c.TE<2:c[pos]<6);
   const cs=avail.filter(p=>ok.includes(p.pos));
   return (cs.length?cs:avail).sort((a,b)=>a.ourRank-b.ourRank)[0];}
-function lineup(R){const by=pos=>R.filter(x=>x.pos===pos).sort((a,b)=>b.real-a.real);
+function lineup(R){const by=pos=>R.filter(x=>x.pos===pos).sort((a,b)=>(b.proj*(1-missShareOf(b)))-(a.proj*(1-missShareOf(a))));
   const rb=by('RB'),wr=by('WR'),te=by('TE'),qb=by('QB');
   const used=new Set(); let pts=0;
   const take=(a,n)=>a.slice(0,n).forEach(x=>{pts+=x.real;used.add(x.name);});
   take(qb,1);take(rb,2);take(wr,2);take(te,1);
-  take([...rb,...wr,...te].filter(x=>!used.has(x.name)).sort((a,b)=>b.real-a.real),2);
+  take([...rb,...wr,...te].filter(x=>!used.has(x.name)).sort((a,b)=>(b.proj*(1-missShareOf(b)))-(a.proj*(1-missShareOf(a)))),2);
   return pts;}
 
 /* Seat 2, not 6 — Brian moved. The loop below was updated for that; these two tables were not,

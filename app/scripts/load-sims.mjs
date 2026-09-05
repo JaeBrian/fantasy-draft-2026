@@ -4,16 +4,23 @@
  * Mechanical on purpose: the Aug 24 refresh did this by hand with a one-off regex that ran past
  * its own block and deleted DRAFT_TREE and ARBITRAGE. Each dataset here is replaced in place,
  * one at a time, and the script refuses to touch a line that is not shaped the way it expects.
- * A study whose JSON is missing is skipped and named, never silently kept.
+ * Missing studies fail the refresh before any published file is changed.
  *
  * Reading the fresh numbers and fixing prose they contradict is still judgement — this only
  * moves the numbers. */
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, statSync } from "node:fs";
 
 const app = new URL("../", import.meta.url).pathname;
 const cache = `${app}.simcache/`;
 const dry = process.argv.includes("--dry");
-const json = (f) => (existsSync(cache + f) ? JSON.parse(readFileSync(cache + f, "utf8")) : null);
+const sinceAt = process.argv.indexOf("--since");
+const since = sinceAt >= 0 ? Number(process.argv[sinceAt + 1]) : 0;
+if (!Number.isFinite(since)) throw new Error("Invalid --since timestamp");
+const json = f => {
+  if (!existsSync(cache + f)) return null;
+  if (statSync(cache + f).mtimeMs < since) throw new Error(`Stale study: ${f}`);
+  return JSON.parse(readFileSync(cache + f, "utf8"));
+};
 /* data.ts keeps its JSON blobs ASCII-only */
 const ascii = (s) => s.replace(/[^\x00-\x7f]/g, (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, "0")}`);
 
@@ -70,6 +77,7 @@ take("sim_all.json", "ARBITRAGE + RUN_TIMING + HEAD_TO_HEAD", (v) => {
   panel = setBlock(panel, "HEAD_TO_HEAD", v.h2h.map(row));
 });
 
+if (missing.length) throw new Error(`Missing required studies: ${missing.join(", ")}`);
 if (!dry) {
   writeFileSync(`${app}src/data.ts`, data);
   writeFileSync(`${app}src/panels/SimPanel.tsx`, panel);

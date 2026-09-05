@@ -11,7 +11,7 @@ const fs = require('fs');
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
 const { SLP } = require(CACHE + 'sleeper.cjs');
 const { PROJ } = require(CACHE + 'projections.cjs');
-const { riskOf, cuffUplift } = require(CACHE + 'risk.cjs');
+const { riskOf, cuffUplift, missShareOf, seasonAvailability } = require(CACHE + 'risk.cjs');
 
 
 
@@ -28,10 +28,10 @@ const POOL = [];
     const pr = ++c[r[1]], ffc = MKT[r[0]] ? MKT[r[0]][0] : r[3], s = SLP[r[0]] || {};
     const mkt = s.adp !== undefined ? 0.75 * s.adp + 0.25 * ffc : ffc;
     const hurt = ['O','IR','PUP','SUS'].includes(s.inj) ? 0.85 : s.inj === 'D' ? 0.95 : 1;
-    POOL.push({ name: r[0], pos: r[1], team: r[2], ourRank: i + 1,
+    POOL.push({ name: r[0], pos: r[1], team: r[2], ourRank: i + 1, idx: POOL.length,
       proj: (PROJ[r[0]] !== undefined ? PROJ[r[0]] : PPG[r[1]](pr)) + cuffUplift(r[0]),   /* riskOf already prices verdict and injury */
       cv: riskOf(r[0], r[1], r[4]).cv,
-      pMiss: riskOf(r[0], r[1], r[4]).pMiss,   /* one shared risk model, so the news wire reaches this too */
+      pMiss: riskOf(r[0], r[1], r[4]).pMiss, knownMiss: riskOf(r[0], r[1], r[4]).knownMiss,   /* one shared risk model, so the news wire reaches this too */
       mkt, sig: Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13*mkt), bye: BYE[r[2]] || 0 }); }); }
 
 /* ---- value, not board position ---------------------------------------------------------
@@ -45,7 +45,7 @@ const POOL = [];
  * panel nobody was checking against anything. */
 {
   const REPL_RANK = { QB: 12, RB: 31, WR: 40, TE: 13 };
-  const adj = (p) => p.proj * (1 - 0.4 * (p.pMiss ?? 0.25));
+  const adj = (p) => p.proj * (1 - missShareOf(p));
   const REPL = {};
   for (const pos of ['QB','RB','WR','TE']) {
     const v = POOL.filter(p => p.pos === pos).map(adj).sort((a,b) => b-a);
@@ -61,12 +61,16 @@ const mul = a => () => { a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a);
 const gauss = rnd => { let u=0,v=0; while(!u)u=rnd(); while(!v)v=rnd();
   return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); };
 const NEED = t => { const c={QB:0,RB:0,WR:0,TE:0}; t.forEach(x=>c[x.pos]++); return c; };
-function realise(p, rnd) { const s = Math.sqrt(Math.log(1+p.cv*p.cv));
-  const ppg = p.proj*Math.exp(gauss(rnd)*s-(s*s)/2);
-  return ppg * (rnd() < p.pMiss ? 0.35+0.5*rnd() : 1); }
+// A player's draw is keyed to the world and player, independent of roster order.
+function realise(p, world) {
+  const rnd = mul(world * 7919 + p.idx * 104729 + 13);
+  rnd(); rnd();
+  const s = Math.sqrt(Math.log(1+p.cv*p.cv));
+  return p.proj*Math.exp(gauss(rnd)*s-s*s/2)*seasonAvailability(p, rnd);
+}
 function oppPick(avail, team, rnd) { const c=NEED(team); let b=null,bs=Infinity;
   for (const p of avail) { let s=p.mkt+gauss(rnd)*p.sig*0.8;
-    if(p.pos==='QB'&&c.QB>=1)s+=60; if(p.pos==='TE'&&c.TE>=1)s+=50;
+    if(p.pos==='QB')s+=c.QB>=2?900:c.QB>=1?60:0; if(p.pos==='TE')s+=c.TE>=2?900:c.TE>=1?50:0;
     if(p.pos==='RB'&&c.RB>=5)s+=25; if(p.pos==='WR'&&c.WR>=5)s+=25;
     if(s<bs){bs=s;b=p;} } return b; }
 function myPick(avail, team, tpl, round) { const c=NEED(team), want=tpl[round-1];
@@ -82,13 +86,13 @@ function run(slot, tpl, seed) {
     const t = snap(pick);
     const p = t===slot ? myPick(avail,teams[t],tpl,Math.ceil(pick/12)) : oppPick(avail,teams[t],rnd);
     if(!p) break; teams[t].push(p); avail.splice(avail.indexOf(p),1); }
-  const mine = teams[slot].map(p => ({ ...p, real: realise(p, rnd) }));
-  const by = pos => mine.filter(x=>x.pos===pos).sort((a,b)=>b.real-a.real);
+  const mine = teams[slot].map(p => ({ ...p, real: realise(p, seed) }));
+  const by = pos => mine.filter(x=>x.pos===pos).sort((a,b)=>(b.proj*(1-missShareOf(b)))-(a.proj*(1-missShareOf(a))));
   const rb=by('RB'), wr=by('WR'), te=by('TE'), qb=by('QB');
   const used=new Set(); let pts=0;
   const take=(a,n)=>a.slice(0,n).forEach(x=>{pts+=x.real;used.add(x.name);});
   take(qb,1); take(rb,2); take(wr,2); take(te,1);
-  take([...rb,...wr,...te].filter(x=>!used.has(x.name)).sort((a,b)=>b.real-a.real),2);
+  take([...rb,...wr,...te].filter(x=>!used.has(x.name)).sort((a,b)=>(b.proj*(1-missShareOf(b)))-(a.proj*(1-missShareOf(a)))),2);
   const byProj = pos => mine.filter(x=>x.pos===pos).sort((a,b)=>b.proj-a.proj);
   return { pts, rb1: (byProj('RB')[0]||{proj:0}).proj, wr1: (byProj('WR')[0]||{proj:0}).proj };
 }
@@ -122,7 +126,7 @@ for (const slot of [1,2,10]) {
     const seed = 20000+w, got = {};
     labels.forEach(l => { const r = run(slot, T[l], seed);
       got[l]=r.pts; res[l].push(r.pts); rb1[l].push(r.rb1); wr1[l].push(r.wr1); });
-    labels.forEach(a=>labels.forEach(b=>{ if(a!==b && got[a]>got[b]) h2h[a][b]++; }));
+    labels.forEach(a=>labels.forEach(b=>{ if(a!==b) h2h[a][b] += got[a]>got[b] ? 1 : got[a]===got[b] ? 0.5 : 0; }));
   }
   const rows = labels.map(l => ({
     label: l, mean: +mean(res[l]).toFixed(2),
@@ -130,6 +134,8 @@ for (const slot of [1,2,10]) {
     rb1: +mean(rb1[l]).toFixed(1), wr1: +mean(wr1[l]).toFixed(1),
     beats: labels.map(b => b===l ? 0 : Math.round(h2h[l][b]/WORLDS*100)),
   })).sort((a,b)=>b.mean-a.mean);
+  // Matrix columns must follow the sorted row order used by the UI.
+  rows.forEach(r => { r.beats = rows.map(other => other.label === r.label ? 0 : Math.round(h2h[r.label][other.label]/WORLDS*100)); });
   out[slot] = { worlds: WORLDS, rows };
   console.log(`\n${slot}: ${rows.map(r=>`${r.label} ${r.mean}`).join(' | ')}`);
   const bf = rows[0], spread = rows[0].mean - rows[rows.length-1].mean;

@@ -11,7 +11,7 @@ const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
 const { SLP } = require(CACHE + 'sleeper.cjs');
 const { PROJ } = require(CACHE + 'projections.cjs');
-const { riskOf } = require(CACHE + 'risk.cjs');
+const { riskOf, missShareOf, seasonAvailability } = require(CACHE + 'risk.cjs');
 
 
 
@@ -29,7 +29,7 @@ const POOL=[]; { const c={QB:0,RB:0,WR:0,TE:0};
     POOL.push({name:r[0],pos:r[1],team:r[2],ourRank:i+1,idx:POOL.length,
       proj: (PROJ[r[0]] !== undefined ? PROJ[r[0]] : PPG[r[1]](pr)) * (RISK[r[4]] || 1) * hurt,
       cv: riskOf(r[0], r[1], r[4]).cv,
-      pMiss: riskOf(r[0], r[1], r[4]).pMiss,
+      pMiss: riskOf(r[0], r[1], r[4]).pMiss, knownMiss: riskOf(r[0], r[1], r[4]).knownMiss,
       mkt,sig:Math.max(0.5,MKT[r[0]]?MKT[r[0]][1]:0,0.13*mkt),bye:BYE[r[2]]||0});});}
 
 const snap=p=>{const r=Math.ceil(p/12),i=p-(r-1)*12;return r%2?i:13-i;};
@@ -42,7 +42,7 @@ const cache=new Map();
 function realiseFor(p,w){const k=w*100000+p.idx;let v=cache.get(k);if(v!==undefined)return v;
   const rnd=mul(w*7919+p.idx*104729+13);rnd();rnd();
   const s=Math.sqrt(Math.log(1+p.cv*p.cv));
-  v=p.proj*Math.exp(gauss(rnd)*s-(s*s)/2)*(rnd()<p.pMiss?0.35+0.5*rnd():1);
+  v=p.proj*Math.exp(gauss(rnd)*s-(s*s)/2)*seasonAvailability(p, rnd);
   cache.set(k,v);return v;}
 function oppPick(avail,team,rnd){const c=NEED(team);let b=null,bs=Infinity;
   for(const p of avail){let s=p.mkt+gauss(rnd)*p.sig*0.8;

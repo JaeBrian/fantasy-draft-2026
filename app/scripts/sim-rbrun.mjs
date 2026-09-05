@@ -30,7 +30,7 @@ const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
 const { SLP } = require(CACHE + 'sleeper.cjs');
 const { PROJ } = require(CACHE + 'projections.cjs');
-const { riskOf, cuffUplift } = require(CACHE + 'risk.cjs');
+const { riskOf, cuffUplift, missShareOf, seasonAvailability, unavailableInWeek } = require(CACHE + 'risk.cjs');
 
 const W = Number(process.argv[2] || 20000);
 const TEAMS = 12, ROUNDS = 14;
@@ -44,7 +44,7 @@ P.forEach((r) => {
   const mkt = s.adp !== undefined ? 0.75 * s.adp + 0.25 * ffc : ffc;
   const rk = riskOf(r[0], r[1], r[4]);
   POOL.push({ name: r[0], pos: r[1], team: r[2], adp: s.adp ?? ffc,
-    proj: (PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6) + cuffUplift(r[0]), cv: rk.cv, pMiss: rk.pMiss,
+    proj: (PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6) + cuffUplift(r[0]), cv: rk.cv, pMiss: rk.pMiss, knownMiss: rk.knownMiss,
     mkt, sig: Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * mkt), bye: BYE[r[2]] || 0 });
 });
 /* Value the way the SEASON is scored, not the way the projection reads.
@@ -58,7 +58,7 @@ P.forEach((r) => {
  *
  * Same discount the advisor applies (1 - 0.4*pMiss), and replacement level is measured on the
  * adjusted numbers too, or the baseline drifts against the players. */
-const adj = (p) => p.proj * (1 - 0.4 * p.pMiss);
+const adj = (p) => p.proj * (1 - missShareOf(p));
 const REPL = {};
 for (const pos of ['QB','RB','WR','TE']) {
   const v = POOL.filter(p => p.pos === pos).map(adj).sort((a,b) => b-a);
@@ -120,7 +120,7 @@ function season(roster, rnd) {
   for (let wk=1; wk<=17; wk++) {
     const shock = {};
     const real = roster.map((p,i) => {
-      if (p.bye===wk || rnd() < p.pMiss/17) return { p, v:0 };
+      if (p.bye===wk || unavailableInWeek(p, wk, rnd)) return { p, v:0, available:false };
       shock[p.team] ??= gauss(rnd);
       /* Loadings on one shared team shock. The shock IS the quarterback's own deviation, so a
            receiver's correlation to him is his loading directly, and receiver-to-receiver falls out
@@ -132,14 +132,14 @@ function season(roster, rnd) {
            and split his targets, and only a second factor captures both. Documented, not hidden. */
         const load = p.pos==='QB'?1.0 : p.pos==='WR'?0.342 : p.pos==='TE'?0.236 : 0.071;
       const z = load*shock[p.team] + Math.sqrt(Math.max(0,1-load*load))*gauss(rnd);
-      return { p, v: Math.max(0, p.proj + z*sd[i]) };
+      return { p, v: Math.max(0, p.proj + z*sd[i]), available:true };
     });
-    const by = ps => real.filter(x=>x.p.pos===ps).sort((a,b)=>b.v-a.v);
+    const by = ps => real.filter(x=>x.available && x.p.pos===ps).sort((a,b)=>b.p.proj-a.p.proj);
     const used = new Set(); let t = 0;
     const take = (a,n) => a.slice(0,n).forEach(x=>{ t += x.v; used.add(x.p.name); });
     take(by('QB'),LINEUP.QB); take(by('RB'),LINEUP.RB);
     take(by('WR'),LINEUP.WR); take(by('TE'),LINEUP.TE);
-    take(real.filter(x=>!used.has(x.p.name)&&x.p.pos!=='QB').sort((a,b)=>b.v-a.v), LINEUP.FLEX);
+    take(real.filter(x=>x.available&&!used.has(x.p.name)&&x.p.pos!=='QB').sort((a,b)=>b.p.proj-a.p.proj), LINEUP.FLEX);
     tot += t; wk_.push(t);
   }
   return { ppg: tot/17, weeks: wk_ };

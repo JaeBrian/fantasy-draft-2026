@@ -19,7 +19,7 @@ const fs = require('fs');
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
 const { SLP } = require(CACHE + 'sleeper.cjs');
 const { PROJ } = require(CACHE + 'projections.cjs');
-const { riskOf, cuffUplift } = require(CACHE + 'risk.cjs');
+const { riskOf, cuffUplift, missShareOf, seasonAvailability } = require(CACHE + 'risk.cjs');
 
 
 
@@ -54,12 +54,12 @@ P.forEach((r) => {
   const rk = riskOf(r[0], r[1], r[4]);
   POOL.push({ name: r[0], pos: r[1], team: r[2], idx: POOL.length,
     proj: (PROJ[r[0]] !== undefined ? PROJ[r[0]] : 6) + cuffUplift(r[0]),
-    cv: rk.cv, pMiss: rk.pMiss,
+    cv: rk.cv, pMiss: rk.pMiss, knownMiss: rk.knownMiss,
     mkt, sig: Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13*mkt), bye: BYE[r[2]] || 0 });
 });
 /* value over replacement, on availability-adjusted points and a measured replacement rank */
 const REPL_RANK = { QB: 12, RB: 31, WR: 40, TE: 13 };
-const adj = (p) => p.proj * (1 - 0.4 * p.pMiss);
+const adj = (p) => p.proj * (1 - missShareOf(p));
 const REPL = {};
 for (const pos of ['QB','RB','WR','TE']) {
   const v = POOL.filter(p => p.pos === pos).map(adj).sort((a,b) => b-a);
@@ -87,14 +87,14 @@ function realiseFor(p, world) {
   rnd(); rnd();
   const s = Math.sqrt(Math.log(1 + p.cv*p.cv));
   const ppg = p.proj * Math.exp(gauss(rnd)*s - (s*s)/2);
-  v = ppg * (rnd() < p.pMiss ? 0.35 + 0.5*rnd() : 1);
+  v = ppg * seasonAvailability(p, rnd);
   seasonCache.set(key, v);
   return v;
 }
 function oppPick(avail, team, rnd) {
   const c = NEED(team); let b = null, bs = Infinity;
   for (const p of avail) { let s = p.mkt + gauss(rnd)*p.sig*0.8;
-    if(p.pos==='QB'&&c.QB>=1)s+=60; if(p.pos==='TE'&&c.TE>=1)s+=50;
+    if(p.pos==='QB')s+=c.QB>=2?900:c.QB>=1?60:0; if(p.pos==='TE')s+=c.TE>=2?900:c.TE>=1?50:0;
     if(p.pos==='RB'&&c.RB>=5)s+=25; if(p.pos==='WR'&&c.WR>=5)s+=25;
     if(s<bs){bs=s;b=p;} } return b;
 }
@@ -125,12 +125,12 @@ function runTree(slot, forced, world) {
     teams[t].push(p); avail.splice(avail.indexOf(p),1);
   }
   const roster = teams[slot].map(p => ({ ...p, real: realiseFor(p, world) }));
-  const by = pos => roster.filter(x=>x.pos===pos).sort((a,b)=>b.real-a.real);
+  const by = pos => roster.filter(x=>x.pos===pos).sort((a,b)=>(b.proj*(1-missShareOf(b)))-(a.proj*(1-missShareOf(a))));
   const rb=by('RB'), wr=by('WR'), te=by('TE'), qb=by('QB');
   const used=new Set(); let pts=0;
   const take=(a,n)=>a.slice(0,n).forEach(x=>{pts+=x.real;used.add(x.name);});
   take(qb,1); take(rb,2); take(wr,2); take(te,1);
-  take([...rb,...wr,...te].filter(x=>!used.has(x.name)).sort((a,b)=>b.real-a.real),2);
+  take([...rb,...wr,...te].filter(x=>!used.has(x.name)).sort((a,b)=>(b.proj*(1-missShareOf(b)))-(a.proj*(1-missShareOf(a)))),2);
   return pts;
 }
 /* Who is actually on the board at my Nth pick? */
