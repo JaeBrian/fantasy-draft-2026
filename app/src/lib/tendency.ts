@@ -1,3 +1,4 @@
+import { draftStorageKey } from "../panels/test-draft/context";
 /* How THIS room drafts, as opposed to how the market drafts.
  *
  * ADP is an average over thousands of strangers. Your league is twelve specific people, and if
@@ -23,7 +24,7 @@
  * Off by default, and only ever set in the browser, so the simulations and audits keep running
  * against the market rather than against a house style. */
 
-const KEY = "fd26-tendency";
+const KEY = draftStorageKey("fd26-tendency");
 
 export type RbLean = "market" | "heavy" | "extreme";
 
