@@ -4,7 +4,7 @@ The Test draft mode tab renders the actual BoardPanel: recommendations, 5,000-ru
 
 Entering or leaving this tab reloads the page. The query parameter selects the context before simulation modules load. All test storage keys use `fd26-test-1402814176023322624:`; production keys stay unchanged. This isolates picks, seat, practice backups, player blocks, intel pins and opponent tendencies.
 
-Polling matches the real draft room: 10 seconds after each response, including empty drafts and errors. Empty live snapshots clear the board after a Sleeper draft reset.
+Polling matches the real draft room: 2 seconds after each response, including empty drafts and errors. Empty live snapshots clear the board after a Sleeper draft reset.
 
 Run `node src/panels/test-draft/context.test.mjs` from app/ to check isolation and navigation.
 
