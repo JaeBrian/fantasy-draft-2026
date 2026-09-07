@@ -145,7 +145,7 @@ export function BoardPanel({ defaultSleeperUrl, noob, DS, ord, mark, undo, reset
   const toggleNote = (n: string) =>
     setOpenNotes(openNotes.includes(n) ? openNotes.filter((x) => x !== n) : [...openNotes, n]);
 
-  /* ---- Sleeper live draft sync: read-only API, no token; ~1 call per 10s while on.
+  /* ---- Sleeper live draft sync: read-only API, no token; ~1 call per 2s while on.
      The league's real draft is pre-wired so picks start marking themselves the moment it begins. ---- */
   const DEFAULT_SLEEPER = "https://sleeper.app/draft/nfl/1389372699129700353";
   const initialSleeperUrl = defaultSleeperUrl ?? DEFAULT_SLEEPER;
@@ -185,15 +185,15 @@ export function BoardPanel({ defaultSleeperUrl, noob, DS, ord, mark, undo, reset
               ? "Live: 0 picks synced · Waiting for the first pick."
               : `Live: ${picks.length} picks synced${offBoard ? ` (${offBoard} off-board)` : ""} · ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" })}`
           );
-        return 10000;
+        return 2000;
       } catch {
         if (!stop) setSyncMsg("Sync error — retrying shortly. Check the draft URL/ID if this persists.");
-        return 10000;
+        return 2000;
       }
     };
     let timer: number | undefined;
     const loop = async () => {
-      const delay = (await tick()) ?? 10000;
+      const delay = (await tick()) ?? 2000;
       if (!stop) timer = window.setTimeout(loop, delay);
     };
     loop();
