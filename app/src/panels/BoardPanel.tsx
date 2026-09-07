@@ -1,3 +1,4 @@
+import { LiveSyncStatus } from "../components/LiveSyncStatus";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { P, OT, BYE, MKT, DRAFT_ORDER, type Pos } from "../data";
 import { snapTeam } from "../lib/advisor";
@@ -160,25 +161,42 @@ export function BoardPanel({ defaultSleeperUrl, noob, DS, ord, mark, undo, reset
     mark(name, want);
   }
   const [syncMsg, setSyncMsg] = useState("");
+  const [lastCheck, setLastCheck] = useState<number | null>(null);
+  const [syncError, setSyncError] = useState(false);
+  const [checking, setChecking] = useState(false);
+  const [syncRequest, setSyncRequest] = useState(0);
   const slotRef = useRef(mySlot);
   slotRef.current = mySlot;
   useEffect(() => {
     if (!syncOn || practice) return;
+    setLastCheck(null);
+    setSyncError(false);
+    setChecking(false);
+    setSyncMsg("");
     const idMatch = sleeperId.match(/(\d{15,20})/);
     if (!idMatch) {
+      setSyncError(true);
       setSyncMsg("Paste your Sleeper draft URL or ID first.");
       return;
     }
     const id = idMatch[1];
     let stop = false;
+    let request: AbortController | undefined;
     const tick = async () => {
+      setChecking(true);
+      request = new AbortController();
+      const timeout = window.setTimeout(() => request?.abort(), 10000);
       try {
-        const res = await fetch(`https://api.sleeper.app/v1/draft/${id}/picks`);
+        const res = await fetch(`https://api.sleeper.app/v1/draft/${id}/picks`, { signal: request.signal });
         if (!res.ok) throw new Error(String(res.status));
         const picks = (await res.json()) as SleeperPick[];
         const snapshot = sleeperSnapshot(picks, slotRef.current, P);
         const { offBoard } = snapshot;
-        if (!stop) applySync(snapshot.DS, snapshot.ord);
+        if (!stop) {
+          applySync(snapshot.DS, snapshot.ord);
+          setLastCheck(Date.now());
+          setSyncError(false);
+        }
         if (!stop)
           setSyncMsg(
             picks.length === 0
@@ -187,8 +205,14 @@ export function BoardPanel({ defaultSleeperUrl, noob, DS, ord, mark, undo, reset
           );
         return 2000;
       } catch {
-        if (!stop) setSyncMsg("Sync error — retrying shortly. Check the draft URL/ID if this persists.");
+        if (!stop) {
+          setSyncError(true);
+          setSyncMsg("Could not check Sleeper. Showing the last synced board; retrying in 2 seconds.");
+        }
         return 2000;
+      } finally {
+        window.clearTimeout(timeout);
+        if (!stop) setChecking(false);
       }
     };
     let timer: number | undefined;
@@ -199,9 +223,10 @@ export function BoardPanel({ defaultSleeperUrl, noob, DS, ord, mark, undo, reset
     loop();
     return () => {
       stop = true;
+      request?.abort();
       if (timer !== undefined) clearTimeout(timer);
     };
-  }, [syncOn, sleeperId, applySync, mySlot, practice, defaultSleeperUrl]);
+  }, [syncOn, sleeperId, applySync, mySlot, practice, defaultSleeperUrl, syncRequest]);
 
   /* "/" from anywhere focuses the search box for rapid-fire pick marking */
   useEffect(() => {
@@ -477,7 +502,7 @@ export function BoardPanel({ defaultSleeperUrl, noob, DS, ord, mark, undo, reset
         {blocked.length > 0 && <div><p>Excluded from recommendations</p>{blocked.map(name => <button type="button" className="btn" key={name} onClick={() => toggleBlock(name)}>Restore {name}</button>)}</div>}
       </div></details>
     </div>
-    {practice ? <p className="mode-note">Practice against 11 simulated opponents for 14 skill rounds. Your original draft is saved and restored when you return.</p> : syncOn && <p className={`sync-status ${syncMsg.startsWith('Sync error') ? 'sync-error' : ''}`} role="status"><SleeperMark size={15} />{syncMsg || 'Connecting to Sleeper…'}</p>}
+    {practice ? <p className="mode-note">Practice against 11 simulated opponents for 14 skill rounds. Your original draft is saved and restored when you return.</p> : syncOn && <LiveSyncStatus lastCheck={lastCheck} error={syncError} checking={checking} message={syncMsg} onRefresh={() => setSyncRequest(n => n + 1)} />}
     {Object.keys(pins).length > 0 && <div className="intel-pins">{Object.entries(pins).map(([name, pin]) => <span key={name}><button type="button" className={`btn ${pin.on ? 'on' : ''}`} aria-pressed={pin.on} onClick={() => flipPin(name)}>{name} at #{pin.pick}</button><button type="button" className="btn subtle" aria-label={`Remove intel for ${name}`} onClick={() => dropPin(name)}>×</button></span>)}</div>}
     <div className="draft-layout"><aside className="draft-sidebar">
       {grade && <section className="practice-result"><span className="section-caption">Practice complete</span><h2>#{grade.rank} in projected starters</h2><p><b>{grade.mine.toFixed(1)} pts/wk</b> vs a {grade.median.toFixed(1)} median in this simulated room.</p><p>Projection totals for the best legal skill lineup. Results depend on the simulated opponents and exclude injuries, weekly lineup changes and K/DEF scoring.</p>{grade.gaps.length > 0 && <p className="text-risky">{grade.gaps.join(' · ')}</p>}<button type="button" className="btn primary" onClick={reset}>Practice again</button></section>}

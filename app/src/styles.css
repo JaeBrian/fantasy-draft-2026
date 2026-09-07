@@ -615,3 +615,12 @@ progress::-moz-progress-bar { background: var(--color-clock); }
   .range-plot { grid-column: 1/-1; grid-row: 2; }
   .opening-shape { gap: 4px; }
 }
+
+.live-sync-card { border: 1px solid #536078; border-radius: 8px; padding: 12px 14px; background: #18222e; color: var(--draft-muted); font-size: .8rem; }
+.live-sync-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.live-sync-heading strong { display: flex; align-items: center; gap: 8px; color: #f5c667; }
+.live-sync-card.current strong { color: #86d7ae; }
+.live-sync-card.error strong { color: #ff9b96; }
+.sync-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.live-sync-card p { margin: 7px 0; }
+.live-sync-card small { display: block; margin-top: 4px; line-height: 1.5; }
