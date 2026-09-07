@@ -1,5 +1,5 @@
 // A page reload isolates module-level simulation settings as well as saved state.
-export const TEST_DRAFT_ID = "1402785901897109504";
+export const TEST_DRAFT_ID = "1402814176023322624";
 export const TEST_DRAFT_URL = `https://sleeper.app/draft/nfl/${TEST_DRAFT_ID}`;
 export const IS_TEST_DRAFT = typeof window !== "undefined" &&
   new URLSearchParams(window.location.search).get("test-draft") === TEST_DRAFT_ID;

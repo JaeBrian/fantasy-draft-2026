@@ -24,7 +24,7 @@ const roundPick = (overall: number): string => {
 const POS_FILTERS: ("ALL" | Pos)[] = ["ALL", "QB", "RB", "WR", "TE"];
 
 interface BoardProps {
-  fixedSleeperUrl?: string;
+  defaultSleeperUrl?: string;
   noob: boolean;
   DS: DraftState;
   ord: string[];
@@ -38,7 +38,7 @@ interface BoardProps {
   setMySlot: (n: number) => void;
 }
 
-export function BoardPanel({ fixedSleeperUrl, noob, DS, ord, mark, undo, reset, applyRun, applySync, canUndo, mySlot, setMySlot }: BoardProps) {
+export function BoardPanel({ defaultSleeperUrl, noob, DS, ord, mark, undo, reset, applyRun, applySync, canUndo, mySlot, setMySlot }: BoardProps) {
   const [pos, setPos] = useState<"ALL" | Pos>("ALL");
   const [q, setQ] = useState("");
   const [offName, setOffName] = useState("");
@@ -148,8 +148,8 @@ export function BoardPanel({ fixedSleeperUrl, noob, DS, ord, mark, undo, reset, 
   /* ---- Sleeper live draft sync: read-only API, no token; ~1 call per 10s while on.
      The league's real draft is pre-wired so picks start marking themselves the moment it begins. ---- */
   const DEFAULT_SLEEPER = "https://sleeper.app/draft/nfl/1389372699129700353";
-  const [storedSleeperId, setSleeperId] = usePersistent<string>("fd26-sleeper", DEFAULT_SLEEPER, (r) => r || DEFAULT_SLEEPER, (v) => v);
-  const sleeperId = fixedSleeperUrl ?? storedSleeperId;
+  const initialSleeperUrl = defaultSleeperUrl ?? DEFAULT_SLEEPER;
+  const [sleeperId, setSleeperId] = usePersistent<string>("fd26-sleeper", initialSleeperUrl, (r) => r || initialSleeperUrl, (v) => v);
   const [syncOn, setSyncOn] = usePersistent<boolean>("fd26-sync-on", true, (r) => r === "1", (v) => (v ? "1" : "0"));
   const manual = !syncOn || practice;
   const done = practice ? practiceOver : picksMade >= 192;
@@ -186,7 +186,7 @@ export function BoardPanel({ fixedSleeperUrl, noob, DS, ord, mark, undo, reset, 
             setSyncMsg(
               localMarks > 0
                 ? `The live draft hasn't started, but this board has ${localMarks} mark${localMarks === 1 ? "" : "s"} from practice.`
-                : `Connected to ${fixedSleeperUrl ? "test draft" : "charmin ultra strong"} — waiting for the draft to start. Pick who you are before it does!`
+                : `Connected to ${defaultSleeperUrl ? "test draft" : "charmin ultra strong"} — waiting for the draft to start. Pick who you are before it does!`
             );
           }
           return 10000;
@@ -215,7 +215,7 @@ export function BoardPanel({ fixedSleeperUrl, noob, DS, ord, mark, undo, reset, 
       stop = true;
       if (timer !== undefined) clearTimeout(timer);
     };
-  }, [syncOn, sleeperId, applySync, mySlot, practice, fixedSleeperUrl]);
+  }, [syncOn, sleeperId, applySync, mySlot, practice, defaultSleeperUrl]);
 
   /* "/" from anywhere focuses the search box for rapid-fire pick marking */
   useEffect(() => {
@@ -473,7 +473,7 @@ export function BoardPanel({ fixedSleeperUrl, noob, DS, ord, mark, undo, reset, 
   });
 
   return <div className="draft-workspace">
-    <div className="workspace-title"><div><span className="section-caption">{fixedSleeperUrl ? "Test draft" : "charmin ultra strong"} · 12-team half-PPR</span><h1>Draft room</h1></div><span className={`mode-badge ${practice ? 'practice' : ''}`}><span />{practice ? 'Practice mode' : syncOn ? 'Live sync' : 'Manual tracking'}</span></div>
+    <div className="workspace-title"><div><span className="section-caption">{defaultSleeperUrl ? "Test draft" : "charmin ultra strong"} · 12-team half-PPR</span><h1>Draft room</h1></div><span className={`mode-badge ${practice ? 'practice' : ''}`}><span />{practice ? 'Practice mode' : syncOn ? 'Live sync' : 'Manual tracking'}</span></div>
     <SeatPicker value={mySlot} onChange={setMySlot} allSeats />
     <div className={`draft-clock ${myTurn && !done ? 'your-turn' : ''}`} aria-live="polite">
       <div className="clock-pick"><small>{done ? 'Finished' : 'On the clock'}</small><b>{done ? picksMade : `#${picksMade + 1}`}</b></div>
@@ -485,7 +485,7 @@ export function BoardPanel({ fixedSleeperUrl, noob, DS, ord, mark, undo, reset, 
       <details className="room-settings"><summary className="btn">Room settings</summary><div className="settings-body">
         <label>Opponent style<select value={lean} onChange={e => { const v = e.target.value as RbLean; setLean(v); setRbLean(v); }}>{(Object.keys(RB_LEAN) as RbLean[]).map(k => <option key={k} value={k}>{RB_LEAN[k].label}</option>)}</select></label>
         <label>Known upcoming pick<input value={intelText} onChange={e => { setIntelText(e.target.value); setIntelErr(null); }} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); applyIntel(); } }} placeholder="Example: James Cook 8" /></label><button type="button" className="btn" disabled={!intelText.trim()} onClick={applyIntel}>Add intel</button>{intelErr && <p role="alert">{intelErr}</p>}
-        <label>Sleeper draft URL<input readOnly={!!fixedSleeperUrl} value={sleeperId} onChange={e => setSleeperId(e.target.value)} aria-label="Sleeper draft URL or ID for live sync" /></label><button type="button" className="btn" disabled={practice} aria-pressed={syncOn} onClick={() => setSyncOn(!syncOn)}>{syncOn ? 'Switch to manual tracking' : 'Connect live sync'}</button>
+        <label>Sleeper draft URL<input value={sleeperId} onChange={e => setSleeperId(e.target.value)} aria-label="Sleeper draft URL or ID for live sync" /></label><button type="button" className="btn" disabled={practice} aria-pressed={syncOn} onClick={() => setSyncOn(!syncOn)}>{syncOn ? 'Switch to manual tracking' : 'Connect live sync'}</button>
         <button type="button" className={`btn ${resetArmed ? 'danger' : ''}`} disabled={!manual} onClick={() => { if (resetArmed) { reset(); setResetArmed(false); } else { setResetArmed(true); setTimeout(() => setResetArmed(false), 3500); } }}>{resetArmed ? 'Confirm reset' : 'Reset current board'}</button>
         <button type="button" className="btn" aria-pressed={allNotes} onClick={() => setAllNotes(!allNotes)}>{allNotes ? 'Collapse player notes' : 'Expand player notes'}</button>
         {blocked.length > 0 && <div><p>Excluded from recommendations</p>{blocked.map(name => <button type="button" className="btn" key={name} onClick={() => toggleBlock(name)}>Restore {name}</button>)}</div>}
