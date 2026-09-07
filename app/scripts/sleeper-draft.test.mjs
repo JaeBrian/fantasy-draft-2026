@@ -42,3 +42,12 @@ assert.equal(totalAt(100),0);assert.ok(totalAt(100.000001)<.01);
 let lo=100,hi=101;for(let i=0;i<40;i++){const mid=(lo+hi)/2;if(totalAt(mid)>1)hi=mid;else lo=mid;}
 assert.ok(Math.abs(totalAt((lo+hi)/2)-1)<1e-6,'two overdue players must calibrate to one intervening pick');
 console.log('PASS: continuous overdue-player probabilities preserve one-pick mass');
+
+const resetSnapshot=sleeperSnapshot([],2,P);
+assert.deepEqual(resetSnapshot,{DS:{},ord:[],offBoard:0});
+const resetAdvice=advise(resetSnapshot.DS,2,resetSnapshot.ord);
+assert.equal(resetAdvice.cur,1);
+assert.equal(resetAdvice.myCount,0);
+assert.equal(resetAdvice.nextPick,2);
+assert.equal(resetAdvice.cands[0].now.r[0],'Bijan Robinson');
+console.log('PASS: empty live snapshot resets draft clock, roster and recommendations');
