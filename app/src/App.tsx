@@ -229,7 +229,7 @@ export default function App() {
         {tab === "model" && <ModelPanel noob={noob} />}
         {(tab === "board" || tab === "test-draft") && (
           <BoardPanel
-            fixedSleeperUrl={IS_TEST_DRAFT ? TEST_DRAFT_URL : undefined}
+            defaultSleeperUrl={IS_TEST_DRAFT ? TEST_DRAFT_URL : undefined}
             noob={noob}
             DS={DS}
             ord={ord}
