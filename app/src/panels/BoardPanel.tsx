@@ -160,9 +160,6 @@ export function BoardPanel({ defaultSleeperUrl, noob, DS, ord, mark, undo, reset
     mark(name, want);
   }
   const [syncMsg, setSyncMsg] = useState("");
-  const [staleMarks, setStaleMarks] = useState(0);
-  const DSRef = useRef(DS);
-  DSRef.current = DS;
   const slotRef = useRef(mySlot);
   slotRef.current = mySlot;
   useEffect(() => {
@@ -179,25 +176,14 @@ export function BoardPanel({ defaultSleeperUrl, noob, DS, ord, mark, undo, reset
         const res = await fetch(`https://api.sleeper.app/v1/draft/${id}/picks`);
         if (!res.ok) throw new Error(String(res.status));
         const picks = (await res.json()) as SleeperPick[];
-        if (picks.length === 0) {
-          if (!stop) {
-            const localMarks = Object.keys(DSRef.current).length;
-            setStaleMarks(localMarks);
-            setSyncMsg(
-              localMarks > 0
-                ? `The live draft hasn't started, but this board has ${localMarks} mark${localMarks === 1 ? "" : "s"} from practice.`
-                : `Connected to ${defaultSleeperUrl ? "test draft" : "charmin ultra strong"} — waiting for the draft to start. Pick who you are before it does!`
-            );
-          }
-          return 10000;
-        }
-        if (!stop) setStaleMarks(0);
         const snapshot = sleeperSnapshot(picks, slotRef.current, P);
         const { offBoard } = snapshot;
         if (!stop) applySync(snapshot.DS, snapshot.ord);
         if (!stop)
           setSyncMsg(
-            `Live: ${picks.length} picks synced${offBoard ? ` (${offBoard} off-board)` : ""} · ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" })}`
+            picks.length === 0
+              ? "Live: 0 picks synced · Waiting for the first pick."
+              : `Live: ${picks.length} picks synced${offBoard ? ` (${offBoard} off-board)` : ""} · ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" })}`
           );
         return 10000;
       } catch {
@@ -491,7 +477,7 @@ export function BoardPanel({ defaultSleeperUrl, noob, DS, ord, mark, undo, reset
         {blocked.length > 0 && <div><p>Excluded from recommendations</p>{blocked.map(name => <button type="button" className="btn" key={name} onClick={() => toggleBlock(name)}>Restore {name}</button>)}</div>}
       </div></details>
     </div>
-    {practice ? <p className="mode-note">Practice against 11 simulated opponents for 14 skill rounds. Your original draft is saved and restored when you return.</p> : syncOn && <p className={`sync-status ${syncMsg.startsWith('Sync error') ? 'sync-error' : ''}`} role="status"><SleeperMark size={15} />{syncMsg || 'Connecting to Sleeper…'}{staleMarks > 0 && <span> Switch to manual tracking to keep or clear these local marks.</span>}</p>}
+    {practice ? <p className="mode-note">Practice against 11 simulated opponents for 14 skill rounds. Your original draft is saved and restored when you return.</p> : syncOn && <p className={`sync-status ${syncMsg.startsWith('Sync error') ? 'sync-error' : ''}`} role="status"><SleeperMark size={15} />{syncMsg || 'Connecting to Sleeper…'}</p>}
     {Object.keys(pins).length > 0 && <div className="intel-pins">{Object.entries(pins).map(([name, pin]) => <span key={name}><button type="button" className={`btn ${pin.on ? 'on' : ''}`} aria-pressed={pin.on} onClick={() => flipPin(name)}>{name} at #{pin.pick}</button><button type="button" className="btn subtle" aria-label={`Remove intel for ${name}`} onClick={() => dropPin(name)}>×</button></span>)}</div>}
     <div className="draft-layout"><aside className="draft-sidebar">
       {grade && <section className="practice-result"><span className="section-caption">Practice complete</span><h2>#{grade.rank} in projected starters</h2><p><b>{grade.mine.toFixed(1)} pts/wk</b> vs a {grade.median.toFixed(1)} median in this simulated room.</p><p>Projection totals for the best legal skill lineup. Results depend on the simulated opponents and exclude injuries, weekly lineup changes and K/DEF scoring.</p>{grade.gaps.length > 0 && <p className="text-risky">{grade.gaps.join(' · ')}</p>}<button type="button" className="btn primary" onClick={reset}>Practice again</button></section>}
