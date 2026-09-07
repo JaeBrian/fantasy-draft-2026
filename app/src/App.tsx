@@ -13,10 +13,12 @@ import { VegasPanel } from "./panels/VegasPanel";
 import { BoardPanel } from "./panels/BoardPanel";
 import { AdpPanel } from "./panels/AdpPanel";
 import { TiersPanel } from "./panels/TiersPanel";
+import { TestDraftPanel } from "./panels/test-draft/TestDraftPanel";
 
 const TABS = [
   ["start", "Start Here"],
   ["board", "Draft room"],
+  ["test-draft", "Test draft mode"],
   ["adp", "Sleeper ADP"],
   ["news", "News"],
   ["sims", "Draft lab"],
@@ -213,6 +215,7 @@ export default function App() {
       <main id="main-content" className={`mx-auto px-5 pt-7 pb-16 ${tab === "board" ? "max-w-[1560px]" : "max-w-[1100px]"}`}>
         {tab === "start" && <StartPanel noob={noob} />}
         {tab === "adp" && <AdpPanel noob={noob} />}
+        {tab === "test-draft" && <TestDraftPanel />}
         {tab === "news" && <NewsPanel noob={noob} />}
         {tab === "sims" && <SimPanel noob={noob} initialSeat={mySlot} onOpenDraft={seat => { selectSlot(seat); switchTab("board"); }} />}
         {tab === "model" && <ModelPanel noob={noob} />}

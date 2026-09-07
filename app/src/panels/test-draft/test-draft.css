@@ -1,0 +1,14 @@
+.test-draft-mode { display: grid; gap: 20px; }
+.test-draft-notice { border: 1px solid var(--color-clock); border-radius: 10px; padding: 14px 18px; color: var(--color-clock); }
+.test-draft-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.test-draft-controls select { border: 1px solid var(--color-line); background: var(--color-field); color: var(--color-ink); padding: 10px 14px; border-radius: 6px; }
+.test-draft-columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: 20px; }
+.test-draft-columns > * { min-width: 0; }
+.test-draft-columns h2 { margin: 0 0 12px; }
+.test-draft-columns .advisor-panel { position: static; }
+.test-pick-list { list-style: none; margin: 0; padding: 0; max-height: 650px; overflow-y: auto; }
+.test-pick-list li { display: grid; gap: 4px; padding: 12px 0; border-top: 1px solid var(--color-line); }
+.test-pick-list li > span { font-size: .8rem; color: var(--color-ink-3); }
+.test-pick-list strong { font-size: .8rem; color: var(--color-clock); }
+.test-endpoint { display: block; overflow-wrap: anywhere; font-size: .8rem; }
+@media (max-width: 700px) { .test-draft-columns { grid-template-columns: minmax(0, 1fr); } }
