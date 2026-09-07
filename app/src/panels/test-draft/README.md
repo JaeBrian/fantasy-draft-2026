@@ -1,17 +1,11 @@
-# Disposable Test draft mode
+# Temporary test draft mode
 
-Hard-coded test draft: `1402785901897109504` (12-team snake, 16 rounds).
+The Test draft mode tab renders the actual BoardPanel: recommendations, 5,000-run forecasts, player board, roster, practice controls and the same Sleeper polling code. Its endpoint is fixed to https://sleeper.app/draft/nfl/1402785901897109504.
 
-This folder owns the test panel, styles, poller and poller tests. The real Draft room is unchanged. This harness imports the existing snapshot parser and pure roster helpers without changing them. It does not call the advisor or read saved draft assumptions. Its only persisted value is the selected seat under `fd26-test-1402785901897109504-seat`. Synced picks live only in component memory. Leaving the tab cancels its polling. There are no writes to Sleeper.
+Entering or leaving this tab reloads the page. The query parameter selects the context before simulation modules load. All test storage keys use `fd26-test-1402785901897109504:`; production keys stay unchanged. This isolates picks, seat, practice backups, player blocks, intel pins and opponent tendencies.
 
-The test poller runs every 3 seconds after responses, including an empty board. Errors retry after 5 seconds; requests time out after 10 seconds. Complete snapshots replace prior picks, including commissioner resets to zero. Invalid snapshots retain the last valid board and show an error. These polling changes apply only to this harness; the real Draft room still uses its existing 10/60/30-second intervals.
+Polling matches the real draft room: 10 seconds after picks, 60 seconds while empty, 30 seconds after an error. Empty snapshots retain existing local marks, matching production behavior.
 
-Run the isolated test from `app/`:
+Run `node src/panels/test-draft/context.test.mjs` from app/ to check isolation and navigation.
 
-```sh
-node src/panels/test-draft/sleeper-sync.test.mjs
-```
-
-To remove: delete this folder, remove its import, navigation entry and render line from `src/App.tsx`, then run `npm run build` to regenerate the root artifact. The unused seat key can be left in storage or removed.
-
-Live rehearsal: choose your actual test seat; make your and opponents' picks in Sleeper; check ownership, totals and roster updates. Test several rapid picks, K/DST, refresh, reconnect, commissioner undo and reset. Automated poller checks use mocked network responses; a live rehearsal remains separate evidence.
+To remove: delete this folder, remove the test tab/context wiring in App.tsx, restore plain storage keys in lib/store.ts, lib/intel.ts and lib/tendency.ts, remove the optional fixedSleeperUrl prop from BoardPanel.tsx, then rebuild. Test-prefixed browser keys may be deleted independently of real draft data.

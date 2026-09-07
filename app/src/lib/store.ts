@@ -1,8 +1,9 @@
+import { draftStorageKey } from "../panels/test-draft/context";
 import { useEffect, useState } from "react";
 
 function read<T>(key: string, fallback: T, parse: (raw: string) => T): T {
   try {
-    const raw = localStorage.getItem(key);
+    const raw = localStorage.getItem(draftStorageKey(key));
     return raw === null ? fallback : parse(raw);
   } catch {
     return fallback;
@@ -18,7 +19,7 @@ export function usePersistent<T>(
   const [value, setValue] = useState<T>(() => read(key, fallback, parse));
   useEffect(() => {
     try {
-      localStorage.setItem(key, serialize(value));
+      localStorage.setItem(draftStorageKey(key), serialize(value));
     } catch {
       /* storage unavailable — state still works for the session */
     }

@@ -1,3 +1,4 @@
+import { draftStorageKey } from "../panels/test-draft/context";
 /* League intel: things you know that no projection or ADP can.
  *
  * "James Cook will go at 8" is not a probability, it is a fact about this room — somebody
@@ -13,7 +14,7 @@
  * Empty by default and only ever populated in the browser, so the simulations and audits run
  * on the market as it is rather than on anyone's hunches. */
 
-const KEY = "fd26-intel";
+const KEY = draftStorageKey("fd26-intel");
 
 /** player name -> the pick you believe he goes at, and whether that belief is switched on.
  *  Keeping it switchable rather than just present is the point: you can flip "Cook goes 8th"

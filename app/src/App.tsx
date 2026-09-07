@@ -13,7 +13,7 @@ import { VegasPanel } from "./panels/VegasPanel";
 import { BoardPanel } from "./panels/BoardPanel";
 import { AdpPanel } from "./panels/AdpPanel";
 import { TiersPanel } from "./panels/TiersPanel";
-import { TestDraftPanel } from "./panels/test-draft/TestDraftPanel";
+import { IS_TEST_DRAFT, TEST_DRAFT_URL, draftStorageKey, switchDraftContext } from "./panels/test-draft/context";
 
 const TABS = [
   ["start", "Start Here"],
@@ -32,6 +32,13 @@ const TABS = [
 
 type TabKey = (typeof TABS)[number][0];
 
+function initialTab(saved = "start"): TabKey {
+  if (IS_TEST_DRAFT) return "test-draft";
+  const requested = window.location.hash.slice(1);
+  const valid = (value: string) => value !== "test-draft" && TABS.some(([key]) => key === value);
+  return (valid(requested) ? requested : valid(saved) ? saved : "start") as TabKey;
+}
+
 const parseDS = (raw: string): DraftState => {
   try {
     return JSON.parse(raw) as DraftState;
@@ -44,8 +51,8 @@ export default function App() {
   /* remember the tab you were on across refreshes */
   const [tab, setTab] = usePersistent<TabKey>(
     "fd26-tab",
-    "start",
-    (raw) => (TABS.some(([k]) => k === raw) ? (raw as TabKey) : "start"),
+    initialTab(),
+    initialTab,
     (v) => v
   );
   const [noob, setNoob] = usePersistent("fd26-noob", true, (r) => r === "1", (v) => (v ? "1" : "0"));
@@ -56,7 +63,7 @@ export default function App() {
   const [ord, setOrd] = useState<string[]>(() => {
     let o: string[] = [];
     try {
-      o = JSON.parse(localStorage.getItem("fd26-ord") || "[]") as string[];
+      o = JSON.parse(localStorage.getItem(draftStorageKey("fd26-ord")) || "[]") as string[];
     } catch {
       o = [];
     }
@@ -68,7 +75,7 @@ export default function App() {
   });
   useEffect(() => {
     try {
-      localStorage.setItem("fd26-ord", JSON.stringify(ord));
+      localStorage.setItem(draftStorageKey("fd26-ord"), JSON.stringify(ord));
     } catch {
       /* storage unavailable */
     }
@@ -162,6 +169,8 @@ export default function App() {
   };
 
   const switchTab = (t: TabKey) => {
+    if (switchDraftContext(t)) return;
+    window.history.replaceState(null, "", `#${t}`);
     setTab(t);
     window.scrollTo({ top: 0 });
   };
@@ -212,15 +221,15 @@ export default function App() {
       </header>
 
 
-      <main id="main-content" className={`mx-auto px-5 pt-7 pb-16 ${tab === "board" ? "max-w-[1560px]" : "max-w-[1100px]"}`}>
+      <main id="main-content" className={`mx-auto px-5 pt-7 pb-16 ${(tab === "board" || tab === "test-draft") ? "max-w-[1560px]" : "max-w-[1100px]"}`}>
         {tab === "start" && <StartPanel noob={noob} />}
         {tab === "adp" && <AdpPanel noob={noob} />}
-        {tab === "test-draft" && <TestDraftPanel />}
         {tab === "news" && <NewsPanel noob={noob} />}
         {tab === "sims" && <SimPanel noob={noob} initialSeat={mySlot} onOpenDraft={seat => { selectSlot(seat); switchTab("board"); }} />}
         {tab === "model" && <ModelPanel noob={noob} />}
-        {tab === "board" && (
+        {(tab === "board" || tab === "test-draft") && (
           <BoardPanel
+            fixedSleeperUrl={IS_TEST_DRAFT ? TEST_DRAFT_URL : undefined}
             noob={noob}
             DS={DS}
             ord={ord}
