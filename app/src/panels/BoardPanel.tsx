@@ -189,7 +189,7 @@ export function BoardPanel({ fixedSleeperUrl, noob, DS, ord, mark, undo, reset, 
                 : `Connected to ${fixedSleeperUrl ? "test draft" : "charmin ultra strong"} — waiting for the draft to start. Pick who you are before it does!`
             );
           }
-          return 60000;
+          return 10000;
         }
         if (!stop) setStaleMarks(0);
         const snapshot = sleeperSnapshot(picks, slotRef.current, P);
@@ -202,7 +202,7 @@ export function BoardPanel({ fixedSleeperUrl, noob, DS, ord, mark, undo, reset, 
         return 10000;
       } catch {
         if (!stop) setSyncMsg("Sync error — retrying shortly. Check the draft URL/ID if this persists.");
-        return 30000;
+        return 10000;
       }
     };
     let timer: number | undefined;
