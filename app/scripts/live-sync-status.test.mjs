@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {execFileSync} from 'node:child_process';
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url);
+execFileSync('npx',['esbuild','src/components/LiveSyncStatus.tsx','--bundle','--platform=node','--format=cjs','--outfile=.simcache/live-sync-status.cjs','--log-level=error']);
+const {syncHealth}=require('../.simcache/live-sync-status.cjs');
+assert.equal(syncHealth(null,false,1000).tone,'waiting');
+assert.equal(syncHealth(1000,false,3000).tone,'current');
+assert.equal(syncHealth(1000,false,11001).label,'Sync delayed');
+assert.equal(syncHealth(1000,true,3000).tone,'error');
+assert.equal(syncHealth(null,true,3000).tone,'error');
+assert.equal(syncHealth(12000,false,12000).tone,'current');
+console.log('PASS: connecting, recent success, stale success, failed check and recovery');
