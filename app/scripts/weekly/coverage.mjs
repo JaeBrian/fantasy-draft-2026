@@ -1,6 +1,7 @@
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {gzipSync,gunzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
+import {defenderPerformance,estimateMatchups} from './estimated-coverage.mjs';
 import {ROOT,csvRows,teamCode} from './data.mjs';
 const base='https://github.com/nflverse/nflverse-data/releases/download/';
 const numeric=x=>x!==''&&x!=null&&Number.isFinite(Number(x))?Number(x):null;
@@ -64,7 +65,11 @@ export async function collectCoverage({season,week,now=Date.now(),fetchSource=fe
  const ngs=await get('NFL Next Gen receiving',base+'nextgen_stats/ngs_receiving.csv.gz');
  const depths=await get('nflverse ESPN depth charts',base+`depth_charts/depth_charts_${season}.csv`);
  const scoreboard=await get('ESPN game market',`https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=${season}&seasontype=2&week=${week}`,false);
+ const priorDefense=await get('PFR prior-season individual coverage',base+`pfr_advstats/advstats_week_def_${season-1}.csv`);
+ const currentDefense=week>1?await get('PFR current-season individual coverage',base+`pfr_advstats/advstats_week_def_${season}.csv`):[];
+ const performance=defenderPerformance([...priorDefense,...currentDefense],identities,{season,week});
  const players=receivingContexts(ngs,identities,sleeper,{season,week}),teams=defensivePersonnel(depths,now),market=marketContext(scoreboard,{season,week,now:Date.parse(sources.find(s=>s.name==='ESPN game market')?.observedAt)||now});
+ const estimates=estimateMatchups(sleeper,teams,scoreboard,performance,{season,week});for(const[id,estimatedMatchup]of Object.entries(estimates)){players[id]??={};players[id].estimatedMatchup=estimatedMatchup;}
  for(const [team,value] of Object.entries(teams))if(value.status==='stale')limitations.push(`${team}: ${value.note}`);
  let input=coverageInput;if(input===undefined)try{input=JSON.parse(await readFile(new URL('public/weekly/coverage-input.json',ROOT),'utf8'));}catch(e){if(e.code!=='ENOENT')limitations.push(`Coverage input: ${e.message}`);}
  if(input)try{validateCoverageInput(input,{season,week,now,people:sleeper,schedule:scoreboard});for(const p of input.players){players[p.playerId]??={};players[p.playerId].licensedCoverage={source:input.source,observedAt:input.observedAt,season,week,coverageAssignments:p.coverageAssignments};}sources.push({name:'User supplied coverage charting',url:input.source,observedAt:input.observedAt,status:'available'});}catch(e){limitations.push(`Coverage input rejected: ${e.message}`);}

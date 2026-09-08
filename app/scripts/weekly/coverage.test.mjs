@@ -26,7 +26,7 @@ test('market excludes wrong week and returns explicit absence',()=>{
 test('collector tolerates unavailable feeds and rejects future source observations',async()=>{
  const {collectCoverage}=await import('./coverage.mjs');
  const missing=await collectCoverage({season:2026,week:1,now,coverageInput:null,fetchSource:async()=>{throw new Error('offline');}});
- assert.deepEqual(missing.players,{});assert.equal(missing.sources.length,5);assert.equal(missing.market.available,false);
+ assert.deepEqual(missing.players,{});assert.equal(missing.sources.length,6);assert.equal(missing.market.available,false);
  const future=await collectCoverage({season:2026,week:1,now,coverageInput:null,fetchSource:async()=>({fetchedAt:'2026-09-09T00:00:00Z',data:''})});
  assert.ok(future.sources.every(s=>s.status==='unavailable'));
 });

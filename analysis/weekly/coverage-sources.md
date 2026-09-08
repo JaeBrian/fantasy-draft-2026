@@ -44,3 +44,11 @@ All player/defender IDs must exist in the current Sleeper registry. Receivers mu
 The cache retains one compressed response per URL, refreshes market observations after 30 minutes and other feeds after six hours, and bounds network bodies/decompression to 64 MB. A live download cannot supply an old historical cutoff; historical callers must inject archived observations. Cached future observations and depth snapshots after the cutoff are excluded. Source failures produce explicit unavailable entries rather than default values. Current-season source corrections are not reconstructed as historical vintages.
 
 `node --test app/scripts/weekly/coverage.test.mjs` verifies stable identity matching, missing identities, exclusion of future weeks/aggregate rows, dated personnel, assignment weights and timeliness, missing market data and failed/future source observations.
+
+## Estimated alignment matchups
+
+The briefing now derives conditional outside/slot opponent groups from current starting LCB/RCB/CB and NB/NCB/SCB depth-chart roles. WR1/WR2 rank is not field alignment. Receiver route shares and shadow probabilities remain unknown; the UI marks these scenarios low confidence and applies no fantasy-point adjustment. Injuries and package rotations can change the listed starters.
+
+Individual defender results come from [PFR weekly advanced defense via nflverse](https://nflreadr.nflverse.com/reference/load_pfr_advstats.html), using `pfr_advstats/advstats_week_def_YEAR.csv` release assets. PFR IDs join to GSIS IDs in the player registry. Only regular-season weeks before the target week are eligible in the current season. Current-season samples replace prior-season context at 30 targets; otherwise the prior year is explicitly labeled. Duplicate player games are removed. Missing measurements remain missing.
+
+The card reports target-weighted yards allowed per target, completion rate and touchdown totals. A lower-yardage percentile compares corners with at least 30 targets and requires 20 qualifying corners. Higher percentiles mean lower observed yards per target; this is a descriptive statistic influenced by scheme, assignments and opposition, not an overall cornerback talent rating or a validated matchup projection. The collection uses the existing cached weekly research workflow and never triggers roster polling.
