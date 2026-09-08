@@ -229,16 +229,14 @@ export const PLAINSHORT: Record<string, string> = {
  *  Deliberately NOT used: `SLP.rk`, Sleeper's in-app board-sort rank. It is superflex-flavoured
  *  and lists QBs ~37 picks earlier than a 1-QB league drafts them; pricing on it made the model
  *  expect 3 QBs gone by the end of round 3 when the real number is 2. */
-export const mktADP = (row: PlayerRow): number => {
-  /* League intel wins outright. If you know he goes at 8, he goes at 8 — a market average
-   * built from thousands of other people's drafts is not evidence about this room. */
-  const pin = pinnedPick(row[0]);
-  if (pin !== undefined) return pin;
+const blendedADP = (row: PlayerRow): number => {
   const m = MKT[row[0]];
   const ffc = m ? m[0] : row[3];
   const sadp = SLP[row[0]]?.adp;
   return sadp !== undefined ? 0.75 * sadp + 0.25 * ffc : ffc;
 };
+/* Known picks override the probability forecast, while value discounts use market data. */
+export const mktADP = (row: PlayerRow): number => pinnedPick(row[0]) ?? blendedADP(row);
 /* How far a player can slide from his expected pick.
  *
  * This used to floor at 2.2 picks for everyone, which was badly wrong at the top and doing no
@@ -385,7 +383,7 @@ function runDetect(ord: string[]): Pos | null {
   return null;
 }
 
-export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: Set<string>): Advice {
+export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: Set<string>, waitOnTightEnds = true): Advice {
   const all: Slot[] = P.map((r, i) => ({ r, i }));
   /* blocked players are dead to us: never recommended, never counted as future value */
   const avail = all.filter((o) => !DS[o.r[0]] && !blocked?.has(o.r[0]));
@@ -564,6 +562,12 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
   };
   const unknownRosterValue = externalMine.some(p => !["K", "DST"].includes(p.pos));
   const rosterGain = myCount >= 8 && !unknownRosterValue ? rosterGainEvaluator(mine.map(rosterValuePlayer)) : null;
+  const spareLeft = picksLeft - starterGap;
+  const forced = (["QB", "RB", "WR", "TE"] as Pos[]).filter(
+    (p) => needSlots[p] > 0 && (spareLeft <= 0 || mustNow.has(p)),
+  );
+  // Keep TEs in the opponent pool; this preference only limits our recommendations.
+  const canRecommend = (r: PlayerRow) => r[1] !== "TE" || !waitOnTightEnds || forced.includes("TE") || takeAt - blendedADP(r) >= 6;
   const cands: Candidate[] = [];
   (["RB", "WR", "QB", "TE"] as Pos[]).forEach((ps) => {
     /* hard roster caps: a third QB or TE is a wasted bench spot in a 1QB/1TE league */
@@ -587,6 +591,7 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
     const nb2 = nextBest(ps, avail, back2 + offBack2, cur, shift[ps]);
     let kept = 0;
     pool.slice(0, 18).forEach((now, k) => {
+      if (!canRecommend(now.r)) return;
       if (!rosterGain && kept >= 4) return;
       const g = GP[now.r[0]];
       /* between your picks, judge players by their odds of actually reaching your turn */
@@ -689,10 +694,6 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
    * turn after turn; the advisor then spent its one spare pick on a seventh runner at pick 145
    * with the last startable TE on the board, and finished QB1 RB6 WR7 TE0 — a roster that
    * fields a zero at TE every week, a cost no candidate score can express. */
-  const spareLeft = picksLeft - starterGap;
-  const forced = (["QB", "RB", "WR", "TE"] as Pos[]).filter(
-    (p) => needSlots[p] > 0 && (spareLeft <= 0 || mustNow.has(p)),
-  );
   if (forced.length) {
     const keep = cands.filter((c) => forced.includes(c.p) || (spareLeft <= 0 && c.p !== "QB" && flexFilled < 2));
     if (keep.length) { cands.length = 0; cands.push(...keep); }
@@ -703,6 +704,7 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
   if (!onClock && nextPick) {
     const topC = cands[0];
     for (const o of avail.slice(0, 15)) {
+      if (!canRecommend(o.r)) continue;
       const pr = 1 - pg(o.r, takeAt, offTake);
       if (pr >= 0.04 && pr < 0.38 && GP[o.r[0]].proj > (topC ? topC.proj + 0.7 : 0)) {
         dream = { o, pr };

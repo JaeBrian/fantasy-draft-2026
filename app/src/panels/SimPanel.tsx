@@ -443,7 +443,7 @@ export function SimPanel({ noob, initialSeat, onOpenDraft }: { noob: boolean; in
         </p>
       </Card>
       </div>}
-      <p className="study-footnote">Studies model 14 skill rounds and eight starters. Projections, injury assumptions and opponent behavior affect the estimates. Scoring-rank percentages describe simulated production, not championship odds.</p>
+      <p className="study-footnote">Studies model 14 skill rounds and eight starters with flexible TE selection. The Draft room applies your current tight-end preference. Projections, injury assumptions and opponent behavior affect the estimates. Scoring-rank percentages describe simulated production, not championship odds.</p>
     </div>
   );
 }

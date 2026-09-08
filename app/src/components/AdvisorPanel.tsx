@@ -9,12 +9,12 @@ import { InjChip, Sticker, TeamIcon } from './ui';
 
 type Props = {
   DS: DraftState; ord: string[]; mySlot: number; blocked: string[]; lean: RbLean;
-  manual: boolean; finished: boolean; rosterSize: 14 | 16; noob: boolean; intelVersion: string;
+  manual: boolean; finished: boolean; rosterSize: 14 | 16; noob: boolean; intelVersion: string; waitOnTightEnds: boolean;
   mark: (name: string, want: 'mine' | 'gone') => void;
 };
 
-export function AdvisorPanel({ DS, ord, mySlot, blocked, lean, manual, finished, rosterSize, noob, intelVersion, mark }: Props) {
-  const a = useMemo(() => advise(DS, mySlot, ord, new Set(blocked)), [DS, mySlot, ord, blocked, lean, intelVersion]);
+export function AdvisorPanel({ DS, ord, mySlot, blocked, lean, manual, finished, rosterSize, noob, intelVersion, waitOnTightEnds, mark }: Props) {
+  const a = useMemo(() => advise(DS, mySlot, ord, new Set(blocked), waitOnTightEnds), [DS, mySlot, ord, blocked, lean, intelVersion, waitOnTightEnds]);
   const [fc, setFc] = useState<Forecast | null>(null);
   const [progress, setProgress] = useState<number | null>(null);
   const [forecastError, setForecastError] = useState(false);
@@ -51,6 +51,7 @@ export function AdvisorPanel({ DS, ord, mySlot, blocked, lean, manual, finished,
     : a.myCount >= 14 && missingSpecial.length ? <div className="pick-special"><h3>Fill your {missingSpecial[0].label === 'K' ? 'kicker' : 'defense'} slot</h3><p>Compare available starters in Sleeper. {manual ? 'Record your selection with the off-board pick form.' : 'Live sync will record your selection.'}</p></div>
     : <>
       <p className="advisor-summary">{waiting ? `Targets for pick ${a.nextPick}. Rankings update as players come off the board.` : 'Compare your top choices, then make your pick.'}</p>
+      {waitOnTightEnds && <p className="forecast-caption">Waiting on tight ends: targets must fall 6 picks past their blended market ADP, unless your starting slot needs protecting. Change this in Room settings.</p>}
       <div className="recommendations">
         {candidates.map((c, i) => {
           const name = c.now.r[0];
@@ -82,6 +83,6 @@ export function AdvisorPanel({ DS, ord, mySlot, blocked, lean, manual, finished,
       {fc && fc.room.length > 0 && <details className="draft-disclosure"><summary>Teams picking before the forecasted turn <span>{fc.room.length}</span></summary><ul className="rival-list">{fc.room.map(r => <li key={r.pick}><span>#{r.pick} {DRAFT_ORDER[r.team - 1]}</span><small>{r.needs.length ? `Needs ${r.needs.join(', ')}` : r.has}</small></li>)}</ul></details>}
     </>}
     {mySlot > 0 && <details className="draft-disclosure roster-disclosure" open><summary>Your roster <span>{starterCount}/{starterTotal} {skillOnly ? 'skill starters' : 'starters'}</span></summary><div className="roster-grid">{visibleSlots.map((s, i) => <div key={i} className={s.player ? 'filled' : ''}><span>{s.label}</span><b>{s.player ? displayName(s.player) : 'Open slot'}</b></div>)}</div></details>}
-    {plan && <details className="draft-disclosure"><summary>Six-round reference plan</summary><p>Selection frequencies from 4,000 modeled drafts. Use the live targets above as picks change.</p><ol className="reference-picks">{plan.picks.map(p => <li key={p.pick}><b>#{p.pick}</b><span>{p.opts.map(([name, pct]) => `${name} ${pct}%`).join(' / ')}</span></li>)}</ol></details>}
+    {plan && <details className="draft-disclosure"><summary>Six-round reference plan</summary><p>Selection frequencies from 4,000 modeled drafts with flexible TE selection. Your live targets apply your current tight-end preference.</p><ol className="reference-picks">{plan.picks.map(p => <li key={p.pick}><b>#{p.pick}</b><span>{p.opts.map(([name, pct]) => `${name} ${pct}%`).join(' / ')}</span></li>)}</ol></details>}
   </section>;
 }
