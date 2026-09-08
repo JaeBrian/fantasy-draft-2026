@@ -6,10 +6,9 @@ import { draftStorageKey } from "../panels/test-draft/context";
  * model will happily tell Emily he is available a quarter of the time when he is available
  * none of the time. That is worse than useless, because it is confidently wrong.
  *
- * A pin says: treat this player as going at exactly this pick. It works by overriding his
- * market price and collapsing the uncertainty around it, so everything downstream — survival
- * odds, the run forecast, the scarcity gap, who the advisor bothers to consider — follows
- * automatically rather than each needing to know about intel separately.
+ * A pin says: treat this player as going at exactly this pick. Availability honors that
+ * horizon independently of market adjustments. If the pick passes and he is still available,
+ * the actual board supersedes the belief and forecasts return to market pricing.
  *
  * Empty by default and only ever populated in the browser, so the simulations and audits run
  * on the market as it is rather than on anyone's hunches. */
@@ -34,7 +33,10 @@ function load(): Record<string, Pin> {
       /* tolerate the older shape, which stored a bare pick number */
       const pick = typeof v === "number" ? v : v?.pick;
       const on = typeof v === "number" ? true : v?.on !== false;
-      if (typeof pick === "number" && pick >= 1 && pick <= 200) out[k] = { pick, on };
+      if (typeof pick === "number" && Number.isInteger(pick) && pick >= 1 && pick <= 200) {
+        if (on) Object.values(out).forEach(p => { if (p.pick === pick) p.on = false; });
+        out[k] = { pick, on };
+      }
     }
     return out;
   } catch {
@@ -57,7 +59,12 @@ function save(): void {
 /** Add or replace a belief. Passing null forgets it entirely. */
 export function setPin(name: string, pick: number | null): void {
   if (pick === null) delete PINS[name];
-  else PINS[name] = { pick, on: true };
+  else {
+    if (!Number.isInteger(pick) || pick < 1 || pick > 200) return;
+    // One selection can contain one player. Preserve the other belief, switched off.
+    Object.values(PINS).forEach(p => { if (p.pick === pick) p.on = false; });
+    PINS[name] = { pick, on: true };
+  }
   save();
 }
 
@@ -65,6 +72,7 @@ export function setPin(name: string, pick: number | null): void {
 export function togglePin(name: string): void {
   const p = PINS[name];
   if (!p) return;
+  if (!p.on) { setPin(name, p.pick); return; }
   PINS[name] = { ...p, on: !p.on };
   save();
 }

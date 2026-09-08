@@ -238,7 +238,10 @@ const blendedADP = (row: PlayerRow): number => {
   return sadp !== undefined ? 0.75 * sadp + 0.25 * ffc : ffc;
 };
 /* Known picks override the probability forecast, while value discounts use market data. */
-export const mktADP = (row: PlayerRow): number => pinnedPick(row[0]) ?? blendedADP(row);
+export const mktADP = (row: PlayerRow, cur = 1): number => {
+  const pin = pinnedPick(row[0]);
+  return pin !== undefined && pin >= cur ? pin : blendedADP(row);
+};
 /* How far a player can slide from his expected pick.
  *
  * This used to floor at 2.2 picks for everyone, which was badly wrong at the top and doing no
@@ -251,11 +254,8 @@ export const mktADP = (row: PlayerRow): number => pinnedPick(row[0]) ?? blendedA
  * So: trust the measurement where we have one, keep the ADP-scaled estimate for the 18 players
  * we do not, and floor at half a pick rather than two. */
 const sigmaOf = (row: PlayerRow): number => {
-  /* a pin is a near-certainty, so collapse the spread around it rather than leaving the
-     model hedging against a market it has been told to ignore */
-  if (pinnedPick(row[0]) !== undefined) return 0.8;
   const m = MKT[row[0]];
-  return Math.max(0.5, m ? m[1] : 0, 0.13 * mktADP(row));
+  return Math.max(0.5, m ? m[1] : 0, 0.13 * blendedADP(row));
 };
 
 function ncdf(z: number): number {
@@ -276,9 +276,15 @@ function logSurvival(z: number): number {
 }
 
 /** Conditional probability of selection between the current pick and a later horizon. */
-export function pGoneBy(row: PlayerRow, pick: number, cur: number, shift: number): number {
+export function pGoneBy(row: PlayerRow, pick: number, cur: number, shift: number, offset = 0, honorPin = true): number {
   if (pick <= cur) return 0;
-  const a = mktADP(row) + (shift || 0), s = sigmaOf(row);
+  const pin = pinnedPick(row[0]);
+  // Actual availability supersedes a past belief. Future pins use the real pick horizon.
+  if (honorPin && pin !== undefined && pin >= cur) return pin < pick ? 1 : 0;
+  pick += offset;
+  if (pick <= cur) return 0;
+  // More demand moves selection earlier.
+  const a = blendedADP(row) - (shift || 0), s = sigmaOf(row);
   const logRatio = logSurvival((pick - a) / s) - logSurvival((cur - a) / s);
   return Math.min(0.97, Math.max(0, -Math.expm1(logRatio)));
 }
@@ -328,7 +334,7 @@ function demandShift(ord: string[], mySlot: number, cur: number, until: number):
 }
 
 /** Expected best projection left at `pick` for a position, plus the most likely surviving name */
-function nextBest(ps: Pos, avail: Slot[], pick: number, cur: number, shift: number) {
+function nextBest(ps: Pos, avail: Slot[], gone: (row: PlayerRow) => number) {
   /* "best still there" only means something if we walk the pool best-first. That used to be
    * board order, which was fine while projections WERE board order; now that value is
    * independent of the board, sort by it. */
@@ -339,7 +345,7 @@ function nextBest(ps: Pos, avail: Slot[], pick: number, cur: number, shift: numb
   let ev = 0;
   let likely: Slot | null = null;
   for (const o of pool) {
-    const pg = pGoneBy(o.r, pick, cur, shift);
+    const pg = gone(o.r);
     if (!likely && pAll * (1 - pg) >= 0.5) likely = o;
     ev += pAll * (1 - pg) * GP[o.r[0]].proj;
     pAll *= pg;
@@ -349,10 +355,10 @@ function nextBest(ps: Pos, avail: Slot[], pick: number, cur: number, shift: numb
   return { ev, likely, pAllGone: pAll };
 }
 
-function tierSurvivors(ps: Pos, tier: number, avail: Slot[], pick: number, cur: number, shift: number): number {
+function tierSurvivors(ps: Pos, tier: number, avail: Slot[], gone: (row: PlayerRow) => number): number {
   let e = 0;
   avail.forEach((o) => {
-    if (o.r[1] === ps && o.r[6] === tier) e += 1 - pGoneBy(o.r, pick, cur, shift);
+    if (o.r[1] === ps && o.r[6] === tier) e += 1 - gone(o.r);
   });
   return e;
 }
@@ -387,14 +393,16 @@ function runDetect(ord: string[]): Pos | null {
 
 export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: Set<string>, waitOnTightEnds = true): Advice {
   const all: Slot[] = P.map((r, i) => ({ r, i }));
-  /* blocked players are dead to us: never recommended, never counted as future value */
-  const avail = all.filter((o) => !DS[o.r[0]] && !blocked?.has(o.r[0]));
+  // Personal exclusions change our choices, not the players opponents can select.
+  const marketPool = all.filter((o) => !DS[o.r[0]]);
+  const avail = marketPool.filter((o) => !blocked?.has(o.r[0]));
   const mine = P.filter((r) => DS[r[0]] === "mine");
   const made = Object.keys(DS).length;
   const cur = made + 1;
   let onClock = false;
   let nextPick: number | null = null;
   let followPick = cur + 12;
+  let thirdPick = cur + 24;
   if (mySlot >= 1) {
     const picks: number[] = [];
     for (let r = 1; r <= 16; r++) picks.push((r - 1) * 12 + (r % 2 ? mySlot : 13 - mySlot));
@@ -403,6 +411,7 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
       nextPick = fut[0];
       onClock = fut[0] === cur;
       followPick = fut[1] ?? fut[0] + 12;
+      thirdPick = fut[2] ?? followPick + 12;
     }
   }
   const externalMine = Object.keys(DS).filter(n => DS[n] === "mine").map(offBoardPick).filter(p => p !== null);
@@ -420,26 +429,45 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
   const back = Math.max(followPick, takeAt + 1);
   /* a third horizon: positional shelves that keep collapsing (RB) should outrank
      shelves that hold (WR) — this is what full-draft simulation rewards. */
-  const back2 = back + (back - takeAt || 12);
-  const shift = demandShift(ord, mySlot, cur, back);
+  const back2 = Math.max(thirdPick, back + 1);
   const run = runDetect(ord);
-  if (run) shift[run] = (shift[run] || 0) + 1.5;
-  /* Calibration: summed across the pool, P(gone by pick k) must equal the number of picks
+  const shifts = new Map<number, Record<string, number>>();
+  for (const horizon of [takeAt, back, back2]) {
+    const demand = demandShift(ord, mySlot, cur, horizon);
+    if (run) demand[run] = (demand[run] || 0) + 1.5;
+    shifts.set(horizon, demand);
+  }
+  const opponentCounts = new Map<number, number>();
+  const opponentsBefore = (pick: number) => {
+    const cached = opponentCounts.get(pick);
+    if (cached !== undefined) return cached;
+    let count = 0;
+    for (let pk = cur; pk < pick; pk++) if (snapTeam(pk) !== mySlot) count++;
+    opponentCounts.set(pick, count);
+    return count;
+  };
+  const pg = (row: PlayerRow, pick: number, off: number) => {
+    if (opponentsBefore(pick) === 0) return 0;
+    const pin = pinnedPick(row[0]);
+    // Survival is conditional on us passing: our own known pick cannot take him away.
+    return pGoneBy(row, pick, cur, shifts.get(pick)![row[1]], off, pin === undefined || pin >= pick || snapTeam(pin) !== mySlot);
+  };
+  /* Calibration: summed across the pool, P(gone by pick k) must equal the opponent picks
      that actually happen before k. Raw per-player CDFs over-predict by ~18%. We correct by
      SHIFTING the horizon (bisection on an offset) rather than scaling probabilities — scaling
      would make locks like the 1.01 look available; shifting keeps certainties certain. */
   const calibFor = (pick: number) => {
-    const target = Math.max(0, pick - cur);
-    const sumAt = (k: number) => {
+    const target = opponentsBefore(pick);
+    const sumAt = (offset: number) => {
       let t = 0;
-      avail.forEach((o) => { t += pGoneBy(o.r, k, cur, shift[o.r[1]]); });
+      marketPool.forEach((o) => { t += pg(o.r, pick, offset); });
       return t;
     };
-    if (target <= 0) return 0;
+    if (target <= 0) return cur - pick;
     let lo = -24, hi = 4;
     for (let i = 0; i < 18; i++) {
       const mid = (lo + hi) / 2;
-      if (sumAt(pick + mid) > target) hi = mid;
+      if (sumAt(mid) > target) hi = mid;
       else lo = mid;
     }
     return (lo + hi) / 2;
@@ -447,8 +475,6 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
   const offTake = calibFor(takeAt);
   const offBack = calibFor(back);
   const offBack2 = calibFor(back2);
-  const pg = (row: PlayerRow, pick: number, off: number) =>
-    pGoneBy(row, pick + off, cur, shift[row[1]]);
 
   /* ---- roster radar: what must be filled, and how fast the shelf is emptying ---- */
   const needSlots: Record<string, number> = {
@@ -575,7 +601,7 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
   const deferBackfield = (r: PlayerRow) => r[1] === "RB" && myCount < 8 && !forced.includes("RB") &&
     takeAt - blendedADP(r) < 12 && healthyBacks.some(m => m[2] === r[2]);
   // Deferred players remain in opponent forecasts and the searchable player pool.
-  const canRecommend = (r: PlayerRow) => !deferBackfield(r) &&
+  const canRecommend = (r: PlayerRow) => pg(r, takeAt, offTake) < 1 && !deferBackfield(r) &&
     (r[1] !== "TE" || !waitOnTightEnds || forced.includes("TE") || takeAt - blendedADP(r) >= 6);
   const backfieldWait: Advice["backfieldWait"] = [];
   const cands: Candidate[] = [];
@@ -601,8 +627,8 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
     }
     const pool = positionPool.filter(o => canRecommend(o.r));
     if (!pool.length) return;
-    const nb = nextBest(ps, avail, back + offBack, cur, shift[ps]);
-    const nb2 = nextBest(ps, avail, back2 + offBack2, cur, shift[ps]);
+    const nb = nextBest(ps, avail, r => pg(r, back, offBack));
+    const nb2 = nextBest(ps, avail, r => pg(r, back2, offBack2));
     let kept = 0;
     pool.slice(0, 18).forEach((now, k) => {
       if (!rosterGain && kept >= 4) return;
@@ -632,7 +658,7 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
       const liveTrend = SLP[now.r[0]]?.trend;
       if (liveTrend !== undefined && Math.abs(liveTrend) >= 5000) s *= liveTrend > 0 ? 1.02 : 0.98;
       const tier = now.r[6];
-      const tLeft = tierSurvivors(ps, tier, avail, back + offBack, cur, shift[ps]);
+      const tLeft = tierSurvivors(ps, tier, avail, r => pg(r, back, offBack));
       const cliff = tLeft < 1.5 && gap >= 0.8;
       if (cliff) s *= 1.05;
       /* Stacking. These used to be three rules taken from published research; we have now
@@ -690,7 +716,7 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
        * charge almost nothing for a hole that costs the same whoever fills it. */
       const BYE_COST = [0, 0.29, 1.03, 1.73];
       if (clash) s -= BYE_COST[Math.min(byeCount[b], BYE_COST.length - 1)];
-      const fell = Math.round(takeAt - mktADP(now.r));
+      const fell = Math.round(takeAt - blendedADP(now.r));
       if (fell >= 6) s *= 1.04;
       const addedValue = rosterGain?.(rosterValuePlayer(now.r));
       // Once the core is drafted, price how often this addition improves our actual lineup.

@@ -24,17 +24,17 @@ import { rbShift } from "./tendency";
  * to reach this, and a stale pool would go on quoting the market's price for a player after
  * you have told the tool otherwise. The cost is nothing beside the simulation it feeds. */
 type Priced = { name: string; pos: Pos; row: PlayerRow; adp: number; sig: number };
-function pricePool(): Priced[] {
+function pricePool(cur: number): Priced[] {
   const out: Priced[] = [];
   P.forEach((r) => {
     if (!["QB", "RB", "WR", "TE"].includes(r[1])) return;
-    const adp = mktADP(r);
+    const adp = mktADP(r, cur);
     out.push({
       name: r[0],
       pos: r[1] as Pos,
       row: r,
       adp,
-      sig: pinnedPick(r[0]) !== undefined ? 0.8 : Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * adp),
+      sig: (pinnedPick(r[0]) ?? 0) >= cur ? 0.8 : Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * adp),
     });
   });
   return out;
@@ -114,7 +114,7 @@ export function runForecast(
   const picksAhead = Math.max(0, target - cur - (onClock ? 1 : 0));
 
   const base = rosters(ord);
-  const POOL = pricePool();
+  const POOL = pricePool(onClock ? cur + 1 : cur);
   const live = POOL.filter((p) => !DS[p.name]);
   const surviveHits: Record<string, number> = {};
   const took: Record<number, Record<string, number>> = {};
