@@ -1,0 +1,5 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {fitRidge,predictResearch,admissionDecision,pairedWeekCI} from './research-model.mjs';
+test('ridge learns opportunity slope and handles missing features',()=>{const rows=Array.from({length:100},(_,i)=>({features:{targets:i%10},actual:2+3*(i%10)}));const model={WR:fitRidge(rows,['targets'],.001)};assert.ok(Math.abs(predictResearch(model,{position:'WR',features:{targets:5}})-17)<.001);assert.ok(Number.isFinite(predictResearch(model,{position:'WR',features:{targets:null}})));assert.equal(predictResearch(model,{position:'K',features:{}}),null);});
+test('admission gate is measured and rejects a worse candidate',()=>{const rows=Array.from({length:18},(_,w)=>['QB','RB','WR','TE'].flatMap(position=>Array.from({length:10},()=>({season:2025,week:w+1,position,actual:10,candidate:12,provider:11})))).flat();assert.equal(admissionDecision(rows).qualityGatePassed,false);assert.equal(admissionDecision(rows.map(r=>({...r,candidate:10}))).qualityGatePassed,true);assert.deepEqual(pairedWeekCI(rows),pairedWeekCI(rows));});

@@ -20,6 +20,8 @@ export function validateDataset(raw:unknown):WeeklyDataset {
   if (!d || d.schemaVersion!==1 || d.season!==WEEKLY_SEASON || !Number.isFinite(Date.parse(d.generatedAt)) ||
     !d.weeks || !d.scoring || !Array.isArray(d.sources) || !d.calibration?.residuals || !d.validation?.limitations)
     throw new Error('Weekly analysis has an unsupported format');
+  if(d.currentWeek!==undefined&&(!Number.isInteger(d.currentWeek)||d.currentWeek<1||d.currentWeek>18))throw new Error('Invalid current NFL week');
+  if(d.research&&(d.research.season!==d.season||d.research.week!==d.currentWeek||!Array.isArray(d.research.games)||!Array.isArray(d.research.sources)))throw new Error('Invalid weekly research briefing');
   for (const [key,week] of Object.entries(d.weeks)) {
     if (+key<1 || +key>18 || week.week!==+key || !week.players || !Array.isArray(week.warnings)) throw new Error('Invalid weekly forecast');
     for (const [id,p] of Object.entries(week.players)) {
@@ -38,7 +40,8 @@ export function useWeeklyWorkspace() {
   const [dataError,setDataError]=useState('');
   const [loading,setLoading]=useState(false);
   const [dataRefresh,setDataRefresh]=useState(0);
-  const [week,setWeek]=usePersistent('fd26-weekly-week',1,r=>Math.min(18,Math.max(1,Number(r)||1)),String);
+  const [weekChoice,setWeek]=usePersistent('fd26-weekly-week-v2',0,r=>Math.min(18,Math.max(0,Number(r)||0)),String);
+  const week=weekChoice||dataset?.currentWeek||1;
   const [request,setRequest]=useState(0),[checking,setChecking]=useState(false),[error,setError]=useState('');
   useEffect(()=>{
     const controller=new AbortController();let active=true;

@@ -12,7 +12,7 @@ export type TradeSide = {
   rosterId:number; owner:string; weeks:WeekValue[]; next3Gain:number; rosGain:number;
   waiverGain:number; gainOverWaivers:number; drops:string[]; additions:string[]; needs:string[]; baselineDrops:string[];
 };
-export type TradePlayer = { id:string; name:string; owner:string; modelPoints:number; marketValue:null };
+export type TradePlayer = { id:string; name:string; owner:string; modelPoints:number; marketValue:null; researchNotes?:string[] };
 export type TradeOffer = {
   id:string; category:'buy-low'|'buy-high'|'sell-high'|'roster-fit'; categoryEvidence:string;
   outgoing:TradePlayer[]; incoming:TradePlayer[]; manager:TradeSide; counterparty:TradeSide;
@@ -109,7 +109,7 @@ export function generateTradeTargets(input:TradeInput):TradeReport {
     // Spread the pair shortlist across the range so depth packages remain represented.
     return [...top.map(id=>[id]),...pairs.filter((_,i)=>i%3===0)];
   };
-  const cards=(ids:string[],owner:string):TradePlayer[]=>ids.map(id=>({id,name:first[id].name,owner,modelPoints:model([id]),marketValue:null}));
+  const cards=(ids:string[],owner:string):TradePlayer[]=>ids.map(id=>({id,name:first[id].name,owner,modelPoints:model([id]),marketValue:null,researchNotes:dataset.weeks[dataset.currentWeek??currentWeek]?.players[id]?.research?.notes.slice(0,4)??[]}));
   const side=(roster:TradeRoster,afterIds:string[],drops:string[],additions:string[],waiverGain:number):TradeSide=>{
     const before=evaluate(roster.playerIds), after=evaluate(afterIds);
     const values=weeks.map((week,i)=>({week,before:before[i],after:after[i],gain:after[i].total-before[i].total}));
