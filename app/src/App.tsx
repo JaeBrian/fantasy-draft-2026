@@ -1,3 +1,4 @@
+import { WeeklyPanel } from "./panels/WeeklyPanel";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { NEWS } from "./data";
 import { usePersistent } from "./lib/store";
@@ -19,6 +20,7 @@ const TABS = [
   ["start", "Start Here"],
   ["board", "Draft room"],
   ["test-draft", "Test draft mode"],
+  ["weekly", "Weekly lineup"],
   ["adp", "Sleeper ADP"],
   ["news", "News"],
   ["sims", "Draft lab"],
@@ -222,6 +224,7 @@ export default function App() {
 
 
       <main id="main-content" className={`mx-auto px-5 pt-7 pb-16 ${(tab === "board" || tab === "test-draft") ? "max-w-[1560px]" : "max-w-[1100px]"}`}>
+        {tab === "weekly" && <WeeklyPanel />}
         {tab === "start" && <StartPanel noob={noob} />}
         {tab === "adp" && <AdpPanel noob={noob} />}
         {tab === "news" && <NewsPanel noob={noob} />}

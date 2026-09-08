@@ -624,3 +624,16 @@ progress::-moz-progress-bar { background: var(--color-clock); }
 .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 .live-sync-card p { margin: 7px 0; }
 .live-sync-card small { display: block; margin-top: 4px; line-height: 1.5; }
+
+.weekly-workspace { display: grid; gap: 20px; }
+.weekly-managers { display: flex; flex-wrap: wrap; gap: 10px; }
+.weekly-managers .btn[aria-pressed=true] { background: #f5c667; color: #10151b; border-color: #f5c667; }
+.weekly-section { background: #18222e; border: 1px solid #304052; border-radius: 10px; padding: 22px; }
+.weekly-section h2 { font: 600 1.7rem var(--font-display); margin: 4px 0 12px; }
+.weekly-section p { color: var(--draft-muted); line-height: 1.6; margin: 10px 0; }
+.weekly-facts { display: grid; grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); gap: 16px; margin-top: 18px; }
+.weekly-facts dt { font-size: .8rem; color: var(--draft-muted); }
+.weekly-facts dd { margin: 4px 0 0; }
+.weekly-roster { list-style: none; padding: 0; margin-top: 20px; }
+.weekly-roster li { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 10px 0; border-top: 1px solid #304052; }
+.weekly-roster span { color: var(--draft-muted); font-size: .85rem; }
