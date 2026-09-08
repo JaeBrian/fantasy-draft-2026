@@ -3,6 +3,7 @@ import { WeeklyPanel } from "./panels/WeeklyPanel";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { NEWS } from "./data";
 import { usePersistent } from "./lib/store";
+import { markDraft, parseDraftOrder, parseDraftState } from "./lib/draft-state";
 import { snapTeam, type DraftState, type Mark } from "./lib/advisor";
 import { StartPanel } from "./panels/StartPanel";
 import { NewsPanel } from "./panels/NewsPanel";
@@ -43,14 +44,6 @@ function initialTab(saved = "start"): TabKey {
   return (valid(requested) ? requested : valid(saved) ? saved : "start") as TabKey;
 }
 
-const parseDS = (raw: string): DraftState => {
-  try {
-    return JSON.parse(raw) as DraftState;
-  } catch {
-    return {};
-  }
-};
-
 export default function App() {
   /* remember the tab you were on across refreshes */
   const [tab, setTab] = usePersistent<TabKey>(
@@ -61,21 +54,12 @@ export default function App() {
   );
   const [noob, setNoob] = usePersistent("fd26-noob", true, (r) => r === "1", (v) => (v ? "1" : "0"));
   const [mySlot, setMySlot] = usePersistent("fd26-slot", 0, (r) => parseInt(r) || 0, String);
-  const [DS, setDS] = usePersistent<DraftState>("fd26-draft", {}, parseDS, JSON.stringify);
+  const [DS, setDS] = usePersistent<DraftState>("fd26-draft", {}, parseDraftState, JSON.stringify);
   // Pick order (overall pick 1, 2, 3…) — the advisor rebuilds every team's
   // roster from it. Reconciled against DS on load, same as the v1 page did.
   const [ord, setOrd] = useState<string[]>(() => {
-    let o: string[] = [];
-    try {
-      o = JSON.parse(localStorage.getItem(draftStorageKey("fd26-ord")) || "[]") as string[];
-    } catch {
-      o = [];
-    }
-    o = o.filter((n) => DS[n]);
-    Object.keys(DS).forEach((n) => {
-      if (!o.includes(n)) o.push(n);
-    });
-    return o;
+    try { return parseDraftOrder(localStorage.getItem(draftStorageKey("fd26-ord")) || "[]", DS); }
+    catch { return Object.keys(DS); }
   });
   useEffect(() => {
     try {
@@ -84,22 +68,16 @@ export default function App() {
       /* storage unavailable */
     }
   }, [ord]);
-  const hist = useRef<{ n: string; prev: Mark | "" }[]>([]);
+  const hist = useRef<{ n: string; prev: Mark | ""; index: number }[]>([]);
   const [histSize, setHistSize] = useState(0);
 
   const applyMark = useCallback(
-    (n: string, state: Mark | "") => {
-      const next = { ...DS };
-      if (state) {
-        if (!next[n]) setOrd((o) => [...o, n]);
-        next[n] = state;
-      } else {
-        delete next[n];
-        setOrd((o) => o.filter((x) => x !== n));
-      }
-      setDS(next);
+    (n: string, state: Mark | "", index = -1) => {
+      const next = markDraft(DS, ord, n, state, index);
+      setOrd(next.ord);
+      setDS(next.DS);
     },
-    [DS, setDS]
+    [DS, ord, setDS]
   );
 
   /* publish the real header height as --hdr so sticky panels always clear it, at any zoom */
@@ -116,19 +94,19 @@ export default function App() {
 
   const mark = useCallback(
     (n: string, want: Mark) => {
-      hist.current.push({ n, prev: DS[n] ?? "" });
+      hist.current.push({ n, prev: DS[n] ?? "", index: ord.indexOf(n) });
       if (hist.current.length > 200) hist.current.shift();
       setHistSize(hist.current.length);
       applyMark(n, DS[n] === want ? "" : want);
     },
-    [DS, applyMark]
+    [DS, ord, applyMark]
   );
 
   const undo = useCallback(() => {
     const h = hist.current.pop();
     setHistSize(hist.current.length);
     if (!h) return;
-    applyMark(h.n, h.prev);
+    applyMark(h.n, h.prev, h.index);
   }, [applyMark]);
 
   /* Practice draft: apply a run of AI picks in a single write. Looping `mark` would read a
@@ -137,7 +115,7 @@ export default function App() {
     (names: string[]) => {
       if (!names.length) return;
       names.forEach((n) => {
-        hist.current.push({ n, prev: DS[n] ?? "" });
+        hist.current.push({ n, prev: DS[n] ?? "", index: ord.indexOf(n) });
       });
       if (hist.current.length > 200) hist.current = hist.current.slice(-200);
       setHistSize(hist.current.length);
@@ -148,7 +126,7 @@ export default function App() {
       setOrd((o) => [...o, ...names.filter((n) => !DS[n])]);
       setDS(next);
     },
-    [DS, setDS],
+    [DS, ord, setDS],
   );
 
   const applySync = useCallback((state: DraftState, order: string[]) => {

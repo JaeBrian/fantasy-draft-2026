@@ -1,3 +1,4 @@
+import { parseNames } from "../lib/draft-state";
 import { sleeperRetryDelay } from "../lib/sleeper-retry";
 import { LiveSyncStatus } from "../components/LiveSyncStatus";
 import { useEffect, useRef, useState, type ReactNode } from "react";
@@ -65,13 +66,7 @@ export function BoardPanel({ defaultSleeperUrl, noob, DS, ord, mark, undo, reset
   const [blocked, setBlocked] = usePersistent<string[]>(
     "fd26-blocked",
     [],
-    (raw) => {
-      try {
-        return JSON.parse(raw) as string[];
-      } catch {
-        return [];
-      }
-    },
+    parseNames,
     JSON.stringify
   );
   /* ---- practice draft ----------------------------------------------------------------
@@ -192,7 +187,9 @@ export function BoardPanel({ defaultSleeperUrl, noob, DS, ord, mark, undo, reset
       request = new AbortController();
       const timeout = window.setTimeout(() => request?.abort(), 10000);
       try {
-        const res = await fetch(`https://api.sleeper.app/v1/draft/${id}/picks`, { signal: request.signal });
+        // Sleeper's shared cache can serve old picks even with fetch cache: no-store.
+        // A fresh URL bypasses that cache without adding requests to our polling loop.
+        const res = await fetch(`https://api.sleeper.app/v1/draft/${id}/picks?poll=${Date.now()}`, { cache: "no-store", signal: request.signal });
         responseStatus = res.status;
         retryAfter = res.headers.get("Retry-After");
         if (!res.ok) throw new Error(String(res.status));

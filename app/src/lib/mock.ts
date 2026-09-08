@@ -2,6 +2,7 @@ import { P, MKT, type PlayerRow, type Pos } from "../data";
 import { PROJ } from "../projections";
 import { mktADP, snapTeam, type DraftState } from "./advisor";
 import { rbShift } from "./tendency";
+import { pinnedPick } from "./intel";
 
 /* Practice draft.
  *
@@ -22,8 +23,8 @@ P.forEach((r) => {
 /* Same measured spread the rest of the model uses, so a practice room behaves like a real
    one. With a flat floor the elite tier drifted around the first five picks; nobody's league
    leaves the consensus top three on the board. */
-const sigmaOf = (r: PlayerRow): number =>
-  Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * mktADP(r));
+const sigmaOf = (r: PlayerRow, cur: number): number =>
+  Math.max(0.5, MKT[r[0]] ? MKT[r[0]][1] : 0, 0.13 * mktADP(r, cur));
 
 /** Box-Muller, seeded per call site so a practice draft is not deterministic. */
 function gauss(): number {
@@ -62,8 +63,11 @@ export function opponentPick(DS: DraftState, ord: string[], team: number): strin
   let bestScore = Infinity;
   for (const n of NAMES) {
     if (DS[n]) continue;
+    const pin = pinnedPick(n);
+    if (pin === pk) return n;
+    if (pin !== undefined && pin > pk) continue;
     const r = ROW[n];
-    let s = mktADP(r) + gauss() * sigmaOf(r) * 0.8;
+    let s = mktADP(r, pk) + gauss() * sigmaOf(r, pk) * 0.8;
     if (r[1] === "QB" && c.QB >= 1) s += 60;
     if (r[1] === "TE" && c.TE >= 1) s += 50;
     if (r[1] === "RB" && c.RB >= 5) s += 25;
