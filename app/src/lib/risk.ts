@@ -70,9 +70,9 @@ export function riskOf(name: string, pos: Pos, verdict: Verdict): Risk {
   if (m && m.games >= 6) {
     const w = m.games / (m.games + 8);
     cv = w * m.cv + (1 - w) * cv;
-    if (m.boom >= 0.28) flagsFromData.push(`wins a week on his own ${Math.round(m.boom * 100)}% of the time`);
-    if (m.boom <= 0.05 && m.games >= 10) flagsFromData.push("no ceiling — never cleared 1.5x his own median in 2025");
-    if (m.bust >= 0.28) flagsFromData.push(`disappeared in ${Math.round(m.bust * 100)}% of his 2025 games`);
+    if (m.boom !== null && m.boom >= 0.28) flagsFromData.push(`scored at least 1.5x his own median in ${Math.round(m.boom * 100)}% of his 2025 games`);
+    if (m.boom !== null && m.boom <= 0.05 && m.games >= 10) flagsFromData.push(`scored at least 1.5x his own median in only ${Math.round(m.boom * 100)}% of his 2025 games`);
+    if (m.bust !== null && m.bust >= 0.28) flagsFromData.push(`scored at most half his own median in ${Math.round(m.bust * 100)}% of his 2025 games`);
   }
   let pMiss = BASE_MISS[pos] ?? 0.25;
   let knownMiss = 0;

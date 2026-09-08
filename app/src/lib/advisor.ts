@@ -1,10 +1,11 @@
+import { rosterGainEvaluator, type RosterValuePlayer } from "./draft-roster-value";
 import { offBoardPick } from "./sleeper-draft";
 import { P, BYE, CUFFS, MKT, VEGAS, type PlayerRow, type Pos, type Verdict } from "../data";
 import { SLP } from "../sleeper";
 import { PROJ } from "../projections";
 import { CEIL } from "../ceilings";
 import { pinnedPick } from "./intel";
-import { cuffUplift, riskOf, missShareOf } from "./risk";
+import { CUFF_K, cuffUplift, riskOf, missShareOf } from "./risk";
 
 /* ---- measured teammate correlation ------------------------------------------------------
  * scripts/sim-correlation.mjs, 2025 weekly half-PPR logs. 2025 rosters were reconstructed
@@ -63,6 +64,7 @@ export interface Candidate {
   /** P(he survives to your upcoming pick) — 1 when you're on the clock */
   pReach: number;
   score: number;
+  rosterGain?: number;
   clash: boolean;
   bye: number | undefined;
   cuffOf: string | undefined;
@@ -552,6 +554,16 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
   /* (the RB-team set was only used by the RB+WR anti-stack penalty, which the correlation
      measurement retired — see the stacking note below) */
 
+  const rosterValuePlayer = (r: PlayerRow): RosterValuePlayer => {
+    const risk = riskOf(r[0], r[1], r[4]);
+    const starter = P.find(st => CUFFS[st[0]] === r[0] && st[2] === r[2] && PROJ[st[0]] !== undefined);
+    const base = {name:r[0],pos:r[1],points:projOf(r[0],r[1],GP[r[0]].pr)-cuffUplift(r[0]),bye:BYE[r[2]]??0,miss:missShareOf(risk),knownMiss:risk.knownMiss};
+    if (!starter) return {...base,points:base.points+cuffUplift(r[0])};
+    const stRisk = riskOf(starter[0],starter[1],starter[4]);
+    return {...base,handcuff:{starter:{name:starter[0],pos:starter[1],points:PROJ[starter[0]],bye:BYE[starter[2]]??0,miss:missShareOf(stRisk),knownMiss:stRisk.knownMiss},uplift:CUFF_K*PROJ[starter[0]]}};
+  };
+  const unknownRosterValue = externalMine.some(p => !["K", "DST"].includes(p.pos));
+  const rosterGain = myCount >= 8 && !unknownRosterValue ? rosterGainEvaluator(mine.map(rosterValuePlayer)) : null;
   const cands: Candidate[] = [];
   (["RB", "WR", "QB", "TE"] as Pos[]).forEach((ps) => {
     /* hard roster caps: a third QB or TE is a wasted bench spot in a 1QB/1TE league */
@@ -575,14 +587,14 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
     const nb2 = nextBest(ps, avail, back2 + offBack2, cur, shift[ps]);
     let kept = 0;
     pool.slice(0, 18).forEach((now, k) => {
-      if (kept >= 4) return;
+      if (!rosterGain && kept >= 4) return;
       const g = GP[now.r[0]];
       /* between your picks, judge players by their odds of actually reaching your turn */
       const pReach = onClock ? 1 : Math.max(0.02, 1 - pg(now.r, takeAt, offTake));
       if (k >= 2 && pReach < 0.2) return;
       /* on the clock, do not offer someone far below the best at his position — measured in
          value now that the pool is ordered by it, rather than in board slots */
-      if (k > 0 && onClock && GP[pool[0].r[0]].proj - g.proj > 2.5) return;
+      if (!rosterGain && k > 0 && onClock && GP[pool[0].r[0]].proj - g.proj > 2.5) return;
       kept++;
       const pGone = pg(now.r, back, offBack);
       const gapNext = Math.max(0, g.proj - nb.ev);
@@ -662,7 +674,11 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
       if (clash) s -= BYE_COST[Math.min(byeCount[b], BYE_COST.length - 1)];
       const fell = Math.round(takeAt - mktADP(now.r));
       if (fell >= 6) s *= 1.04;
-      cands.push({ p: ps, now, later: nb.likely, proj: g.proj, vNow: g.vorp, evLater: nb.ev, gap, pGone, pReach, score: s, clash, bye: b, cuffOf, cliff, tier, stack, antiStack, fell });
+      const addedValue = rosterGain?.(rosterValuePlayer(now.r));
+      // Once the core is drafted, price how often this addition improves our actual lineup.
+      // This already includes byes and absences, so avoid applying those penalties twice.
+      if (addedValue !== undefined) s = addedValue * (onClock ? 1 : pReach);
+      cands.push({ rosterGain: addedValue, p: ps, now, later: nb.likely, proj: g.proj, vNow: g.vorp, evLater: nb.ev, gap, pGone, pReach, score: s, clash, bye: b, cuffOf, cliff, tier, stack, antiStack, fell });
     });
   });
   /* A starting slot that can no longer wait overrides every score. Two triggers, both already
@@ -725,7 +741,7 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
   let look: Lookahead | null = null;
   const t0 = deduped[0];
   const t1 = deduped.find((c) => t0 && c.p !== t0.p);
-  if (t0 && t1) {
+  if (t0 && t1 && !rosterGain) {
     const AB = t0.proj + t1.evLater;
     const BA = t1.proj + t0.evLater;
     if (AB >= BA) look = { first: t0, second: t1, edge: AB - BA };

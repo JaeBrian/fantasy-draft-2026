@@ -72,7 +72,8 @@ export function AdvisorPanel({ DS, ord, mySlot, blocked, lean, manual, finished,
       {fc && <p className="forecast-caption">Availability modeled across {fc.sims.toLocaleString()} drafts{fc.sims === 0 ? '; no intervening opponent picks' : ''}.</p>}
       {a.warnings.length > 0 && <div className="roster-warning"><b>Roster needs</b><p>{(noob ? a.plainWarn : a.warnings).join(' · ') || a.warnings.join(' · ')}</p></div>}
       <details className="draft-disclosure"><summary>Why these picks?</summary>
-        {top && <p>{top.gap > 0 ? `The projected ${top.p} options lose about ${top.gap.toFixed(1)} points per week before your next turn.` : 'The remaining positional options project similarly; compare roster fit and availability.'}</p>}
+        {top?.rosterGain !== undefined && <p>This pick adds about {top.rosterGain.toFixed(1)} modeled starting-lineup points per week through depth, bye coverage and injury replacements. Waiver moves can change that value.</p>}
+        {top && top.rosterGain === undefined && <p>{top.gap > 0 ? `The projected ${top.p} options lose about ${top.gap.toFixed(1)} points per week before your next turn.` : 'The remaining positional options project similarly; compare roster fit and availability.'}</p>}
         {a.look && a.look.edge >= 0.8 && <p>{a.look.first.p} now and {a.look.second.p} later leads the reverse order by about {a.look.edge.toFixed(1)} modeled pts/wk.</p>}
         {top && CEIL[top.now.r[0]]?.games >= 6 && <p>Historical 2025 weekly range for {top.now.r[0]}: {CEIL[top.now.r[0]].p10.toFixed(0)}–{CEIL[top.now.r[0]].p90.toFixed(0)} points (10th–90th percentile).</p>}
         {fc?.runs.filter(r => r.p >= 0.5 && r.expected >= 2).map(r => <p key={r.pos}>{Math.round(r.p * 100)}% modeled chance that at least three {r.pos}s go before the forecasted turn.</p>)}

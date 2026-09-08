@@ -256,9 +256,9 @@ export default function App() {
         {tab === "vegas" && <VegasPanel noob={noob} />}
 
         <footer className="mt-10 border-t border-line pt-6 text-[0.8rem] leading-relaxed text-ink-3">
-          Refreshed September 4, 2026: Sleeper half-PPR ADP, component projections scored under this league’s rules,
+          Refreshed September 8, 2026: Sleeper half-PPR ADP, component projections scored under this league’s rules,
           2025 game logs, player status and attributed news; FantasyFootballCalculator mock ADP; official team reports.
-          Hashtag Football projections provide an independent reasonableness and sensitivity check.
+          Hashtag Football’s September 6 projections provide a separate sensitivity check.
           Older expert commentary, implied totals and player profiles are background context. Verify injury news on draft day.
         </footer>
       </main>

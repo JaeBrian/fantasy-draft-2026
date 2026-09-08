@@ -10,10 +10,9 @@
  *   cv     his real week-to-week coefficient of variation
  *   p90    a good week — the 90th percentile of what he actually scored
  *   p10    a bad week
- *   boom   share of weeks he cleared 1.5x his own median. This is what "ceiling" means in a
- *          league decided by weekly head-to-head: not his best game, but how often he wins you
- *          a week on his own.
- *   bust   share of weeks under half his median
+ *   boom   share of weeks scoring at least 1.5x his own median
+ *   bust   share of weeks scoring at most half his median
+ *          Both are unavailable when the median is zero or negative.
  *
  * Caveats worth keeping in view. Rookies and anyone whose role changed have no usable history,
  * so they fall back to the position baseline. And last year's variance predicts this year's
@@ -24,6 +23,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 import { scoreStats, leagueScoring } from "./league-scoring.mjs";
+import { relativeScoringRates } from "./scoring-spread.mjs";
 const scoring = await leagueScoring();
 const snapshot = {};
 import { playerNameKey as norm } from "./player-name.mjs";
@@ -92,8 +92,7 @@ for (const name of boardNames) {
     cv: r2(sd / mean),
     p10: r2(pct(g, 0.1)),
     p90: r2(pct(g, 0.9)),
-    boom: r2(g.filter((x) => x >= med * 1.5).length / g.length),
-    bust: r2(g.filter((x) => x <= med * 0.5).length / g.length),
+    ...relativeScoringRates(g, med),
     games: g.length,
   };
   hit++;
@@ -111,8 +110,9 @@ writeFileSync(
   ` *\n` +
   ` *    cv     week-to-week coefficient of variation\n` +
   ` *    p10    a bad week · p90 a good one, in half-PPR points\n` +
-  ` *    boom   share of weeks above 1.5x his own median — how often he wins you a week alone\n` +
-  ` *    bust   share of weeks below half his median\n` +
+  ` *    boom   share of weeks scoring at least 1.5x his own median\n` +
+  ` *    bust   share of weeks scoring at most half his median\n` +
+  ` *           Both are null when the median is zero or negative.\n` +
   ` *    games  weeks the distribution is built from; under 6 is omitted entirely\n` +
   ` *\n` +
   ` *  And how fragile the 2026 projection is:\n` +
@@ -121,7 +121,7 @@ writeFileSync(
   ` *             rests on the least repeatable thing a player does.\n` +
   ` *    touches  projected carries plus receptions — opportunity, which a coach controls and\n` +
   ` *             which carries over far better than production. */\n` +
-  `export type Ceiling = { tdShare: number | null; touches: number | null; cv: number; p10: number; p90: number; boom: number; bust: number; games: number };\n` +
+  `export type Ceiling = { tdShare: number | null; touches: number | null; cv: number; p10: number; p90: number; boom: number | null; bust: number | null; games: number };\n` +
   `export const CEIL: Record<string, Ceiling> = ${JSON.stringify(out, null, 0)};\n`,
 );
 console.log(`wrote src/ceilings.ts — ${hit} players`);

@@ -1,0 +1,42 @@
+[
+  {
+    "name": "audit-model-inputs",
+    "passed": true,
+    "result": "RESULT: 0 FAIL"
+  },
+  {
+    "name": "audit-sim",
+    "passed": false,
+    "result": "RESULT: 1 FAIL"
+  },
+  {
+    "name": "audit-logic",
+    "passed": true,
+    "result": "RESULT: 0 FAIL"
+  },
+  {
+    "name": "audit-advisor",
+    "passed": true,
+    "result": "RESULT: 0 FAIL"
+  },
+  {
+    "name": "audit-agreement",
+    "passed": true,
+    "result": "RESULT: 0 FAIL"
+  },
+  {
+    "name": "audit-forecast",
+    "passed": true,
+    "result": "RESULT: 0 FAIL"
+  },
+  {
+    "name": "audit-draftday",
+    "passed": true,
+    "result": "RESULT: 0 FAIL"
+  },
+  {
+    "name": "audit-full-draft",
+    "passed": true,
+    "result": "RESULT: 0 FAIL"
+  }
+]

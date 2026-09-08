@@ -1,0 +1,54 @@
+{
+  "source": "https://hashtagfootball.com/fantasy-football-half-ppr-rankings",
+  "sourceUpdated": "2026-09-06",
+  "retrieved": "2026-09-08",
+  "matched": 180,
+  "compared": 180,
+  "method": "Compare season totals divided by 17. Differences include assumptions about playing time and roles. Not a measure of accuracy.",
+  "inputSha256": "9d24969869aa5e1a699f9d0210d42bb05eab0151981e3764488eb0de2669e7ae",
+  "byPosition": {
+    "QB": {
+      "n": 26,
+      "meanAbsoluteDifferencePer17": 0.679864253393665
+    },
+    "RB": {
+      "n": 60,
+      "meanAbsoluteDifferencePer17": 0.921470588235294
+    },
+    "WR": {
+      "n": 71,
+      "meanAbsoluteDifferencePer17": 1.0639602319801162
+    },
+    "TE": {
+      "n": 23,
+      "meanAbsoluteDifferencePer17": 0.8452685421994887
+    }
+  },
+  "largestDifferences": [
+    {
+      "name": "Josh Jacobs",
+      "pos": "RB",
+      "deltaPer17": 3.0235294117647062
+    },
+    {
+      "name": "Jayden Reed",
+      "pos": "WR",
+      "deltaPer17": 3.0176470588235285
+    },
+    {
+      "name": "Kenyon Sadiq",
+      "pos": "TE",
+      "deltaPer17": -3
+    },
+    {
+      "name": "Christian McCaffrey",
+      "pos": "RB",
+      "deltaPer17": 2.6588235294117673
+    },
+    {
+      "name": "Ja'Kobi Lane",
+      "pos": "WR",
+      "deltaPer17": -2.658823529411765
+    }
+  ]
+}

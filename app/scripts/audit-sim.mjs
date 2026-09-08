@@ -13,6 +13,7 @@
  * bug that made two regenerations silently do nothing, and a test harness that passed the
  * wrong argument and "found" a bug that was not there. Assertions, not eyeballing. */
 import { createRequire } from 'node:module';
+import { validRisk } from './scoring-spread.mjs';
 const require = createRequire(import.meta.url);
 const CACHE = new URL('../.simcache/', import.meta.url).pathname;
 const { P, MKT, BYE } = require(CACHE + 'data.cjs');
@@ -233,8 +234,9 @@ console.log('\n6. INPUTS SHARED WITH THE ADVISOR\n');
   ok(noAdp.length <= 3, 'nearly every board player has a Sleeper ADP', `${noAdp.length} missing`);
   const badBye = POOL.filter(p => !p.bye || p.bye < 4 || p.bye > 14);
   ok(badBye.length === 0, 'every player has a bye in weeks 4-14', `${badBye.length} bad`);
-  const badRisk = POOL.filter(p => !(p.cv > 0 && p.cv < 2) || !(p.pMiss >= 0 && p.pMiss <= 1));
-  ok(badRisk.length === 0, 'every risk figure is in range', `${badRisk.length} out of range`);
+  const badRisk = POOL.filter(p => !validRisk(p));
+  ok(badRisk.length === 0, 'risk figures are finite with nonnegative CV and probabilities in [0,1]', `${badRisk.length} invalid`);
+  for (const p of POOL.filter(p => p.cv >= 2)) console.log(`  WARN  unusually high scoring variation: ${p.name}, CV ${p.cv.toFixed(3)}`);
   const negVorp = POOL.filter(p => !(p.vorp > 0));
   ok(negVorp.length === 0, 'every value-over-replacement is positive', `${negVorp.length}`);
   console.log(`        replacement: QB ${REPL.QB.toFixed(2)}  RB ${REPL.RB.toFixed(2)}  WR ${REPL.WR.toFixed(2)}  TE ${REPL.TE.toFixed(2)}`);

@@ -9,16 +9,16 @@ import { Card, Eyebrow, Noob, Sticker } from "../components/ui";
  *  We force the pick, run best-available after it, and play the season out. `avail` is how
  *  often he was still on the board at that seat. Regenerate with app/scripts/sim-first.mjs */
 const FIRST_PICK: Record<number, { name: string; pos: string; pts: number; avail: number }[]> =
-  {"1":[{"name":"Jahmyr Gibbs","pos":"RB","pts":100.94,"avail":100},{"name":"Bijan Robinson","pos":"RB","pts":100.07,"avail":100},{"name":"Christian McCaffrey","pos":"RB","pts":99.01,"avail":100},{"name":"Jonathan Taylor","pos":"RB","pts":98.64,"avail":100},{"name":"James Cook","pos":"RB","pts":97.32,"avail":100},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":97.21,"avail":100},{"name":"Puka Nacua","pos":"WR","pts":96.74,"avail":100},{"name":"Amon-Ra St. Brown","pos":"WR","pts":96.58,"avail":100},{"name":"Ja'Marr Chase","pos":"WR","pts":96.25,"avail":100}],"2":[{"name":"Bijan Robinson","pos":"RB","pts":100.16,"avail":97},{"name":"Christian McCaffrey","pos":"RB","pts":99.05,"avail":99},{"name":"Jonathan Taylor","pos":"RB","pts":98.64,"avail":100},{"name":"James Cook","pos":"RB","pts":97.37,"avail":100},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":96.95,"avail":100},{"name":"Puka Nacua","pos":"WR","pts":96.43,"avail":100},{"name":"Amon-Ra St. Brown","pos":"WR","pts":96.29,"avail":100},{"name":"Chase Brown","pos":"RB","pts":95.97,"avail":100},{"name":"Ja'Marr Chase","pos":"WR","pts":95.95,"avail":98}],"8":[{"name":"James Cook","pos":"RB","pts":97.42,"avail":95},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":97.33,"avail":63},{"name":"Amon-Ra St. Brown","pos":"WR","pts":96.56,"avail":61},{"name":"De'Von Achane","pos":"RB","pts":95.93,"avail":100},{"name":"Chase Brown","pos":"RB","pts":95.45,"avail":100},{"name":"Derrick Henry","pos":"RB","pts":95.21,"avail":100},{"name":"Nico Collins","pos":"WR","pts":95.1,"avail":100},{"name":"Kyren Williams","pos":"RB","pts":94.98,"avail":100},{"name":"Kenneth Walker III","pos":"RB","pts":94.93,"avail":100}],"10":[{"name":"James Cook","pos":"RB","pts":98.87,"avail":52},{"name":"De'Von Achane","pos":"RB","pts":96.83,"avail":96},{"name":"Chase Brown","pos":"RB","pts":96.46,"avail":100},{"name":"Nico Collins","pos":"WR","pts":96.36,"avail":100},{"name":"CeeDee Lamb","pos":"WR","pts":96.11,"avail":93},{"name":"Derrick Henry","pos":"RB","pts":96.09,"avail":100},{"name":"Kenneth Walker III","pos":"RB","pts":96.04,"avail":100},{"name":"Drake London","pos":"WR","pts":95.79,"avail":100},{"name":"A.J. Brown","pos":"WR","pts":95.66,"avail":100}]};
+  {"1":[{"name":"Jahmyr Gibbs","pos":"RB","pts":100.35,"avail":100},{"name":"Bijan Robinson","pos":"RB","pts":99.52,"avail":100},{"name":"Christian McCaffrey","pos":"RB","pts":98.4,"avail":100},{"name":"Jonathan Taylor","pos":"RB","pts":98.06,"avail":100},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":97.16,"avail":100},{"name":"Puka Nacua","pos":"WR","pts":96.65,"avail":100},{"name":"James Cook","pos":"RB","pts":96.65,"avail":100},{"name":"Amon-Ra St. Brown","pos":"WR","pts":96.52,"avail":100},{"name":"Ja'Marr Chase","pos":"WR","pts":96.25,"avail":100}],"2":[{"name":"Jahmyr Gibbs","pos":"RB","pts":103.05,"avail":9},{"name":"Bijan Robinson","pos":"RB","pts":99.84,"avail":93},{"name":"Christian McCaffrey","pos":"RB","pts":98.72,"avail":100},{"name":"Jonathan Taylor","pos":"RB","pts":98.46,"avail":100},{"name":"James Cook","pos":"RB","pts":97.15,"avail":100},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":96.69,"avail":100},{"name":"Puka Nacua","pos":"WR","pts":96.18,"avail":100},{"name":"Chase Brown","pos":"RB","pts":96.03,"avail":100},{"name":"Amon-Ra St. Brown","pos":"WR","pts":95.99,"avail":100}],"8":[{"name":"James Cook","pos":"RB","pts":97.84,"avail":93},{"name":"Jaxon Smith-Njigba","pos":"WR","pts":97.55,"avail":67},{"name":"Amon-Ra St. Brown","pos":"WR","pts":96.86,"avail":52},{"name":"Chase Brown","pos":"RB","pts":96.38,"avail":100},{"name":"De'Von Achane","pos":"RB","pts":96.3,"avail":99},{"name":"Nico Collins","pos":"WR","pts":95.62,"avail":100},{"name":"Derrick Henry","pos":"RB","pts":95.53,"avail":100},{"name":"Kenneth Walker III","pos":"RB","pts":95.43,"avail":100},{"name":"Kyren Williams","pos":"RB","pts":95.35,"avail":100}],"10":[{"name":"Jaxon Smith-Njigba","pos":"WR","pts":100.41,"avail":8},{"name":"James Cook","pos":"RB","pts":98.01,"avail":52},{"name":"De'Von Achane","pos":"RB","pts":96.27,"avail":94},{"name":"Chase Brown","pos":"RB","pts":96.05,"avail":100},{"name":"Nico Collins","pos":"WR","pts":96.05,"avail":100},{"name":"Derrick Henry","pos":"RB","pts":95.6,"avail":99},{"name":"Kenneth Walker III","pos":"RB","pts":95.57,"avail":100},{"name":"CeeDee Lamb","pos":"WR","pts":95.53,"avail":89},{"name":"Kyren Williams","pos":"RB","pts":95.42,"avail":100}]};
 
 /** All tool seats using their opening templates in one league, 4,000 paired seasons.
  *  Note this is a harder test than the per-seat studies: there, only one seat used our board.
  *  Here all four do, so they compete for the same players. */
 const HEAD_TO_HEAD = [
-  { who: "Ashley", slot: 1, avg: 94.5, best: 28 },
-  { who: "Brian JK", slot: 2, avg: 94.3, best: 27 },
-  { who: "Jeff", slot: 8, avg: 93.2, best: 25 },
-  { who: "Emily", slot: 10, avg: 90, best: 20 },
+  { who: "Ashley", slot: 1, avg: 94, best: 27 },
+  { who: "Brian JK", slot: 2, avg: 94.4, best: 28 },
+  { who: "Jeff", slot: 8, avg: 92.9, best: 25 },
+  { who: "Emily", slot: 10, avg: 89.5, best: 20 },
 ];
 
 
@@ -77,7 +77,7 @@ export function SimPanel({ noob, initialSeat, onOpenDraft }: { noob: boolean; in
 
   return (
     <div className="sim-workspace">
-      <div className="workspace-title"><div><span className="section-caption">Saved simulations · Updated September 4</span><h1>Draft lab</h1><p>Explore the choices before you're on the clock.</p></div><button type="button" className="btn primary" onClick={() => onOpenDraft(seat)}>Open draft picker</button></div>
+      <div className="workspace-title"><div><span className="section-caption">Saved simulations · Updated September 8</span><h1>Draft lab</h1><p>Explore the choices before you're on the clock.</p></div><button type="button" className="btn primary" onClick={() => onOpenDraft(seat)}>Open draft picker</button></div>
       <SeatPicker value={seat} onChange={value => { setSeat(value); setBranch(''); }} />
       <div className="study-navigation" role="group" aria-label="Simulation view">{([['plan','First two picks'],['compare','Compare openings'],['research','Full analysis']] as const).map(([key, name]) => <button type="button" key={key} aria-pressed={view === key} onClick={() => setView(key)}>{name}</button>)}</div>
       {view === 'plan' && <>
@@ -116,7 +116,7 @@ export function SimPanel({ noob, initialSeat, onOpenDraft }: { noob: boolean; in
         <Card>
           <Eyebrow>Weekly policy outcomes</Eyebrow>
           <h3 className="display m-0 mb-1 text-[1.2rem] text-ink">
-            {plan.strategy} — {plan.ppw} pts/wk, best team in {plan.winPct}% of drafts
+            {plan.ppw} modeled starter points/week
           </h3>
           <ul className="m-0 mt-2 flex list-none flex-col gap-1 p-0 text-[0.9rem]">
             {plan.picks.map((sp) => (
@@ -132,7 +132,7 @@ export function SimPanel({ noob, initialSeat, onOpenDraft }: { noob: boolean; in
             ))}
           </ul>
           <p className="m-0 mt-2 text-[0.8rem] text-ink-3">
-            Percentages are how often the simulated policy selected that player at the pick.
+            Player percentages show how often the policy selected each name. The simulated team led season starter production in {plan.winPct}% of trials. The most common position at each of the first four picks was {plan.strategy}; those choices can come from different drafts.
           </p>
         </Card>
       )}
