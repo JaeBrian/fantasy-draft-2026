@@ -40,14 +40,14 @@ export function parseWeeklySnapshot(raw: {draft: unknown; league: unknown; roste
     if ([...starters,...reserve].some(id => !players.includes(id))) throw new Error('Roster references an unowned player');
     if (new Set(starters).size !== starters.length) throw new Error('Duplicate starter');
     const owners=[r.owner_id,...ids(r.co_owners)].filter((id): id is string => typeof id === 'string');
-    return {rosterId,owners,players,starters,reserve};
+    return {rosterId,owners,players,starters,starterSlots:ids(r.starters),reserve};
   });
   const managers=MANAGERS.map(manager => {
     const matching=normalized.filter(r => r.owners.includes(manager.userId));
     const user=users.find(u => u.user_id === manager.userId);
     const roster=matching.length === 1 && user ? matching[0] : null;
     return {...manager, username: typeof user?.display_name === 'string' ? user.display_name : null,
-      rosterId: roster?.rosterId ?? null, players: roster?.players ?? [], starters: roster?.starters ?? [], reserve: roster?.reserve ?? [],
+      rosterId: roster?.rosterId ?? null, players: roster?.players ?? [], starters: roster?.starters ?? [], starterSlots: roster?.starterSlots ?? [], reserve: roster?.reserve ?? [],
       issue: !user ? 'Account missing from league' : matching.length !== 1 ? 'Account needs a unique roster mapping' : null};
   });
   const status=typeof draft.status === 'string' ? draft.status : 'unknown';

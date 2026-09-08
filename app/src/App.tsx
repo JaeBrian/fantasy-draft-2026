@@ -1,3 +1,4 @@
+import { TradesPanel } from "./panels/TradesPanel";
 import { WeeklyPanel } from "./panels/WeeklyPanel";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { NEWS } from "./data";
@@ -21,6 +22,7 @@ const TABS = [
   ["board", "Draft room"],
   ["test-draft", "Test draft mode"],
   ["weekly", "Weekly lineup"],
+  ["trades", "Trade targets"],
   ["adp", "Sleeper ADP"],
   ["news", "News"],
   ["sims", "Draft lab"],
@@ -225,6 +227,7 @@ export default function App() {
 
       <main id="main-content" className={`mx-auto px-5 pt-7 pb-16 ${(tab === "board" || tab === "test-draft") ? "max-w-[1560px]" : "max-w-[1100px]"}`}>
         {tab === "weekly" && <WeeklyPanel />}
+        {tab === "trades" && <TradesPanel />}
         {tab === "start" && <StartPanel noob={noob} />}
         {tab === "adp" && <AdpPanel noob={noob} />}
         {tab === "news" && <NewsPanel noob={noob} />}
