@@ -1,0 +1,32 @@
+
+Does the advisor recommend what the simulation says is best?
+
+7,000 seasons per candidate, scored week by week with byes live.
+
+  PASS  Ashley round 1: both say Jahmyr Gibbs
+        Jahmyr Gibbs 96.66  ·  Bijan Robinson 95.61  ·  Christian McCaffrey 94.46  ·  Jonathan Taylor 94.41  ·  Jaxon Smith-Njigba 93.32
+  PASS  Ashley round 3: both say Kyren Williams
+        Kyren Williams 95.99  ·  Chris Olave 95.93  ·  George Pickens 95.88  ·  Javonte Williams 95.75  ·  David Montgomery 95.49
+  WARN  Ashley round 6: advisor says Rico Dowdle, sim leans Caleb Williams by 0.09 (±0.33) — inside noise
+        Caleb Williams 97.15  ·  Jayden Daniels 97.09  ·  Rico Dowdle 97.06  ·  Jayden Reed 96.78  ·  Brock Purdy 96.28
+  PASS  Brian JK round 1: both say Bijan Robinson
+        Bijan Robinson 96.20  ·  Christian McCaffrey 94.93  ·  Jonathan Taylor 94.88  ·  Jaxon Smith-Njigba 93.63  ·  Amon-Ra St. Brown 92.95
+  WARN  Brian JK round 3: advisor says Kyren Williams, sim leans Jeremiyah Love by 0.31 (±0.34) — inside noise
+        Jeremiyah Love 95.75  ·  Chris Olave 95.70  ·  Tee Higgins 95.57  ·  Kyren Williams 95.44  ·  David Montgomery 95.13
+  WARN  Brian JK round 6: advisor says Rico Dowdle, sim leans Caleb Williams by 0.38 (±0.34) — inside noise
+        Caleb Williams 94.41  ·  Jayden Daniels 94.36  ·  Rico Dowdle 94.03  ·  Brock Purdy 93.55  ·  Jaxson Dart 93.42
+  PASS  Jeff round 1: both say Jaxon Smith-Njigba
+        Jaxon Smith-Njigba 94.83  ·  Amon-Ra St. Brown 94.02  ·  Chase Brown 93.54  ·  Derrick Henry 92.89  ·  Kenneth Walker III 92.87
+  PASS  Jeff round 3: both say Javonte Williams
+        Javonte Williams 95.83  ·  Tee Higgins 95.80  ·  David Montgomery 95.06  ·  Zay Flowers 94.76  ·  Jaylen Waddle 94.32
+  WARN  Jeff round 6: advisor says Jaylen Warren, sim leans Joe Burrow by 0.04 (±0.31) — inside noise
+        Joe Burrow 96.15  ·  Jaylen Warren 96.11  ·  Jalen Hurts 96.08  ·  Jayden Daniels 95.95  ·  Rico Dowdle 95.88
+  FAIL  Emily round 1: advisor says Chase Brown, sim prefers Nico Collins by 0.64 pts/wk, which clears 0.64
+        Nico Collins 94.01  ·  CeeDee Lamb 93.75  ·  Chase Brown 93.36  ·  Justin Jefferson 93.11  ·  Drake London 93.08
+  WARN  Emily round 3: advisor says Javonte Williams, sim leans Tee Higgins by 0.00 (±0.31) — inside noise
+        Tee Higgins 93.52  ·  Javonte Williams 93.52  ·  Jaylen Waddle 93.29  ·  David Montgomery 93.12  ·  Tetairoa McMillan 93.11
+  WARN  Emily round 6: advisor says Jaylen Warren, sim leans Jalen Hurts by 0.30 (±0.32) — inside noise
+        Jalen Hurts 93.75  ·  Caleb Williams 93.62  ·  Jaylen Warren 93.45  ·  Rico Dowdle 93.28  ·  Jayden Reed 92.98
+
+======================================================================
+RESULT: 1 FAIL, 6 WARN

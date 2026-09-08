@@ -21,7 +21,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { scoreStats, leagueScoring } from "./league-scoring.mjs";
 const scoring = await leagueScoring();
 const discrepancies = [];
-import { playerNameKey as norm } from "./player-name.mjs";
+import { playerNameKey as norm, skillPosition } from "./player-name.mjs";
 
 const dataTs = readFileSync(new URL("../src/data.ts", import.meta.url), "utf8");
 const byeMatch = dataTs.match(/export const BYE:[^=]+=(\s*\{[^}]+\})/);
@@ -37,7 +37,7 @@ const players = await (await fetch("https://api.sleeper.app/v1/players/nfl")).js
 const idByName = new Map();
 for (const [id, p] of Object.entries(players)) {
   if (!p || !p.full_name || !p.team) continue;
-  if (!["QB", "RB", "WR", "TE"].includes(p.position)) continue;
+  if (!skillPosition(p)) continue;
   const k = norm(p.full_name);
   const prev = idByName.get(k);
   if (!prev || (p.years_exp ?? 0) > (players[prev].years_exp ?? 0)) idByName.set(k, id);

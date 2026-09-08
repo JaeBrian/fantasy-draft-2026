@@ -77,7 +77,7 @@ export function SimPanel({ noob, initialSeat, onOpenDraft }: { noob: boolean; in
 
   return (
     <div className="sim-workspace">
-      <div className="workspace-title"><div><span className="section-caption">Saved simulations · Updated September 8</span><h1>Draft lab</h1><p>Explore the choices before you're on the clock.</p></div><button type="button" className="btn primary" onClick={() => onOpenDraft(seat)}>Open draft picker</button></div>
+      <div className="workspace-title"><div><span className="section-caption">Saved simulations · September 8 morning</span><h1>Draft lab</h1><p>Explore the choices before you're on the clock. Player news is updated separately in the News tab.</p></div><button type="button" className="btn primary" onClick={() => onOpenDraft(seat)}>Open draft picker</button></div>
       <SeatPicker value={seat} onChange={value => { setSeat(value); setBranch(''); }} />
       <div className="study-navigation" role="group" aria-label="Simulation view">{([['plan','First two picks'],['compare','Compare openings'],['research','Full analysis']] as const).map(([key, name]) => <button type="button" key={key} aria-pressed={view === key} onClick={() => setView(key)}>{name}</button>)}</div>
       {view === 'plan' && <>

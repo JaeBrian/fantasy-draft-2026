@@ -1,0 +1,27 @@
+
+=== 1. FULL-DRAFT INVARIANTS (advisor drafts for itself, 14 rounds) ===
+  PASS  seat 1: no illegal recommendations across 14 rounds  — roster QB2 RB7 WR4 TE1
+  PASS  seat 1: roster fills every starting slot
+  PASS  seat 2: no illegal recommendations across 14 rounds  — roster QB2 RB6 WR5 TE1
+  PASS  seat 2: roster fills every starting slot
+  PASS  seat 3: no illegal recommendations across 14 rounds  — roster QB2 RB7 WR4 TE1
+  PASS  seat 3: roster fills every starting slot
+  PASS  seat 10: no illegal recommendations across 14 rounds  — roster QB2 RB5 WR6 TE1
+  PASS  seat 10: roster fills every starting slot
+  PASS  seat 12: no illegal recommendations across 14 rounds  — roster QB2 RB5 WR6 TE1
+  PASS  seat 12: roster fills every starting slot
+
+=== 2. ROSTER ACCOUNTING: does the advisor read the pick order correctly? ===
+  PASS  advisor's roster count matches the picks marked mine  — 2
+  PASS  pick counter is correct  — cur=20 after 19 picks
+
+=== 3. BLOCKLIST ===
+  PASS  blocked player is excluded from recommendations  — Nico Collins
+  PASS  and he returns when not blocked  — Nico Collins
+
+=== 4. NOT-MY-TURN BEHAVIOUR ===
+  PASS  advisor knows it is waiting  — next pick #6
+  PASS  survival odds are applied to players who will not reach us
+
+======================================================================
+RESULT: 0 FAIL, 0 WARN

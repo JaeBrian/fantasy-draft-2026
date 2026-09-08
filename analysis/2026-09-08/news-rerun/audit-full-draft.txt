@@ -1,0 +1,1 @@
+RESULT: 0 FAIL; 36 complete 192-pick drafts; 6912 advisor decisions; every seat has all ten starters

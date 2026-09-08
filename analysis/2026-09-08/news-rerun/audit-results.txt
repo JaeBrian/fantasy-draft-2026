@@ -1,0 +1,1 @@
+RESULT: 0 FAIL; nine complete finite studies, 4 seats, both room scenarios, paired matrix and tie accounting

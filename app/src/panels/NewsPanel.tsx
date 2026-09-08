@@ -1,5 +1,5 @@
 import { NEWS } from "../data";
-import { NEWS as WIRE } from "../news";
+import { NEWS as WIRE, NEWS_FETCHED_AT } from "../news";
 import { NEWS_RANK } from "../lib/news";
 import { Intro, Noob, NewsTag, TeamIcon } from "../components/ui";
 import { P } from "../data";
@@ -40,6 +40,32 @@ function wireItems() {
   return kept;
 }
 
+function renderResearchUpdate(u: (typeof NEWS)[number]) {
+  return (
+    <section key={u.when} className="card px-5 py-4">
+      <h3 className="display m-0 mb-2 text-[1.05rem] tracking-wide text-ink">
+        <span className="text-value">●</span> {u.when}
+      </h3>
+      <ul className="m-0 flex list-none flex-col gap-2 p-0">
+        {u.items.map((it, i) => (
+          <li key={i} className="flex items-baseline gap-2 text-[0.92rem] leading-relaxed text-ink-2">
+            {it.dir && (
+              <span className={`font-bold ${it.dir === "up" ? "text-value" : "text-avoid"}`}>
+                {it.dir === "up" ? "▲" : "▼"}
+              </span>
+            )}
+            <span>
+              {it.player && <b className="text-ink">{it.player} — </b>}
+              {it.text}
+              {it.url && <> <a href={it.url} target="_blank" rel="noreferrer" className="text-value underline underline-offset-2">Read source</a></>}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 export function NewsPanel({ noob }: { noob: boolean }) {
   const [onlyBig, setOnlyBig] = useState(true);
   const all = wireItems();
@@ -50,33 +76,34 @@ export function NewsPanel({ noob }: { noob: boolean }) {
   return (
     <div className="flex flex-col gap-5">
       <Intro eyebrow="News" title="Recent updates">
-        The wire first, then the log of what changed in the board itself. Arrows show the impact on a player's draft
-        stock.
+        Today's research comes first, followed by collected reports and earlier updates. Arrows show encouraging news or added concern.
       </Intro>
       <Noob show={noob} title="Reading the feed:">
-        <span className="font-bold text-value">▲</span> = good news for that player (worth more than yesterday) ·{" "}
-        <span className="font-bold text-avoid">▼</span> = bad news (let someone else pay yesterday's price). Check the top
-        entry the morning of your draft.
+        <span className="font-bold text-value">▲</span> = encouraging update ·{" "}
+        <span className="font-bold text-avoid">▼</span> = added concern. Read the details before changing a pick;
+        a practice report or depth chart can leave playing time uncertain.
       </Noob>
 
-      {/* ---- the live wire ---- */}
+      {NEWS.slice(0, 1).map(renderResearchUpdate)}
+
+      {/* ---- collected reports ---- */}
       <section className="card px-5 py-4">
         <div className="mb-1 flex flex-wrap items-baseline justify-between gap-2">
           <h3 className="display m-0 text-[1.05rem] tracking-wide text-ink">
-            <span className="text-clock">●</span> Live wire
+            <span className="text-clock">●</span> Latest collected reports
           </h3>
           <button
             type="button"
             onClick={() => setOnlyBig((v) => !v)}
             className="rounded-sm border border-ink-3/40 px-2 py-0.5 font-mono text-[0.7rem] text-ink-3 transition-colors hover:border-ink-3 hover:text-ink"
           >
-            {onlyBig ? `showing ${big.length} that move a pick — show all ${all.length}` : `showing all ${all.length} — show only what moves a pick`}
+            {onlyBig ? `Injuries and roles · show all ${all.length}` : "All reports · show injuries and roles"}
           </button>
         </div>
         <p className="mb-3 mt-0 text-[0.8rem] leading-relaxed text-ink-3">
-          Straight from Sleeper's per-player feed, <b className="text-ink-2">filtered to items that trace back to a named
-          reporter or a direct quote</b>. 57% of the feed is thrown away — the aggregators' own analysis is
-          AI-written and gets things wrong. Every line below carries who reported it, so you can weigh it yourself.
+          Collected {new Date(NEWS_FETCHED_AT).toLocaleString()}. These reports update when we publish a research refresh.
+          Sleeper's news feed is filtered for <b className="text-ink-2">named reporting or direct quotes</b>.
+          Automated tags can miss context; the dated research notes above explain our changes.
         </p>
         <ul className="m-0 flex list-none flex-col gap-2.5 p-0">
           {shown.map((n, i) => (
@@ -97,28 +124,7 @@ export function NewsPanel({ noob }: { noob: boolean }) {
       </section>
 
       {/* ---- the hand-kept log of board changes ---- */}
-      {NEWS.map((u) => (
-        <section key={u.when} className="card px-5 py-4">
-          <h3 className="display m-0 mb-2 text-[1.05rem] tracking-wide text-ink">
-            <span className="text-value">●</span> {u.when}
-          </h3>
-          <ul className="m-0 flex list-none flex-col gap-2 p-0">
-            {u.items.map((it, i) => (
-              <li key={i} className="flex items-baseline gap-2 text-[0.92rem] leading-relaxed text-ink-2">
-                {it.dir && (
-                  <span className={`font-bold ${it.dir === "up" ? "text-value" : "text-avoid"}`}>
-                    {it.dir === "up" ? "▲" : "▼"}
-                  </span>
-                )}
-                <span>
-                  {it.player && <b className="text-ink">{it.player} — </b>}
-                  {it.text}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
+      {NEWS.slice(1).map(renderResearchUpdate)}
     </div>
   );
 }
