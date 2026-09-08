@@ -68,6 +68,7 @@ export interface Candidate {
   clash: boolean;
   bye: number | undefined;
   cuffOf: string | undefined;
+  backfieldWith?: string;
   cliff: boolean;
   tier: number;
   stack: boolean;
@@ -99,6 +100,7 @@ export interface Advice {
   run: Pos | null;
   look: Lookahead | null;
   cands: Candidate[];
+  backfieldWait: { name: string; teammate: string }[];
   /** roster radar — expert phrasing */
   warnings: string[];
   /** roster radar — plain-English phrasing for Beginner mode */
@@ -566,8 +568,16 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
   const forced = (["QB", "RB", "WR", "TE"] as Pos[]).filter(
     (p) => needSlots[p] > 0 && (spareLeft <= 0 || mustNow.has(p)),
   );
-  // Keep TEs in the opponent pool; this preference only limits our recommendations.
-  const canRecommend = (r: PlayerRow) => r[1] !== "TE" || !waitOnTightEnds || forced.includes("TE") || takeAt - blendedADP(r) >= 6;
+  const ownedBacks = mine.filter(r => r[1] === "RB");
+  const healthyBacks = ownedBacks.filter(r => riskOf(r[0], r[1], r[4]).knownMiss === 0 &&
+    !["O", "IR", "PUP", "SUS", "NA"].includes(SLP[r[0]]?.inj ?? ""));
+  // A conservative early-roster rule, not a measured reduction to player projections.
+  const deferBackfield = (r: PlayerRow) => r[1] === "RB" && myCount < 8 && !forced.includes("RB") &&
+    takeAt - blendedADP(r) < 12 && healthyBacks.some(m => m[2] === r[2]);
+  // Deferred players remain in opponent forecasts and the searchable player pool.
+  const canRecommend = (r: PlayerRow) => !deferBackfield(r) &&
+    (r[1] !== "TE" || !waitOnTightEnds || forced.includes("TE") || takeAt - blendedADP(r) >= 6);
+  const backfieldWait: Advice["backfieldWait"] = [];
   const cands: Candidate[] = [];
   (["RB", "WR", "QB", "TE"] as Pos[]).forEach((ps) => {
     /* hard roster caps: a third QB or TE is a wasted bench spot in a 1QB/1TE league */
@@ -583,15 +593,18 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
      *
      * The board still does its real job below — verdict, tier and tags adjust the score. It
      * just no longer decides who gets to be considered. */
-    const pool = avail
+    const positionPool = avail
       .filter((o) => o.r[1] === ps)
       .sort((a, b) => GP[b.r[0]].proj - GP[a.r[0]].proj);
+    for (const o of positionPool.slice(0, 4)) if (deferBackfield(o.r)) {
+      backfieldWait.push({name: o.r[0], teammate: healthyBacks.find(m => m[2] === o.r[2])![0]});
+    }
+    const pool = positionPool.filter(o => canRecommend(o.r));
     if (!pool.length) return;
     const nb = nextBest(ps, avail, back + offBack, cur, shift[ps]);
     const nb2 = nextBest(ps, avail, back2 + offBack2, cur, shift[ps]);
     let kept = 0;
     pool.slice(0, 18).forEach((now, k) => {
-      if (!canRecommend(now.r)) return;
       if (!rosterGain && kept >= 4) return;
       const g = GP[now.r[0]];
       /* between your picks, judge players by their odds of actually reaching your turn */
@@ -683,7 +696,8 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
       // Once the core is drafted, price how often this addition improves our actual lineup.
       // This already includes byes and absences, so avoid applying those penalties twice.
       if (addedValue !== undefined) s = addedValue * (onClock ? 1 : pReach);
-      cands.push({ rosterGain: addedValue, p: ps, now, later: nb.likely, proj: g.proj, vNow: g.vorp, evLater: nb.ev, gap, pGone, pReach, score: s, clash, bye: b, cuffOf, cliff, tier, stack, antiStack, fell });
+      const backfieldWith = ps === "RB" ? ownedBacks.find(m => m[2] === now.r[2])?.[0] : undefined;
+      cands.push({ rosterGain: addedValue, p: ps, now, later: nb.likely, proj: g.proj, vNow: g.vorp, evLater: nb.ev, gap, pGone, pReach, score: s, clash, bye: b, cuffOf, backfieldWith, cliff, tier, stack, antiStack, fell });
     });
   });
   /* A starting slot that can no longer wait overrides every score. Two triggers, both already
@@ -866,7 +880,7 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
 
   return {
     qb, rb, wr, te, wrt, myCount, cur, onClock, nextPick, byeCount,
-    run, look, cands: deduped, warnings, plainWarn, goneSoon, dream,
+    run, look, cands: deduped, backfieldWait, warnings, plainWarn, goneSoon, dream,
     horizon: { takeAt, back }, runAhead, lineup,
   };
 }

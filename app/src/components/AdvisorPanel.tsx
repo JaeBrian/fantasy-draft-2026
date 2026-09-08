@@ -52,6 +52,7 @@ export function AdvisorPanel({ DS, ord, mySlot, blocked, lean, manual, finished,
     : <>
       <p className="advisor-summary">{waiting ? `Targets for pick ${a.nextPick}. Rankings update as players come off the board.` : 'Compare your top choices, then make your pick.'}</p>
       {waitOnTightEnds && <p className="forecast-caption">Waiting on tight ends: targets must fall 6 picks past their blended market ADP, unless your starting slot needs protecting. Change this in Room settings.</p>}
+      {a.backfieldWait.length > 0 && <p className="forecast-caption">Spreading your early RB picks: {a.backfieldWait.map(p => `${p.name} shares a backfield with your ${p.teammate}`).join('; ')}. Reconsider after a full-round discount or once you have eight players. Starter needs and known absences take priority.</p>}
       <div className="recommendations">
         {candidates.map((c, i) => {
           const name = c.now.r[0];
@@ -63,6 +64,7 @@ export function AdvisorPanel({ DS, ord, mySlot, blocked, lean, manual, finished,
             <div className="player-meta"><Sticker pos={c.p} /><span>{c.now.r[2]} · Bye {BYE[c.now.r[2]] ?? '—'}</span><InjChip name={name} /></div>
             <div className="pick-metrics"><span><b>{c.proj.toFixed(1)}</b> projected pts/wk</span>{hasFuture && <span><b>{chance}%</b> {waiting ? 'reaches your pick' : 'returns if you pass'}{fc ? '' : ' (estimate)'}</span>}</div>
             <p>{c.cuffOf ? `Backup for your ${c.cuffOf}.` : needText(c.p, a)}{c.clash ? ` Shares a Week ${c.bye} bye with ${a.byeCount[c.bye!]} rostered players.` : c.fell >= 6 ? ` Available ${Math.round(c.fell)} picks past market ADP.` : ''}</p>
+            {c.backfieldWith && !c.cuffOf && <p>Shares the {c.now.r[2]} backfield with your {c.backfieldWith}. Their workloads depend on the same team's carries and scoring chances.</p>}
             {manual && <div className="recommendation-actions"><button type="button" className={i === 0 ? 'btn primary' : 'btn'} disabled={!a.onClock} onClick={() => mark(name, 'mine')}>Draft {name.split(' ').at(-1)}</button>{!skillOnly && <button type="button" className="btn subtle" onClick={() => mark(name, 'gone')} aria-label={`Mark ${name} taken`}>Taken</button>}</div>}
           </article>;
         })}
@@ -83,6 +85,6 @@ export function AdvisorPanel({ DS, ord, mySlot, blocked, lean, manual, finished,
       {fc && fc.room.length > 0 && <details className="draft-disclosure"><summary>Teams picking before the forecasted turn <span>{fc.room.length}</span></summary><ul className="rival-list">{fc.room.map(r => <li key={r.pick}><span>#{r.pick} {DRAFT_ORDER[r.team - 1]}</span><small>{r.needs.length ? `Needs ${r.needs.join(', ')}` : r.has}</small></li>)}</ul></details>}
     </>}
     {mySlot > 0 && <details className="draft-disclosure roster-disclosure" open><summary>Your roster <span>{starterCount}/{starterTotal} {skillOnly ? 'skill starters' : 'starters'}</span></summary><div className="roster-grid">{visibleSlots.map((s, i) => <div key={i} className={s.player ? 'filled' : ''}><span>{s.label}</span><b>{s.player ? displayName(s.player) : 'Open slot'}</b></div>)}</div></details>}
-    {plan && <details className="draft-disclosure"><summary>Six-round reference plan</summary><p>Selection frequencies from 4,000 modeled drafts with flexible TE selection. Your live targets apply your current tight-end preference.</p><ol className="reference-picks">{plan.picks.map(p => <li key={p.pick}><b>#{p.pick}</b><span>{p.opts.map(([name, pct]) => `${name} ${pct}%`).join(' / ')}</span></li>)}</ol></details>}
+    {plan && <details className="draft-disclosure"><summary>Six-round reference plan</summary><p>Selection frequencies from 4,000 modeled drafts with flexible TE selection and no early backfield limit. Your live targets apply your current tight-end preference and spread early RB picks.</p><ol className="reference-picks">{plan.picks.map(p => <li key={p.pick}><b>#{p.pick}</b><span>{p.opts.map(([name, pct]) => `${name} ${pct}%`).join(' / ')}</span></li>)}</ol></details>}
   </section>;
 }

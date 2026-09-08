@@ -1,5 +1,7 @@
 # September 8 draft readiness and roster value study
 
+**Shared-backfield update:** The live helper now defers early RB pairs from the same NFL team at market price. See the [policy and scenario tests](SHARED-BACKFIELD.md). The original studies below retain their earlier selection rules.
+
 **Later update:** The draft room now defaults to waiting for TE value. The [TE preference report](TE-PREFERENCE.md) documents that separate change and its measured tradeoffs. The results below use flexible TE selection.
 
 The draft helper uses the league's actual scoring and roster requirements. This update refreshes its inputs and improves how it values later picks: once eight players are rostered, it estimates each candidate's contribution to the team's starting lineup across bye weeks and possible absences. A handcuff receives extra production in the scenarios where his starter is unavailable.
