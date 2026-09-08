@@ -182,7 +182,7 @@ for (const seat of SEATS) {
         .map(([n,c]) => [n, Math.round(100*c/W)]),
     })),
   };
-  console.log(`\nSEAT ${seat}  —  ${OUT[seat].strategy}   ${OUT[seat].ppw} pts/wk   wins the league ${OUT[seat].winPct}% of the time`);
+  console.log(`\nSEAT ${seat}  —  ${OUT[seat].strategy}   ${OUT[seat].ppw} pts/wk   leads starter production in ${OUT[seat].winPct}% of trials`);
   for (const p of OUT[seat].picks)
     console.log(`   pick ${String(p.pick).padStart(3)}:  ${p.opts.map(([n,c])=>`${n} ${c}%`).join('  ·  ') || '—'}`);
 }

@@ -1,0 +1,410 @@
+{
+  "1": {
+    "strategy": "RB-RB-RB-RB",
+    "ppw": 104.1,
+    "winPct": 47,
+    "picks": [
+      {
+        "pick": 1,
+        "opts": [
+          [
+            "Jahmyr Gibbs",
+            100
+          ]
+        ]
+      },
+      {
+        "pick": 24,
+        "opts": [
+          [
+            "Kyren Williams",
+            47
+          ],
+          [
+            "Nico Collins",
+            34
+          ],
+          [
+            "Brock Bowers",
+            8
+          ]
+        ]
+      },
+      {
+        "pick": 25,
+        "opts": [
+          [
+            "Kyren Williams",
+            26
+          ],
+          [
+            "Brock Bowers",
+            20
+          ],
+          [
+            "George Pickens",
+            20
+          ]
+        ]
+      },
+      {
+        "pick": 48,
+        "opts": [
+          [
+            "David Montgomery",
+            28
+          ],
+          [
+            "Jaylen Waddle",
+            17
+          ],
+          [
+            "Colston Loveland",
+            17
+          ]
+        ]
+      },
+      {
+        "pick": 49,
+        "opts": [
+          [
+            "Jaylen Warren",
+            29
+          ],
+          [
+            "Jameson Williams",
+            19
+          ],
+          [
+            "Quinshon Judkins",
+            15
+          ]
+        ]
+      },
+      {
+        "pick": 72,
+        "opts": [
+          [
+            "Jayden Reed",
+            41
+          ],
+          [
+            "Rico Dowdle",
+            34
+          ],
+          [
+            "Jaylen Warren",
+            16
+          ]
+        ]
+      }
+    ]
+  },
+  "2": {
+    "strategy": "RB-WR-RB-WR",
+    "ppw": 103.8,
+    "winPct": 44,
+    "picks": [
+      {
+        "pick": 2,
+        "opts": [
+          [
+            "Bijan Robinson",
+            92
+          ],
+          [
+            "Jahmyr Gibbs",
+            8
+          ]
+        ]
+      },
+      {
+        "pick": 23,
+        "opts": [
+          [
+            "Nico Collins",
+            58
+          ],
+          [
+            "Brock Bowers",
+            12
+          ],
+          [
+            "Kyren Williams",
+            7
+          ]
+        ]
+      },
+      {
+        "pick": 26,
+        "opts": [
+          [
+            "Kyren Williams",
+            19
+          ],
+          [
+            "Javonte Williams",
+            18
+          ],
+          [
+            "Brock Bowers",
+            17
+          ]
+        ]
+      },
+      {
+        "pick": 47,
+        "opts": [
+          [
+            "David Montgomery",
+            36
+          ],
+          [
+            "Jaylen Waddle",
+            22
+          ],
+          [
+            "Jameson Williams",
+            19
+          ]
+        ]
+      },
+      {
+        "pick": 50,
+        "opts": [
+          [
+            "Jameson Williams",
+            39
+          ],
+          [
+            "Jaylen Warren",
+            26
+          ],
+          [
+            "Colston Loveland",
+            8
+          ]
+        ]
+      },
+      {
+        "pick": 71,
+        "opts": [
+          [
+            "Jayden Reed",
+            32
+          ],
+          [
+            "Rico Dowdle",
+            31
+          ],
+          [
+            "Jaylen Warren",
+            25
+          ]
+        ]
+      }
+    ]
+  },
+  "8": {
+    "strategy": "WR-WR-RB-WR",
+    "ppw": 101.5,
+    "winPct": 28,
+    "picks": [
+      {
+        "pick": 8,
+        "opts": [
+          [
+            "Jaxon Smith-Njigba",
+            66
+          ],
+          [
+            "Amon-Ra St. Brown",
+            27
+          ]
+        ]
+      },
+      {
+        "pick": 17,
+        "opts": [
+          [
+            "Nico Collins",
+            69
+          ],
+          [
+            "Chase Brown",
+            30
+          ]
+        ]
+      },
+      {
+        "pick": 32,
+        "opts": [
+          [
+            "Javonte Williams",
+            32
+          ],
+          [
+            "Tee Higgins",
+            25
+          ],
+          [
+            "Zay Flowers",
+            13
+          ]
+        ]
+      },
+      {
+        "pick": 41,
+        "opts": [
+          [
+            "David Montgomery",
+            45
+          ],
+          [
+            "Jaylen Waddle",
+            21
+          ],
+          [
+            "Tee Higgins",
+            17
+          ]
+        ]
+      },
+      {
+        "pick": 56,
+        "opts": [
+          [
+            "Jaylen Warren",
+            45
+          ],
+          [
+            "Christian Watson",
+            31
+          ],
+          [
+            "Jameson Williams",
+            12
+          ]
+        ]
+      },
+      {
+        "pick": 65,
+        "opts": [
+          [
+            "Jaylen Warren",
+            42
+          ],
+          [
+            "Christian Watson",
+            27
+          ],
+          [
+            "Jayden Reed",
+            10
+          ]
+        ]
+      }
+    ]
+  },
+  "10": {
+    "strategy": "RB-WR-WR-WR",
+    "ppw": 101.1,
+    "winPct": 27,
+    "picks": [
+      {
+        "pick": 10,
+        "opts": [
+          [
+            "James Cook",
+            47
+          ],
+          [
+            "Chase Brown",
+            26
+          ],
+          [
+            "Jaxon Smith-Njigba",
+            9
+          ]
+        ]
+      },
+      {
+        "pick": 15,
+        "opts": [
+          [
+            "Nico Collins",
+            50
+          ],
+          [
+            "Chase Brown",
+            47
+          ]
+        ]
+      },
+      {
+        "pick": 34,
+        "opts": [
+          [
+            "Zay Flowers",
+            29
+          ],
+          [
+            "David Montgomery",
+            27
+          ],
+          [
+            "Tee Higgins",
+            20
+          ]
+        ]
+      },
+      {
+        "pick": 39,
+        "opts": [
+          [
+            "David Montgomery",
+            34
+          ],
+          [
+            "Tee Higgins",
+            26
+          ],
+          [
+            "Zay Flowers",
+            18
+          ]
+        ]
+      },
+      {
+        "pick": 58,
+        "opts": [
+          [
+            "Christian Watson",
+            54
+          ],
+          [
+            "Jaylen Warren",
+            36
+          ]
+        ]
+      },
+      {
+        "pick": 63,
+        "opts": [
+          [
+            "Jaylen Warren",
+            54
+          ],
+          [
+            "Christian Watson",
+            24
+          ],
+          [
+            "Jayden Reed",
+            7
+          ]
+        ]
+      }
+    ]
+  }
+}

@@ -19,7 +19,7 @@ const RULES: [string, string][] = [
   ],
   [
     "Read the latest availability report.",
-    "Jacobs remains on the exempt list with an uncertain return. Recheck Puka, Chase, Hall, Henderson and Egbuka before Tuesday. A projection can lag a changing role or injury."
+    "Jacobs remains on the exempt list with an uncertain return. Recheck Puka, Chase, Hall, Henderson and Egbuka before drafting. A projection can lag a changing role or injury."
   ],
   [
     "Use close results as alternatives.",
@@ -57,7 +57,7 @@ const MORNING_OF: [string, string][] = [
   ],
   [
     "Ja'Marr Chase / Tee Higgins",
-    "September 1 team reporting expected limited practice before the next week’s preparation. Confirm the latest knee/heel updates."
+    "Both practiced September 7, per Ben Baby. Their official Week 1 participation levels and game designations are still pending."
   ],
   [
     "Breece Hall / Braelon Allen",
@@ -65,11 +65,11 @@ const MORNING_OF: [string, string][] = [
   ],
   [
     "TreVeyon Henderson / Emeka Egbuka",
-    "Ankle and toe injuries still need updated practice and availability reports."
+    "Henderson did not practice September 7 (ankle). Egbuka returned to practice (toe). Check final game status; a practice appearance does not establish full recovery."
   ],
   [
     "Puka Nacua",
-    "Check the groin injury and any official conduct ruling; return and suspension timing remain uncertain."
+    "McVay expects him to play Week 1, per NFL reporting September 6. Check his psoas injury status and any later league ruling."
   ],
   [
     "Isiah Pacheco / Jordyn Tyson",
@@ -78,23 +78,23 @@ const MORNING_OF: [string, string][] = [
 ];
 
 const GLOSSARY_A: [string, string][] = [
-  ["Bellcow / workhorse", "A running back who gets almost all of his team's carries AND catches. The most valuable thing in fantasy — there are only ~10 of them."],
-  ["Committee / timeshare", "The opposite: 2–3 RBs splitting the work. Splits kill fantasy value — you never know who gets the good week."],
-  ["Target", "A pass thrown a player's way, catch or not. Targets measure how much an offense feeds someone — the best predictor of future catches."],
+  ["Bellcow / workhorse", "A running back who handles most of his team's rushing work and also contributes as a receiver."],
+  ["Committee / timeshare", "Two or more running backs share the work. Compare each player's carries, targets and goal-line role with his draft price."],
+  ["Target", "A pass thrown a player's way, caught or otherwise. More targets create more chances for catches, yards and touchdowns."],
   ["Target share (\"28% share\")", "The percent of his team's passes thrown at him. 20% is good, 25% is elite, 30%+ is historic. \"44% of Seattle's passing yards\" = nearly half their air offense went through one man."],
-  ["Expected TDs (\"3 TDs on 6.6 expected\")", "A model counts a player's scoring chances (like catches near the goal line) and says how many TDs an average player scores on those chances. Scoring way UNDER it = he was unlucky, bet on more next year. Way OVER = lucky, bet on fewer."],
+  ["Expected TDs (\"3 TDs on 6.6 expected\")", "A model estimates touchdowns from scoring opportunities, such as touches near the goal line. A large gap from actual touchdowns can signal change ahead; player skill and a changing role also matter."],
   ["TD regression / bounce-back", "The follow-through on that math: \"regression\" = his touchdowns should drop; \"bounce-back\" = they should recover."],
   ["ADP", "Average Draft Position — the pick where the crowd usually takes a player. It's the \"market price.\""],
   ["Reach / value", "Drafting someone well before his ADP = a reach. Getting him after = a value."],
   ["Snake draft", "The order reverses every round (1→12, then 12→1) so the person picking last gets two picks back-to-back \"at the turn.\""],
   ["Half-PPR", "Point Per Reception, halved: every catch = 0.5 points, plus the normal yardage/TD points. Full-PPR = 1 point per catch; standard = 0."],
   ["Flex", "A lineup spot that accepts an RB, WR, or TE — your best leftover starter."],
-  ["Tier / tier cliff", "A group of players of similar value; the \"cliff\" is the drop to the next group. Draft the last man in a tier, not the first man of the next one."],
-  ["RB dead zone", "Rounds ~4–7 this year, where every RB left is a committee guy or injury risk. Buying RBs there is how drafts are lost."],
+  ["Tier / tier cliff", "A group of players with similar projected value. A cliff is the drop to the next group. Compare that drop with your roster needs and the options at other positions."],
+  ["RB dead zone", "Middle-round running backs can have uncertain workloads at a meaningful price. Compare each player's role and projected value; productive options can still emerge here."],
 ];
 
 const GLOSSARY_B: [string, string][] = [
-  ["Handcuff", "The direct backup to a star RB. If the star gets hurt, the handcuff inherits the whole job — insurance for one roster spot."],
+  ["Handcuff", "A running back who could gain work when the starter is unavailable. The size of that opportunity depends on the rest of the backfield."],
   ["Sleeper / breakout / bust", "Sleeper = cheap player who could massively outperform. Breakout = young player about to jump a level. Bust = expensive player about to disappoint."],
   ["Floor / ceiling", "Floor = his realistic bad outcome; ceiling = his realistic great one. \"High floor\" = safe. \"High ceiling\" = can win you the league. Boom-bust = huge weeks AND dud weeks."],
   ["Red zone / goal line", "Inside the opponent's 20-yard line / 5-yard line. Whoever gets the ball there scores the TDs — it's where fantasy points concentrate."],
@@ -106,7 +106,7 @@ const GLOSSARY_B: [string, string][] = [
   ["Bye week", "Each NFL team's one off-week. Your player scores zero that week — don't draft five starters with the same bye."],
   ["Snap / opportunity share", "Percent of the team's plays a player is on the field for, and the percent of the backfield's carries+targets he gets. Usage = opportunity = points."],
   ["PPG", "Fantasy points per game — the fairest way to compare players who missed time."],
-  ["IR slot", "A bonus bench spot only for players officially out injured — lets you stash a hurt player (like Jordyn Tyson) without burning a real bench spot."],
+  ["IR slot", "An extra roster spot for players who meet your league's injury-status rules. Check Sleeper's eligibility before relying on it for a stash."],
   ["Alpha / WR1", "\"Alpha\" = the clear No. 1 receiver on his own team. \"Fantasy WR1\" = a top-12 receiver in fantasy scoring. A team alpha isn't always a fantasy WR1."],
 ];
 
@@ -125,7 +125,7 @@ export function StartPanel({ noob }: { noob: boolean }) {
           <li><b>Scoring:</b> your players earn points for real-life yards and touchdowns. "Half-PPR" means each catch is worth an extra half point — so runners who also catch passes are gold.</li>
           <li><b>Positions:</b> QB throws, RB runs, WR catches, TE is a big catcher, K kicks, DST is a whole defense. <b>Your league starts:</b> 1 QB, 2 RB, 2 WR, 1 TE, 2 flex (RB/WR/TE), 1 K, 1 DST — plus 6 bench spots and 1 IR slot. That means seven of your eight skill starters are RB/WR/TE. <b>Seven of the twelve teams make the playoffs</b> (weeks 15–17), with performance in weeks 15–17 deciding the champion.</li>
           <li><b>ADP</b> = Average Draft Position — where the crowd usually picks a player. Taking a player well <i>before</i> his ADP is a "reach"; getting him after is a "value."</li>
-          <li><b>Tiers:</b> players grouped by similar value. The trick: when a tier is almost empty, grab the last guy in it — don't start the next tier early.</li>
+          <li><b>Tiers:</b> players grouped by similar value. When a tier is almost empty, compare its last player with your roster needs and the choices at other positions.</li>
           <li><b>Confused by a term anywhere in this guide?</b> There's a full plain-English glossary at the bottom of this page.</li>
         </ul>
       </Noob>
@@ -154,7 +154,7 @@ export function StartPanel({ noob }: { noob: boolean }) {
             <Eyebrow>Check these the morning of your draft</Eyebrow>
             <KV rows={MORNING_OF} />
             <div className="mt-3.5 rounded bg-risky/10 px-3.5 py-2.5 text-[0.88rem] font-semibold text-risky">
-              Reviewed September 4, 2026. Check the latest official updates for the names above
+              Availability notes reviewed September 8, 2026. Check the latest official updates for the names above
               before you're on the clock.
             </div>
           </Card>

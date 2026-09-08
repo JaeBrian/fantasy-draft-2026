@@ -1,0 +1,52 @@
+{
+  "verifiedAt": "2026-09-08T15:35:14.387Z",
+  "unchangedPlayerRiskValues": 235,
+  "unchangedCeilingNumericInputs": 191,
+  "rateChanges": [
+    {
+      "name": "Terrance Ferguson",
+      "before": {
+        "boom": 1,
+        "bust": 0.5
+      },
+      "after": {
+        "boom": null,
+        "bust": null
+      }
+    },
+    {
+      "name": "Quintin Morris",
+      "before": {
+        "boom": 1,
+        "bust": 0.64
+      },
+      "after": {
+        "boom": null,
+        "bust": null
+      }
+    },
+    {
+      "name": "Trent Sherfield",
+      "before": {
+        "boom": 1,
+        "bust": 0.75
+      },
+      "after": {
+        "boom": null,
+        "bust": null
+      }
+    },
+    {
+      "name": "Tylan Wallace",
+      "before": {
+        "boom": 1,
+        "bust": 0.79
+      },
+      "after": {
+        "boom": null,
+        "bust": null
+      }
+    }
+  ],
+  "note": "Only relative scoring labels changed; all cv, pMiss, knownMiss, projection fragility and historical point quantiles stayed identical."
+}

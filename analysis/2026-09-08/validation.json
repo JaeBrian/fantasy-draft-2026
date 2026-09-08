@@ -1,0 +1,107 @@
+{
+  "verifiedAt": "2026-09-08T15:38:53.420950+00:00",
+  "gates": [
+    {
+      "name": "audit-model-inputs",
+      "passed": true,
+      "result": "RESULT: 0 FAIL"
+    },
+    {
+      "name": "audit-sim",
+      "passed": true,
+      "result": "RESULT: 0 FAIL, 24 PASS",
+      "correction": "Removed mathematically invalid CV upper bound; retained named high-CV warning. Numeric inputs unchanged. Added finite knownMiss validation."
+    },
+    {
+      "name": "audit-logic",
+      "passed": true,
+      "result": "RESULT: 0 FAIL"
+    },
+    {
+      "name": "audit-advisor",
+      "passed": true,
+      "result": "RESULT: 0 FAIL"
+    },
+    {
+      "name": "audit-agreement",
+      "passed": true,
+      "result": "RESULT: 0 FAIL"
+    },
+    {
+      "name": "audit-forecast",
+      "passed": true,
+      "result": "RESULT: 0 FAIL"
+    },
+    {
+      "name": "audit-draftday",
+      "passed": true,
+      "result": "RESULT: 0 FAIL"
+    },
+    {
+      "name": "audit-full-draft",
+      "passed": true,
+      "result": "RESULT: 0 FAIL"
+    },
+    {
+      "name": "audit-results",
+      "passed": true,
+      "result": "RESULT: 0 FAIL"
+    }
+  ],
+  "tests": {
+    "command": "npm test",
+    "exitCode": 0,
+    "weeklyTests": 47
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0
+  },
+  "canonicalStudies": {
+    "files": 9,
+    "seats": [
+      1,
+      2,
+      8,
+      10
+    ],
+    "priorityWorldsPerOption": 5000,
+    "rbRunWorldsPerOpening": 20000,
+    "rbRunStrategyTrials": 1760000,
+    "pairedStrategyTrials": 160000
+  },
+  "files": {
+    "app/src/lib/advisor.ts": "2c11204f5df9dfa90c1bbb761f78ed326b0c96236050b12753cdd66cadf5fded",
+    "app/src/lib/draft-roster-value.ts": "faa67c9ea7fd3f2e7436523152f565afad3de142ee5c2109888afe99b1e455bf",
+    "app/src/lib/risk.ts": "92637055c69c2cf7ab77e952ca88e8841690b73a70c2025e3ceb26b3ca5542a4",
+    "app/src/data.ts": "c46d4f277afa0c473eb7230d777235bc404b6e84dca19357b4a7bc48311cb795",
+    "app/src/ceilings.ts": "ac29efc5dcb12ec5a28fb2a76f9e3b270e5e67ee16dd376027387f313cdbde35",
+    "app/src/news.ts": "122977686a6845eb9394b6e5c717d1884b8bb78ec39d6599a1762e6645194dc2",
+    "app/src/projections.ts": "b49e7aeecbd5d10e0984bac31708b9c717196c543dacb4d5bf17b42f48945be0",
+    "app/src/sleeper.ts": "179d84dfcf4e099495078d403080e82fadb365b65701ea98742b12d0d40b9f85",
+    "index.html": "1acad226d81386d966b8d725137a40244a9ee567d52d58db78391497a2c2371c"
+  },
+  "results": {
+    "cliff.json": "f84acca3244c74d02b15bb71bdaee560d0b73383bc0600c5c9d7d44c29a39513",
+    "final_sim.json": "7b9627943335b146a41de2f5ca170dbad7d93bbeffa2af49ba43039e4a1b89b1",
+    "first_pick.json": "57b5ad0abbd60e6974df380bcf91fd257a00ca40f53a727b5ec0977da0a7a61d",
+    "plans.json": "77b55cdb7c5a68ff6721f969bc221167a8a41045d896028866570ceb83d34b72",
+    "priority.json": "2440c7efd1229602212bd420cef983c359cbdbeafd4dc5c1092b2a9470c7ba53",
+    "rbloss.json": "d0ab7295e3470cb3bb097012643c294feeff5ceb0aea1746d52977746712494b",
+    "riskdial.json": "11f45d0030f14284cdf3794e01e94dcf5652df019fa04592702f5d1e06072818",
+    "sim_all.json": "9cdb8b8922184b4ed02f6eb74842c4fcb4e36d0aab549ca750a15d6d5cd527f9",
+    "tree.json": "cb00fc3eff3404c9bc7210052fb50c1e377ac7950f5f0100f3c42c74643ac870"
+  },
+  "browser": {
+    "seats": [
+      1,
+      2,
+      10
+    ],
+    "practiceOnly": true,
+    "phoneWidth": 390,
+    "horizontalOverflow": false,
+    "finalLabDate": "September 8",
+    "finalConsoleErrors": 0
+  }
+}

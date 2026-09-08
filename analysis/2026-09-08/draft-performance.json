@@ -1,0 +1,657 @@
+{
+  "baselineRef": "c8a093f206cd36e1534c23cfb900b2735528a8ab",
+  "worldsPerRoom": 128,
+  "seedOffset": 100000,
+  "totalDrafts": 1024,
+  "decisions": {
+    "baseline": {
+      "n": 21504,
+      "meanMs": 3.1380434260138346,
+      "p95Ms": 5.629917000005662,
+      "maxMs": 108.57524999999441
+    },
+    "candidate": {
+      "n": 21504,
+      "meanMs": 10.239091448149136,
+      "p95Ms": 24.808000000019092,
+      "maxMs": 111.28041599999415
+    }
+  },
+  "failures": [],
+  "inputs": {
+    "data": "6ae4b508d4fd6d757323443441f1e8965d883b54af55247f8d9529b32ffdb7c3",
+    "projections": "38591b65da123d4edd7c3cc2beeef6d42e6d3cd466710fe0d39aab0a70af549b",
+    "sleeper": "eae95df447e3762c920257a69bc49a7ea2c193b056cfa750348cf70399a3c902",
+    "risk": "94788148a25cd5399b19cb4f35b09cfd5c6c870aac73b7089662359d70c54639"
+  },
+  "advisorHashes": {
+    "baseline": "574438a8fbef94aa0b9db66ecb47b922fe1461661fa2d05ccee868a53b5eb1a5",
+    "candidate": "46006864847d064c295cdff3505f440db3c47f2a656fb2da5a25c8cfd07a8f05"
+  },
+  "results": {
+    "Ashley/market/baseline": {
+      "baseline": 102.91306107277035,
+      "candidate": 103.61246783227998,
+      "delta": {
+        "mean": 0.699406759509617,
+        "ci95": [
+          0.32553649878405055,
+          1.0732770202351833
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.06177236519607841
+    },
+    "Ashley/market/rb-down": {
+      "baseline": 97.33606292895801,
+      "candidate": 97.93530243320129,
+      "delta": {
+        "mean": 0.5992395042432497,
+        "ci95": [
+          0.23964209004116394,
+          0.9588369184453354
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.06177236519607841
+    },
+    "Ashley/market/wr-down": {
+      "baseline": 97.54770325944995,
+      "candidate": 98.58258160855888,
+      "delta": {
+        "mean": 1.0348783491089868,
+        "ci95": [
+          0.6750834604496982,
+          1.3946732377682753
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.06177236519607841
+    },
+    "Ashley/market/streaming": {
+      "baseline": 104.11648556299085,
+      "candidate": 104.24320025303926,
+      "delta": {
+        "mean": 0.12671469004842795,
+        "ci95": [
+          -0.23309239109599567,
+          0.48652177119285156
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.06177236519607841
+    },
+    "Brian JK/market/baseline": {
+      "baseline": 102.62780900203275,
+      "candidate": 102.89966364010584,
+      "delta": {
+        "mean": 0.2718546380731036,
+        "ci95": [
+          -0.06089486207943379,
+          0.6046041382256411
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.03343290441176469
+    },
+    "Brian JK/market/rb-down": {
+      "baseline": 96.80093064838235,
+      "candidate": 97.17944258444518,
+      "delta": {
+        "mean": 0.37851193606284195,
+        "ci95": [
+          0.0721508770235823,
+          0.6848729951021015
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.03343290441176469
+    },
+    "Brian JK/market/wr-down": {
+      "baseline": 97.47422988181634,
+      "candidate": 97.77186507199497,
+      "delta": {
+        "mean": 0.29763519017860507,
+        "ci95": [
+          -0.044190373139383066,
+          0.6394607534965933
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.03343290441176469
+    },
+    "Brian JK/market/streaming": {
+      "baseline": 103.49107667274689,
+      "candidate": 103.48255699866382,
+      "delta": {
+        "mean": -0.0085196740830763,
+        "ci95": [
+          -0.33618768976203717,
+          0.31914834159588457
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.03343290441176469
+    },
+    "Emily/market/baseline": {
+      "baseline": 101.03925657235865,
+      "candidate": 101.27221298925411,
+      "delta": {
+        "mean": 0.2329564168954672,
+        "ci95": [
+          -0.06120923765989328,
+          0.5271220714508277
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.005629595588235296
+    },
+    "Emily/market/rb-down": {
+      "baseline": 95.42328883002178,
+      "candidate": 95.88482423766453,
+      "delta": {
+        "mean": 0.4615354076427832,
+        "ci95": [
+          0.17493566030005675,
+          0.7481351549855098
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.005629595588235296
+    },
+    "Emily/market/wr-down": {
+      "baseline": 96.05299165468308,
+      "candidate": 96.21126953960933,
+      "delta": {
+        "mean": 0.1582778849261779,
+        "ci95": [
+          -0.14229919681840641,
+          0.4588549666707622
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.005629595588235296
+    },
+    "Emily/market/streaming": {
+      "baseline": 101.6416732626334,
+      "candidate": 101.77782383954629,
+      "delta": {
+        "mean": 0.1361505769128032,
+        "ci95": [
+          -0.16116496925557716,
+          0.43346612308118354
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.005629595588235296
+    },
+    "Ashley/rb-run/baseline": {
+      "baseline": 103.6490325065741,
+      "candidate": 104.81648265993681,
+      "delta": {
+        "mean": 1.1674501533626551,
+        "ci95": [
+          0.8395831086303392,
+          1.495317198094971
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.06874234068627445
+    },
+    "Ashley/rb-run/rb-down": {
+      "baseline": 98.9659116145938,
+      "candidate": 99.86153114113506,
+      "delta": {
+        "mean": 0.895619526541288,
+        "ci95": [
+          0.5841819234233722,
+          1.2070571296592036
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.06874234068627445
+    },
+    "Ashley/rb-run/wr-down": {
+      "baseline": 97.31493741674787,
+      "candidate": 98.74483008624284,
+      "delta": {
+        "mean": 1.4298926694950078,
+        "ci95": [
+          1.1106316508107448,
+          1.7491536881792709
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.06874234068627445
+    },
+    "Ashley/rb-run/streaming": {
+      "baseline": 104.98567543231357,
+      "candidate": 105.39137658156996,
+      "delta": {
+        "mean": 0.40570114925640965,
+        "ci95": [
+          0.12107519942272049,
+          0.6903270990900988
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.06874234068627445
+    },
+    "Brian JK/rb-run/baseline": {
+      "baseline": 104.30692696519824,
+      "candidate": 104.61918350927814,
+      "delta": {
+        "mean": 0.31225654407985415,
+        "ci95": [
+          -0.0010480349918192133,
+          0.6255611231515275
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.038794424019607844
+    },
+    "Brian JK/rb-run/rb-down": {
+      "baseline": 100.11447432376994,
+      "candidate": 100.33216350711598,
+      "delta": {
+        "mean": 0.21768918334607068,
+        "ci95": [
+          -0.06764490969273812,
+          0.5030232763848794
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.038794424019607844
+    },
+    "Brian JK/rb-run/wr-down": {
+      "baseline": 97.27469728940025,
+      "candidate": 97.83514093496912,
+      "delta": {
+        "mean": 0.5604436455688883,
+        "ci95": [
+          0.24686816618155522,
+          0.8740191249562212
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.038794424019607844
+    },
+    "Brian JK/rb-run/streaming": {
+      "baseline": 105.25409329830427,
+      "candidate": 105.23362763712323,
+      "delta": {
+        "mean": -0.02046566118100357,
+        "ci95": [
+          -0.3277742837172304,
+          0.28684296135522325
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.038794424019607844
+    },
+    "Emily/rb-run/baseline": {
+      "baseline": 102.83934460307954,
+      "candidate": 103.36348438954614,
+      "delta": {
+        "mean": 0.5241397864666193,
+        "ci95": [
+          0.19294907714003784,
+          0.8553304957932008
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.025084252450980397
+    },
+    "Emily/rb-run/rb-down": {
+      "baseline": 99.8300139858905,
+      "candidate": 100.20079457127942,
+      "delta": {
+        "mean": 0.37078058538888814,
+        "ci95": [
+          0.07316847378718111,
+          0.6683926969905951
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.025084252450980397
+    },
+    "Emily/rb-run/wr-down": {
+      "baseline": 94.90461551478904,
+      "candidate": 95.74927692886129,
+      "delta": {
+        "mean": 0.8446614140722376,
+        "ci95": [
+          0.5115384182508095,
+          1.1777844098936656
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.025084252450980397
+    },
+    "Emily/rb-run/streaming": {
+      "baseline": 103.58418676208095,
+      "candidate": 103.92905611957104,
+      "delta": {
+        "mean": 0.34486935749008174,
+        "ci95": [
+          0.022919927238401194,
+          0.6668187877417623
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.025084252450980397
+    },
+    "Ashley/wr-run/baseline": {
+      "baseline": 103.98192969374182,
+      "candidate": 104.70260946850871,
+      "delta": {
+        "mean": 0.7206797747669562,
+        "ci95": [
+          0.3809716797017707,
+          1.0603878698321418
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.08325674019607845
+    },
+    "Ashley/wr-run/rb-down": {
+      "baseline": 96.34137677591636,
+      "candidate": 97.42625744388731,
+      "delta": {
+        "mean": 1.084880667970956,
+        "ci95": [
+          0.7483667056694537,
+          1.421394630272458
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.08325674019607845
+    },
+    "Ashley/wr-run/wr-down": {
+      "baseline": 100.63950794027653,
+      "candidate": 100.94867545190678,
+      "delta": {
+        "mean": 0.30916751163020184,
+        "ci95": [
+          -0.025076381815315185,
+          0.6434114050757189
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.08325674019607845
+    },
+    "Ashley/wr-run/streaming": {
+      "baseline": 105.18016272408882,
+      "candidate": 105.21912907650406,
+      "delta": {
+        "mean": 0.03896635241530566,
+        "ci95": [
+          -0.31293563961505627,
+          0.3908683444456676
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.08325674019607845
+    },
+    "Brian JK/wr-run/baseline": {
+      "baseline": 104.36027260722436,
+      "candidate": 104.40793291056637,
+      "delta": {
+        "mean": 0.047660303342034416,
+        "ci95": [
+          -0.2697138450295592,
+          0.365034451713628
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.04986213235294115
+    },
+    "Brian JK/wr-run/rb-down": {
+      "baseline": 96.48419575712916,
+      "candidate": 96.91885243116188,
+      "delta": {
+        "mean": 0.4346566740326797,
+        "ci95": [
+          0.11877110159040133,
+          0.750542246474958
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.04986213235294115
+    },
+    "Brian JK/wr-run/wr-down": {
+      "baseline": 101.08912947673724,
+      "candidate": 100.80453050306842,
+      "delta": {
+        "mean": -0.28459897366884,
+        "ci95": [
+          -0.5837232944944943,
+          0.014525347156814361
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.04986213235294115
+    },
+    "Brian JK/wr-run/streaming": {
+      "baseline": 105.1745670487547,
+      "candidate": 104.86587479127324,
+      "delta": {
+        "mean": -0.3086922574813795,
+        "ci95": [
+          -0.5996292812173853,
+          -0.017755233745373633
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.04986213235294115
+    },
+    "Emily/wr-run/baseline": {
+      "baseline": 104.50316129436604,
+      "candidate": 104.93755429792984,
+      "delta": {
+        "mean": 0.4343930035637641,
+        "ci95": [
+          0.11255675880432248,
+          0.7562292483232057
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.05602787990196077
+    },
+    "Emily/wr-run/rb-down": {
+      "baseline": 96.66955341948095,
+      "candidate": 97.43798970587228,
+      "delta": {
+        "mean": 0.7684362863912946,
+        "ci95": [
+          0.45375793815721815,
+          1.083114634625371
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.05602787990196077
+    },
+    "Emily/wr-run/wr-down": {
+      "baseline": 101.14948107261266,
+      "candidate": 101.48163055027943,
+      "delta": {
+        "mean": 0.3321494776667877,
+        "ci95": [
+          0.013542840839067205,
+          0.6507561144945082
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.05602787990196077
+    },
+    "Emily/wr-run/streaming": {
+      "baseline": 105.52639776142038,
+      "candidate": 105.49758468191847,
+      "delta": {
+        "mean": -0.028813079501908256,
+        "ci95": [
+          -0.3254195989426977,
+          0.26779343993888116
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.05602787990196077
+    },
+    "Ashley/qb-te-run/baseline": {
+      "baseline": 104.19687529440407,
+      "candidate": 105.08196943211003,
+      "delta": {
+        "mean": 0.8850941377059188,
+        "ci95": [
+          0.5028512679987909,
+          1.2673370074130468
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.08042279411764705
+    },
+    "Ashley/qb-te-run/rb-down": {
+      "baseline": 97.53644255598888,
+      "candidate": 98.57039642907954,
+      "delta": {
+        "mean": 1.0339538730907172,
+        "ci95": [
+          0.659725347993309,
+          1.4081823981881254
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.08042279411764705
+    },
+    "Ashley/qb-te-run/wr-down": {
+      "baseline": 99.20967791700228,
+      "candidate": 100.02841712129458,
+      "delta": {
+        "mean": 0.8187392042922779,
+        "ci95": [
+          0.4376016004829715,
+          1.1998768081015843
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.08042279411764705
+    },
+    "Ashley/qb-te-run/streaming": {
+      "baseline": 105.51880918580783,
+      "candidate": 105.7227270646555,
+      "delta": {
+        "mean": 0.20391787884770618,
+        "ci95": [
+          -0.15322516975536377,
+          0.5610609274507761
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.08042279411764705
+    },
+    "Brian JK/qb-te-run/baseline": {
+      "baseline": 103.94590100214836,
+      "candidate": 104.57251443999664,
+      "delta": {
+        "mean": 0.6266134378483001,
+        "ci95": [
+          0.28577987321174164,
+          0.9674470024848587
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.09796262254901962
+    },
+    "Brian JK/qb-te-run/rb-down": {
+      "baseline": 97.51314802975578,
+      "candidate": 98.22432658461571,
+      "delta": {
+        "mean": 0.7111785548599644,
+        "ci95": [
+          0.3788138247868157,
+          1.0435432849331132
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.09796262254901962
+    },
+    "Brian JK/qb-te-run/wr-down": {
+      "baseline": 98.65833546409323,
+      "candidate": 99.29163467100624,
+      "delta": {
+        "mean": 0.633299206913041,
+        "ci95": [
+          0.2915614103368735,
+          0.9750370034892084
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.09796262254901962
+    },
+    "Brian JK/qb-te-run/streaming": {
+      "baseline": 105.21581071899611,
+      "candidate": 105.08088371417055,
+      "delta": {
+        "mean": -0.13492700482552722,
+        "ci95": [
+          -0.43773276643677517,
+          0.16787875678572073
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.09796262254901962
+    },
+    "Emily/qb-te-run/baseline": {
+      "baseline": 103.0940867551148,
+      "candidate": 103.56769666650642,
+      "delta": {
+        "mean": 0.4736099113915846,
+        "ci95": [
+          0.12106823780939424,
+          0.8261515849737749
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.09141390931372549
+    },
+    "Emily/qb-te-run/rb-down": {
+      "baseline": 98.03964677473489,
+      "candidate": 98.59766292808774,
+      "delta": {
+        "mean": 0.5580161533529442,
+        "ci95": [
+          0.22225667785862302,
+          0.8937756288472654
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.09141390931372549
+    },
+    "Emily/qb-te-run/wr-down": {
+      "baseline": 96.58064064859232,
+      "candidate": 97.08427207419288,
+      "delta": {
+        "mean": 0.5036314256004547,
+        "ci95": [
+          0.14779486359679722,
+          0.8594679876041122
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.09141390931372549
+    },
+    "Emily/qb-te-run/streaming": {
+      "baseline": 104.37877716398458,
+      "candidate": 104.14369577065992,
+      "delta": {
+        "mean": -0.23508139332467026,
+        "ci95": [
+          -0.5902097762360192,
+          0.1200469895866787
+        ],
+        "n": 128
+      },
+      "preStreamingEmptySlotDelta": -0.09141390931372549
+    }
+  }
+}

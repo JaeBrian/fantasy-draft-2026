@@ -29,13 +29,13 @@ const pool=P.map(r=>({name:r[0],pos:r[1],mkt:0.75*(SLP[r[0]]?.adp??MKT[r[0]]?.[0
 const states=[];
 for(let world=0;world<30;world++){
  const rnd=mul(221000+world),teams=Array.from({length:13},()=>[]),ord=[],avail=pool.slice();
- for(let pick=1;pick<=72;pick++){
+ for(let pick=1;pick<=168;pick++){
   const seat=snap(pick),team=teams[seat];let p;
   if([1,2,10].includes(seat)){
    const own=new Set(team.map(p=>p.name)),state=Object.fromEntries(ord.map(n=>[n,own.has(n)?'mine':'gone']));
    const choice=advisors.baseline(state,seat,ord).cands[0]?.now.r[0];
    p=avail.find(p=>p.name===choice);if(!p)throw Error(`Invalid baseline pick ${pick}`);
-   if([0,2,5].includes(team.length))states.push({seat,round:team.length+1,state,ord:ord.slice(),baseline:choice});
+   if([0,2,5,8,11,13].includes(team.length))states.push({seat,round:team.length+1,state,ord:ord.slice(),baseline:choice});
   }else{
    const c=Object.fromEntries(['QB','RB','WR','TE'].map(pos=>[pos,team.filter(p=>p.pos===pos).length]));let best=Infinity;
    for(const candidate of avail){let score=candidate.mkt+(rnd()-0.5)*0.3*candidate.mkt;
@@ -56,6 +56,6 @@ for(const [label,advise] of Object.entries(advisors)){
  }
  results[label]={states:states.length,changed,rows};
 }
-writeFileSync(cache+'sensitivity.json',JSON.stringify({method:'270 identical states from 30 seeded drafts. External season-total ratios clipped to +/-20%; role and availability assumptions differ. This measures decision stability, not forecast accuracy.',results},null,2));
+writeFileSync(cache+'sensitivity.json',JSON.stringify({method:'540 identical states from 30 seeded drafts, rounds 1, 3, 6, 9, 12 and 14. External season-total ratios clipped to +/-20%; role and availability assumptions differ. This measures decision stability, not forecast accuracy.',results},null,2));
 for(const [label,r] of Object.entries(results))console.log(`${label}: ${r.changed}/${r.states} first recommendations changed`);
 console.log(`RESULT: 0 FAIL; ${states.length*Object.keys(cases).length} valid recommendations across five projection scenarios`);

@@ -1,0 +1,48 @@
+[
+  {
+    "name": "audit-model-inputs",
+    "passed": true,
+    "result": "RESULT: 0 FAIL"
+  },
+  {
+    "name": "audit-sim",
+    "passed": true,
+    "result": "RESULT: 0 FAIL, 24 PASS",
+    "correction": "Removed mathematically invalid CV upper bound; retained named high-CV warning. Numeric inputs unchanged. Added finite knownMiss validation."
+  },
+  {
+    "name": "audit-logic",
+    "passed": true,
+    "result": "RESULT: 0 FAIL"
+  },
+  {
+    "name": "audit-advisor",
+    "passed": true,
+    "result": "RESULT: 0 FAIL"
+  },
+  {
+    "name": "audit-agreement",
+    "passed": true,
+    "result": "RESULT: 0 FAIL"
+  },
+  {
+    "name": "audit-forecast",
+    "passed": true,
+    "result": "RESULT: 0 FAIL"
+  },
+  {
+    "name": "audit-draftday",
+    "passed": true,
+    "result": "RESULT: 0 FAIL"
+  },
+  {
+    "name": "audit-full-draft",
+    "passed": true,
+    "result": "RESULT: 0 FAIL"
+  },
+  {
+    "name": "audit-results",
+    "passed": true,
+    "result": "RESULT: 0 FAIL"
+  }
+]
