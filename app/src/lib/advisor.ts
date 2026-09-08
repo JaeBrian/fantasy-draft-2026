@@ -97,6 +97,12 @@ export function preferReceiverDiversity(candidates: Candidate[]) {
   }
 }
 
+/** Preferences can reorder candidates; keep every score band anchored to the best score. */
+export function withinTopScoreBand(candidate: Candidate, candidates: Candidate[], band: number) {
+  const best = Math.max(...candidates.map(c => c.score));
+  return candidate.score >= best - Math.abs(best) * band;
+}
+
 export interface Lookahead {
   first: Candidate;
   second: Candidate;
@@ -777,9 +783,8 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
    * drafter's call — the UI says so rather than the model pretending to know. */
   const TIE_BAND = 0.02;
   if (deduped.length > 1) {
-    const lead = Math.max(deduped[0].score, deduped[1].score);
     deduped.slice(0, 3).forEach((c) => {
-      if (c.score >= lead * (1 - TIE_BAND)) c.tied = true;
+      if (withinTopScoreBand(c, deduped, TIE_BAND)) c.tied = true;
     });
     if (deduped.filter((c) => c.tied).length < 2) deduped.forEach((c) => { c.tied = false; });
   }
@@ -801,7 +806,7 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
   const FLIP_BAND = 0.06;
   if (look?.flipped) {
     const i = deduped.indexOf(look.first);
-    if (i > 0 && look.first.score >= deduped[0].score * (1 - FLIP_BAND)) {
+    if (i > 0 && withinTopScoreBand(look.first, deduped, FLIP_BAND)) {
       deduped.splice(i, 1);
       deduped.unshift(look.first);
     } else if (i > 0) {

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {build} from 'esbuild';
 import {createRequire} from 'node:module';
 await build({stdin:{contents:'export * from "./src/lib/advisor"; export {P} from "./src/data";',resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:'.simcache/receiver-diversity-test.cjs',logLevel:'silent'});
-const {advise,snapTeam,mktADP,preferReceiverDiversity,P}=createRequire(import.meta.url)('../.simcache/receiver-diversity-test.cjs');
+const {advise,snapTeam,mktADP,preferReceiverDiversity,withinTopScoreBand,P}=createRequire(import.meta.url)('../.simcache/receiver-diversity-test.cjs');
 
 // Exercise the live advisor, including the ownership lookup used by synced and manual drafts.
 for(const seat of [1,2,8,10]){
@@ -57,4 +57,11 @@ assert.equal(rank(pick('Reed',.1,11,['Watson']),pick('Downs',.05,10.8))[0].now.r
 ordered=rank(pick('Reed',10,11,['Watson']),pick('QB',9.8,20,[],'QB'),pick('Downs',9.5,10.8));
 assert.deepEqual(ordered.map(c=>c.now.r[0]),['Downs','Reed','QB'],'retain every candidate and stable fallback order');
 assert.equal(rank()[0],undefined);
-console.log('PASS: receiver diversity, all managed seats, clear value, availability, late depth and positional safeguards');
+
+// Diversity and sequencing must share the original best score, rather than compound discounts.
+ordered=rank(pick('Reed',10,11,['Watson']),pick('Downs',9.5,10.8),pick('QB',9,20,[],'QB'));
+assert.equal(withinTopScoreBand(ordered[2],ordered,.06),false,'a second adjustment must not turn a 6% limit into a 10% downgrade');
+ordered=rank(pick('Reed',10,11,['Watson']),pick('Downs',9.5,10.8),pick('Other WR',9.45,10.8));
+assert.equal(withinTopScoreBand(ordered[0],ordered,.02),false,'multiple promoted receivers must not lower the close-call reference');
+assert.equal(withinTopScoreBand(ordered[2],ordered,.02),true,'keep the original best score as the reference');
+console.log('PASS: receiver diversity, all managed seats, value/availability safeguards and anchored tie/sequence bands');
