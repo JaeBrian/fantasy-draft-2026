@@ -23,9 +23,9 @@ import { CUFF_K, cuffUplift, riskOf, missShareOf } from "./risk";
  *   WR-WR  +0.006  (n=108) <- nothing
  *   RB-RB  +0.023  (n=53)  <- nothing
  *
- * Only pairs clearing two combined standard errors are carried. The rest are set to zero
- * deliberately: "two Rams cannibalise each other" is a widely held belief that the game logs
- * do not support, and encoding it anyway would be adding a bias with no evidence behind it.
+ * Only pairs clearing two combined standard errors are carried in the covariance
+ * estimate. A zero here is a modeling assumption, not proof of independence or a
+ * complete model of shared quarterback injuries, workload changes or team risk.
  *
  * Caveat worth keeping in view: a pair must share 8+ weeks with BOTH playing to be measured,
  * so a pure handcuff — who only plays when the starter is hurt — is excluded by construction.
@@ -69,6 +69,8 @@ export interface Candidate {
   bye: number | undefined;
   cuffOf: string | undefined;
   backfieldWith?: string;
+  receiverWith?: string[];
+  diversifiesFrom?: string;
   cliff: boolean;
   tier: number;
   stack: boolean;
@@ -77,6 +79,28 @@ export interface Candidate {
   fell: number;
   /** within 2% of the top score — the model cannot honestly separate these; take your pick */
   tied?: boolean;
+}
+
+/** User preference for spreading WR exposure among close choices. These thresholds
+ * are policy limits, not measured injury probabilities or projection adjustments. */
+export function preferReceiverDiversity(candidates: Candidate[]) {
+  for (let i = 0; i < candidates.length; i++) {
+    const current = candidates[i];
+    if (current.p !== "WR" || !current.receiverWith?.length) continue;
+    const alternative = candidates.findIndex((c, j) => j > i && c.p === "WR" &&
+      !c.receiverWith?.length && c.score >= current.score - Math.abs(current.score) * 0.06 &&
+      c.proj >= current.proj - 0.5 && c.pReach >= current.pReach - 0.05);
+    if (alternative < 0) continue;
+    const [preferred] = candidates.splice(alternative, 1);
+    preferred.diversifiesFrom = current.now.r[0];
+    candidates.splice(i, 0, preferred);
+  }
+}
+
+/** Preferences can reorder candidates; keep every score band anchored to the best score. */
+export function withinTopScoreBand(candidate: Candidate, candidates: Candidate[], band: number) {
+  const best = Math.max(...candidates.map(c => c.score));
+  return candidate.score >= best - Math.abs(best) * band;
 }
 
 export interface Lookahead {
@@ -661,26 +685,10 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
       const tLeft = tierSurvivors(ps, tier, avail, r => pg(r, back, offBack));
       const cliff = tLeft < 1.5 && gap >= 0.8;
       if (cliff) s *= 1.05;
-      /* Stacking. These used to be three rules taken from published research; we have now
-       * measured all three ourselves on 2025 game logs, against a control of non-teammate
-       * pairs that came back at ~0.000 (scripts/sim-correlation.mjs). Two survived and one
-       * did not:
-       *
-       *   QB with his own pass-catcher   cited r≈0.43 / 0.27    measured +0.342 / +0.236  KEPT
-       *   two same-team pass-catchers    assumed negative       measured +0.006 (n=108)   GONE
-       *   RB + WR, same team             assumed negative       measured +0.001 (n=223)   GONE
-       *
-       * The quarterback stack holds up — our own number is a little smaller than the cited
-       * one but the same effect, and it stays a tiebreaker rather than a reason to reach.
-       *
-       * The two anti-stack penalties do not hold up at all, so they are removed. "Two Rams
-       * eat each other's lunch" is widely believed and simply is not in the game logs: a
-       * receiver pairs with his own teammate exactly the way he pairs with a stranger. The
-       * penalties were small (0.97 and 0.985) but they applied to every same-team pair on the
-       * board, and a small bias with no evidence behind it is still a bias.
-       *
-       * What the correlation genuinely changes is the SPREAD of a stacked lineup, not the
-       * value of the pick — and that is handled properly now in the floor/ceiling below. */
+      /* The measured QB/pass-catcher correlation supports a small stack tiebreaker.
+       * Aggregate 2025 WR/WR and RB/WR correlations were near zero. They do not
+       * establish independence for each pair or cover shared quarterback/role risk.
+       * Keep projections unchanged; apply the WR diversity preference after scoring. */
       const stack =
         ((ps === "WR" || ps === "TE") && myQBteams.has(now.r[2])) ||
         (ps === "QB" && myPCteams.has(now.r[2]));
@@ -723,7 +731,8 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
       // This already includes byes and absences, so avoid applying those penalties twice.
       if (addedValue !== undefined) s = addedValue * (onClock ? 1 : pReach);
       const backfieldWith = ps === "RB" ? ownedBacks.find(m => m[2] === now.r[2])?.[0] : undefined;
-      cands.push({ rosterGain: addedValue, p: ps, now, later: nb.likely, proj: g.proj, vNow: g.vorp, evLater: nb.ev, gap, pGone, pReach, score: s, clash, bye: b, cuffOf, backfieldWith, cliff, tier, stack, antiStack, fell });
+      const receiverWith = ps === "WR" ? mine.filter(r => r[1] === "WR" && r[2] === now.r[2]).map(r => r[0]) : undefined;
+      cands.push({ rosterGain: addedValue, p: ps, now, later: nb.likely, proj: g.proj, vNow: g.vorp, evLater: nb.ev, gap, pGone, pReach, score: s, clash, bye: b, cuffOf, backfieldWith, receiverWith, cliff, tier, stack, antiStack, fell });
     });
   });
   /* A starting slot that can no longer wait overrides every score. Two triggers, both already
@@ -739,6 +748,7 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
     if (keep.length) { cands.length = 0; cands.push(...keep); }
   }
   cands.sort((x, y) => y.score - x.score);
+  preferReceiverDiversity(cands);
 
   let dream: Advice["dream"] = null;
   if (!onClock && nextPick) {
@@ -773,9 +783,8 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
    * drafter's call — the UI says so rather than the model pretending to know. */
   const TIE_BAND = 0.02;
   if (deduped.length > 1) {
-    const lead = Math.max(deduped[0].score, deduped[1].score);
     deduped.slice(0, 3).forEach((c) => {
-      if (c.score >= lead * (1 - TIE_BAND)) c.tied = true;
+      if (withinTopScoreBand(c, deduped, TIE_BAND)) c.tied = true;
     });
     if (deduped.filter((c) => c.tied).length < 2) deduped.forEach((c) => { c.tied = false; });
   }
@@ -797,7 +806,7 @@ export function advise(DS: DraftState, mySlot: number, ord: string[], blocked?: 
   const FLIP_BAND = 0.06;
   if (look?.flipped) {
     const i = deduped.indexOf(look.first);
-    if (i > 0 && look.first.score >= deduped[0].score * (1 - FLIP_BAND)) {
+    if (i > 0 && withinTopScoreBand(look.first, deduped, FLIP_BAND)) {
       deduped.splice(i, 1);
       deduped.unshift(look.first);
     } else if (i > 0) {
