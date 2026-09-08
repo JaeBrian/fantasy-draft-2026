@@ -1,0 +1,4 @@
+import type {WeeklyDataset} from '../lib/weekly/types';
+export function WeeklyEvidence({dataset}:{dataset:WeeklyDataset}) {
+  return <details className="weekly-section"><summary>Data sources, model checks and limitations</summary><p>{dataset.validation.summary}</p><p>{dataset.calibration.note}</p><ul>{dataset.validation.limitations.map(s=><li key={s}>{s}</li>)}</ul><div className="weekly-facts">{Object.entries(dataset.validation.metrics).map(([key,value])=><div key={key}><dt>{key.replaceAll('_',' ')}</dt><dd>{Number.isFinite(value)?value.toFixed(3):'Unavailable'}</dd></div>)}</div><ul className="weekly-sources">{dataset.sources.map((source,i)=><li key={i}><a href={source.url} target="_blank" rel="noreferrer">{source.name}</a> · {source.status}<small>{source.fetchedAt ? new Date(source.fetchedAt).toLocaleString() : 'Timestamp unavailable'}{source.note?` · ${source.note}`:''}</small></li>)}</ul></details>;
+}

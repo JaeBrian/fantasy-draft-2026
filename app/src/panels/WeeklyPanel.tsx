@@ -1,66 +1,35 @@
-import { usePersistent } from "../lib/store";
-import { useEffect, useState } from 'react';
-import { collectWeeklySnapshot, type WeeklySnapshot } from '../lib/weekly/snapshot';
-import { MANAGERS } from '../lib/weekly/config';
-
-export function WeeklyPanel() {
-  const [connected,setConnected]=usePersistent("fd26-weekly-connected",false,r=>r==="1",v=>v?"1":"0");
-  const [selected,setSelected]=useState<string>(MANAGERS[0].userId);
-  const [snapshot,setSnapshot]=useState<WeeklySnapshot | null>(null);
-  const [error,setError]=useState('');
-  const [checking,setChecking]=useState(false);
-  const [refresh,setRefresh]=useState(0);
-  const [now,setNow]=useState(Date.now);
-  useEffect(() => {
-    if (!connected) { setChecking(false); return; }
-    let stopped=false, timer: ReturnType<typeof setTimeout>;
-    let controller: AbortController;
-    let failures=0;
-    async function update() {
-      controller=new AbortController();
-      const timeout=setTimeout(()=>controller.abort(),15000);
-      setChecking(true);
-      try {
-        const next=await collectWeeklySnapshot(controller.signal);
-        if (!stopped) { setSnapshot(next); setError(''); failures=0; }
-      } catch (e) {
-        if (!stopped) {setError(e instanceof Error ? e.message : 'Could not check Sleeper');failures++;}
-      } finally {
-        clearTimeout(timeout);
-        if (!stopped) {setChecking(false);timer=setTimeout(update,Math.min(1800000,300000*2**failures));}
-      }
-    }
-    void update();
-    return ()=>{stopped=true;clearTimeout(timer);controller?.abort();};
-  },[refresh,connected]);
-  useEffect(()=>{const timer=setInterval(()=>setNow(Date.now()),1000);return ()=>clearInterval(timer);},[]);
-  const manager=snapshot?.managers.find(m=>m.userId===selected);
-  const age=snapshot ? Math.max(0,Math.floor((now-Date.parse(snapshot.checkedAt))/1000)) : null;
-  const stale=age !== null && age>600;
-  const ready=snapshot?.stage==='rosters-ready';
-  const title=!snapshot ? connected ? 'Checking your league' : 'Connect when you’re ready' : snapshot.stage==='waiting' ? 'Waiting for your draft' : snapshot.stage==='drafting' ? 'Your draft is in progress' : ready ? 'Your rosters are connected' : 'Roster sync needs attention';
-  return <div className="weekly-workspace">
-    <div className="workspace-title"><div><span className="section-caption">Weekly lineup · Real league</span><h1>Your week starts here</h1></div></div>
-    <div className="weekly-managers" role="group" aria-label="Weekly manager">{MANAGERS.map(m=><button className="btn" type="button" key={m.userId} aria-pressed={selected===m.userId} onClick={()=>setSelected(m.userId)}>{m.name}</button>)}</div>
-    <section className={`live-sync-card ${!connected ? 'waiting' : error ? 'error' : stale || !snapshot ? 'waiting' : 'current'}`} aria-label="Weekly roster connection">
-      <div className="live-sync-heading"><strong role="status"><span className="sync-dot" />{!connected ? 'Roster connection off' : error ? 'Roster check failed' : stale ? 'Roster data is stale' : checking ? 'Checking Sleeper…' : 'Roster connection checked'}</strong><div className="weekly-managers"><button className="btn" type="button" role="switch" aria-checked={connected} aria-label="Roster connection" onClick={()=>setConnected(v=>!v)}>{connected ? "On" : "Off"}</button><button className="btn" type="button" disabled={!connected || checking} onClick={()=>setRefresh(n=>n+1)}>Check rosters</button></div></div>
-      <p>{snapshot ? `${snapshot.leagueName} · ${snapshot.rosteredPlayers} players rostered across the league` : connected ? 'Connecting to the real Sleeper league.' : 'Turn on the connection to load your real league rosters.'}</p>
-      <small>{!connected ? 'Automatic checks are off. The last loaded roster stays visible until you leave this page.' : age===null ? 'Waiting for the first successful check.' : `Last successful check ${age}s ago · Checks every 5 minutes while this page is open`}</small>
-      {connected && error && <p role="alert">{error}. {snapshot ? 'Showing the last successful snapshot.' : 'Retrying automatically.'}</p>}
-      <small>Roster connection only. Weekly projections and matchup analysis are still in development.</small>
-    </section>
-    <section className="weekly-section">
-      <span className="section-caption">{manager?.name ?? MANAGERS.find(m=>m.userId===selected)?.name}</span>
-      <h2>{title}</h2>
-      {snapshot?.stage==='waiting' && <><p>Your draft is planned for September 8 at 8 p.m. Pacific. This page checks the real league and will show your roster once Sleeper publishes it.</p><p>Start/sit and trade recommendations will become available as their models are completed and validated.</p></>}
-      {snapshot?.stage==='drafting' && <p>Picks are still being made. Weekly decisions will use the completed roster, including your bench, kicker and defense.</p>}
-      {ready && <p>The completed draft roster is available. Weekly projections, start/sit comparisons and trade targets are the next phase; this page currently shows roster status.</p>}
-      {snapshot?.stage==='incomplete' && <p>The completed rosters or account mappings are incomplete. Recommendations stay unavailable until the league data is reconciled.</p>}
-      {manager?.issue && <p role="alert">{manager.issue}. Your account must map to exactly one roster.</p>}
-      {manager && <dl className="weekly-facts"><div><dt>Sleeper account</dt><dd>{manager.username ?? 'Unresolved'}</dd></div><div><dt>Roster</dt><dd>{manager.rosterId ?? 'Unresolved'}</dd></div><div><dt>Players</dt><dd>{manager.players.length}</dd></div><div><dt>Current starters</dt><dd>{manager.starters.length}</dd></div></dl>}
-      {manager && manager.players.length>0 && <ul className="weekly-roster">{manager.players.map(id=><li key={id}><strong>{snapshot?.playerDetails[id]?.name ?? `Unmapped player ${id}`}</strong><span>{snapshot?.playerDetails[id]?.position ?? 'Unknown position'} · {snapshot?.playerDetails[id]?.team ?? 'No team'}{manager.starters.includes(id) ? ' · Current starter' : ' · Bench / reserve'}</span></li>)}</ul>}
-    </section>
-    {snapshot && <section className="weekly-section"><h2>Your league rules</h2><p>{snapshot.slots.filter(s=>s!=='BN').join(' · ')} · Six bench spots</p><p>Half-PPR · {snapshot.scoring.pass_td} points per passing touchdown</p><details><summary>All scoring rules from Sleeper</summary><dl className="weekly-facts">{Object.entries(snapshot.scoring).map(([key,value])=><div key={key}><dt>{key.replaceAll('_',' ')}</dt><dd>{value}</dd></div>)}</dl></details></section>}
-    <section className="weekly-section"><h2>What comes next</h2><p>Weekly projections and legal lineup comparisons, then tested matchup adjustments and trade packages based on both teams’ roster needs. The model will show its evidence and uncertainty before asking you to change a starter.</p><p>This page uses the real league. Temporary test-draft picks and settings stay separate.</p></section>
-  </div>;
+import {useEffect,useMemo,useState} from 'react';
+import {WeeklyControls} from '../components/WeeklyControls';
+import {WeeklyEvidence} from '../components/WeeklyEvidence';
+import {useWeeklyWorkspace} from '../lib/weekly/workspace';
+import {analysisBlock} from '../lib/weekly/readiness';
+import {useAnalysis} from '../lib/weekly/useAnalysis';
+import {MANAGERS} from '../lib/weekly/config';
+import type {buildLineupReport} from '../lib/weekly/report';
+import type {LineupResult,WeeklyPlayer} from '../lib/weekly/types';
+const points=(v:number|null|undefined)=>v==null?'—':v.toFixed(1);
+export function LineupTable({lineup,players}:{lineup:LineupResult;players:Record<string,WeeklyPlayer>}) {
+ return <><div className="weekly-table"><table><thead><tr><th>Slot</th><th>Player / matchup</th><th>Forecast</th></tr></thead><tbody>{lineup.assignments.map(a=>{const p=a.playerId?players[a.playerId]:null;return <tr key={a.index}><td>{a.slot}{a.locked?' · Locked':''}</td><td>{p?.name??a.playerId??'Empty slot'}{p&&<small>{p.team} vs {p.opponent??'TBD'} · {p.kickoff?new Date(p.kickoff).toLocaleString():'Kickoff unknown'} · {p.status??p.availability}</small>}</td><td>{points(a.mean)}{p?.projectionBounds&&<small>Bound {points(p.projectionBounds.low)}–{points(p.projectionBounds.high)}</small>}</td></tr>})}</tbody></table></div>{!lineup.complete&&<p role="status">Incomplete forecast: {lineup.issues.join(' ')}</p>}</>;
+}
+export function WeeklyPanel(){
+ const w=useWeeklyWorkspace();const[selected,setSelected]=useState<string>(MANAGERS[0].userId);
+ const [now,setNow]=useState(Date.now);
+ useEffect(()=>{const tick=()=>setNow(Date.now());const timer=setInterval(tick,30000);window.addEventListener('focus',tick);return()=>{clearInterval(timer);window.removeEventListener('focus',tick);};},[]);
+ const manager=w.saved?.snapshot.managers.find(m=>m.userId===selected);
+ const block=analysisBlock(w.saved,w.dataset,w.week,now);
+ const input=useMemo(()=>{
+  if(block||!w.saved||!w.dataset||manager?.rosterId==null)return null;
+  const matchup=w.saved.matchupWeek===w.week?w.saved.matchups.find(m=>m.rosterId===manager.rosterId):undefined;
+  const opponent=matchup?.matchupId!=null?w.saved.matchups.find(m=>m.matchupId===matchup.matchupId&&m.rosterId!==manager.rosterId):undefined;
+  const snapshot={...w.saved.snapshot,rosters:w.saved.snapshot.rosters.map(r=>({...r,starterSlots:w.saved!.matchupWeek===w.week?w.saved!.matchups.find(m=>m.rosterId===r.rosterId)?.starters??[]:[]}))};
+  return{dataset:w.dataset,snapshot,rosterId:manager.rosterId,week:w.week,now,currentStarters:matchup?.starters??[],opponentRosterId:opponent?.rosterId};
+ },[block,w.saved,w.dataset,w.week,manager?.rosterId,now]);
+ const {result:r,busy,error}=useAnalysis<ReturnType<typeof buildLineupReport>>('lineup',input);
+ const players=w.dataset?.weeks[w.week]?.players??{};const name=(id:string|null)=>id?players[id]?.name??id:'Empty slot';
+ return <div className="weekly-workspace"><h2>Weekly lineup</h2><p>Choose the strongest legal lineup for Emily, Ashley or Brian using your league’s scoring and the latest published weekly forecasts.</p><WeeklyControls workspace={w} selected={selected} onSelect={setSelected}/>{block&&<section className="weekly-section"><h3>Before recommendations</h3><p>{block}</p></section>}{w.saved?.warning&&<p>{w.saved.warning}</p>}{busy&&<p role="status">Comparing legal lineups and running 20,000 paired simulations…</p>}{error&&<p role="alert">{error}</p>}
+ {r&&<><div className="weekly-grid"><section className="weekly-section"><h3>Recommended lineup · {r.recommended.complete?points(r.recommended.total):'Incomplete'} projected points</h3><p>Projection totals exclude live scoring. Confirm official inactive reports before kickoff.</p><LineupTable lineup={r.recommended} players={players}/></section><section className="weekly-section"><h3>Saved starting lineup</h3><LineupTable lineup={r.current} players={players}/></section></div>
+ <section className="weekly-section"><h3>Start / sit decisions</h3>{r.swaps.length?r.swaps.map(s=><p key={s.index}><strong>{s.startId?`Set ${s.slot} to ${name(s.startId)}`:`No safe eligible starter for ${s.slot}`}</strong>; previous player in this slot: {name(s.sitId)}. {s.expectedGain!==null?`${s.expectedGain>=0?'+':''}${points(s.expectedGain)} projected points.`:'Point gain unavailable: current lineup or scoring is incomplete.'}</p>):<p>Your saved lineup matches the recommended assignment.</p>}
+ <p>Simulation status: {r.comparison.status}. {r.comparison.probabilityImproves!==null?`${(r.comparison.probabilityImproves*100).toFixed(1)}% of simulated outcomes favor the recommended lineup (${r.comparison.draws.toLocaleString()} draws).`:''}</p>{r.comparison.opponentWin&&<p>Experimental matchup win estimate: {(100*r.comparison.opponentWin.baseline).toFixed(1)}% → {(100*r.comparison.opponentWin.recommended).toFixed(1)}%.</p>}{r.pairwise&&<p>Closest bench comparison: {name(r.pairwise.startId)} versus {name(r.pairwise.sitId)}. {r.pairwise.comparison.probabilityImproves!==null?`${(100*r.pairwise.comparison.probabilityImproves).toFixed(1)}% simulated probability the recommended starter outscores the bench alternative.`:'Probability unavailable.'}</p>}{r.comparison.limitations.map(t=><p key={t}><small>{t}</small></p>)}</section>
+ <div className="weekly-grid"><section className="weekly-section"><h3>Bench evidence</h3>{r.bench.map(p=><details key={p.id}><summary>{p.name} · {points(p.mean)} points · {p.availability}</summary><p>{p.team} vs {p.opponent??'TBD'} · {p.status??'No injury designation'}</p><ul>{p.evidence.map((e,i)=><li key={i}>{e}</li>)}</ul></details>)}</section><section className="weekly-section"><h3>Injury backup plans</h3>{r.contingencies.length?r.contingencies.map(c=><details key={c.playerId}><summary>If {name(c.playerId)} is inactive</summary><p>{c.note} {c.deadline?`Decide before ${new Date(c.deadline).toLocaleString()}.`:''}</p><LineupTable lineup={c.lineup} players={players}/></details>):<p>No flagged starter contingency in the current feed. Check official game-day status before kickoff.</p>}<h3>Waiver alternatives</h3>{r.waivers.map(a=><p key={a.player.id}>{a.player.name}: {points(a.expectedGain)} potential lineup points. Requires an available roster spot or a separate drop decision.</p>)}{!r.waivers.length&&<p>No eligible improvement found in the evaluated waiver shortlist.</p>}</section></div><details className="weekly-section"><summary>Recommendation notes</summary>{r.warnings.map((t,i)=><p key={i}>{t}</p>)}</details></>}
+ {w.dataset&&<WeeklyEvidence dataset={w.dataset}/>}</div>;
 }
