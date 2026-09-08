@@ -65,6 +65,8 @@ export function AdvisorPanel({ DS, ord, mySlot, blocked, lean, manual, finished,
             <div className="pick-metrics"><span><b>{c.proj.toFixed(1)}</b> projected pts/wk</span>{hasFuture && <span><b>{chance}%</b> {waiting ? 'reaches your pick' : 'returns if you pass'}{fc ? '' : ' (estimate)'}</span>}</div>
             <p>{c.cuffOf ? `Backup for your ${c.cuffOf}.` : needText(c.p, a)}{c.clash ? ` Shares a Week ${c.bye} bye with ${a.byeCount[c.bye!]} rostered players.` : c.fell >= 6 ? ` Available ${Math.round(c.fell)} picks past market ADP.` : ''}</p>
             {c.backfieldWith && !c.cuffOf && <p>Shares the {c.now.r[2]} backfield with your {c.backfieldWith}. Their workloads depend on the same team's carries and scoring chances.</p>}
+            {c.diversifiesFrom && <p>Similar value to {c.diversifiesFrom}, with your receivers spread across more teams.</p>}
+            {!!c.receiverWith?.length && <p>Shares the {c.now.r[2]} passing game with your {c.receiverWith.join(' and ')}. Quarterback trouble or a quiet offense can affect both roster spots.</p>}
             {manual && <div className="recommendation-actions"><button type="button" className={i === 0 ? 'btn primary' : 'btn'} disabled={!a.onClock} onClick={() => mark(name, 'mine')}>Draft {name.split(' ').at(-1)}</button>{!skillOnly && <button type="button" className="btn subtle" onClick={() => mark(name, 'gone')} aria-label={`Mark ${name} taken`}>Taken</button>}</div>}
           </article>;
         })}
@@ -75,6 +77,7 @@ export function AdvisorPanel({ DS, ord, mySlot, blocked, lean, manual, finished,
       {fc && <p className="forecast-caption">Availability modeled across {fc.sims.toLocaleString()} drafts{fc.sims === 0 ? '; no intervening opponent picks' : ''}.</p>}
       {a.warnings.length > 0 && <div className="roster-warning"><b>Roster needs</b><p>{(noob ? a.plainWarn : a.warnings).join(' · ') || a.warnings.join(' · ')}</p></div>}
       <details className="draft-disclosure"><summary>Why these picks?</summary>
+        <p>For close WR choices, we favor a different offense from your existing receivers: within 6% of the score, 0.5 projected points per week and 5 percentage points of availability. This is a roster preference; projections stay unchanged.</p>
         {top?.rosterGain !== undefined && <p>This pick adds about {top.rosterGain.toFixed(1)} modeled starting-lineup points per week through depth, bye coverage and injury replacements. Waiver moves can change that value.</p>}
         {top && top.rosterGain === undefined && <p>{top.gap > 0 ? `The projected ${top.p} options lose about ${top.gap.toFixed(1)} points per week before your next turn.` : 'The remaining positional options project similarly; compare roster fit and availability.'}</p>}
         {a.look && a.look.edge >= 0.8 && <p>{a.look.first.p} now and {a.look.second.p} later leads the reverse order by about {a.look.edge.toFixed(1)} modeled pts/wk.</p>}
