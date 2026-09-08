@@ -1,5 +1,7 @@
 # September 8 draft readiness and roster value study
 
+**Later update:** The draft room now defaults to waiting for TE value. The [TE preference report](TE-PREFERENCE.md) documents that separate change and its measured tradeoffs. The results below use flexible TE selection.
+
 The draft helper uses the league's actual scoring and roster requirements. This update refreshes its inputs and improves how it values later picks: once eight players are rostered, it estimates each candidate's contribution to the team's starting lineup across bye weeks and possible absences. A handcuff receives extra production in the scenarios where his starter is unavailable.
 
 The completed comparison supports better modeled coverage, with modest gains over the previous helper. It does not establish championship odds, real-world superiority to ADP, or an improvement for every manager under every waiver strategy. The early-pick policy remains unchanged. Ashley and Brian still open with Gibbs and Bijan when both follow the helper; Emily's choices depend on the players who reach her turn.

@@ -11,7 +11,7 @@ function load(search=''){
 }
 const real=load(),test=load('?test-draft=1402814176023322624');
 assert.equal(real.IS_TEST_DRAFT,false);assert.equal(test.IS_TEST_DRAFT,true);
-for(const key of ['fd26-draft','fd26-ord','fd26-slot','fd26-intel','fd26-tendency','fd26-practice','fd26-practice-backup','fd26-blocked','fd26-sleeper','fd26-sync-on']){
+for(const key of ['fd26-draft','fd26-ord','fd26-slot','fd26-intel','fd26-tendency','fd26-practice','fd26-practice-backup','fd26-blocked','fd26-wait-te','fd26-sleeper','fd26-sync-on']){
  assert.equal(real.draftStorageKey(key),key);
  assert.notEqual(test.draftStorageKey(key),key);
  assert.equal(test.draftStorageKey(key),'fd26-test-1402814176023322624:'+key);
