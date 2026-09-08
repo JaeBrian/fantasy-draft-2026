@@ -1,0 +1,106 @@
+{
+  "1": {
+    "structure": "RB-RB-WR-WR",
+    "rows": [
+      {
+        "approach": "safe (steady picks)",
+        "floor": 75.2,
+        "typical": 95.8,
+        "ceiling": 121.9,
+        "mean": 97.4
+      },
+      {
+        "approach": "balanced (our board)",
+        "floor": 73.5,
+        "typical": 95.2,
+        "ceiling": 124.1,
+        "mean": 97.4
+      },
+      {
+        "approach": "swing (high variance)",
+        "floor": 70.8,
+        "typical": 93.6,
+        "ceiling": 123.8,
+        "mean": 96.1
+      }
+    ]
+  },
+  "2": {
+    "structure": "RB-WR-RB-WR",
+    "rows": [
+      {
+        "approach": "safe (steady picks)",
+        "floor": 74.7,
+        "typical": 95.9,
+        "ceiling": 122.6,
+        "mean": 97.6
+      },
+      {
+        "approach": "balanced (our board)",
+        "floor": 73.6,
+        "typical": 95.2,
+        "ceiling": 122.5,
+        "mean": 97
+      },
+      {
+        "approach": "swing (high variance)",
+        "floor": 71.5,
+        "typical": 93.7,
+        "ceiling": 123.7,
+        "mean": 96
+      }
+    ]
+  },
+  "8": {
+    "structure": "WR-WR-RB-RB",
+    "rows": [
+      {
+        "approach": "safe (steady picks)",
+        "floor": 72,
+        "typical": 92.4,
+        "ceiling": 119,
+        "mean": 94.2
+      },
+      {
+        "approach": "balanced (our board)",
+        "floor": 72.3,
+        "typical": 93,
+        "ceiling": 119.7,
+        "mean": 94.8
+      },
+      {
+        "approach": "swing (high variance)",
+        "floor": 69.1,
+        "typical": 91.1,
+        "ceiling": 120.1,
+        "mean": 93.4
+      }
+    ]
+  },
+  "10": {
+    "structure": "RB-WR-RB-WR",
+    "rows": [
+      {
+        "approach": "safe (steady picks)",
+        "floor": 69.1,
+        "typical": 88.9,
+        "ceiling": 114.8,
+        "mean": 90.7
+      },
+      {
+        "approach": "balanced (our board)",
+        "floor": 68.9,
+        "typical": 89.7,
+        "ceiling": 116.6,
+        "mean": 91.6
+      },
+      {
+        "approach": "swing (high variance)",
+        "floor": 67.1,
+        "typical": 87.7,
+        "ceiling": 116.3,
+        "mean": 90.3
+      }
+    ]
+  }
+}

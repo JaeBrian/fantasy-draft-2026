@@ -29,10 +29,10 @@ export function AdpPanel({ noob }: { noob: boolean }) {
   return (
     <div className="flex flex-col gap-5">
       <Intro eyebrow="Sleeper ADP" title="The board your league is actually looking at">
-        Sleeper's own average draft position for half-PPR leagues — measured from real Sleeper drafts in our exact
-        scoring format, not from national mock drafts. This is the order players will come off the board on draft
-        night, and it is what the model prices every recommendation against.
+        Sleeper's average draft position summarizes where players have been selected in half-PPR drafts.
+        Your room can differ. Compare market price with your roster and the players still available.
       </Intro>
+      <p className="m-0 text-[0.82rem] text-ink-3">ADPs use the latest collected market data. Highlighted rows and simulated draft timing use the September 8 morning study snapshot.</p>
 
       <Noob show={noob} title="What this tab is for:">
         <ul className="mt-1.5 mb-0.5 list-disc space-y-1 pl-5">
@@ -40,12 +40,11 @@ export function AdpPanel({ noob }: { noob: boolean }) {
             <b>ADP</b> is the pick a player usually goes at. ADP 12 means he's typically gone by the end of round 1.
           </li>
           <li>
-            <b>Our #</b> is where our research ranks him. When our number is much <i>lower</i> (better) than his ADP,
-            the room is letting him fall — you can wait and still get him. That's the green column.
+            <b>Our #</b> is his position on our research board. A lower number means the board ranks him ahead of his
+            market price. Use the live picker to compare roster fit and the chance he reaches your next turn.
           </li>
           <li>
-            Red means the room pays more than he's worth. You don't have to avoid these players, you just shouldn't be
-            the one who pays the premium.
+            Red means his market price is earlier than his research-board position. Read his player notes before deciding what to pay.
           </li>
         </ul>
       </Noob>
@@ -146,9 +145,8 @@ export function AdpPanel({ noob }: { noob: boolean }) {
           </table>
         </div>
         <p className="m-0 mt-3 text-[0.82rem] leading-relaxed text-ink-3">
-          Twelve running backs are gone by the end of round 2 — one per team, before anyone has a second. Quarterback is
-          the opposite: only {RUN_TIMING[2].QB} are gone through three rounds and {RUN_TIMING[7].QB} through eight, so a
-          starter is always there. Taking one early buys nothing you couldn't have had four rounds later.
+          This scenario estimates {RUN_TIMING[1].RB} running backs selected through round 2 and {RUN_TIMING[2].QB} quarterbacks
+          through round 3. Your room can draft differently. Check the live picker before deciding that a player will reach your next turn.
         </p>
       </Card>
     </div>

@@ -9,7 +9,6 @@ import { StartPanel } from "./panels/StartPanel";
 import { NewsPanel } from "./panels/NewsPanel";
 import { SimPanel } from "./panels/SimPanel";
 import { ModelPanel } from "./panels/ModelPanel";
-import { PlanPanel } from "./panels/PlanPanel";
 import { RookiesPanel } from "./panels/RookiesPanel";
 import { AvoidPanel } from "./panels/AvoidPanel";
 import { VegasPanel } from "./panels/VegasPanel";
@@ -29,7 +28,6 @@ const TABS = [
   ["sims", "Draft lab"],
   ["model", "TD Model"],
   ["tiers", "Position Tiers"],
-  ["plan", "Draft Plan"],
   ["rookies", "Rookies"],
   ["avoid", "Do Not Draft"],
   ["vegas", "Vegas Board"],
@@ -39,7 +37,9 @@ type TabKey = (typeof TABS)[number][0];
 
 function initialTab(saved = "start"): TabKey {
   if (IS_TEST_DRAFT) return "test-draft";
-  const requested = window.location.hash.slice(1);
+  const legacyTab = (value: string) => value === "plan" ? "sims" : value;
+  const requested = legacyTab(window.location.hash.slice(1));
+  saved = legacyTab(saved);
   const valid = (value: string) => value !== "test-draft" && TABS.some(([key]) => key === value);
   return (valid(requested) ? requested : valid(saved) ? saved : "start") as TabKey;
 }
@@ -228,7 +228,6 @@ export default function App() {
           />
         )}
         {tab === "tiers" && <TiersPanel noob={noob} DS={DS} />}
-        {tab === "plan" && <PlanPanel noob={noob} />}
         {tab === "rookies" && <RookiesPanel noob={noob} />}
         {tab === "avoid" && <AvoidPanel noob={noob} />}
         {tab === "vegas" && <VegasPanel noob={noob} />}

@@ -1,0 +1,41 @@
+
+=== seat 10, waiting (9 picks made) ===
+  PASS  survival odds conserve picks exactly  — 4.00 expected gone over 4 picks
+  PASS  on the clock it forecasts to your NEXT turn  — 4 picks between your turns
+  PASS  all survival values are probabilities
+  PASS  players the market wants survive less often  — 15% vs 100%
+  PASS  position counts sum to the picks ahead  — 4.00
+  PASS  drafted players are excluded
+  PASS  run probabilities are well formed
+  PASS  run calls are consistent with expected counts
+
+=== seat 6, waiting (20 picks made) ===
+  PASS  survival odds conserve picks exactly  — 9.00 expected gone over 9 picks
+  PASS  all survival values are probabilities
+  PASS  players the market wants survive less often  — 0% vs 100%
+  PASS  position counts sum to the picks ahead  — 9.00
+  PASS  drafted players are excluded
+  PASS  run probabilities are well formed
+  PASS  run calls are consistent with expected counts
+
+=== seat 1, on the clock (24 made) ===
+  PASS  survival odds conserve picks exactly  — 22.00 expected gone over 22 picks
+  PASS  on the clock it forecasts to your NEXT turn  — 22 picks between your turns
+  PASS  all survival values are probabilities
+  PASS  players the market wants survive less often  — 0% vs 100%
+  PASS  position counts sum to the picks ahead  — 22.00
+  PASS  drafted players are excluded
+  PASS  run probabilities are well formed
+  PASS  run calls are consistent with expected counts
+
+=== seat 6, mid-draft (60 made) ===
+  PASS  survival odds conserve picks exactly  — 6.00 expected gone over 6 picks
+  PASS  all survival values are probabilities
+  PASS  players the market wants survive less often  — 42% vs 100%
+  PASS  position counts sum to the picks ahead  — 6.00
+  PASS  drafted players are excluded
+  PASS  run probabilities are well formed
+  PASS  run calls are consistent with expected counts
+
+======================================================================
+RESULT: 0 FAIL, 0 WARN

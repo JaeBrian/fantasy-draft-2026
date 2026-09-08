@@ -1,0 +1,878 @@
+{
+  "plans": {
+    "1": {
+      "strategy": "RB-WR-WR-RB",
+      "ppw": 95.9,
+      "picks": [
+        {
+          "pick": 1,
+          "opts": [
+            [
+              "Jahmyr Gibbs",
+              100
+            ]
+          ]
+        },
+        {
+          "pick": 24,
+          "opts": [
+            [
+              "George Pickens",
+              71
+            ],
+            [
+              "Nico Collins",
+              12
+            ],
+            [
+              "Malik Nabers",
+              12
+            ]
+          ]
+        },
+        {
+          "pick": 25,
+          "opts": [
+            [
+              "Malik Nabers",
+              63
+            ],
+            [
+              "Nico Collins",
+              21
+            ],
+            [
+              "DeVonta Smith",
+              13
+            ]
+          ]
+        },
+        {
+          "pick": 48,
+          "opts": [
+            [
+              "Josh Jacobs",
+              34
+            ],
+            [
+              "D'Andre Swift",
+              33
+            ],
+            [
+              "David Montgomery",
+              21
+            ]
+          ]
+        },
+        {
+          "pick": 49,
+          "opts": [
+            [
+              "Tyler Warren",
+              59
+            ],
+            [
+              "Colston Loveland",
+              37
+            ]
+          ]
+        },
+        {
+          "pick": 72,
+          "opts": [
+            [
+              "Jayden Daniels",
+              67
+            ],
+            [
+              "Caleb Williams",
+              19
+            ],
+            [
+              "Jalen Hurts",
+              8
+            ]
+          ]
+        }
+      ]
+    },
+    "2": {
+      "strategy": "RB-WR-WR-RB",
+      "ppw": 94.8,
+      "picks": [
+        {
+          "pick": 2,
+          "opts": [
+            [
+              "Bijan Robinson",
+              91
+            ],
+            [
+              "Jahmyr Gibbs",
+              9
+            ]
+          ]
+        },
+        {
+          "pick": 23,
+          "opts": [
+            [
+              "George Pickens",
+              74
+            ],
+            [
+              "Drake London",
+              11
+            ]
+          ]
+        },
+        {
+          "pick": 26,
+          "opts": [
+            [
+              "Malik Nabers",
+              78
+            ],
+            [
+              "DeVonta Smith",
+              9
+            ]
+          ]
+        },
+        {
+          "pick": 47,
+          "opts": [
+            [
+              "D'Andre Swift",
+              43
+            ],
+            [
+              "David Montgomery",
+              27
+            ],
+            [
+              "Josh Jacobs",
+              23
+            ]
+          ]
+        },
+        {
+          "pick": 50,
+          "opts": [
+            [
+              "Tyler Warren",
+              64
+            ],
+            [
+              "Colston Loveland",
+              32
+            ]
+          ]
+        },
+        {
+          "pick": 71,
+          "opts": [
+            [
+              "Jayden Daniels",
+              75
+            ],
+            [
+              "Caleb Williams",
+              14
+            ],
+            [
+              "Jalen Hurts",
+              9
+            ]
+          ]
+        }
+      ]
+    },
+    "8": {
+      "strategy": "WR-WR-RB-RB",
+      "ppw": 94.8,
+      "picks": [
+        {
+          "pick": 8,
+          "opts": [
+            [
+              "Jaxon Smith-Njigba",
+              68
+            ],
+            [
+              "Amon-Ra St. Brown",
+              31
+            ]
+          ]
+        },
+        {
+          "pick": 17,
+          "opts": [
+            [
+              "A.J. Brown",
+              91
+            ],
+            [
+              "Drake London",
+              8
+            ]
+          ]
+        },
+        {
+          "pick": 32,
+          "opts": [
+            [
+              "Breece Hall",
+              69
+            ],
+            [
+              "Javonte Williams",
+              18
+            ],
+            [
+              "Cam Skattebo",
+              8
+            ]
+          ]
+        },
+        {
+          "pick": 41,
+          "opts": [
+            [
+              "D'Andre Swift",
+              54
+            ],
+            [
+              "Travis Etienne Jr.",
+              33
+            ],
+            [
+              "Cam Skattebo",
+              10
+            ]
+          ]
+        },
+        {
+          "pick": 56,
+          "opts": [
+            [
+              "Tyler Warren",
+              63
+            ],
+            [
+              "Tucker Kraft",
+              28
+            ]
+          ]
+        },
+        {
+          "pick": 65,
+          "opts": [
+            [
+              "Jayden Daniels",
+              88
+            ]
+          ]
+        }
+      ]
+    },
+    "10": {
+      "strategy": "RB-RB-WR-WR",
+      "ppw": 91.4,
+      "picks": [
+        {
+          "pick": 10,
+          "opts": [
+            [
+              "James Cook",
+              52
+            ],
+            [
+              "Derrick Henry",
+              48
+            ]
+          ]
+        },
+        {
+          "pick": 15,
+          "opts": [
+            [
+              "Kenneth Walker III",
+              72
+            ],
+            [
+              "Derrick Henry",
+              18
+            ],
+            [
+              "Saquon Barkley",
+              8
+            ]
+          ]
+        },
+        {
+          "pick": 34,
+          "opts": [
+            [
+              "DeVonta Smith",
+              50
+            ],
+            [
+              "Emeka Egbuka",
+              48
+            ]
+          ]
+        },
+        {
+          "pick": 39,
+          "opts": [
+            [
+              "Emeka Egbuka",
+              36
+            ],
+            [
+              "Zay Flowers",
+              27
+            ],
+            [
+              "Ladd McConkey",
+              17
+            ]
+          ]
+        },
+        {
+          "pick": 58,
+          "opts": [
+            [
+              "Tyler Warren",
+              50
+            ],
+            [
+              "Tucker Kraft",
+              39
+            ]
+          ]
+        },
+        {
+          "pick": 63,
+          "opts": [
+            [
+              "Jayden Daniels",
+              79
+            ],
+            [
+              "Joe Burrow",
+              11
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  "cliff": {
+    "1": [
+      {
+        "pick": 1,
+        "rb": 20.5,
+        "wr": 17.4,
+        "te": 12.9,
+        "qb": 20.3
+      },
+      {
+        "pick": 24,
+        "rb": 13.4,
+        "wr": 13.7,
+        "te": 12.5,
+        "qb": 19.6
+      },
+      {
+        "pick": 25,
+        "rb": 13.4,
+        "wr": 13.5,
+        "te": 12.5,
+        "qb": 19.6
+      },
+      {
+        "pick": 48,
+        "rb": 12.8,
+        "wr": 12,
+        "te": 10.9,
+        "qb": 19.1
+      },
+      {
+        "pick": 49,
+        "rb": 12.3,
+        "wr": 12,
+        "te": 10.9,
+        "qb": 19.1
+      },
+      {
+        "pick": 72,
+        "rb": 11.2,
+        "wr": 11,
+        "te": 9.8,
+        "qb": 18.8
+      }
+    ],
+    "2": [
+      {
+        "pick": 2,
+        "rb": 19.8,
+        "wr": 17.4,
+        "te": 12.9,
+        "qb": 20.3
+      },
+      {
+        "pick": 23,
+        "rb": 13.4,
+        "wr": 14.1,
+        "te": 12.6,
+        "qb": 19.7
+      },
+      {
+        "pick": 26,
+        "rb": 13.4,
+        "wr": 13.3,
+        "te": 12.3,
+        "qb": 19.6
+      },
+      {
+        "pick": 47,
+        "rb": 12.9,
+        "wr": 12.1,
+        "te": 11,
+        "qb": 19.1
+      },
+      {
+        "pick": 50,
+        "rb": 12.3,
+        "wr": 12,
+        "te": 10.9,
+        "qb": 19.1
+      },
+      {
+        "pick": 71,
+        "rb": 11.2,
+        "wr": 11.1,
+        "te": 9.8,
+        "qb": 18.9
+      }
+    ],
+    "8": [
+      {
+        "pick": 8,
+        "rb": 16.2,
+        "wr": 17.1,
+        "te": 12.9,
+        "qb": 20.3
+      },
+      {
+        "pick": 17,
+        "rb": 14.3,
+        "wr": 14.6,
+        "te": 12.8,
+        "qb": 20
+      },
+      {
+        "pick": 32,
+        "rb": 13.1,
+        "wr": 13.2,
+        "te": 11.6,
+        "qb": 19.5
+      },
+      {
+        "pick": 41,
+        "rb": 13.1,
+        "wr": 12.6,
+        "te": 11.3,
+        "qb": 19.3
+      },
+      {
+        "pick": 56,
+        "rb": 12,
+        "wr": 11.9,
+        "te": 10.5,
+        "qb": 19.1
+      },
+      {
+        "pick": 65,
+        "rb": 11.5,
+        "wr": 11.5,
+        "te": 9.9,
+        "qb": 19
+      }
+    ],
+    "10": [
+      {
+        "pick": 10,
+        "rb": 15.9,
+        "wr": 14.9,
+        "te": 12.9,
+        "qb": 20.2
+      },
+      {
+        "pick": 15,
+        "rb": 14.9,
+        "wr": 14.6,
+        "te": 12.8,
+        "qb": 20.1
+      },
+      {
+        "pick": 34,
+        "rb": 13.1,
+        "wr": 13.2,
+        "te": 11.5,
+        "qb": 19.5
+      },
+      {
+        "pick": 39,
+        "rb": 13.1,
+        "wr": 12.9,
+        "te": 11.4,
+        "qb": 19.4
+      },
+      {
+        "pick": 58,
+        "rb": 11.8,
+        "wr": 11.8,
+        "te": 10.4,
+        "qb": 19
+      },
+      {
+        "pick": 63,
+        "rb": 11.6,
+        "wr": 11.6,
+        "te": 9.9,
+        "qb": 19
+      }
+    ]
+  },
+  "h2h": [
+    {
+      "who": "Ashley",
+      "slot": 1,
+      "avg": 94,
+      "best": 27
+    },
+    {
+      "who": "Brian JK",
+      "slot": 2,
+      "avg": 94.4,
+      "best": 28
+    },
+    {
+      "who": "Jeff",
+      "slot": 8,
+      "avg": 92.9,
+      "best": 25
+    },
+    {
+      "who": "Emily",
+      "slot": 10,
+      "avg": 89.5,
+      "best": 20
+    }
+  ],
+  "arbitrage": {
+    "falls": [
+      {
+        "name": "Brock Purdy",
+        "pos": "QB",
+        "tag": "buy",
+        "ourRank": 84,
+        "sadp": 127.4,
+        "gap": 43.4
+      },
+      {
+        "name": "Kyler Murray",
+        "pos": "QB",
+        "tag": "buy",
+        "ourRank": 107,
+        "sadp": 149.9,
+        "gap": 42.9
+      },
+      {
+        "name": "Jared Goff",
+        "pos": "QB",
+        "tag": "solid",
+        "ourRank": 106,
+        "sadp": 142.3,
+        "gap": 36.3
+      },
+      {
+        "name": "Josh Downs",
+        "pos": "WR",
+        "tag": "buy",
+        "ourRank": 80,
+        "sadp": 113.2,
+        "gap": 33.2
+      },
+      {
+        "name": "Quentin Johnston",
+        "pos": "WR",
+        "tag": "solid",
+        "ourRank": 71,
+        "sadp": 103.3,
+        "gap": 32.3
+      },
+      {
+        "name": "Xavier Worthy",
+        "pos": "WR",
+        "tag": "solid",
+        "ourRank": 99,
+        "sadp": 129.2,
+        "gap": 30.2
+      },
+      {
+        "name": "Jayden Reed",
+        "pos": "WR",
+        "tag": "solid",
+        "ourRank": 77,
+        "sadp": 101.2,
+        "gap": 24.2
+      },
+      {
+        "name": "Jakobi Meyers",
+        "pos": "WR",
+        "tag": "solid",
+        "ourRank": 112,
+        "sadp": 135.6,
+        "gap": 23.6
+      },
+      {
+        "name": "Patrick Mahomes",
+        "pos": "QB",
+        "tag": "risk",
+        "ourRank": 93,
+        "sadp": 116.2,
+        "gap": 23.2
+      },
+      {
+        "name": "Matthew Golden",
+        "pos": "WR",
+        "tag": "buy",
+        "ourRank": 100,
+        "sadp": 118.6,
+        "gap": 18.6
+      },
+      {
+        "name": "Bo Nix",
+        "pos": "QB",
+        "tag": "buy",
+        "ourRank": 101,
+        "sadp": 119,
+        "gap": 18
+      },
+      {
+        "name": "Rachaad White",
+        "pos": "RB",
+        "tag": "solid",
+        "ourRank": 109,
+        "sadp": 125.7,
+        "gap": 16.7
+      },
+      {
+        "name": "Rashid Shaheed",
+        "pos": "WR",
+        "tag": "solid",
+        "ourRank": 133,
+        "sadp": 149.7,
+        "gap": 16.7
+      },
+      {
+        "name": "Trevor Lawrence",
+        "pos": "QB",
+        "tag": "solid",
+        "ourRank": 83,
+        "sadp": 99.2,
+        "gap": 16.2
+      }
+    ],
+    "traps": [
+      {
+        "name": "Alec Pierce",
+        "pos": "WR",
+        "tag": "risk",
+        "ourRank": 158,
+        "sadp": 94.6,
+        "gap": -63.4
+      },
+      {
+        "name": "KC Concepcion",
+        "pos": "WR",
+        "tag": "solid",
+        "ourRank": 171,
+        "sadp": 111.3,
+        "gap": -59.7
+      },
+      {
+        "name": "Mike Washington",
+        "pos": "RB",
+        "tag": "solid",
+        "ourRank": 172,
+        "sadp": 121.7,
+        "gap": -50.3
+      },
+      {
+        "name": "Travis Kelce",
+        "pos": "TE",
+        "tag": "avoid",
+        "ourRank": 141,
+        "sadp": 95.6,
+        "gap": -45.4
+      },
+      {
+        "name": "Aaron Jones Sr.",
+        "pos": "RB",
+        "tag": "risk",
+        "ourRank": 157,
+        "sadp": 117.3,
+        "gap": -39.7
+      },
+      {
+        "name": "Chris Rodriguez Jr.",
+        "pos": "RB",
+        "tag": "solid",
+        "ourRank": 163,
+        "sadp": 128.8,
+        "gap": -34.2
+      },
+      {
+        "name": "Michael Wilson",
+        "pos": "WR",
+        "tag": "solid",
+        "ourRank": 122,
+        "sadp": 89.4,
+        "gap": -32.6
+      },
+      {
+        "name": "Kyle Pitts Sr.",
+        "pos": "TE",
+        "tag": "risk",
+        "ourRank": 103,
+        "sadp": 71.4,
+        "gap": -31.6
+      },
+      {
+        "name": "Jordyn Tyson",
+        "pos": "WR",
+        "tag": "risk",
+        "ourRank": 150,
+        "sadp": 119.7,
+        "gap": -30.3
+      },
+      {
+        "name": "Dalton Kincaid",
+        "pos": "TE",
+        "tag": "risk",
+        "ourRank": 123,
+        "sadp": 92.8,
+        "gap": -30.2
+      },
+      {
+        "name": "MarShawn Lloyd",
+        "pos": "RB",
+        "tag": "solid",
+        "ourRank": 129,
+        "sadp": 98.8,
+        "gap": -30.2
+      },
+      {
+        "name": "Jonah Coleman",
+        "pos": "RB",
+        "tag": "solid",
+        "ourRank": 173,
+        "sadp": 146.1,
+        "gap": -26.9
+      },
+      {
+        "name": "Harold Fannin Jr.",
+        "pos": "TE",
+        "tag": "risk",
+        "ourRank": 104,
+        "sadp": 77.8,
+        "gap": -26.2
+      },
+      {
+        "name": "Hunter Henry",
+        "pos": "TE",
+        "tag": "solid",
+        "ourRank": 174,
+        "sadp": 148.3,
+        "gap": -25.7
+      }
+    ]
+  },
+  "runTiming": [
+    {
+      "round": 1,
+      "RB": 6,
+      "WR": 6,
+      "TE": 0,
+      "QB": 0
+    },
+    {
+      "round": 2,
+      "RB": 13,
+      "WR": 9,
+      "TE": 1,
+      "QB": 1
+    },
+    {
+      "round": 3,
+      "RB": 17,
+      "WR": 15,
+      "TE": 2,
+      "QB": 2
+    },
+    {
+      "round": 4,
+      "RB": 22,
+      "WR": 21,
+      "TE": 3,
+      "QB": 2
+    },
+    {
+      "round": 5,
+      "RB": 26,
+      "WR": 26,
+      "TE": 4,
+      "QB": 4
+    },
+    {
+      "round": 6,
+      "RB": 28,
+      "WR": 31,
+      "TE": 7,
+      "QB": 6
+    },
+    {
+      "round": 7,
+      "RB": 32,
+      "WR": 35,
+      "TE": 9,
+      "QB": 8
+    },
+    {
+      "round": 8,
+      "RB": 36,
+      "WR": 39,
+      "TE": 11,
+      "QB": 9
+    },
+    {
+      "round": 9,
+      "RB": 40,
+      "WR": 43,
+      "TE": 12,
+      "QB": 11
+    },
+    {
+      "round": 10,
+      "RB": 41,
+      "WR": 49,
+      "TE": 13,
+      "QB": 14
+    }
+  ]
+}

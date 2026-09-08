@@ -1,0 +1,156 @@
+{
+  "recordedAt": "2026-09-08T21:25:43.464Z",
+  "collectedAt": "2026-09-08T20:05:27.883Z",
+  "baselineCommit": "7c7c4f5d1e8a25897ba05d64142b78a37d6f26e3",
+  "publishedToSavedGuides": false,
+  "reason": "audit-agreement: Emily round 1 narrowly crosses the existing threshold. The saved guides retain the morning snapshot.",
+  "studyWorlds": {
+    "market": 4000,
+    "paired": 8000,
+    "firstPick": 2500,
+    "risk": 6000,
+    "tree": 700,
+    "plans": 4000,
+    "priority": 5000,
+    "rbRun": 20000
+  },
+  "seats": {
+    "Ashley": 1,
+    "Brian JK": 2,
+    "Jeff": 8,
+    "Emily": 10
+  },
+  "inputs": [
+    {
+      "file": "app/src/data.ts",
+      "sha256": "e228692e1ba44bc882315e03e7be677bf482791bde99171015753c44e07353b5"
+    },
+    {
+      "file": "app/src/sleeper.ts",
+      "sha256": "01703f30bc84da27d48beb686ce2dfc33c6457be1fd4232d5779aec796510d79"
+    },
+    {
+      "file": "app/src/projections.ts",
+      "sha256": "cb888da6f243e484f5bba419e825c2e7413499c4a813c6f9fe4e81893dfd94af"
+    },
+    {
+      "file": "app/src/ceilings.ts",
+      "sha256": "ce73b803a144fabfb67e09cb010458c289ee1f38ccceae7e5ee87459badc2164"
+    },
+    {
+      "file": "app/src/news.ts",
+      "sha256": "a1952e2942707067b53393bc5284c2577da7f3a1c6c8eea81a485225f4c15ab4"
+    },
+    {
+      "file": "app/src/lib/advisor.ts",
+      "sha256": "e449dc249110abc1cf2c1cd836b11f6a4d229745a9b65c5c82af32528b15a850"
+    },
+    {
+      "file": "app/src/lib/risk.ts",
+      "sha256": "92637055c69c2cf7ab77e952ca88e8841690b73a70c2025e3ceb26b3ca5542a4"
+    }
+  ],
+  "outputs": [
+    {
+      "file": "sim_all.json",
+      "sha256": "09a4b1e9f934d38345725de623ce1604f5679c7c892be564e022475511381111",
+      "completedAt": "2026-09-08T20:06:02.018Z"
+    },
+    {
+      "file": "final_sim.json",
+      "sha256": "1fde1bb3be97125048c95650900e6896c1bdc3e4f3689af17a447ead8fab3138",
+      "completedAt": "2026-09-08T20:15:16.133Z"
+    },
+    {
+      "file": "first_pick.json",
+      "sha256": "443733f9e3a8b8cb336038f096b474b67d2e71e232c5bf2b4fc68db78fa4529e",
+      "completedAt": "2026-09-08T20:23:51.701Z"
+    },
+    {
+      "file": "riskdial.json",
+      "sha256": "c001eab137ae3866f3a62fa29f91347cbc4eccb01d124a4120e4a3e09ef68bb2",
+      "completedAt": "2026-09-08T20:25:10.561Z"
+    },
+    {
+      "file": "tree.json",
+      "sha256": "27917bf99333a13aca41497272c22d614046dd1ca9168003cb432f5ed6081fbb",
+      "completedAt": "2026-09-08T20:25:58.603Z"
+    },
+    {
+      "file": "plans.json",
+      "sha256": "7f7bd877395d0ce7c8a196b37cf84a06a4aa3806eb228c3e9a6a3ba248dd6d82",
+      "completedAt": "2026-09-08T20:26:08.792Z"
+    },
+    {
+      "file": "cliff.json",
+      "sha256": "f84acca3244c74d02b15bb71bdaee560d0b73383bc0600c5c9d7d44c29a39513",
+      "completedAt": "2026-09-08T20:26:08.793Z"
+    },
+    {
+      "file": "priority.json",
+      "sha256": "0f38e1bd800012303b9783b3fabd3e1f5461b37f4b62bf966029a695cec065e2",
+      "completedAt": "2026-09-08T21:10:27.642Z"
+    },
+    {
+      "file": "rbloss.json",
+      "sha256": "6204cc349697a29836214dbaf2fbb460840657ed4d296dd86ba9d04fe0adca8a",
+      "completedAt": "2026-09-08T21:10:27.647Z"
+    }
+  ],
+  "gates": [
+    {
+      "name": "audit-model-inputs",
+      "failures": 0,
+      "result": "RESULT: 0 FAIL",
+      "log": "audit-model-inputs.txt"
+    },
+    {
+      "name": "audit-sim",
+      "failures": 0,
+      "result": "RESULT: 0 FAIL, 24 PASS",
+      "log": "audit-sim.txt"
+    },
+    {
+      "name": "audit-logic",
+      "failures": 0,
+      "result": "RESULT: 0 FAIL, 2 WARN",
+      "log": "audit-logic.txt"
+    },
+    {
+      "name": "audit-advisor",
+      "failures": 0,
+      "result": "RESULT: 0 FAIL, 0 WARN",
+      "log": "audit-advisor.txt"
+    },
+    {
+      "name": "audit-agreement",
+      "failures": 1,
+      "result": "RESULT: 1 FAIL, 6 WARN",
+      "log": "audit-agreement.txt"
+    },
+    {
+      "name": "audit-forecast",
+      "failures": 0,
+      "result": "RESULT: 0 FAIL, 0 WARN",
+      "log": "audit-forecast.txt"
+    },
+    {
+      "name": "audit-draftday",
+      "failures": 0,
+      "result": "RESULT: 0 FAIL; 16800 live advisor decisions; average 8.8 ms",
+      "log": "audit-draftday.txt"
+    },
+    {
+      "name": "audit-full-draft",
+      "failures": 0,
+      "result": "RESULT: 0 FAIL; 36 complete 192-pick drafts; 6912 advisor decisions; every seat has all ten starters",
+      "log": "audit-full-draft.txt"
+    },
+    {
+      "name": "audit-results",
+      "failures": 0,
+      "result": "RESULT: 0 FAIL; nine complete finite studies, 4 seats, both room scenarios, paired matrix and tie accounting",
+      "log": "audit-results.txt"
+    }
+  ]
+}

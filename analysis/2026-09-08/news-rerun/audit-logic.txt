@@ -1,0 +1,40 @@
+
+=== 1. DRAFT ARITHMETIC: does the pool cover a full 16-round draft? ===
+  board holds 235 skill players; a 12-team draft consumes 168 of them (14 skill rounds) or 192 if you ignore K/DST
+  PASS  pool covers 14 skill rounds  — 235 >= 168
+  PASS  every sim stops at pick 168  — equal 14-player rosters for all twelve seats
+
+=== 2. VALUE MODEL: are the PPG curves calibrated to real production? ===
+  2025 snapshot: 600 players with 8+ games
+  observed ppg, all positions: #1 21.5  #12 18.7  #36 14.6  #60 12.1
+  PASS  curve top matches observed production  — real #1 21.5, curve max 23.2
+  curve shape RB1/RB12/RB24: 18.3 / 13.0 / 9.8   WR1/WR12/WR24: 17.7 / 13.7 / 10.9
+  replacement ranks in use: QB14 RB32 WR34 TE13
+  12-team starters: QB12, RB24, WR24, TE12, plus 24 flex shared by RB/WR/TE
+  PASS  QB replacement rank sits at or past the last starter  — QB14 vs 12 starters
+  PASS  TE replacement rank sits at or past the last starter  — TE13 vs 12 starters
+  PASS  RB/WR replacement ranks sit past their starter counts  — RB32/WR34 vs 24 fixed + 24 flex
+
+=== 3. DATA INTEGRITY ===
+  PASS  no duplicate players  — 235 rows
+  PASS  all positions are QB/RB/WR/TE
+  PASS  every team has a bye week
+  PASS  bye weeks all fall in weeks 4-14  — range 5-14
+  PASS  all 32 NFL teams carry a bye  — {"5":2,"6":4,"7":4,"8":4,"9":2,"10":4,"11":6,"13":4,"14":2}
+  PASS  Sleeper ADP coverage  — 235/235
+  WARN  59 players lack mock-market ADP
+  PASS  overall tiers are monotonic down the board
+  PASS  all verdicts valid  — solid/risk/buy/avoid
+
+=== 4. MARKET MODEL: is our price consistent with Sleeper? ===
+  WARN  19 players priced >12 picks off Sleeper's ADP  — worst Elic Ayomanor 125
+  PASS  about a round of players price inside picks 1-12  — 11
+
+=== 5. PROBABILITY MODEL: do survival odds conserve picks? ===
+  PASS  survival model conserves picks  — by pick 12: model expects 11.6 gone, truth is 11 (+0.6, 5%)
+  PASS  survival model conserves picks  — by pick 24: model expects 23.4 gone, truth is 23 (+0.4, 2%)
+  PASS  survival model conserves picks  — by pick 36: model expects 35.8 gone, truth is 35 (+0.8, 2%)
+  PASS  survival model conserves picks  — by pick 60: model expects 60.7 gone, truth is 59 (+1.7, 3%)
+
+======================================================================
+RESULT: 0 FAIL, 2 WARN

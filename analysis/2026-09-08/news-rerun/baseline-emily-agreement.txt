@@ -1,0 +1,11 @@
+
+Does the advisor recommend what the simulation says is best?
+
+7,000 seasons per candidate, scored week by week with byes live.
+
+{"slot":10,"round":1,"advisorPick":"Chase Brown","simBest":"Nico Collins","gap":0.6351956721917986,"threshold":0.6388361169177994,"scored":[{"n":"Nico Collins","m":93.99893532818317,"se":0.22498737842732366},{"n":"CeeDee Lamb","m":93.74742860377216,"se":0.2268915496241592},{"n":"Chase Brown","m":93.36373965599137,"se":0.22673459290115686},{"n":"Justin Jefferson","m":93.12623055030737,"se":0.22596243959003548},{"n":"Drake London","m":93.09092319866558,"se":0.2299604680901691}]}
+  WARN  Emily round 1: advisor says Chase Brown, sim leans Nico Collins by 0.64 (±0.32) — inside noise
+        Nico Collins 94.00  ·  CeeDee Lamb 93.75  ·  Chase Brown 93.36  ·  Justin Jefferson 93.13  ·  Drake London 93.09
+
+======================================================================
+RESULT: 0 FAIL, 1 WARN

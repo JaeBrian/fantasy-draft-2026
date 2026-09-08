@@ -1,0 +1,8 @@
+PASS sim-all: shared projections and risk
+PASS sim-risk: shared projections and risk
+PASS sim-plans: expected missed production
+PASS sim-priority: expected missed production
+PASS sim-rbrun: expected missed production
+PASS agreement: opponent rosters preserved
+PASS lineup: bench selection uses projections
+RESULT: 0 FAIL

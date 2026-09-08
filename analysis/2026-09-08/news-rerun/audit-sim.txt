@@ -1,0 +1,50 @@
+
+1. SNAKE ORDER
+
+  PASS  every team picks  — 12 teams
+  PASS  every team gets the same number of picks  — 14 each
+  PASS  round 1 runs 1..12 and round 2 reverses  — p13=12 p24=1
+  PASS  seat 2's picks are 2,23,26,47,50,71  — 2,23,26,47,50,71
+
+2. DRAFT INTEGRITY  (500 simulated drafts)
+
+  PASS  no player is drafted twice  — 0 duplicates
+  PASS  no player is drafted who is not on the board  — 0
+  PASS  every draft runs the full 168 picks  — 0 short
+  PASS  every roster ends with 14 players  — 0 wrong
+
+3. LINEUP LEGALITY  (every week of 300 drafted rosters)
+
+  PASS  every week fills all available legal slots, up to 8  — 0 of 5100 weeks wrong
+  PASS  no player fills two slots in one week  — 0
+  PASS  no second quarterback sneaks into flex  — 0
+  PASS  players on bye are never selected  — 0.00% of weeks
+
+4. OPPONENT MODEL  (does it draft like a real room?)
+
+  PASS  players go near their ADP  — mean abs error 0.95 picks over 59 players
+        worst: Josh Jacobs ADP 56.7 -> goes 49.6
+  PASS  no team hoards quarterbacks  — 0 rosters with 4+
+  PASS  no team hoards tight ends  — 0 rosters with 4+
+  PASS  every team ends with a quarterback  — 0 without
+
+5. CORRELATION  (does the shared-shock model hit its targets?)
+
+  PASS  QB-WR reproduces the measured +0.342  — 0.339
+  PASS  QB-TE reproduces the measured +0.236  — 0.232
+  PASS  WR-WR stays well below QB-WR  — 0.116 vs measured +0.006
+        (a single shared factor cannot hold QB-WR at 0.34 AND WR-WR at 0.006 —
+         0.117 is the floor for this form. Residual is documented, not hidden.)
+
+6. INPUTS SHARED WITH THE ADVISOR
+
+  PASS  nearly every board player has a real projection  — 0 missing:
+  PASS  nearly every board player has a Sleeper ADP  — 0 missing
+  PASS  every player has a bye in weeks 4-14  — 0 bad
+  PASS  risk figures are finite with nonnegative CV and probabilities in [0,1]  — 0 invalid
+  WARN  unusually high scoring variation: Tylan Wallace, CV 2.351
+  PASS  every value-over-replacement is positive  — 0
+        replacement: QB 16.38  RB 7.82  WR 8.26  TE 6.96
+
+======================================================================
+RESULT: 0 FAIL, 24 PASS

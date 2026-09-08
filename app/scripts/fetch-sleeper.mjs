@@ -4,7 +4,7 @@
 // Run: node scripts/fetch-sleeper.mjs
 import { readFileSync, writeFileSync } from "node:fs";
 
-import { playerNameKey as norm } from "./player-name.mjs";
+import { playerNameKey as norm, skillPosition, skillDepthOrder } from "./player-name.mjs";
 
 const dataTs = readFileSync(new URL("../src/data.ts", import.meta.url), "utf8");
 const boardNames = [...dataTs.matchAll(/^\["((?:[^"\\]|\\.)*)",/gm)].map((m) => m[1]);
@@ -33,7 +33,7 @@ for (const row of projections) {
 const byName = new Map();
 for (const [pid, p] of Object.entries(players)) {
   if (!p || typeof p !== "object" || !p.full_name) continue;
-  if (!["QB", "RB", "WR", "TE"].includes(p.position)) continue;
+  if (!skillPosition(p)) continue;
   const key = norm(p.full_name);
   // prefer active players on a team when names collide
   if (!byName.has(key) || (p.team && p.status === "Active")) byName.set(key, { pid, p });
@@ -76,7 +76,8 @@ for (const name of boardNames) {
   //       a different proposition from a bellcow no matter what his projection says.
   //   age RBs fall off a cliff around 28 in a way receivers do not.
   //   exp rookies carry far more spread than their projection alone suggests.
-  if (typeof p.depth_chart_order === "number") entry.dc = p.depth_chart_order;
+  const depthOrder = skillDepthOrder(p);
+  if (depthOrder !== undefined) entry.dc = depthOrder;
   if (typeof p.age === "number") entry.age = p.age;
   if (typeof p.years_exp === "number") entry.exp = p.years_exp;
   if (Object.keys(entry).length) out[name] = entry;

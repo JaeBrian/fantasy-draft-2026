@@ -1,0 +1,4 @@
+market: 100 full drafts with all 4 using the real advisor; 0 failures so far
+early-rb-run: 100 full drafts with all 4 using the real advisor; 0 failures so far
+value-aware: 100 full drafts with all 4 using the real advisor; 0 failures so far
+RESULT: 0 FAIL; 16800 live advisor decisions; average 8.8 ms
