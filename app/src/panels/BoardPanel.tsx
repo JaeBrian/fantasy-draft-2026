@@ -1,3 +1,4 @@
+import { sleeperRetryDelay } from "../lib/sleeper-retry";
 import { LiveSyncStatus } from "../components/LiveSyncStatus";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { P, OT, BYE, MKT, DRAFT_ORDER, type Pos } from "../data";
@@ -181,13 +182,18 @@ export function BoardPanel({ defaultSleeperUrl, noob, DS, ord, mark, undo, reset
     }
     const id = idMatch[1];
     let stop = false;
+    let failures = 0;
     let request: AbortController | undefined;
     const tick = async () => {
+      let responseStatus: number | undefined;
+      let retryAfter: string | null = null;
       setChecking(true);
       request = new AbortController();
       const timeout = window.setTimeout(() => request?.abort(), 10000);
       try {
         const res = await fetch(`https://api.sleeper.app/v1/draft/${id}/picks`, { signal: request.signal });
+        responseStatus = res.status;
+        retryAfter = res.headers.get("Retry-After");
         if (!res.ok) throw new Error(String(res.status));
         const picks = (await res.json()) as SleeperPick[];
         const snapshot = sleeperSnapshot(picks, slotRef.current, P);
@@ -203,13 +209,15 @@ export function BoardPanel({ defaultSleeperUrl, noob, DS, ord, mark, undo, reset
               ? "Live: 0 picks synced · Waiting for the first pick."
               : `Live: ${picks.length} picks synced${offBoard ? ` (${offBoard} off-board)` : ""} · ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" })}`
           );
+        failures = 0;
         return 2000;
       } catch {
+        const delay = sleeperRetryDelay(++failures, responseStatus, retryAfter);
         if (!stop) {
           setSyncError(true);
-          setSyncMsg("Could not check Sleeper. Showing the last synced board; retrying in 2 seconds.");
+          setSyncMsg(`Could not check Sleeper${responseStatus === 429 ? " (rate limited)" : ""}. Showing the last synced board; retrying in ${Math.ceil(delay / 1000)} seconds.`);
         }
-        return 2000;
+        return delay;
       } finally {
         window.clearTimeout(timeout);
         if (!stop) setChecking(false);

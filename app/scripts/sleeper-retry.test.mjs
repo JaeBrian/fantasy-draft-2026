@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {execFileSync} from 'node:child_process';
+import {createRequire} from 'node:module';
+execFileSync('npx',['esbuild','src/lib/sleeper-retry.ts','--bundle','--platform=node','--format=cjs','--outfile=.simcache/sleeper-retry.cjs','--log-level=error']);
+const {sleeperRetryDelay:delay}=createRequire(import.meta.url)('../.simcache/sleeper-retry.cjs');
+assert.equal(delay(1),4000);assert.equal(delay(2),8000);assert.equal(delay(20),60000);
+assert.equal(delay(1,429),60000);assert.equal(delay(1,429,'120'),120000);
+assert.equal(delay(1,503,'Wed, 09 Sep 2026 00:02:00 GMT',Date.parse('2026-09-09T00:00:00Z')),120000);
+assert.equal(delay(1,429,'invalid'),60000);assert.equal(delay(1,500,'-1'),4000);
+console.log('PASS: bounded backoff, rate-limit cooldown and Retry-After seconds/date');
