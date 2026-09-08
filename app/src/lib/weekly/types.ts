@@ -23,6 +23,7 @@ export type LineupAssignment={index:number;slot:string;playerId:string|null;mean
 export type LineupResult={assignments:LineupAssignment[];total:number;complete:boolean;issues:string[]};
 export type ResearchSignal={label:string;value:string;note?:string};
 export type PlayerResearch={
+  matchup?:{opponent:string;confidence:string;method:string;observedAt:string;receiverAlignment:string;shadow:string;notes:string[];scenarios:{label:string;explanation:string;defenders:{name:string;position:string;gsisId:string|null;performance:{season:number;games:number;targets:number;completionRate:number;yardsPerTarget:number;touchdowns:number;lowerYardagePercentile:number|null;cohortSize:number;currentSeasonTargets:number;interpretation:string}|null}[]}[]};
   basis:string;sampleGames:number|null;candidateMean:number|null;
   signals:ResearchSignal[];notes:string[];
   officialStatus:{status:string|null;practice:string|null;injury:string|null;sourceUrl:string;reportedAt:string|null}|null;
