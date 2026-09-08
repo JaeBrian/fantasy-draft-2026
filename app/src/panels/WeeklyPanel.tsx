@@ -1,8 +1,10 @@
+import { usePersistent } from "../lib/store";
 import { useEffect, useState } from 'react';
 import { collectWeeklySnapshot, type WeeklySnapshot } from '../lib/weekly/snapshot';
 import { MANAGERS } from '../lib/weekly/config';
 
 export function WeeklyPanel() {
+  const [connected,setConnected]=usePersistent("fd26-weekly-connected",false,r=>r==="1",v=>v?"1":"0");
   const [selected,setSelected]=useState<string>(MANAGERS[0].userId);
   const [snapshot,setSnapshot]=useState<WeeklySnapshot | null>(null);
   const [error,setError]=useState('');
@@ -10,6 +12,7 @@ export function WeeklyPanel() {
   const [refresh,setRefresh]=useState(0);
   const [now,setNow]=useState(Date.now);
   useEffect(() => {
+    if (!connected) { setChecking(false); return; }
     let stopped=false, timer: ReturnType<typeof setTimeout>;
     let controller: AbortController;
     let failures=0;
@@ -24,26 +27,26 @@ export function WeeklyPanel() {
         if (!stopped) {setError(e instanceof Error ? e.message : 'Could not check Sleeper');failures++;}
       } finally {
         clearTimeout(timeout);
-        if (!stopped) {setChecking(false);timer=setTimeout(update,Math.min(300000,60000*2**failures));}
+        if (!stopped) {setChecking(false);timer=setTimeout(update,Math.min(1800000,300000*2**failures));}
       }
     }
     void update();
     return ()=>{stopped=true;clearTimeout(timer);controller?.abort();};
-  },[refresh]);
+  },[refresh,connected]);
   useEffect(()=>{const timer=setInterval(()=>setNow(Date.now()),1000);return ()=>clearInterval(timer);},[]);
   const manager=snapshot?.managers.find(m=>m.userId===selected);
   const age=snapshot ? Math.max(0,Math.floor((now-Date.parse(snapshot.checkedAt))/1000)) : null;
-  const stale=age !== null && age>120;
+  const stale=age !== null && age>600;
   const ready=snapshot?.stage==='rosters-ready';
-  const title=!snapshot ? 'Checking your league' : snapshot.stage==='waiting' ? 'Waiting for your draft' : snapshot.stage==='drafting' ? 'Your draft is in progress' : ready ? 'Your rosters are connected' : 'Roster sync needs attention';
+  const title=!snapshot ? connected ? 'Checking your league' : 'Connect when you’re ready' : snapshot.stage==='waiting' ? 'Waiting for your draft' : snapshot.stage==='drafting' ? 'Your draft is in progress' : ready ? 'Your rosters are connected' : 'Roster sync needs attention';
   return <div className="weekly-workspace">
     <div className="workspace-title"><div><span className="section-caption">Weekly lineup · Real league</span><h1>Your week starts here</h1></div></div>
     <div className="weekly-managers" role="group" aria-label="Weekly manager">{MANAGERS.map(m=><button className="btn" type="button" key={m.userId} aria-pressed={selected===m.userId} onClick={()=>setSelected(m.userId)}>{m.name}</button>)}</div>
-    <section className={`live-sync-card ${error ? 'error' : stale || !snapshot ? 'waiting' : 'current'}`} aria-label="Weekly roster connection">
-      <div className="live-sync-heading"><strong role="status"><span className="sync-dot" />{error ? 'Roster check failed' : stale ? 'Roster data is stale' : checking ? 'Checking Sleeper…' : 'Roster connection checked'}</strong><button className="btn" type="button" onClick={()=>setRefresh(n=>n+1)}>Check rosters</button></div>
-      <p>{snapshot ? `${snapshot.leagueName} · ${snapshot.rosteredPlayers} players rostered across the league` : 'Connecting to the real Sleeper league.'}</p>
-      <small>{age===null ? 'Waiting for the first successful check.' : `Last successful check ${age}s ago · Checks every minute while this page is open`}</small>
-      {error && <p role="alert">{error}. {snapshot ? 'Showing the last successful snapshot.' : 'Retrying automatically.'}</p>}
+    <section className={`live-sync-card ${!connected ? 'waiting' : error ? 'error' : stale || !snapshot ? 'waiting' : 'current'}`} aria-label="Weekly roster connection">
+      <div className="live-sync-heading"><strong role="status"><span className="sync-dot" />{!connected ? 'Roster connection off' : error ? 'Roster check failed' : stale ? 'Roster data is stale' : checking ? 'Checking Sleeper…' : 'Roster connection checked'}</strong><div className="weekly-managers"><button className="btn" type="button" role="switch" aria-checked={connected} aria-label="Roster connection" onClick={()=>setConnected(v=>!v)}>{connected ? "On" : "Off"}</button><button className="btn" type="button" disabled={!connected || checking} onClick={()=>setRefresh(n=>n+1)}>Check rosters</button></div></div>
+      <p>{snapshot ? `${snapshot.leagueName} · ${snapshot.rosteredPlayers} players rostered across the league` : connected ? 'Connecting to the real Sleeper league.' : 'Turn on the connection to load your real league rosters.'}</p>
+      <small>{!connected ? 'Automatic checks are off. The last loaded roster stays visible until you leave this page.' : age===null ? 'Waiting for the first successful check.' : `Last successful check ${age}s ago · Checks every 5 minutes while this page is open`}</small>
+      {connected && error && <p role="alert">{error}. {snapshot ? 'Showing the last successful snapshot.' : 'Retrying automatically.'}</p>}
       <small>Roster connection only. Weekly projections and matchup analysis are still in development.</small>
     </section>
     <section className="weekly-section">
