@@ -428,6 +428,8 @@ progress::-moz-progress-bar { background: var(--color-clock); }
 .teammate-warning { margin-top: 10px; padding: 9px 10px; border-left: 3px solid var(--color-clock); background: #30271b; border-radius: 3px; font-size: .8rem; }
 .teammate-warning strong { color: var(--color-clock); }
 .teammate-warning p { margin-top: 3px; }
+.teammate-warning.is-stack { background: #17352b; border-left-color: #65d8aa; }
+.teammate-warning.is-stack strong { color: #65d8aa; }
 .recommendation-actions { display: flex; gap: 6px; margin-top: 10px; }
 .recommendation-actions .btn:first-child { flex: 1; }
 .sync-hint, .forecast-caption { margin: 12px 20px; color: var(--draft-muted); font-size: .76rem; line-height: 1.5; }
