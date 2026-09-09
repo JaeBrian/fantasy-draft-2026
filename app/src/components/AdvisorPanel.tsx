@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { BYE, DRAFT_ORDER, SIM_PLANS } from '../data';
+import { BYE, DRAFT_ORDER, P, SIM_PLANS } from '../data';
 import { advise, needText, rosterSlots, type DraftState } from '../lib/advisor';
 import { runForecast, type Forecast } from '../lib/forecast';
 import type { RbLean } from '../lib/tendency';
@@ -56,6 +56,15 @@ export function AdvisorPanel({ DS, ord, mySlot, blocked, lean, manual, finished,
       <div className="recommendations">
         {candidates.map((c, i) => {
           const name = c.now.r[0];
+          const teammates = P.filter(p => DS[p[0]] === 'mine' && p[2] === c.now.r[2]).map(p => {
+            const slot = slots.find(s => s.player === p[0])?.label;
+            const label = slot === 'BN' ? 'Bench' : slot === 'FLX' ? 'Flex' : slot;
+            const stack = (c.p === 'QB' && (p[1] === 'WR' || p[1] === 'TE')) ||
+              ((c.p === 'WR' || c.p === 'TE') && p[1] === 'QB');
+            return { label: `${p[0]}${label ? ` (${label})` : ''}`, stack };
+          });
+          const stackmates = teammates.filter(p => p.stack).map(p => p.label);
+          const overlaps = teammates.filter(p => !p.stack).map(p => p.label);
           const chance = Math.round(100 * (fc?.survive[name] ?? (waiting ? c.pReach : 1 - c.pGone)));
           const hasFuture = waiting || a.horizon.back <= 168;
           return <article key={name} className={`recommendation ${i === 0 ? 'recommended' : ''}`}>
@@ -66,7 +75,14 @@ export function AdvisorPanel({ DS, ord, mySlot, blocked, lean, manual, finished,
             <p>{c.cuffOf ? `Backup for your ${c.cuffOf}.` : needText(c.p, a)}{c.clash ? ` Shares a Week ${c.bye} bye with ${a.byeCount[c.bye!]} rostered players.` : c.fell >= 6 ? ` Available ${Math.round(c.fell)} picks past market ADP.` : ''}</p>
             {c.backfieldWith && !c.cuffOf && <p>Shares the {c.now.r[2]} backfield with your {c.backfieldWith}. Their workloads depend on the same team's carries and scoring chances.</p>}
             {c.diversifiesFrom && <p>Similar value to {c.diversifiesFrom}, with your receivers spread across more teams.</p>}
-            {!!c.receiverWith?.length && <p>Shares the {c.now.r[2]} passing game with your {c.receiverWith.join(' and ')}. Quarterback trouble or a quiet offense can affect both roster spots.</p>}
+            {stackmates.length > 0 && <div className="teammate-warning is-stack" role="note" aria-label="Passing stack">
+              <strong>Passing stack</strong>
+              <p>Pairs with {stackmates.join(', ')}. When both start, a passing touchdown between them scores for both players. An upside opportunity when the draft value fits.</p>
+            </div>}
+            {overlaps.length > 0 && <div className="teammate-warning" role="note" aria-label="Shared NFL team">
+              <strong>Same NFL team</strong>
+              <p>You already have {overlaps.join(', ')}. Their production depends on the same offense.</p>
+            </div>}
             {manual && <div className="recommendation-actions"><button type="button" className={i === 0 ? 'btn primary' : 'btn'} disabled={!a.onClock} onClick={() => mark(name, 'mine')}>Draft {name.split(' ').at(-1)}</button>{!skillOnly && <button type="button" className="btn subtle" onClick={() => mark(name, 'gone')} aria-label={`Mark ${name} taken`}>Taken</button>}</div>}
           </article>;
         })}

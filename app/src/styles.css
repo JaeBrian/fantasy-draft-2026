@@ -425,6 +425,11 @@ progress::-moz-progress-bar { background: var(--color-clock); }
 .pick-metrics { display: flex; flex-wrap: wrap; gap: 5px 14px; font-size: .73rem; color: var(--draft-muted); }
 .pick-metrics b { color: var(--color-ink); font-variant-numeric: tabular-nums; font-size: .9rem; }
 .recommendation p { margin: 7px 0 0; font-size: .8rem; line-height: 1.45; color: var(--color-ink-2); }
+.teammate-warning { margin-top: 10px; padding: 9px 10px; border-left: 3px solid var(--color-clock); background: #30271b; border-radius: 3px; font-size: .8rem; }
+.teammate-warning strong { color: var(--color-clock); }
+.teammate-warning p { margin-top: 3px; }
+.teammate-warning.is-stack { background: #17352b; border-left-color: #65d8aa; }
+.teammate-warning.is-stack strong { color: #65d8aa; }
 .recommendation-actions { display: flex; gap: 6px; margin-top: 10px; }
 .recommendation-actions .btn:first-child { flex: 1; }
 .sync-hint, .forecast-caption { margin: 12px 20px; color: var(--draft-muted); font-size: .76rem; line-height: 1.5; }
